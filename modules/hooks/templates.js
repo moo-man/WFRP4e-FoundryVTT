@@ -1,4 +1,3 @@
-import AreaHelpers from "../system/area-helpers";
 
 export default function() 
 {

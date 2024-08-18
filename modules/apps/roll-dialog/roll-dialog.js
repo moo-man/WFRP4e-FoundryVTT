@@ -1,5 +1,3 @@
-import WFRP_Utility from "../../system/utility-wfrp4e";
-import { DialogTooltips } from "./tooltips";
 
 export default class RollDialog extends WarhammerRollDialog {
 

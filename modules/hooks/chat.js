@@ -4,8 +4,8 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
-import OpposedHandler from "../system/opposed-wfrp4e.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
+import OpposedHandler from "../system/opposed-handler.js";
 
 
 export default function() {

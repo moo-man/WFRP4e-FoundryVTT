@@ -51,11 +51,11 @@ export class CharacterModel extends StandardActorModel {
         super.computeBase();
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items, flags);
+    computeDerived() {
+        super.computeDerived();
 
-        this.computeCorruption(items, flags)
-        this.computeCareer(items, flags)
+        this.computeCorruption()
+        this.computeCareer()
 
         this.details.experience.current = this.details.experience.total - this.details.experience.spent;
     }

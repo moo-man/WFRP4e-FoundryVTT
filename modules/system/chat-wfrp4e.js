@@ -106,7 +106,7 @@ export default class ChatWFRP {
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
     html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
-    html.on("click", ".apply-target", this._onApplyTargetEffect.bind(this))
+    html.on("click", ".apply-effect", WarhammerChatListeners.onApplyTargetEffect)
     html.on("click", ".place-area", this._onPlaceAreaEffect.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
@@ -123,7 +123,7 @@ export default class ChatWFRP {
 
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
 
-      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
+      AreaTemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked
@@ -552,67 +552,6 @@ export default class ChatWFRP {
       await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
   }
 
-  static async _onApplyTargetEffect(event) {
-
-    let applyData = {};
-    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
-    let effectPath = event.target.dataset.path;
-    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let message = game.messages.get(messageId);
-    let test = message.system.test
-    let actor = test.actor;
-    let item = test.item;
-    let effect;
-
-    if (!actor.isOwner)
-      return ui.notifications.error("CHAT.ApplyError")
-
-
-    if (effectPath)
-    {
-      effect = foundry.utils.getProperty(item, effectPath)
-      applyData = {effectData : [effect.toObject()]}
-    }
-    else if (uuid)
-    {
-      applyData = {effectUuids : uuid}
-      effect = await fromUuid(uuid);
-    }
-    else 
-    {
-      return ui.notifications.error("Unable to find effect to apply")
-    }
-
-
-
-    // let effect = actor.populateEffect(effectId, item, test)
-    
-    let targets = (game.user.targets.size ? Array.from(game.user.targets) : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
-
-    if (!(await effect.runPreApplyScript({test, targets})))
-    {
-      return
-    }
-    
-    game.user.updateTokenTargets([]);
-    game.user.broadcastActivity({ targets: [] });
-          
-    if (item && // If spell's Target and Range is "You", Apply to caster, not targets
-      item.range && 
-      item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
-      item.target && 
-      item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      {
-        targets = [actor]
-      }
-
-      applyData.messageId = messageId;
-      for(let target of targets)
-      {
-        await target.applyEffect(applyData);
-      }
-  }
-
   static async _onPlaceAreaEffect(event) {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let effectUuid = event.currentTarget.dataset.uuid;
@@ -634,7 +573,7 @@ export default class ChatWFRP {
     {
       return
     }
-    let template = await AOETemplate.fromEffect(effectUuid, messageId, radius);
+    let template = await AreaTemplate.fromEffect(effectUuid, messageId, radius);
     await template.drawPreview(event);
   }
 

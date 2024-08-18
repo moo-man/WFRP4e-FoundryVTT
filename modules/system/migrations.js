@@ -626,22 +626,22 @@ static _migrateEffectFlags(effect)
             preApplyScript : applicationData.preApplyScript,
             equipTransfer : applicationData.equipTransfer,
             filter : applicationData.filter,
-            prompt : applicationData.prompt
+            prompt : applicationData.prompt,
+            area: {
+              radius : applicationData.radius,
+              templateData : applicationData.templateData,
+  
+              duration : applicationData.areaType,
+              keep : applicationData.keep,
+  
+              aura: {
+                  render : applicationData.renderAura,
+                  transferred : applicationData.targetedAura,
+              }
+          },
         },
         scriptData: scriptData,
         zone: {},
-        area: {
-            radius : applicationData.radius,
-            templateData : applicationData.templateData,
-
-            duration : applicationData.areaType,
-            keep : applicationData.keep,
-
-            aura: {
-                render : applicationData.renderAura,
-                transferred : applicationData.targetedAura,
-            }
-        },
         sourceData: {
             item : effect.getFlag("wfrp4e", "sourceItem"),
             test : effect.getFlag("wfrp4e", "sourceTest"),
@@ -650,7 +650,7 @@ static _migrateEffectFlags(effect)
     }
 
     system.scriptData.forEach(script => {
-        script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script, options.immediate || {})
+        script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script.options.immediate || {})
     })
     return {"flags.wfrp4e.-=applicationData" : null,  "flags.wfrp4e.-=scriptData" : null, system};
 }

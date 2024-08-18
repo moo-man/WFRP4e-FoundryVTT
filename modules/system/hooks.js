@@ -29,7 +29,6 @@ export default function registerHooks() {
     token()
     i18n();
     settings();
-    templates();
 
 
     // #if _ENV === "development"

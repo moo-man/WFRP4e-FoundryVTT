@@ -4,7 +4,7 @@ export default function () {
 
     Object.assign(SocketHandlers, {
 
-        call: (type, payload, userId) => {
+        call: function (type, payload, userId){
             if (userId == "GM") {
                 if (!game.users.activeGM) {
                     throw new Error("No Active GM present");
@@ -14,7 +14,7 @@ export default function () {
             game.socket.emit("system.wfrp4e", { type, payload, userId });
         },
 
-        register: () => {
+        register: function (){
             game.socket.on("system.wfrp4e", async data => {
                 if (!data.userId) {
                     warhammer.utility.log("userId is missing in socket request, fallback to ALL");
@@ -32,46 +32,46 @@ export default function () {
                     SocketHandlers.updateSocketMessageResult(data.payload);
                 }
             });
-        },
+        }.bind(SocketHandlers),
 
-        updateSocketMessageResult: (payload) => {
+        updateSocketMessageResult: function (payload){
             let message = game.messages.get(payload.socketMessageId);
             if (message && payload.socketResult) {
                 message.setFlag("wfrp4e", "socketResult", payload.socketResult);
             }
         },
 
-        morrslieb: (payload) => {
+        morrslieb: function (payload){
             canvas.draw();
         },
 
-        target: async (payload) => {
+        target: async function (payload) {
             let scene = game.scenes.get(payload.scene)
             let token = scene.tokens.get(payload.target)
             await token.actor.update({ "flags.oppose": payload.opposeFlag });
         },
 
-        updateMessage: async (payload) => {
+        updateMessage: async function (payload) {
             const msg = game.messages.get(payload.id);
             await msg.update(payload.updateData);
             return "success"
         },
 
-        deleteMessage: async (payload) => {
+        deleteMessage: async function (payload) {
             game.messages.get(payload.id)?.delete()
         },
 
-        applyEffect: async ({ effectUuids, effectData, actorUuid, messageId }) => {
+        applyEffect: async function ({ effectUuids, effectData, actorUuid, messageId }) {
             let result = await fromUuidSync(actorUuid)?.applyEffect({ effectUuids, effectData, messageId });
             return result;
         },
 
-        applyDamage: async ({ damage, options, actorUuid }) => {
+        applyDamage: async function ({ damage, options, actorUuid }) {
             let result = await fromUuidSync(actorUuid)?.applyBasicDamage(damage, options);
             return result;
         },
 
-        changeGroupAdvantage: async (payload) => {
+        changeGroupAdvantage: async function (payload) {
             if (game.user.isUniqueGM) {
                 let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
                 advantage.players = payload.players
@@ -79,7 +79,7 @@ export default function () {
             }
         },
 
-        createActor: async (payload) => {
+        createActor: async function (payload) {
             let id = payload.id
             let actorData = payload.data
 
@@ -102,7 +102,7 @@ export default function () {
          * @param {Object} payload Data for socket handler, should generally include document UUID 
          * @returns 
          */
-        executeOnOwner: (document, type, payload) => {
+        executeOnOwner: function (document, type, payload){
             let ownerUser = getActiveDocumentOwner(document);
             if (game.user.id == ownerUser.id) {
                 this[type](payload);
@@ -110,9 +110,9 @@ export default function () {
                 warhammer.utility.log(game.i18n.format("SOCKET.SendingSocketRequest", { name: ownerUser.name }));
                 SocketHandlers.call(type, payload, ownerUser.id);
             }
-        },
+        }.bind(SocketHandlers),
 
-        executeOnUserAndWait: async (userId, type, payload) => {
+        executeOnUserAndWait: async function (userId, type, payload) {
             let result;
             if (game.user.id == userId || (userId == "GM" && game.user.isGM)) {
                 result = await this[type](payload);
@@ -134,15 +134,15 @@ export default function () {
                 }
             }
             return result;
-        },
+        }.bind(SocketHandlers),
 
-        executeOnOwnerAndWait: async (document, type, payload) => {
+        executeOnOwnerAndWait: async function (document, type, payload) {
             let ownerUser = getActiveDocumentOwner(document);
             return await SocketHandlers.executeOnUserAndWait(ownerUser.id, type, payload);
         },
 
 
-        createSocketRequestMessage: async (owner, content) => {
+        createSocketRequestMessage: async function (owner, content) {
             let chatData = {
                 content: `<p class='requestmessage'><b><u>${owner?.name}</u></b>: ${content}</p?`,
                 whisper: ChatMessage.getWhisperRecipients("GM")

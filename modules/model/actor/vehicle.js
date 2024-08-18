@@ -68,18 +68,15 @@ export class VehicleModel extends BaseActorModel {
         this.status.mood.compute();
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items, flags);
+    computeDerived() {
+        super.computeDerived();
         this.parent.runScripts("prePrepareItems", {actor : this.parent })
         this.characteristics.t.computeValue();
         this.characteristics.t.computeBonus();
         this.collision = this.characteristics.t.bonus + this.status.wounds.bonus
-        this.computeEncumbrance(items, flags);
+        this.computeEncumbrance();
         this.details.computeMove();
         this.parent.runScripts("prepareData", { actor: this.parent })
-
-        if (game.actors && this.parent.inCollection) // Only check system effects if past this: isn't an on-load prepareData and the actor is in the world (can be updated)
-            this.parent.checkSystemEffects()
     }
 
 

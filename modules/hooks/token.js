@@ -54,7 +54,7 @@ export default function() {
       }
 
       token.object.renderAuras();
-      AreaHelpers.checkAreas(scene);
+      // AreaHelpers.checkAreas(scene);
     }
 
     if (game.user.id == user)
@@ -84,7 +84,7 @@ export default function() {
         }
         if (updateData.x || updateData.y)
         {
-          AreaHelpers.checkAreas(scene)
+          // AreaHelpers.checkAreas(scene)
         }
       }
       // Empty resolve for when there's no token animation
@@ -96,7 +96,7 @@ export default function() {
 
     // If deleted token has an aura, need to check areas
     Hooks.on("deleteToken", async (token, data, user) => {
-      AreaHelpers.checkAreas(token.parent)
+      // AreaHelpers.checkAreas(token.parent)
     })
 
   Hooks.on('renderTokenHUD', (hud, html) => {

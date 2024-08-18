@@ -36,38 +36,6 @@ export default class AreaHelpers
         return tokens.filter(t => this.isInTemplate(t.object.center, template));
     }
 
-    static _isInEllipse(point, template)
-    {
-        let grid = canvas.scene.grid;
-        let templateGridSize = template.document.distance/grid.distance * grid.size
-        // NEED TO USE template.document - hooks don't reflect template.x/y immediately
-        let ellipse = new PIXI.Ellipse(template.document.x, template.document.y, templateGridSize, templateGridSize);
-        return ellipse.contains(point.x, point.y);
-    }
-
-
-    // Not used currently
-    static _isInRect(point, template)
-    {
-        // let x1 = template.document.x;
-        // let x2 = x1 + template.document.shape.width;
-        // let y1 = template.document.y;
-        // let y2 = y1 + template.document.shape.height;
-
-        // if (point.x > x1 && point.x < x2 && point.y > y1 && point.y < y2)
-        // {
-        //     return true;
-        // }
-    }
-
-    // Not used currently
-    static _isInPolygon(point, template)
-    {                                                                                 // points are relative to origin of the template, needs to be origin of the map
-        let polygon = new PIXI.Polygon(template.shape.points.map((coord, index) => coord += index % 2 == 0 ? template.document.x : template.document.y ));
-        return polygon.contains(point.x, point.y);
-    }
-
-
     // Perhaps this is expensive to run on every token update
     // but works for now
     static async checkAreas(scene)
@@ -87,7 +55,7 @@ export default class AreaHelpers
                 // An area could be a template, but could be an effect (aura)
                 let areaUuid = (template.document.id ? template.document?.uuid : template.document.flags.wfrp4e.effectUuid);
 
-                let existingEffect = token.actor?.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.system.area.keep);
+                let existingEffect = token.actor?.currentAreaEffects.find(effect => effect.getFlag("wfrp4e", "fromArea") == areaUuid && !effect.system.transferData.area.keep);
                 let inTemplate = this.isInTemplate(token.object.center, template)
                 if (inTemplate && !existingEffect)
                 {
@@ -109,7 +77,7 @@ export default class AreaHelpers
             }
 
             // Remove effects that are from templates that don't exist anymore
-            for(let effect of token.actor?.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.system.area.keep) || [])
+            for(let effect of token.actor?.effects.filter(e => e.getFlag("wfrp4e", "fromArea") && !e.system.transferData.area.keep) || [])
             {
                 let fromId = effect.getFlag("wfrp4e", "fromArea")
                 let foundTemplate = templates.find(t => {
@@ -163,7 +131,7 @@ export default class AreaHelpers
                     effectUuid: effect.uuid
                 }
             }
-            }, effect.flags.wfrp4e?.system.area?.templateData || {}), {parent : canvas.scene}));
+            }, effect.flags.wfrp4e?.system.transferData.area?.templateData || {}), {parent : canvas.scene}));
 
         // For some reason, these temporary templates have 0,0 as their coordinates
         // instead of the ones provided by the document, so set them manually

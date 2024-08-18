@@ -90,7 +90,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         let passenger = list.find(i => i.id == id);
         if (passenger)
         {
-            mergeData(passenger, data);
+            foundry.utils.mergeObject(passenger, data);
         }
         return list;
     }

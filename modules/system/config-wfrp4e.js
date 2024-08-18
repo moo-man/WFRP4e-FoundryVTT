@@ -54,7 +54,7 @@ WFRP4E.toTranslate = [
 "symptomTreatment",
 "reachDescription",
 "classTrappings",
-"effectApplications"
+"transferTypes"
 ]
 
 // "Trappings" are more than "trapping" type items
@@ -2287,16 +2287,6 @@ WFRP4E.effectTextStyle.fontSize = "30";
 WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 
 WFRP4E.rollModes = CONFIG.Dice.rollModes;
-
-WFRP4E.effectApplications = {
-    document : "EffectApplication.Type.Document",
-    damage : "EffectApplication.Type.Damage",
-    target : "EffectApplication.Type.Target",
-    area : "EffectApplication.Type.Area",
-    aura : "EffectApplication.Type.Aura",
-    crew : "EffectApplication.Type.Crew",
-    other : "EffectApplication.Type.Other"
-}
 
 
 // To migrate

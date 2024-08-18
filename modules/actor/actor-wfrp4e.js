@@ -1,6 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
-import AreaHelpers from "../system/area-helpers.js";
 import CharacteristicDialog from "../apps/roll-dialog/characteristic-dialog.js";
 import SkillDialog from "../apps/roll-dialog/skill-dialog.js";
 import WeaponDialog from "../apps/roll-dialog/weapon-dialog.js";
@@ -86,6 +85,15 @@ export default class ActorWFRP4e extends WarhammerActor
     {
         TokenHelpers.displayScrollingText(options.deltaAdv, this.parent, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
     }
+  }
+
+  
+  
+  /**
+   * @override 
+   */
+  prepareDerivedData() {
+    this.system.computeDerived()
   }
 
 
@@ -1304,7 +1312,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
   get auras() 
   {
-    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.system.transferData.type == "aura" && !e.system.aura.targeted)
+    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.system.transferData.type == "aura" && !e.system.transferData.area.aura.targeted)
   }
 
 

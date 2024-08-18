@@ -352,7 +352,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   addConditionData(sheetData) {
     try {
       let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWFRP4e(e));
-      let currentConditions = this.actor.conditions
+      let currentConditions = this.actor.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
       
       for (let condition of conditions) {
@@ -635,7 +635,6 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     html.on('change', '.ammo-selector', this._onSelectAmmo.bind(this));
     html.on('click', '.randomize', this._onRandomizeClicked.bind(this));
     html.on('change', '.input.species', this._onSpeciesEdit.bind(this));
-    html.on('click', '.effect-delete', this._onEffectDelete.bind(this));
     html.on('mousedown', '.prayer-roll', this._onPrayerRoll.bind(this));
     html.on('click', '.effect-create', this._onEffectCreate.bind(this));
     html.on('click', '.item-checkbox', this._onCheckboxClick.bind(this));
@@ -1660,48 +1659,6 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       aspect.system.use();
     }
   }
-
-  async _onApplyTargetEffect(event) {
-
-    let applyData = {};
-    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
-    let effect = await fromUuid(uuid);
-    if (effect) 
-    {
-      applyData = { effectData: [effect.convertToApplied()] }
-    }
-    else 
-    {
-      return ui.notifications.error("Unable to find effect to apply")
-    }
-
-    // let effect = actor.populateEffect(effectId, item, test)
-
-    let targets = Array.from(game.user.targets).map(t => t.actor)
-    if (!(await effect.runPreApplyScript({targets})))
-    {
-      return
-    }
-    game.user.updateTokenTargets([]);
-    game.user.broadcastActivity({ targets: [] });
-
-    for (let target of targets) 
-    {
-      await target.applyEffect(applyData);
-    }
-  }
-
-  async _onPlaceAreaEffect(event) {
-    let effectUuid = event.currentTarget.dataset.uuid;
-    let effect = await fromUuid(effectUuid)
-    if (!(await effect.runPreApplyScript()))
-    {
-      return
-    }
-    let template = await AbilityTemplate.fromEffect(effectUuid)
-    await template.drawPreview(event);
-  }
-
 
   //#endregion
 

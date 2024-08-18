@@ -1,4 +1,4 @@
-import OpposedHandler from "../system/opposed-wfrp4e.js";
+import OpposedHandler from "../system/opposed-handler.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import CastTest from "../system/rolls/cast-test.js";

@@ -2,8 +2,6 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
-import OpposedTest from "../system/opposed-test.js";
-import OpposedHandler from "../system/opposed-wfrp4e.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -709,13 +707,12 @@ export default function() {
       type: Object
     });
 
-    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = async function () {
-      if (this.getFlag("wfrp4e", "effectUuid"))
-      {
-        let effect = await fromUuid(this.getFlag("wfrp4e", "effectUuid"))
-        if (effect && effect.system.transferData.type != "aura")
-        {
-          effect.updateSource({"system.sourceData.area" : this.uuid})
+    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = function () {
+      let effectData = this.getFlag("wfrp4e", "effectData");
+      if (effectData) {
+        let effect = new CONFIG.ActiveEffect.documentClass(effectData);
+        if (effect.system.transferData.type != "aura") {
+          effect.updateSource({ "system.sourceData.area": this.uuid })
           return effect;
         }
       }

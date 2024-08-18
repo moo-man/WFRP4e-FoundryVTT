@@ -79,7 +79,6 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         if (effect.system.transferData.type == "aura" && effect.system.transferData.aura.targeted)
         {
             effect.system.transferData.area.radius = effect.system.transferData.area.radius || test.result.overcast.usage.target.current?.toString();
-            effect.system.transferData.aura.targeted = false;
         }
 
         if (this.item?.type == "spell")
@@ -174,7 +173,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
                 sizeMod = size;
             }
         }
-        return Roll.safeEval(Roll.getFormula(Roll.parse(this.system.transferData.area.radius, {effect : this, actor : this.actor, item : this.item}))) + sizeMod
+        return super.radius + sizeMod
     }
 
     static _triggerMigrations(trigger)

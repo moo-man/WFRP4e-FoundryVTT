@@ -5,6 +5,7 @@ import MooHouseRules from "../system/moo-house.js"
 export default function () {
   Hooks.on("ready", async () => {
 
+    SocketHandlers.register.bind(SocketHandlers)();
 
     Object.defineProperty(game.user, "isUniqueGM", {
       get: function () { return game.user.id == game.users.activeGM.id }

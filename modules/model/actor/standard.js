@@ -103,12 +103,12 @@ export class StandardActorModel extends BaseActorModel {
         this.runScripts("prePrepareData", { actor: this.parent })
     }
 
-    computeDerived(items, flags) {
+    computeDerived() {
         this.runScripts("prePrepareItems", {actor : this.parent })
         // Recompute bonuses as active effects may have changed it
         this.characteristics.compute();
         this.computeItems();
-        super.computeDerived(items, flags);
+        super.computeDerived();
         this.runScripts("computeCharacteristics", this.parent);
         this.computeSize();
         if (this.checkWounds())
@@ -123,7 +123,11 @@ export class StandardActorModel extends BaseActorModel {
         this.computeArmour();
         this.computeMount()
 
+        if (game.actors && this.parent.inCollection) // Only check system effects if past this: isn't an on-load prepareData and the actor is in the world (can be updated)
+            this.parent.checkSystemEffects()
+
         this.runScripts("prepareData", { actor: this.parent })
+
     }
 
     computeAdvantage() {

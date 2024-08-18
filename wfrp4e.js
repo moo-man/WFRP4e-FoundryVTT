@@ -70,7 +70,7 @@ import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 import TradeManager from "./modules/system/trade/trade-manager.js";
 import { WFRP4eActiveEffectModel } from "./modules/model/effect/effect.js";
 import socketHandlers from "./modules/system/socket-handlers.js";
-import { WFRPTestMessageModel } from "./modules/model/message/test.js;
+import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
 

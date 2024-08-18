@@ -54,7 +54,7 @@ export default class SkillDialog extends CharacteristicDialog {
         data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
         return new Promise(resolve => {
-            let dlg = new this(fields, data, resolve, options)
+            let dlg = new this(data, fields, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -73,9 +73,9 @@ export default class SkillDialog extends CharacteristicDialog {
         return context;
     }
 
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.skillName = this.data.skill?.name;
         data.item = this.data.skill?.id;
         data.characteristicToUse = this.data.characteristic;

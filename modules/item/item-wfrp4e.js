@@ -340,7 +340,7 @@ export default class ItemWfrp4e extends WarhammerItem
  
    get targetEffects() 
    {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.system.aura.targeted));
+       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.system.transferData.area.aura.targeted));
    }
  
    get areaEffects() 
