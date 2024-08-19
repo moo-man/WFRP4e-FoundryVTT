@@ -22,7 +22,7 @@ export default function() {
       {
         let mount = token.actor.mount;
         let mountToken = await mount.getTokenDocument();
-        mountToken.updateSource({ x : token.x, y : token.y, hidden: token.hidden })
+        mountToken.updateSource({ x : token.x, y : token.y, hidden: token.hidden, sort : token.sort - 1 })
 
         // Shift token slightly if same size
         if (mountToken.actor.details.size.value == token.actor.details.size.value)
@@ -63,14 +63,18 @@ export default function() {
           if (canvas.tokens.get(token.id).actor.isMounted)
           {
             let mountId = token.getFlag("wfrp4e", "mount")
-            let tokenUpdate = {_id : mountId, x : token.x, y: token.y }
-            if (token.actor.details.size.value == token.actor.mount.details.size.value)
+            let mountToken = canvas.tokens.get(mountId)
+            if (mountToken)
             {
-              tokenUpdate.x += canvas.grid.size / 4
-              tokenUpdate.y += canvas.grid.size / 4
-            }
-            scene.updateEmbeddedDocuments("Token", [tokenUpdate])
 
+              let tokenUpdate = {_id : mountId, x : updateData.x || token.x, y: updateData.y || token.y, sort : token.sort - 1 }
+              if (token.actor.details.size.value == token.actor.mount.details.size.value)
+              {
+                tokenUpdate.x += canvas.grid.size / 4
+                tokenUpdate.y += canvas.grid.size / 4
+              }
+              mountToken.update(tokenUpdate)
+            }
           }
         }
       }

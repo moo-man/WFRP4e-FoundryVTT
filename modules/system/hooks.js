@@ -12,7 +12,6 @@ import sidebar from "../hooks/sidebar.js"
 import rolltable from "../hooks/rolltable.js"
 import entryContext from "../hooks/entryContext.js"
 import token from "../hooks/token.js"
-import templates from "../hooks/templates.js"
 
 export default function registerHooks() {
     init()
