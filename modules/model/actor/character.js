@@ -107,7 +107,7 @@ export class CharacterModel extends StandardActorModel {
       ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
     }
 
-    addExpLog(amount, reason, newSpent, newTotal) 
+    addToExpLog(amount, reason, newSpent, newTotal) 
     {
       if (!newSpent)
         newSpent = this.details.experience.spent

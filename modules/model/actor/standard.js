@@ -410,7 +410,7 @@ export class StandardActorModel extends BaseActorModel {
     // If not a character, ask the user whether they want to add basic skills / money
     else
     {
-        return new Dialog.wait({
+        return Dialog.wait({
           title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
           content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
           buttons: {

@@ -1802,7 +1802,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
         data.status.resilience.value = dragData.payload.resilience;
         data.status.resolve.value = dragData.payload.resilience;
         data.system.details.experience.total += dragData.payload.exp;
-        data.system.details.experience.log = this.actor.addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
+        data.system.details.experience.log = this.actor.system.addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
         data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1844,7 +1844,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   _onDropExperience(dragData) {
     let system = foundry.utils.duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
-    system.details.experience.log = this.actor.addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
+    system.details.experience.log = this.actor.system.addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })
   }
 

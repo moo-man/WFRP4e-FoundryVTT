@@ -124,7 +124,7 @@ export default class Advancement
 
                     let newSpent = actor.details.experience.spent + xp
                     this.checkValidAdvancement(actor.details.experience.total, newSpent, game.i18n.localize("ACTOR.ErrorImprove"), name);
-                    let log = actor._addToExpLog(xp, `${name} (${end-start})`, newSpent)
+                    let log = actor.system.addToExpLog(xp, `${name} (${end-start})`, newSpent)
                     actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
                     resolve(true)
                   }
@@ -160,7 +160,7 @@ export default class Advancement
               label: game.i18n.localize("Ok"),
               callback: () => {
                 let newSpent = actor.details.experience.spent + xp
-                let log = actor._addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
+                let log = actor.system.addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
                 actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
                 resolve(true)
               }
@@ -191,7 +191,7 @@ export default class Advancement
             label: game.i18n.localize("Ok"),
             callback: () => {
               let newSpent = actor.details.experience.spent + xp
-              let log = actor._addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
+              let log = actor.system.addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
               actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
             }
           },
@@ -274,22 +274,23 @@ export default class Advancement
    *
    */
     async advance() {
-        let updateObj = {};
+        let updateObj = {items : []};
         let advancesNeeded = this.career.system.level.value * 5; // Tier 1 needs 5, 2 needs 10, 3 needs 15, 4 needs 20 in all characteristics and skills
-    
+      
         // Update all necessary characteristics to the advancesNeeded
         for (let advChar of this.career.system.characteristics)
-          if (this.characteristics[advChar].advances < 5 * this.career.system.level.value)
+          if (this.actor.system.characteristics[advChar].advances < 5 * this.career.system.level.value)
             updateObj[`system.characteristics.${advChar}.advances`] = 5 * this.career.system.level.value;
     
         // Advance all skills in the career
         for (let skill of this.career.system.skills)
-          await this._advanceSkill(skill, advancesNeeded);
+          updateObj.items.push(await this._advanceSkill(skill, advancesNeeded));
     
         // Add all talents in the career
         for (let talent of this.career.system.talents)
-          await this._advanceTalent(talent);
+          updateObj.items.push(await this._advanceTalent(talent));
     
+        ui.notifications.notify(`Advancing ${this.career.name} Characteristics, Skills, and Talents...`)
         this.actor.update(updateObj);
       }
 
@@ -412,8 +413,7 @@ export default class Advancement
     if (existingSkill) {
       existingSkill = existingSkill.toObject();
       existingSkill.system.advances.value = (existingSkill.system.advances.value < advances) ? advances : existingSkill.system.advances.value;
-      await this.actor.updateEmbeddedDocuments("Item", [existingSkill]);
-      return;
+      return existingSkill;
     }
 
     // If the actor does not already own skill, search through compendium and add it
@@ -422,7 +422,7 @@ export default class Advancement
       // Advanced find function, returns the skill the user expects it to return, even with skills not included in the compendium (Lore (whatever))
       let skillToAdd = (await game.wfrp4e.utility.findSkill(skillName)).toObject()
       skillToAdd.system.advances.value = advances;
-      await this.actor.createEmbeddedDocuments("Item", [skillToAdd]);
+      return skillToAdd;
     }
     catch (error) {
       console.error("Something went wrong when adding skill " + skillName + ": " + error);
@@ -444,7 +444,7 @@ export default class Advancement
       // See findTalent() for a detailed explanation of how it works
       // Advanced find function, returns the Talent the user expects it to return, even with Talents not included in the compendium (Etiquette (whatever))
       let talent = await game.wfrp4e.utility.findTalent(talentName);
-      await this.actor.createEmbeddedDocuments("Item", [talent.toObject()]);
+      return talent.toObject();
     }
     catch (error) {
       console.error("Something went wrong when adding talent " + talentName + ": " + error);

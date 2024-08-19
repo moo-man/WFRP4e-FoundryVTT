@@ -70,20 +70,20 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (options.deltaWounds > 0)
     {
-      TokenHelpers.displayScrollingText("+" + options.deltaWounds, this.parent, {fill: "0x00FF00", direction : CONST.TEXT_ANCHOR_POINTS.TOP});
+      TokenHelpers.displayScrollingText("+" + options.deltaWounds, this, {fill: "0x00FF00", direction : CONST.TEXT_ANCHOR_POINTS.TOP});
     }
     else if (options.deltaWounds < 0)
     {
-      TokenHelpers.displayScrollingText(options.deltaWounds, this.parent, {fill: "0xFF0000", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+      TokenHelpers.displayScrollingText(options.deltaWounds, this, {fill: "0xFF0000", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
     }
 
     if (options.deltaAdv > 0)
     {
-        TokenHelpers.displayScrollingText("+" + options.deltaAdv, this.parent, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.TOP});
+      TokenHelpers.displayScrollingText("+" + options.deltaAdv, this, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.TOP});
     }
     else if (options.deltaAdv < 0)
     {
-        TokenHelpers.displayScrollingText(options.deltaAdv, this.parent, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+      TokenHelpers.displayScrollingText(options.deltaAdv, this, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
     }
   }
 
