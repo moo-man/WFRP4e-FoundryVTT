@@ -53,7 +53,7 @@ export default class ActorWFRP4e extends WarhammerActor
     await super._preCreate(data, options, user)
     let preCreateData = {}
 
-    if (!data.items?.length && !options.skipItems)
+    if (!data.items?.length && !options.skipItems && this.type != "vehicle")
       preCreateData.items = await this.system.getInitialItems(this.type != "character");
     else
       preCreateData.items = this.items.map(i => foundry.utils.mergeObject(i.toObject(), game.wfrp4e.migration.migrateItemData(i), { overwrite: true }))

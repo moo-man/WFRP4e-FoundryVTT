@@ -53,6 +53,12 @@ export class VehicleModel extends BaseActorModel {
         return allowed
     }
 
+    initialize()
+    {
+        this.collision = 0;
+        this.details.crew.current = 0;
+    }
+
     computeBase()
     {
         super.computeBase();
@@ -73,7 +79,7 @@ export class VehicleModel extends BaseActorModel {
         this.parent.runScripts("prePrepareItems", {actor : this.parent })
         this.characteristics.t.computeValue();
         this.characteristics.t.computeBonus();
-        this.collision = this.characteristics.t.bonus + this.status.wounds.bonus
+        this.collision += this.characteristics.t.bonus + this.status.wounds.bonus
         this.computeEncumbrance();
         this.details.computeMove();
         this.parent.runScripts("prepareData", { actor: this.parent })

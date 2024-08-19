@@ -9,7 +9,7 @@ export default function() {
 
 
   Hooks.on("preCreateCombatant", (combatant, data) => {
-    combatant.updateSource({img : WFRP_Utility.replacePopoutPath(combatant.token.texture.src)})
+    combatant.updateSource({img : warhammer.utility.replacePopoutPath(combatant.token.texture.src)})
   })
 
   Hooks.on("createCombatant", combatant => {
