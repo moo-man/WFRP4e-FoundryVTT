@@ -58,11 +58,9 @@ export class ContainerModel extends EquippableItemModel {
             if (this.formsLoop(this.parent, allContainers))
             {
               ui.notifications.error("Loop formed - Resetting Container Location")
-              update["system.location.value"] = "";
+              data["system.location.value"] = "";
             }
           }
-
-          return update
     }
 
 

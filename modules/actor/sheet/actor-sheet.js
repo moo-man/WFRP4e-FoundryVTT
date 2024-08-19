@@ -1403,7 +1403,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     let subspecies
     if (split.length > 1)
       subspecies = split[1].replace(")", "").trim()
-    let speciesKey = WFRP_Utility.findKey(species, game.wfrp4e.config.species) || species
+    let speciesKey = warhammer.utility.findKey(species, game.wfrp4e.config.species) || species
     let subspeciesKey = ""
     if (subspecies) {
       for (let sub in game.wfrp4e.config.subspecies[speciesKey]) {
@@ -2215,7 +2215,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     }
     else // Otherwise, just lookup the key for the property and use that to lookup the description
     {
-      propertyKey = WFRP_Utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
+      propertyKey = warhammer.utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
     }
 
     let propertyDescription = "<b>" + property + "</b>" + ": " + propertyDescr[propertyKey];
@@ -2297,14 +2297,14 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     else if (classes.hasClass("weapon-group")) {
       let weaponGroup = ev.target.text;
       let weaponGroupKey = "";
-      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
+      weaponGroupKey = warhammer.utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
       expansionText = game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
     }
     // Expand the weapon's reach description
     else if (classes.hasClass("weapon-reach")) {
       let reach = ev.target.text;
       let reachKey;
-      reachKey = WFRP_Utility.findKey(reach, game.wfrp4e.config.weaponReaches);
+      reachKey = warhammer.utility.findKey(reach, game.wfrp4e.config.weaponReaches);
       expansionText = game.wfrp4e.config.reachDescription[reachKey];
     }
 

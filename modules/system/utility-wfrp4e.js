@@ -356,7 +356,7 @@ export default class WFRP_Utility {
    * @param {String} symptom  symptom name to be posted
    */
   static async postSymptom(symptom) {
-    let symkey = WFRP_Utility.findKey(symptom.split("(")[0].trim(), game.wfrp4e.config.symptoms)
+    let symkey = warhammer.utility.findKey(symptom.split("(")[0].trim(), game.wfrp4e.config.symptoms)
     let content = `<b>${symptom}</b>: ${game.wfrp4e.config.symptomDescriptions[symkey]}`;
     let chatOptions = {
       user: game.user.id,
@@ -391,7 +391,7 @@ export default class WFRP_Utility {
 
     property = this.parsePropertyName(property.replace(/,/g, '').trim());
 
-    propertyKey = WFRP_Utility.findKey(property, properties)
+    propertyKey = warhammer.utility.findKey(property, properties)
 
     let propertyDescription = `<b>${property}:</b><br>${propertyDescr[propertyKey]}`;
     propertyDescription = propertyDescription.replace("(Rating)", property.split(" ")[1])
@@ -652,7 +652,7 @@ export default class WFRP_Utility {
       cond = event.target.text.trim();
     if (!isNaN(cond.split(" ").pop())) // check if the condition level is specified
       cond = cond.split(" ").slice(0, -1).join(" ") // remove the condition level
-    let condkey = WFRP_Utility.findKey(cond, game.wfrp4e.config.conditions, { caseInsensitive: true });
+    let condkey = warhammer.utility.findKey(cond, game.wfrp4e.config.conditions, { caseInsensitive: true });
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
@@ -676,7 +676,7 @@ export default class WFRP_Utility {
       prop = prop.split(" ").slice(0, -1).join(" ");
 
     const allProps = this.allProperties();
-    const propKey = WFRP_Utility.findKey(prop, allProps, { caseInsensitive: true });
+    const propKey = warhammer.utility.findKey(prop, allProps, { caseInsensitive: true });
     const propName = allProps[propKey];
     const description = game.wfrp4e.config.qualityDescriptions[propKey] || game.wfrp4e.config.flawDescriptions[propKey];
     const messageContent = `<b>${propName}</b><br>${description}`;
@@ -876,12 +876,6 @@ export default class WFRP_Utility {
       return game.settings.set("wfrp4e", "groupAdvantageValues", advantage)
     }
   }
-
-  static log(message, force=false, args) {
-    if (CONFIG.debug.wfrp4e || force)
-      console.log(`%cWFRP4e` + `%c | ${message}`, "color: gold", "color: unset", args || "");
-  }
-
   
   static logHomebrew(message) {
     this.log("Applying Homebrew Rule: " + message, true)

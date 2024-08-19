@@ -22,7 +22,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
 
-    async _preCreate(data, options) {
+    async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
 
         // Default auto calculation to true
@@ -158,7 +158,7 @@ export class StandardActorModel extends BaseActorModel {
         let size;
         let trait = items.trait.find(i => i.name == game.i18n.localize("NAME.Size") && i.system.enabled)
         if (trait)
-            size = WFRP_Utility.findKey(trait.specification.value, game.wfrp4e.config.actorSizes);
+            size = warhammer.utility.findKey(trait.specification.value, game.wfrp4e.config.actorSizes);
         if (!size) // Could not find specialization
         {
             let smallTalent = items.talent.find(i => i.name == game.i18n.localize("NAME.Small"))

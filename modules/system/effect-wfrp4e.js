@@ -76,7 +76,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         let effect = super.convertToApplied(test);
 
         // An applied targeted aura should stay as an aura type, but it is no longer targeted
-        if (effect.system.transferData.type == "aura" && effect.system.transferData.aura.targeted)
+        if (effect.system.transferData.type == "aura" && test)
         {
             effect.system.transferData.area.radius = effect.system.transferData.area.radius || test.result.overcast.usage.target.current?.toString();
         }
@@ -149,7 +149,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 
     get isTargetApplied()
     {
-        return this.system.transferData.type == "target" || (this.system.transferData.type == "aura" && this.system.transferData.aura.targeted)
+        return this.system.transferData.type == "target" || (this.system.transferData.type == "aura" && this.system.transferData.area.aura.transferred)
     }
 
     get isAreaApplied()

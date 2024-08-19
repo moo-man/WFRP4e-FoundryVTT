@@ -106,7 +106,7 @@ export default class ChatWFRP {
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
     html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
-    html.on("click", ".apply-effect", WarhammerChatListeners.onApplyTargetEffect)
+    html.on("click", ".apply-target", WarhammerChatListeners.onApplyTargetEffect)
     html.on("click", ".place-area", this._onPlaceAreaEffect.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));

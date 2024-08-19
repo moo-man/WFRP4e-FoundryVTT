@@ -707,17 +707,6 @@ export default function() {
       type: Object
     });
 
-    CONFIG.MeasuredTemplate.documentClass.prototype.areaEffect = function () {
-      let effectData = this.getFlag("wfrp4e", "effectData");
-      if (effectData) {
-        let effect = new CONFIG.ActiveEffect.documentClass(effectData);
-        if (effect.system.transferData.type != "aura") {
-          effect.updateSource({ "system.sourceData.area": this.uuid })
-          return effect;
-        }
-      }
-    }
-
     // Pre-load templates
     loadTemplates([
       "systems/wfrp4e/templates/actors/character/character-main.hbs",

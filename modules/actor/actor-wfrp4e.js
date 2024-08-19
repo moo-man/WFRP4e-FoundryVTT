@@ -363,7 +363,7 @@ export default class ActorWFRP4e extends WarhammerActor
     options.hitLocation = false;
     options.fields = {difficulty : item.system.difficulty.value || "challenging"}
 
-    let characteristic = WFRP_Utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
+    let characteristic = warhammer.utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
       let test = await this.setupCharacteristic(characteristic, options);
       await test.roll();
@@ -1263,11 +1263,6 @@ export default class ActorWFRP4e extends WarhammerActor
     return this.hasCondition(key) // Same function so just reuse
   }
 
-  renderTokenAuras()
-  {
-    this.getActiveTokens().forEach(t => t.renderAuras());
-  }
-
   /**@deprecated in favor of just calling itemTypes */
   getItemTypes(type) {
     return this.itemTypes[type]
@@ -1298,23 +1293,6 @@ export default class ActorWFRP4e extends WarhammerActor
   get isOpposing() {
     return !!this.flags.oppose
   }
-
-  get currentAreaEffects() 
-  {
-      return this.effects.contents.filter(e => e.sourceArea);
-  }
-
-  get currentAreas()
-  {
-      let token = this.getActiveTokens()[0];
-      return canvas.templates.placeables.filter(t => AreaHelpers.isInTemplate(token.center, t));
-  }
-
-  get auras() 
-  {
-    return this.items.filter(i => i.included).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.system.transferData.type == "aura" && !e.system.transferData.area.aura.targeted)
-  }
-
 
   get mainArmLoc() 
   {

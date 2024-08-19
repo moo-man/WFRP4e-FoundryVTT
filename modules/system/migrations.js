@@ -451,12 +451,12 @@ export default class Migration {
       if (typeof item.system.qualities.value == "string")
       {
         let allQualities = WFRP_Utility.qualityList();
-        updateData["system.qualities.value"] = item.system.qualities.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allQualities), value : Number(i.split(" ")[1]) }}).filter(i => i.name)
+        updateData["system.qualities.value"] = item.system.qualities.value.split(",").map(i => i.trim()).map(i => {return {name : warhammer.utility.findKey(i.split(" ")[0], allQualities), value : Number(i.split(" ")[1]) }}).filter(i => i.name)
       }
       if (typeof item.system.flaws.value == "string")
       {
         let allFlaws = WFRP_Utility.flawList();
-        updateData["system.flaws.value"] = item.system.flaws.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allFlaws), value : Number(i.split(" ")[1])}}).filter(i => i.name)
+        updateData["system.flaws.value"] = item.system.flaws.value.split(",").map(i => i.trim()).map(i => {return {name : warhammer.utility.findKey(i.split(" ")[0], allFlaws), value : Number(i.split(" ")[1])}}).filter(i => i.name)
       }
       return updateData;
     }
@@ -650,7 +650,11 @@ static _migrateEffectFlags(effect)
     }
 
     system.scriptData.forEach(script => {
-        script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script.options.immediate || {})
+      if (!script.options)
+      {
+        script.options = {};
+      }
+      script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script.options.immediate || {})
     })
     return {"flags.wfrp4e.-=applicationData" : null,  "flags.wfrp4e.-=scriptData" : null, system};
 }

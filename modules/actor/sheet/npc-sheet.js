@@ -61,10 +61,10 @@ export default class ActorSheetWFRP4eNPC extends ActorSheetWFRP4e {
   //TODO Review with status changes
   async _onNpcIncomeClick(event) {
     let status = this.actor.details.status.value.split(" ");
-    let dieAmount = game.wfrp4e.config.earningValues[WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    let dieAmount = game.wfrp4e.config.earningValues[warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
     dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
     let moneyEarned;
-    if (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
+    if (warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
       moneyEarned = (await new Roll(dieAmount).roll()).total;
@@ -73,7 +73,7 @@ export default class ActorSheetWFRP4eNPC extends ActorSheetWFRP4e {
       moneyEarned = dieAmount;
 
     let paystring
-    switch (WFRP_Utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+    switch (warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
       case "b":
         paystring = `${moneyEarned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
         break;
