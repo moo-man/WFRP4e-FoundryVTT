@@ -23,8 +23,6 @@ export class EquippableItemModel extends PhysicalItemModel {
       await Promise.all(this.parent.runScripts("equipToggle", {equipped: this.isEquipped}));
       await this.onEquipToggle(data, options, user);
     }
-
-    return updates;
   }
 
   computeBase() {

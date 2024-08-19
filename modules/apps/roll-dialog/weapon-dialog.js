@@ -81,7 +81,7 @@ export default class WeaponDialog extends AttackDialog {
       }
       
       data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-      data.dualWieldingOption = data.actor.showDualWielding(weapon);
+      data.dualWieldingOption = !weapon.system.offhand.value && data.actor.has(game.i18n.localize("NAME.DualWielder"), "talent") && !data.actor.noOffhand
 
       data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog") || []);
       data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
@@ -98,13 +98,6 @@ export default class WeaponDialog extends AttackDialog {
             dlg.render(true);
         }
     })
-  }
-
-  showDualWielding() {
-    if (!this.data.weapon.offhand.value && this.actor.has(game.i18n.localize("NAME.DualWielder"), "talent")) {
-      return !this.actor.noOffhand
-    }
-    return false;
   }
 
 
