@@ -18,4 +18,4 @@ let weapon = {
 }
 
 Item.implementation.create(foundry.utils.expandObject(weapon), {parent : this.actor, fromEffect : this.effect.id})
-this.script.scriptNotification("Item created. Further customization must be done manually within the Item's sheet");
+this.script.notification("Item created. Further customization must be done manually within the Item's sheet");

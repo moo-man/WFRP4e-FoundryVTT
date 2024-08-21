@@ -1863,7 +1863,7 @@ WFRP4E.PrepareSystemItems = function() {
                             }
                             else
                             {
-                                return this.script.scriptMessage(msg)
+                                return this.script.message(msg)
                             }
                             `
                     }
@@ -1909,7 +1909,7 @@ WFRP4E.PrepareSystemItems = function() {
                             }
                             else
                             {
-                                return this.script.scriptMessage(msg)
+                                return this.script.message(msg)
                             }
                             `
                     },
@@ -1980,7 +1980,7 @@ WFRP4E.PrepareSystemItems = function() {
                             }
                             else
                             {
-                                return this.script.scriptMessage(msg)
+                                return this.script.message(msg)
                             }
                             `
                     }

@@ -6,14 +6,14 @@ lore = Array.from(text.matchAll(/{(.+?)}/gm))[0][1]
 
 if (text == "GM's Choice")
 {
-    return this.script.scriptNotification(text)
+    return this.script.notification(text)
 }
 
 if (spellsWithLore.length > 0)
 {
     let spellsWithLore = spells.filter(i => game.wfrp4e.config.magicLores[i.system.lore.value] == lore)
     let selectedSpell = spellsWithLore[Math.floor(CONFIG.Dice.randomUniform() * spellsWithLore.length)]
-    this.script.scriptNotification(selectedSpell.name);
+    this.script.notification(selectedSpell.name);
     this.actor.createEmbeddedDocuments("Item", [selectedSpell])
 }
 else

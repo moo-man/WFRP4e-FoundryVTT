@@ -6,6 +6,6 @@ if (args.test.characteristicKey == "wp")
         let data = item.toObject();
         this.actor.createEmbeddedDocuments("Item", [data])
         
-        this.script.scriptMessage(`Willpower Test failed, <b>${this.actor.prototypeToken.name}</b> gains @UUID[Compendium.wfrp4e-core.items.AGcJl5rHjkyIQBPP] for [[1d10]] hours`)
+        this.script.message(`Willpower Test failed, <b>${this.actor.prototypeToken.name}</b> gains @UUID[Compendium.wfrp4e-core.items.AGcJl5rHjkyIQBPP] for [[1d10]] hours`)
     }
 }

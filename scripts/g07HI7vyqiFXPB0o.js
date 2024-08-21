@@ -5,7 +5,7 @@ await test.roll()
 if (test.failed) 
 {
     this.actor.addCondition("poisoned", 2)
-    this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained 2 @Condition[Poisoned] Conditions.</p>
+    this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained 2 @Condition[Poisoned] Conditions.</p>
         <p>Any being with the Bestial Creature Trait that bites them and takes damage will not bite them again during a hostile encounter, though the creature may still attack them in other ways.</p>`, 
     {
       whisper: ChatMessage.getWhisperRecipients("GM"), 
@@ -24,6 +24,6 @@ else if (test.succeeded)
     this.actor.createEmbeddedDocuments("Item", [data], {fromEffect: this.effect.id})
     
     const duration = 3 + parseInt(test.result.SL)
-    this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> gains the Corrosive Blood Trait for ${duration} rounds.</p>`, 
+    this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> gains the Corrosive Blood Trait for ${duration} rounds.</p>`, 
       { whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })    
 }

@@ -47,6 +47,6 @@ let actor = this.actor;
                             }
                             else
                             {
-                                return this.script.scriptMessage(msg)
+                                return this.script.message(msg)
                             }
                             

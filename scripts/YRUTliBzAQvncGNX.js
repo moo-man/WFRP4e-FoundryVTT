@@ -1,2 +1,2 @@
 this.actor.addCondition("fatigued");
-this.script.scriptNotification("Added Fatigued")
+this.script.notification("Added Fatigued")

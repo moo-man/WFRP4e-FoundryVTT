@@ -30,7 +30,7 @@ Pre Update scripts are executed right before the document is updated, i.e. right
 let wounds = foundry.utils.getProperty(args.data, "system.status.wounds.value")
 if (wounds > this.actor.system.status.wounds.value)
 {
-	this.script.scriptNotification("Cannot Heal Wounds");
+	this.script.notification("Cannot Heal Wounds");
     delete args.data.system.wounds.value;
 }
 ```

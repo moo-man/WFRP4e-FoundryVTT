@@ -84,7 +84,7 @@ let caster = this.effect.sourceActor;
 
 this.actor.modifyWounds(caster.system.characteristics.wp.bonus);
 
-this.script.scriptMessage(`Healed ${caster.system.characteristics.wp.bonus} Wounds`);
+this.script.message(`Healed ${caster.system.characteristics.wp.bonus} Wounds`);
 ```
 
 **Notes**: Remember that `this.actor` is the Actor the effect is running on, `this.effect.sourceActor` is a getter for the Actor the effect came from.

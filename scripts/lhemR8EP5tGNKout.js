@@ -10,5 +10,5 @@ if (test.failed)
         this.actor.update({"system.status.corruption.value" : newCorruption})
     }
 
-    this.script.scriptMessage(msg);
+    this.script.message(msg);
 }

@@ -4,4 +4,4 @@ woundsGained = Math.floor(woundsGained / 2)
 
 args.attacker.update({ "system.status.wounds.value": args.attacker.status.wounds.value + woundsGained })
 
-this.script.scriptMessage(`Gains ${woundsGained} Wounds`)
+this.script.message(`Gains ${woundsGained} Wounds`)

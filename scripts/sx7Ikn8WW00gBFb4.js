@@ -2,11 +2,11 @@ let location = (Math.ceil(CONFIG.Dice.randomUniform() * 2) == 2 ? "r" : "l") + "
 
 if (location == "lArm")
 {
-	this.script.scriptNotification("Rolled Left")
+	this.script.notification("Rolled Left")
 }
 else if (location == "rArm")
 {
-	this.script.scriptNotification("Rolled Right")
+	this.script.notification("Rolled Right")
 }
 
 this.effect.updateSource({"flags.wfrp4e.location" : location});
@@ -17,7 +17,7 @@ if (location)
 
     if (dropped.length)
     {
-        this.script.scriptNotification(`Dropped ${dropped.map(i => i.name).join(", ")}!`)
+        this.script.notification(`Dropped ${dropped.map(i => i.name).join(", ")}!`)
         for(let weapon of dropped)
         {
             await weapon.system.toggleEquip();

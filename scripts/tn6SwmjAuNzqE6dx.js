@@ -11,4 +11,4 @@ else if (test.failed)
    damage = 20;
 }
 
-this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {loc : "roll", hideDSN: true, suppressMsg : true}))
+this.script.message(await this.actor.applyBasicDamage(damage, {loc : "roll", hideDSN: true, suppressMsg : true}))

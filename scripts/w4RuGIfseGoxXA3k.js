@@ -38,7 +38,7 @@ const extendedTestData = {
               script: `
               let id = this.item.flags.wfrp4e.fromEffect;
               let effect = this.actor.appliedEffects.find(e => e.id === id);
-              this.script.scriptMessage("${repaired_message}");
+              this.script.message("${repaired_message}");
               await effect.item.delete();
             `,
               trigger: "deleteEffect"

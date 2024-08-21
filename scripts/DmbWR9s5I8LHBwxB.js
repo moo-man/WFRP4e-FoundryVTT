@@ -3,7 +3,7 @@ let column = await ValueDialog.create("Select the column to roll on to determine
 if (column)
 {
     let result = await game.wfrp4e.tables.rollTable("beasthead", {}, column);
-    this.script.scriptMessage(`<strong>${result.title}</strong><br>${result.result}`);
+    this.script.message(`<strong>${result.title}</strong><br>${result.result}`);
     let uuid = `Compendium.${result.object.documentCollection}.${result.object.documentId}`;
     let item = await fromUuid(uuid);
     if (item)

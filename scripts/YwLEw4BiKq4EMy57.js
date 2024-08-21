@@ -16,4 +16,4 @@ let newFel = fel_gain + args.actor.characteristics.fel.modifier
 
 args.actor.update({"system.characteristics.int.modifier" : newInt, "system.characteristics.fel.modifier" : newFel})
 
-this.script.scriptMessage(msg)
+this.script.message(msg)

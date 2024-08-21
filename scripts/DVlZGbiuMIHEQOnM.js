@@ -4,7 +4,7 @@ if (this.actor.getFlag("wfrp4e", "isAttached"))
 	await roll.toMessage(this.script.getChatData());
 	if (roll.total == 9 || roll.total == 10)
 	{
-	  this.script.scriptMessage(`<strong>${this.actor.name}</strong> attached to <strong>${this.actor.getFlag("wfrp4e", "isAttached")}</strong> gorges and falls off.`)
+	  this.script.message(`<strong>${this.actor.name}</strong> attached to <strong>${this.actor.getFlag("wfrp4e", "isAttached")}</strong> gorges and falls off.`)
 	  await this.actor.unsetFlag("wfrp4e", "isAttached")      
 	}
   }

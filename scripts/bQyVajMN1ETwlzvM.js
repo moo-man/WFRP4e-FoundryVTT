@@ -4,6 +4,6 @@ let target = await game.wfrp4e.tables.rollTable("fixations")
 if (target)
 {
     data.system.specification.value = target.result
-    this.script.scriptNotification(target.result);
+    this.script.notification(target.result);
 }
 this.actor.createEmbeddedDocuments("Item", [data], {fromEffect : this.effect.id})

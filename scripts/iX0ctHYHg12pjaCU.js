@@ -12,4 +12,4 @@ if (result.object.documentId && result.object.documentCollection)
     }
 }
 
-this.script.scriptMessage(game.wfrp4e.tables.formatChatRoll("gift-of-slaanesh", {lookup : result.roll, hideDSN: true}));
+this.script.message(game.wfrp4e.tables.formatChatRoll("gift-of-slaanesh", {lookup : result.roll, hideDSN: true}));

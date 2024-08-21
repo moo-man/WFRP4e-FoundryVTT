@@ -9,7 +9,7 @@ let item = await fromUuid(uuid);
 
 if (item)
 {
-    this.script.scriptNotification(`${item.name} added`)
+    this.script.notification(`${item.name} added`)
     this.actor.createEmbeddedDocuments("Item", [item])
 }
 else 

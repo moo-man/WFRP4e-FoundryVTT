@@ -15,5 +15,5 @@ for(let item of items)
 }
 if(msg)
 {
-    this.script.scriptMessage(msg);
+    this.script.message(msg);
 }

@@ -6,7 +6,7 @@ await test.roll();
 
 if (test.succeeded)
 {
-  this.script.scriptNotification(this.actor.name + "resisted !")
+  this.script.notification(this.actor.name + "resisted !")
 }
 else if (test.failed)
 {

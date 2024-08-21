@@ -10,7 +10,7 @@ if (opposedResult?.winner == "attacker")
     if (spells.length)
     {
         let chosen = spells[Math.floor(CONFIG.Dice.randomUniform() * spells.length)]
-        this.script.scriptMessage(`Loses access to <strong>${chosen.name}</strong>`)
+        this.script.message(`Loses access to <strong>${chosen.name}</strong>`)
         chosen.update({name : chosen.name += " (LOST)"})
     }
 }

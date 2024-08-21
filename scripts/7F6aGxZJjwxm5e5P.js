@@ -8,7 +8,7 @@ if (args.test.result.castOutcome == "failure")
         }
         else if (Number.isNumeric(value))
         {
-            this.script.scriptNotification(`Lost ${value} Wounds`)
+            this.script.notification(`Lost ${value} Wounds`)
             this.actor.modifyWounds(-1 * value)
             await this.item.system.toggleEquip();
             args.test.addSL(value);

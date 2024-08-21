@@ -2,7 +2,7 @@ let wounds = this.actor.itemTypes.disease.filter(i => i.name == "Festering Wound
 let selected;
 if (wounds.length == 0)
 {
-    return this.script.scriptNotification("No Festering Wounds!");
+    return this.script.notification("No Festering Wounds!");
 }
 else if (wounds.length == 1)
 {
@@ -23,7 +23,7 @@ if (selected)
         if (SL >= 0)
         {
             selected.update({"system.duration.value" : selected.system.duration.value - SL})
-            this.script.scriptMessage(`<strong>${selected.name}</strong> duration reduced by ${SL}!`)
+            this.script.message(`<strong>${selected.name}</strong> duration reduced by ${SL}!`)
         }
     }
 }

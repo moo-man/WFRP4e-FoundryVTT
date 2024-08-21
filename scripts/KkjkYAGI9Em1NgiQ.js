@@ -10,10 +10,10 @@ if (this.item.system.quantity.value)
     }
     else 
     {
-        this.script.scriptNotification("Heal Test failed!", "error")
+        this.script.notification("Heal Test failed!", "error")
     }
 }
 else 
 {
-    this.script.scriptNotification("None left!", "error")
+    this.script.notification("None left!", "error")
 }
