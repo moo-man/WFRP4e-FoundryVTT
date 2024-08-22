@@ -134,12 +134,12 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
     }
 
     get isNumberedCondition() {
-        return Number.isNumeric(this.conditionValue)
+        return this.system.condition.numbered
     }
 
     get conditionValue() 
     {
-        return this.getFlag("wfrp4e", "value");
+        return this.system.condition.value
     }
 
     get testIndependent()

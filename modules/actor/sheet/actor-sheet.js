@@ -359,10 +359,10 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
         let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
         if (owned) {
           condition.existing = true
-          condition.flags.wfrp4e.value = owned.conditionValue;
+          condition.system.condition.value = owned.conditionValue;
         }
         else if (condition.isNumberedCondition) {
-          condition.flags.wfrp4e.value = 0
+          condition.system.condition.value = 0
         }
       }
       sheetData.effects.conditions = conditions
@@ -1132,33 +1132,16 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   async _onDiseaseRoll(ev) {
-    const itemId = this._getId(ev);
-    let disease = this.actor.items.get(itemId).toObject();
-    const type = ev.target.dataset["type"];
+    const disease = this._getDocument(ev);
 
-    if (!isNaN(disease.system[type].value)) {
-      if (ev.button === 0) {
-        disease = await this.actor.decrementDisease(disease, false);
-      } else {
-        let number = Number(disease.system[type].value)
-        disease.system[type].value = ++number;
-
-        if (type === "incubation")
-          disease.system.duration.active = false;
-      }
-    } else if (ev.button === 0) {
-      try {
-        disease.system[type].value = (await new Roll(disease.system[type].value).roll()).total;
-
-        if (type === "duration")
-          disease.system.duration.active = true;
-      } catch {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"));
-      }
+    if (ev.button === 0) 
+    {
+      disease.system.decrement();
+    } 
+    else 
+    {
+      disease.system.increment();
     }
-
-    if (disease)
-      await this.actor.updateEmbeddedDocuments("Item", [disease]);
   }
 
   async _onInjuryDurationClick(ev) {
@@ -1384,7 +1367,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
   async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-    if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
+    if (!game.wfrp4e.config.statusEffects.find(e => e.id == condKey).system.condition.numbered) {
       if (this.actor.hasCondition(condKey))
         await this.actor.removeCondition(condKey)
       else 

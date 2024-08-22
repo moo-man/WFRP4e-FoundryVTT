@@ -176,6 +176,82 @@ export default class ItemWfrp4e extends WarhammerItem
 
   }
 
+  async addCondition(effect, value = 1, mergeData={}) {
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
+    if (typeof (effect) === "string")
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+
+    let existing = this.hasCondition(effect.id)
+
+    if (existing && !existing.isNumberedCondition)
+      return existing
+    else if (existing) 
+    {
+      return existing.update({"system.condition.value" : existing.conditionValue + value})
+    }
+    else if (!existing) {
+      effect.name = game.i18n.localize(effect.name);
+
+      if (effect.system.condition.numbered)
+        effect.system.condition.value = value;
+        
+      effect["statuses"] = [effect.id];
+
+      foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
+
+      delete effect.id
+      return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
+    }
+  }
+
+  async removeCondition(effect, value = 1) {
+    if (typeof (effect) === "string")
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
+    let existing = this.hasCondition(effect.id);
+
+    if (existing && !existing.isNumberedCondition) 
+    {
+      return existing.delete();
+    }
+    else if (existing) 
+    {
+      await existing.update({"system.condition.value" : existing.conditionValue - value});
+    }
+
+    if (existing.conditionValue <= 0)
+    {
+      return existing.delete();
+    }
+  }
 
 
   /**

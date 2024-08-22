@@ -2,7 +2,7 @@ let skills = this.actor.itemTypes.skill.filter(i => i.name.includes(game.i18n.lo
 
 let skill = await ItemDialog.create(skills, 1, "Select the skill used by the weapon")
 let group = game.wfrp4e.utility.extractParenthesesText(skill[0]?.name)
-let groupKey = game.wfrp4e.utility.findKey(group, game.wfrp4e.config.weaponGroups)
+let groupKey = warhammer.utility.findKey(group, game.wfrp4e.config.weaponGroups)
 
 let weapon = {
 	name : this.effect.name,

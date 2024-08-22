@@ -1800,13 +1800,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "bleeding",
             statuses: ["bleeding"],
             name: "WFRP4E.ConditionName.Bleeding",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {
                     conditionTrigger: "endRound"
                 },
@@ -1875,13 +1873,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "poisoned",
             statuses: ["poisoned"],
             name: "WFRP4E.ConditionName.Poisoned",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {
                     conditionTrigger: "endRound"
                 },
@@ -1932,13 +1928,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "ablaze",
             statuses: ["ablaze"],
             name: "WFRP4E.ConditionName.Ablaze",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {
                     conditionTrigger: "endRound"
                 },
@@ -1992,13 +1986,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "deafened",
             statuses: ["deafened"],
             name: "WFRP4E.ConditionName.Deafened",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2014,13 +2006,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "stunned",
             statuses: ["stunned"],
             name: "WFRP4E.ConditionName.Stunned",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2047,13 +2037,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "entangled",
             statuses: ["entangled"],
             name: "WFRP4E.ConditionName.Entangled",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2074,13 +2062,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "fatigued",
             statuses: ["fatigued"],
             name: "WFRP4E.ConditionName.Fatigued",
-            flags: {
-                wfrp4e: {
-                    value: 1
-                }
-            },
             system: {
-
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2102,6 +2088,10 @@ WFRP4E.PrepareSystemItems = function() {
             statuses: ["blinded"],
             name: "WFRP4E.ConditionName.Blinded",
             system: {
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2135,6 +2125,10 @@ WFRP4E.PrepareSystemItems = function() {
             statuses: ["broken"],
             name: "WFRP4E.ConditionName.Broken",
             system: {
+                condition : {
+                    value : 1,
+                    numbered: true
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2154,6 +2148,10 @@ WFRP4E.PrepareSystemItems = function() {
             statuses: ["prone"],
             name: "WFRP4E.ConditionName.Prone",
             system: {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2185,6 +2183,10 @@ WFRP4E.PrepareSystemItems = function() {
             statuses: ["surprised"],
             name: "WFRP4E.ConditionName.Surprised",
             system: {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2205,10 +2207,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "unconscious",
             statuses: ["unconscious"],
             name: "WFRP4E.ConditionName.Unconscious",
-            flags: {
-                wfrp4e: {
-                    "value": null
-                }
+            system : {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
             }
         },
         {
@@ -2216,10 +2219,11 @@ WFRP4E.PrepareSystemItems = function() {
             id: "grappling",
             statuses: ["grappling"],
             name: "WFRP4E.ConditionName.Grappling",
-            flags: {
-                wfrp4e: {
-                    "value": null
-                }
+            system : {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
             }
         },
         {
@@ -2228,6 +2232,10 @@ WFRP4E.PrepareSystemItems = function() {
             statuses: ["engaged"],
             name: "WFRP4E.ConditionName.Engaged",
             system: {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
                 transferData: {},
                 scriptData: [
                     {
@@ -2250,11 +2258,10 @@ WFRP4E.PrepareSystemItems = function() {
             id: "dead",
             statuses: ["dead"],
             name: "WFRP4E.ConditionName.Dead",
-            flags: {
-                wfrp4e: {
-                    "value": null
-                }
-            }
+            condition : {
+                value : null,
+                numbered: false
+            },
         }
     ]
 }

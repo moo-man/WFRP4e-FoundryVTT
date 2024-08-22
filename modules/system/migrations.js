@@ -610,10 +610,15 @@ static _migrateEffectFlags(effect)
 {
     let applicationData = foundry.utils.getProperty(effect, "flags.wfrp4e.applicationData") || {};
     let scriptData = foundry.utils.getProperty(effect, "flags.wfrp4e.scriptData") || [];
-
+    let conditionValue = foundry.utils.getProperty(effect, "flags.wfrp4e.value");
+    let update = {};
+    if (Number.isNumeric(conditionValue))
+    {
+      foundry.utils.setProperty("system.condition.value", conditionValue);
+    }
     if (isEmpty(applicationData) && scriptData.length == 0)
     {
-      return {};
+      return update;
     }
 
     let system = {

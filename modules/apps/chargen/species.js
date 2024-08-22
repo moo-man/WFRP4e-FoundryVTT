@@ -48,7 +48,7 @@ export class SpeciesStage extends ChargenStage {
 
     for (let result of speciesTable.results)
     {
-      let speciesKey = game.wfrp4e.utility.findKey(result.text, game.wfrp4e.config.species)
+      let speciesKey = warhammer.utility.findKey(result.text, game.wfrp4e.config.species)
       if (speciesKey)
       {
         data.species[speciesKey] = result.text

@@ -377,7 +377,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     #optimalDifference(range)
     {
         let keys = Object.keys(game.wfrp4e.config.rangeBands)
-        let rangeKey = game.wfrp4e.utility.findKey(range, game.wfrp4e.config.rangeBands)
+        let rangeKey = warhammer.utility.findKey(range, game.wfrp4e.config.rangeBands)
         let weaponRange = this.parent.getFlag("wfrp4e", "optimalRange")
         if (!weaponRange || !rangeKey)
             return 1

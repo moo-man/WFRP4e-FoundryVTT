@@ -12,5 +12,16 @@ export class WFRP4eAvoidTestModel extends AvoidTestModel {
 }
 
 export class WFRP4eActiveEffectModel extends WarhammerActiveEffectModel {
+
+    static defineSchema() {
+        let schema = super.defineSchema();
+        schema.condition = new fields.SchemaField({
+            value : new fields.NumberField({nullable : true}),
+            numbered : new fields.BooleanField({initial: false})
+        })
+
+        return schema;
+    }
+
     static _avoidTestModel = WFRP4eAvoidTestModel;
 }

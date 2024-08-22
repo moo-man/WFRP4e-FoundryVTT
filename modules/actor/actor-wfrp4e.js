@@ -1108,17 +1108,20 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (existing && !existing.isNumberedCondition)
       return existing
-    else if (existing) {
+    else if (existing) 
+    {
       existing._displayScrollingStatus(true)
-      return existing.setFlag("wfrp4e", "value", existing.conditionValue + value)
+      return existing.update({"system.condition.value" : existing.conditionValue + value})
     }
     else if (!existing) {
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
-        effect.flags.wfrp4e.roundReceived = game.combat.round
+      {
+        foundry.utils.setProperty(effect, "flags.wfrp4e.roundReceived", game.combat.round);
+      }
       effect.name = game.i18n.localize(effect.name);
 
-      if (Number.isNumeric(effect.flags.wfrp4e.value))
-        effect.flags.wfrp4e.value = value;
+      if (effect.system.condition.numbered)
+        effect.system.condition.value = value;
         
       effect["statuses"] = [effect.id];
       if (effect.id == "dead")
@@ -1128,7 +1131,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
       foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
 
-      if (Number.isNumeric(effect.flags.wfrp4e.value))
+      if (effect.system.condition.numbered)
       {
         setProperty(effect, "flags.core.overlay", false); // Don't let numeric conditions be overlay
       }
@@ -1164,7 +1167,7 @@ export default class ActorWFRP4e extends WarhammerActor
       return existing.delete();
     }
     else if (existing) {
-      await existing.setFlag("wfrp4e", "value", existing.conditionValue - value);
+      await existing.update({"system.condition.value" : existing.conditionValue - value});
       if (existing.conditionValue) // Only display if there's still a condition value (if it's 0, already handled by effect deletion)
         existing._displayScrollingStatus(false);
       //                                                                                                                   Only add fatigued after stunned if not already fatigued

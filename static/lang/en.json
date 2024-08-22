@@ -832,7 +832,7 @@
     "CHAT.InfectionReminder" : "These actors have received Critical Wounds and needs to succeed a <b>Very Easy (+60) Endurance Test</b> or gain a @UUID[Compendium.wfrp4e-core.items.1hQuVFZt9QnnbWzg]{Minor Infection}.",
     "CHAT.DiseaseIncubation" : "{disease} incubation finished.",
     "CHAT.DiseaseDuration" : " Duration of {duration} {unit} has begun.",
-    "CHAT.DiseaseDurationError" : " Error ocurred when rolling for duration.",
+    "CHAT.DiseaseRollError" : "Error ocurred when rolling for disease incubation or duration.",
     "CHAT.DiseaseFinish" : "{disease} duration finished.",
     "CHAT.LingeringExtended" : "  Lingering: Duration extended by {roll} days.",
     "CHAT.LingeringFestering" : " Lingering: developed a Festering Wound.",

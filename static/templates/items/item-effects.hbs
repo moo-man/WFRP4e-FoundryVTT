@@ -11,15 +11,15 @@
           {{/if}}
         </a>
         <div class="condition-controls">
-          {{#if condition.boolean}}
-            {{#if condition.existing}}
-              <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
-            {{else}}
-              <a class="condition-toggle"><i class="far fa-circle"></i></a>
-            {{/if}}
+        {{#unless condition.isNumberedCondition}}
+          {{#if condition.existing}}
+          <a class="condition-toggle"><i class="far fa-check-circle"></i></a>
           {{else}}
-            <a class="condition-value">{{condition.conditionValue}}</a>
+          <a class="condition-toggle"><i class="far fa-circle"></i></a>
           {{/if}}
+        {{else}}
+        <a class="condition-value">{{condition.conditionValue}}</a>
+        {{/unless}}
         </div>
       </div>
     {{/each}}

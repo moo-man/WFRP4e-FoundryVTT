@@ -196,24 +196,30 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
     return effects;
   }
 
-  addConditionData(data) {
-    data.conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new ActiveEffectWFRP4e(e));
-    delete data.conditions.splice(data.conditions.length - 1, 1)
-    for (let condition of data.conditions) {
-      let existing = this.item.effects.find(e => e.conditionId == condition.conditionId)
-      if (existing) {
-        condition.value = existing.flags.wfrp4e.value
-        condition.flags.wfrp4e.value = existing.conditionValue;
+  addConditionData(sheetData) {
+    try {
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new ActiveEffectWFRP4e(e));
+      let currentConditions = this.item.effects.filter(e => e.isCondition);
+      delete conditions.splice(conditions.length - 1, 1)
+      
+      for (let condition of conditions) {
+        let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
+        if (owned) {
+          condition.existing = true
+          condition.system.condition.value = owned.conditionValue;
+        }
+        else if (condition.isNumberedCondition) {
+          condition.system.condition.value = 0
+        }
       }
-      else if (condition.isNumberedCondition) {
-        condition.flags.wfrp4e.value = 0
-      }
-
-      if (condition.flags.wfrp4e.value == null)
-        condition.boolean = true;
-
+      sheetData.conditions = conditions
+    }
+    catch (e)
+    {
+      ui.notifications.error("Error Adding Condition Data: " + e)
     }
   }
+
 
     /** @inheritdoc */
     _onDragStart(event) {
@@ -378,45 +384,8 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
     }
   }
 
-  async _onSymptomChange(event) {
-    // Alright get ready for some shit
-
-    // Get all symptoms user inputted
-    let symptoms = event.target.value.split(",").map(i => i.trim());
-
-    // Extract just the name (with no severity)
-    let symtomNames = symptoms.map(s => {
-      if (s.includes("("))
-        return s.substring(0, s.indexOf("(") - 1)
-      else return s
-    })
-
-    // take those names and lookup the associated symptom key
-    let symptomKeys = symtomNames.map(s => game.wfrp4e.utility.findKey(s, game.wfrp4e.config.symptoms))
-
-    // Remove anything not found
-    symptomKeys = symptomKeys.filter(s => !!s)
-
-    // Map those symptom keys into effects, renaming the effects to the user input
-    let symptomEffects = symptomKeys.map((s, i) => {
-      if (game.wfrp4e.config.symptomEffects[s]) {
-        let effect = foundry.utils.duplicate(game.wfrp4e.config.symptomEffects[s])
-        effect.name = symptoms[i];
-        return effect
-
-      }
-    }).filter(i => !!i)
-
-    // Remove all previous symptoms from the item
-    let effects = this.item.effects.map(i => i.toObject()).filter(e => foundry.utils.getProperty(e, "flags.wfrp4e.symptom"))
-
-    // Delete previous symptoms
-    await this.item.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i._id))
-
-    // Add symptoms from input
-    await this.item.createEmbeddedDocuments("ActiveEffect", symptomEffects)
-
-    this.item.update({ "system.symptoms.value": symptoms.join(", ") })
+  _onSymptomChange(event) {
+    return this.item.system.updateSymptoms(event.target.value)
   } 
   
   _onConditionClick(ev) {
@@ -427,21 +396,19 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
       this.item.removeCondition(condKey)
   }
 
-  _onConditionToggle(ev) {
+  async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-
-    if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
+    if (!game.wfrp4e.config.statusEffects.find(e => e.id == condKey).system.condition.numbered) {
       if (this.item.hasCondition(condKey))
-        this.item.removeCondition(condKey)
-      else
-        this.item.addCondition(condKey)
+        await this.item.removeCondition(condKey)
+      else 
+        await this.item.addCondition(condKey)
       return
     }
-
     if (ev.button == 0)
-      this.item.addCondition(condKey)
+      await this.item.addCondition(condKey)
     else if (ev.button == 2)
-      this.item.removeCondition(condKey)
+      await this.item.removeCondition(condKey)
   }
 
   async _onClickHeaderLink(ev)
