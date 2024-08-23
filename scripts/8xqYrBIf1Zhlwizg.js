@@ -26,9 +26,8 @@ const extendedTestData = {
     {
       name: `Repair the ${this.item.name}`,
       icon: this.item.img,
-      flags: {
-        wfrp4e: {
-          applicationData: {
+      system: {
+        transferData : {
             type: "document",
             documentType: "Item"
           },
@@ -45,7 +44,6 @@ const extendedTestData = {
             }
           ]
         }
-      }
       }
   ]
 };
