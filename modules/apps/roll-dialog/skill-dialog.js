@@ -39,8 +39,20 @@ export default class SkillDialog extends CharacteristicDialog {
         {
             options.dodge = true;
         }
-        data.characteristic = skill.characteristic.key;
+
         data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
+        data.characteristic = skill.characteristic.key;
+
+        if (skill.id == "unknown" && !data.characteristic)
+        {
+            let compendiumSkill = await game.wfrp4e.utility.findSkill(skill.name);
+            if (compendiumSkill)
+            {
+                data.characteristic = compendiumSkill.characteristic.value;
+            }
+        }
+
+            
 
         if (data.skill.id != "unknown")
         {

@@ -436,7 +436,7 @@ export class StandardActorModel extends BaseActorModel {
     {
         if (this.vehicle)
         {
-            return super.getOtherEffects().concat(this.system.vehicle.system.crewEffects)
+            return super.getOtherEffects().concat(this.vehicle.system.crewEffects)
         }
         else return [];
     }
