@@ -1,4 +1,4 @@
-import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
@@ -201,7 +201,7 @@ export default function() {
       }
 
       // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
-      MarketWfrp4e.testForAvailability({ settlement, rarity, modifier });
+      MarketWFRP4e.testForAvailability({ settlement, rarity, modifier });
       return false;
     }
     // Pay commands
@@ -212,7 +212,7 @@ export default function() {
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
-        let money = MarketWfrp4e.payCommand(amount, actor);
+        let money = MarketWFRP4e.payCommand(amount, actor);
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
       } else {
@@ -223,13 +223,13 @@ export default function() {
             if (actor.hasPlayerOwner && p ) { 
                 playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
               } else {
-                MarketWfrp4e.directPayCommand(amount,actor); // No player/Not active -> substract money
+                MarketWFRP4e.directPayCommand(amount,actor); // No player/Not active -> substract money
                 return false;
               }
           }
         }
         // Default choice, display chat card
-        MarketWfrp4e.generatePayCard(amount, playerOrActor);
+        MarketWFRP4e.generatePayCard(amount, playerOrActor);
       }
       return false;
     }
@@ -241,7 +241,7 @@ export default function() {
 
       // If hes a gm, it generate a "Credit" card for all the player.
       if (game.user.isGM) {
-        MarketWfrp4e.processCredit(amount, playerOrActorOrCommand);
+        MarketWFRP4e.processCredit(amount, playerOrActorOrCommand);
       } else {
         //If the user isnt a GM, he can't use the command (for now)
         message = `<p>${game.i18n.localize("MARKET.CreditCommandNotAllowed")}</p>`;

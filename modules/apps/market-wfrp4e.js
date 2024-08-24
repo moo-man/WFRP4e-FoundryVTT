@@ -5,7 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * WIP
  * This class contains functions and helpers related to the market and Pay system
  */
-export default class MarketWfrp4e {
+export default class MarketWFRP4e {
   /**
    * Roll a test for the availability and the stock quantity of an item based on the rulebook
    * Takes as a parameter an object with localized settlement type, localized rarity and a modifier for the roll
@@ -532,5 +532,47 @@ export default class MarketWfrp4e {
         ChatMessage.create(chatData);
       })
     }
+  }
+
+
+
+
+  static async rollIncome(career, {standing, tier}={}) {
+    standing = standing || career.system.status.standing
+    tier = tier || career.system.status.tier
+
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let earned;
+    if (tier != "g") // Don't roll for gold, just use standing value
+    {
+      dieAmount = dieAmount + "d10";
+      earned = (await new Roll(dieAmount).roll()).total;
+    }
+    else
+      earned = dieAmount;
+
+      let item;
+      if (tier == "g")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.GC"), "money")
+      }
+      else if (tier == "s")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.SS"), "money")
+      }
+      else if (tier == "b")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.BP"), "money")
+      }
+
+      item = item?.toObject();
+
+      if (item)
+      {
+        item.system.quantity.value = earned;
+      }
+
+      return {earned, type : tier, item}
   }
 }

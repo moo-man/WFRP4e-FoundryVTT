@@ -10,7 +10,7 @@ import ActorWFRP4e from "./modules/actor/actor-wfrp4e.js";
 import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
 import registerHooks from "./modules/system/hooks.js"
 import CharGenWfrp4e from "./modules/apps/chargen/char-gen.js"
-import MarketWfrp4e from "./modules/apps/market-wfrp4e.js";
+import MarketWFRP4e from "./modules/apps/market-wfrp4e.js";
 import NameGenWfrp from "./modules/apps/name-gen.js";
 import StatBlockParser from "./modules/apps/stat-parser.js";
 import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
@@ -168,7 +168,7 @@ Hooks.once("init", function () {
     tables: WFRP_Tables,
     config: WFRP4E,
     chat: ChatWFRP,
-    market: MarketWfrp4e,
+    market: MarketWFRP4e,
     audio: WFRP_Audio,
     names: NameGenWfrp,
     migration: Migration,

@@ -1,4 +1,4 @@
-import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
@@ -723,7 +723,7 @@ export default class WFRP_Utility {
   static handlePayClick(event) {
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
-      MarketWfrp4e.generatePayCard(payString);
+      MarketWFRP4e.generatePayCard(payString);
   }
 
   static handleCreditClick(event) {
@@ -731,7 +731,7 @@ export default class WFRP_Utility {
     let amt = creditString.split(" ")[0]
     let option = creditString.split(" ")[1]
     if (game.user.isGM)
-      MarketWfrp4e.processCredit(amt, option);
+      MarketWFRP4e.processCredit(amt, option);
 
   }
 

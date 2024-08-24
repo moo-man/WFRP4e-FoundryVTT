@@ -1,4 +1,4 @@
-import MarketWfrp4e from "../../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
@@ -1543,7 +1543,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   _onMoneyIconClicked(ev) {
     ev.preventDefault();
     let money = this.actor.getItemTypes("money");
-    let newMoney = MarketWfrp4e.consolidateMoney(money.map(i => i.toObject()));
+    let newMoney = MarketWFRP4e.consolidateMoney(money.map(i => i.toObject()));
     return this.actor.updateEmbeddedDocuments("Item", newMoney)
   }
 

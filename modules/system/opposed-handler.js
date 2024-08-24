@@ -202,7 +202,7 @@ export default class OpposedHandler {
       await this.message.update(updateData)
     }
     else if (this.message) {
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData });
+      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData });
     }
   }
 
@@ -271,7 +271,7 @@ export default class OpposedHandler {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData: {content} });
+        await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData: {content} });
       else
         await this.message.update({content});
     }
@@ -288,7 +288,7 @@ export default class OpposedHandler {
         scene: canvas.scene.id,
         opposeFlag: { opposeMessageId: this.data.messageId }
       }
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "target", payload);
+      await SocketHandlers.executeOnUserAndWait("GM", "target", payload);
     }
     else {
       // Add oppose data flag to the target
@@ -365,6 +365,6 @@ export default class OpposedHandler {
       content: msg.html()
     }
     
-    await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: messageId, updateData: newCard });
+    await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: messageId, updateData: newCard });
   }
 }

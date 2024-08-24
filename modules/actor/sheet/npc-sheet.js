@@ -1,7 +1,7 @@
 
 import ActorSheetWFRP4e from "./actor-sheet.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import MarketWfrp4e from "../../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../../apps/market-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js";
 
 /**
@@ -61,30 +61,23 @@ export default class ActorSheetWFRP4eNPC extends ActorSheetWFRP4e {
   //TODO Review with status changes
   async _onNpcIncomeClick(event) {
     let status = this.actor.details.status.value.split(" ");
-    let dieAmount = game.wfrp4e.config.earningValues[warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)][0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = Number(dieAmount) * status[1];     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
-    let moneyEarned;
-    if (warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers) != "g") // Don't roll for gold, just use standing value
-    {
-      dieAmount = dieAmount + "d10";
-      moneyEarned = (await new Roll(dieAmount).roll()).total;
-    }
-    else
-      moneyEarned = dieAmount;
+    let tier = warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)[0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    let standing = Number(status[1]);     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let {earned} = await game.wfrp4e.market.rollIncome(null, {standing, tier});
 
     let paystring
-    switch (warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)) {
+    switch (tier) {
       case "b":
-        paystring = `${moneyEarned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
+        paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
         break;
       case "s":
-        paystring = `${moneyEarned}${game.i18n.localize("MARKET.Abbrev.SS").toLowerCase()}.`
+        paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.SS").toLowerCase()}.`
         break;
       case "g":
-        paystring = `${moneyEarned}${game.i18n.localize("MARKET.Abbrev.GC").toLowerCase()}.`
+        paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.GC").toLowerCase()}.`
         break;
     }
-    let money = MarketWfrp4e.creditCommand(paystring, this.actor, { suppressMessage: true })
+    let money = MarketWFRP4e.creditCommand(paystring, this.actor, { suppressMessage: true })
     WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
     this.actor.updateEmbeddedDocuments("Item", money);
   }

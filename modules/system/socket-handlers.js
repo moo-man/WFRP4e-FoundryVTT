@@ -123,7 +123,7 @@ export default function () {
                 payload.socketMessageId = msg.id;
                 SocketHandlers.call(type, payload, userId);
                 do {
-                    await game.wfrp4e.utility.sleep(250);
+                    await warhammer.utility.sleep(250);
                     msg = game.messages.get(msg.id);
                     result = msg?.getFlag("wfrp4e", "socketResult");
                 } while (msg && !result);

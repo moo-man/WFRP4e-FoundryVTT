@@ -6,7 +6,7 @@
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
 
-import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
@@ -325,7 +325,7 @@ export default class ChatWFRP {
     // data-button tells us what button was clicked
     switch ($(event.currentTarget).attr("data-button")) {
       case "rollAvailability":
-        MarketWfrp4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
+        MarketWFRP4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
         break;
       case "payItem":
         if (!game.user.isGM) {
@@ -334,7 +334,7 @@ export default class ChatWFRP {
           if (msg.flags.transfer)
             itemData = JSON.parse(msg.flags.transfer).payload
           if (actor) {
-            let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+            let money = MarketWFRP4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
               actor.updateEmbeddedDocuments("Item", money);
@@ -355,7 +355,7 @@ export default class ChatWFRP {
           let actor = game.user.character;
           if (actor) {
             let dataExchange = $(event.currentTarget).attr("data-amount");
-            let money = MarketWfrp4e.creditCommand(dataExchange, actor);
+            let money = MarketWFRP4e.creditCommand(dataExchange, actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
               actor.updateEmbeddedDocuments("Item", money);
@@ -388,7 +388,7 @@ export default class ChatWFRP {
           rarity: $(event.currentTarget).attr("data-rarity").toLowerCase(),
           modifier: 0
         };
-        MarketWfrp4e.testForAvailability(options);
+        MarketWFRP4e.testForAvailability(options);
         break;
     }
   }
@@ -405,15 +405,15 @@ export default class ChatWFRP {
     else
       originalPayString = msg.getFlag("wfrp4e", "originalPrice")
 
-    let originalAmount = MarketWfrp4e.parseMoneyTransactionString(originalPayString)
-    let currentAmount = MarketWfrp4e.parseMoneyTransactionString(payString)
+    let originalAmount = MarketWFRP4e.parseMoneyTransactionString(originalPayString)
+    let currentAmount = MarketWFRP4e.parseMoneyTransactionString(payString)
 
     let originalBPAmount = originalAmount.gc * 240 + originalAmount.ss * 12 + originalAmount.bp
     let bpAmount = currentAmount.gc * 240 + currentAmount.ss * 12 + currentAmount.bp
     bpAmount += Math.round((originalBPAmount * .1)) * multiplier
 
-    let newAmount = MarketWfrp4e.makeSomeChange(bpAmount, 0)
-    let newPayString = MarketWfrp4e.amountToString(newAmount)
+    let newAmount = MarketWFRP4e.makeSomeChange(bpAmount, 0)
+    let newPayString = MarketWFRP4e.amountToString(newAmount)
     html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
     let newContent = html.find(".message-content").html()
     newContent = newContent.replace(`${currentAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${currentAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${currentAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`, `${newAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${newAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${newAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`)
@@ -549,7 +549,7 @@ export default class ChatWFRP {
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
+      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
   }
 
   static async _onPlaceAreaEffect(event) {

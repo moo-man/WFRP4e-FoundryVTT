@@ -667,6 +667,7 @@
     "CHARGEN.Trappings.DragDrop" : "Drag and drop any other trappings",
     "CHARGEN.Trappings.Keep" : "Keep",
     "CHARGEN.Trappings.Remove" : "Remove",
+    "CHARGEN.Trappings.RollIncome" : "Roll Income",
 
     "CHARGEN.Details.ShortTermAmbitions" : "Short Term Ambition",
     "CHARGEN.Details.LongTermAmbitions" : "Long Term Ambition",
@@ -685,6 +686,7 @@
     "CHARGEN.Message.AllocateCharacteristics" : "<p>Started Allocating Characteristics</p>",
     "CHARGEN.Message.Created" : "<p><b>{name}</b> created!",
     "CHARGEN.Message.ReplacedTalent" : "<p>Replaced <b>{talent}</b> with <b>{replacement}</b>!</p>",
+    "CHARGEN.Message.Income" : "<p><b>Income:</b> {quantity} {name}</p>",
 
     "CHARGEN.NoGMWarning" : "In order to create a character either a GM must be logged in or players be given the 'Create New Actors' Permission",
     "CHARGEN.UseExistingData" : "Use Existing Data",

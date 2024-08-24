@@ -546,20 +546,11 @@ export default class TestWFRP {
     let { standing, tier } = this.options.income
     let result = this.result;
 
-    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
-    let moneyEarned;
-    if (tier != "g") // Don't roll for gold, just use standing value
-    {
-      dieAmount = dieAmount + "d10";
-      moneyEarned = (await new Roll(dieAmount).roll()).total;
-    }
-    else
-      moneyEarned = dieAmount;
+    let {earned} = await game.wfrp4e.market.rollIncome(null, {standing, tier})
 
     // After rolling, determined how much, if any, was actually earned
     if (result.outcome == "success") {
-      this.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      this.result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + earned;
       switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
@@ -568,7 +559,7 @@ export default class TestWFRP {
           result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
           break;
         case "g":
-          if (moneyEarned == 1)
+          if (earned == 1)
             result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
           else
             result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
@@ -576,8 +567,8 @@ export default class TestWFRP {
       }
     }
     else if (Number(result.SL) > -6) {
-      moneyEarned /= 2;
-      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + moneyEarned;
+      earned /= 2;
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + earned;
       switch (tier) {
         case "b":
           result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
@@ -586,7 +577,7 @@ export default class TestWFRP {
           result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
           break;
         case "g":
-          if (moneyEarned == 1)
+          if (earned == 1)
             result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
           else
             result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
@@ -595,11 +586,11 @@ export default class TestWFRP {
     }
     else {
       result.incomeResult = game.i18n.localize("INCOME.Failure")
-      moneyEarned = 0;
+      earned = 0;
     }
     // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
-    result.moneyEarned = moneyEarned + tier;
+    result.earned = earned + tier;
   }
 
 
@@ -855,7 +846,7 @@ export default class TestWFRP {
         await this.message.update(messageData)
       }
       else {
-        await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : messageData });
+        await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : messageData });
       }
       await this.updateMessageData()
     }
@@ -870,7 +861,7 @@ export default class TestWFRP {
       await this.message.update(update)
 
     else if (this.message) {
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : update });
+      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : update });
     }
   }
 
