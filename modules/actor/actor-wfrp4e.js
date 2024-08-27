@@ -8,8 +8,6 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import ActiveEffectWFRP4e from "../system/effect-wfrp4e.js";
-import ItemWfrp4e from "../item/item-wfrp4e.js";
-import {EquippableItemModel} from "../model/item/components/equippable.js";
 
 /**
  * Provides the main Actor data computation and organization.

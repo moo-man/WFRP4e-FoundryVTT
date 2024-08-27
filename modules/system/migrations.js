@@ -614,7 +614,7 @@ static _migrateEffectFlags(effect)
     let update = {};
     if (Number.isNumeric(conditionValue))
     {
-      foundry.utils.setProperty("system.condition.value", conditionValue);
+      foundry.utils.setProperty(update, "system.condition.value", conditionValue);
     }
     if (isEmpty(applicationData) && scriptData.length == 0)
     {
@@ -625,7 +625,6 @@ static _migrateEffectFlags(effect)
         transferData: {
             type : applicationData.type,
             documentType : applicationData.documentType,
-            avoidTest : applicationData.avoidTest,
             avoidTest : applicationData.avoidTest,
             testIndependent : applicationData.testIndependent,
             preApplyScript : applicationData.preApplyScript,
@@ -655,6 +654,10 @@ static _migrateEffectFlags(effect)
     }
 
     system.scriptData.forEach(script => {
+      if (typeof script == "string")
+      {
+        script = {script : script};
+      }
       if (!script.options)
       {
         script.options = {};

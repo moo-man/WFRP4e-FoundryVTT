@@ -1630,24 +1630,25 @@ WFRP4E.PrepareSystemItems = function() {
                 wfrp4e: {
                     blackpowder: true,
                 },
-                system: {
-                    transferData: {},
-                    scriptData: [
-                        {
-                            label: "@effect.name",
-                            trigger: "immediate",
-                            script: `
-                                test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
-                                await test.roll();
-                                if (test.failed)
-                                {
-                                    this.actor.addCondition("broken");
-                                }
-                                return false;
-                            `
-                        }
-                    ]
-                }
+            },
+
+            system: {
+                transferData: {},
+                scriptData: [
+                    {
+                        label: "@effect.name",
+                        trigger: "immediate",
+                        script: `
+                            test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                            await test.roll();
+                            if (test.failed)
+                            {
+                                this.actor.addCondition("broken");
+                            }
+                            return false;
+                        `
+                    }
+                ]
             }
         },
         "infighting": {

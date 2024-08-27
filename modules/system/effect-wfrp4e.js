@@ -252,25 +252,25 @@ function _migrateEffect(data, context)
     switch(flags.effectApplication)
     {
         case "actor":
-            flags.system.transferData.type = "document";                
-            flags.system.transferData.documentType = "Actor";                
+            flags.applicationData.type = "document";                
+            flags.applicationData.documentType = "Actor";                
             flags.applicationData.equipTransfer = false;
             break;
         case "item":
-            flags.system.transferData.type = "document";                
-            flags.system.transferData.documentType = "Item";                
+            flags.applicationData.type = "document";                
+            flags.applicationData.documentType = "Item";                
             break;
         case "equipped":
-            flags.system.transferData.type = "document";                
-            flags.system.transferData.documentType = "Actor";  
+            flags.applicationData.type = "document";                
+            flags.applicationData.documentType = "Actor";  
             flags.applicationData.equipTransfer = true;
             break;
         case "apply" : 
-            flags.system.transferData.type = "target";                
+            flags.applicationData.type = "target";                
             break;
         case "damage" : 
-            flags.system.transferData.type = "document"; // Not sure about this
-            flags.system.transferData.documentType = "Item";
+            flags.applicationData.type = "document"; // Not sure about this
+            flags.applicationData.documentType = "Item";
             break;
     }
 
