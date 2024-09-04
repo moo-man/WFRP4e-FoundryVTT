@@ -373,7 +373,11 @@ export default class CharGenWfrp4e extends FormApplication {
 
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
+        // Must create items separately so preCreate scripts run
+        let actorItems = this.actor.items;
+        this.actor.items = [];
         let document = await Actor.create(this.actor);
+        await document.createEmbeddedDocuments("Item", actorItems)
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }
@@ -382,6 +386,7 @@ export default class CharGenWfrp4e extends FormApplication {
         let tempActor = await Actor.create(this.actor, {temporary: true})
         for(let i of tempActor.items.contents)
         {
+          // Run preCreate scripts
           await i._preCreate(i._source, {}, game.user.id);
         }
         const payload =  {id : game.user.id, data : tempActor.toObject()}

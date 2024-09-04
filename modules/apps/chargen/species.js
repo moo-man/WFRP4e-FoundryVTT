@@ -99,10 +99,13 @@ export class SpeciesStage extends ChargenStage {
       data.preview.randomTalents = talents;
     }
 
-    data.extraSpecies = game.wfrp4e.config.extraSpecies.reduce((extra, species) => {
-      extra[species] = game.wfrp4e.config.species[species];
-      return extra;
-    }, {})
+    if (game.wfrp4e.config.extraSpecies.length)
+    {
+      data.extraSpecies = game.wfrp4e.config.extraSpecies.reduce((extra, species) => {
+        extra[species] = game.wfrp4e.config.species[species];
+        return extra;
+      }, {})
+    }
 
     return data;
   }
