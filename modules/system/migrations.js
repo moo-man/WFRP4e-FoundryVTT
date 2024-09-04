@@ -621,6 +621,16 @@ static _migrateEffectFlags(effect)
       return update;
     }
 
+    let selfOnly = false;
+    if (effect.item &&
+    effect.item.range && 
+    effect.item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
+    effect.item.target && 
+    effect.item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+    {
+      selfOnly = true;
+    }
+
     let system = {
         transferData: {
             type : applicationData.type,
@@ -631,6 +641,7 @@ static _migrateEffectFlags(effect)
             equipTransfer : applicationData.equipTransfer,
             filter : applicationData.filter,
             prompt : applicationData.prompt,
+            selfOnly,
             area: {
               radius : applicationData.radius,
               templateData : applicationData.templateData,

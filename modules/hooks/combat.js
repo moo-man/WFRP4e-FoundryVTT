@@ -2,10 +2,6 @@ import CombatHelpersWFRP from "../system/combat.js"
 import WFRP_Utility from "../system/utility-wfrp4e.js"
 
 export default function() {
-  Hooks.on("updateCombat", CombatHelpersWFRP.updateCombat);
-  Hooks.on("updateCombat", CombatHelpersWFRP.updateCombatStart);
-  Hooks.on("preUpdateCombat", CombatHelpersWFRP.preUpdateCombat);
-  Hooks.on("deleteCombat", CombatHelpersWFRP.endCombat);
 
 
   Hooks.on("preCreateCombatant", (combatant, data) => {

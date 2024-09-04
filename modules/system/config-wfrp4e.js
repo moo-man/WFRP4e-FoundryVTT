@@ -1329,10 +1329,8 @@ WFRP4E.PrepareSystemItems = function() {
                             trigger: "dialog",
                             script: `args.fields.slBonus -= 1`,
                             options: {
-                                dialog: {
                                     hideScript: "",
                                     activateScript: `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
-                                }
                             }
                         },
                         {
@@ -1695,13 +1693,11 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "dialog",
                         script: `args.prefillModifiers.modifier += 20`,
                         options: {
-                            dialog: {
-                                hideScript: "return !this.actor.isOpposing",
-                                activateScript: `
-                                        let skillName = this.effect.name.substring(this.effect.name.indexOf("[") + 1, this.effect.name.indexOf("]"))
-                                        return args.skill?.name == skillName
-                                    `
-                            }
+                            hideScript: "return !this.actor.isOpposing",
+                            activateScript: `
+                                    let skillName = this.effect.name.substring(this.effect.name.indexOf("[") + 1, this.effect.name.indexOf("]"))
+                                    return args.skill?.name == skillName
+                                `
                         }
                     },
                     {
@@ -1727,11 +1723,14 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "dialog",
                         script: `args.prefillModifiers.modifier -= 10`,
                         options: {
-                            dialog: {
-                                hideScript: "return !this.actor.isOpposing",
-                                activateScript: `return this.actor.isOpposing`
-                            }
+                            hideScript: "return !this.actor.isOpposing",
+                            activateScript: `return this.actor.isOpposing`
                         }
+                    },
+                    {
+                        label: "Start Turn",
+                        trigger: "startTurn",
+                        script: `this.effect.delete()`,
                     }
                 ]
             }
@@ -1776,7 +1775,7 @@ WFRP4E.PrepareSystemItems = function() {
             name: game.i18n.localize("EFFECT.MarienburghersCourage"),
             icon: "",
             statuses: ["stinkingdrunk1"],
-            wfrp4e: {
+            system: {
                 transferData: {},
                 scriptData: [
                     {
@@ -1784,10 +1783,8 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "dialog",
                         script: `args.prefillModifiers.modifier += 20`,
                         options: {
-                            dialog: {
-                                hideScript: "return args.skill?.name != game.i18n.localize('NAME.Cool')",
-                                activateScript: `return args.skill?.name == game.i18n.localize('NAME.Cool')`
-                            }
+                            hideScript: "return args.skill?.name != game.i18n.localize('NAME.Cool')",
+                            activateScript: `return args.skill?.name == game.i18n.localize('NAME.Cool')`
                         }
                     }
                 ]
@@ -1804,10 +1801,8 @@ WFRP4E.PrepareSystemItems = function() {
             system: {
                 condition : {
                     value : 1,
-                    numbered: true
-                },
-                transferData: {
-                    conditionTrigger: "endRound"
+                    numbered: true,
+                    trigger: "endRound"
                 },
                 scriptData: [
                     {
@@ -1877,10 +1872,8 @@ WFRP4E.PrepareSystemItems = function() {
             system: {
                 condition : {
                     value : 1,
-                    numbered: true
-                },
-                transferData: {
-                    conditionTrigger: "endRound"
+                    numbered: true,
+                    trigger: "endRound"
                 },
                 scriptData: [
                     {
@@ -1915,9 +1908,7 @@ WFRP4E.PrepareSystemItems = function() {
                         label: "@effect.name",
                         script: `args.fields.modifier -= 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
                                 activateScript: "return true"
-                            }
                         }
                     }
                 ]
@@ -1932,10 +1923,8 @@ WFRP4E.PrepareSystemItems = function() {
             system: {
                 condition : {
                     value : 1,
-                    numbered: true
-                },
-                transferData: {
-                    conditionTrigger: "endRound"
+                    numbered: true,
+                    trigger: "endRound"
                 },
                 scriptData: [
                     {
@@ -1992,7 +1981,6 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
@@ -2012,16 +2000,13 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
                         label: "Penalty to all Tests (@effect.name)",
                         script: `args.fields.modifier -= 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
-                                activateScript: "return true"
-                            }
+                            activateScript: "return true"
                         }
                     }
                     // { // Not sure what to do about this
@@ -2043,16 +2028,13 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
                         label: "Tests related to movement of any kind",
                         script: `args.fields.modifier -= 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
                                 activateScript: "return ['ws', 'bs', 'ag'].includes(args.characteristic)"
-                            }
                         }
                     }
                 ]
@@ -2068,16 +2050,13 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
                         label: "Penalty to all Tests (@effect.name)",
                         script: `args.fields.modifier -= 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
                                 activateScript: "return true"
-                            }
                         }
                     }
                 ]
@@ -2093,16 +2072,13 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
                         label: "Tests related to sight",
                         script: `args.fields.modifier -= 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
                                 activateScript: "return ['ws', 'bs', 'ag'].includes(args.characteristic)"
-                            }
                         }
                     },
                     {
@@ -2110,11 +2086,9 @@ WFRP4E.PrepareSystemItems = function() {
                         label: "Bonus to melee attacks",
                         script: `args.fields.modifier += 10 * this.effect.conditionValue`,
                         options: {
-                            dialog: {
                                 targeter: true,
                                 hideScript: "return args.item?.attackType != 'melee'",
                                 activateScript: "return args.item?.attackType == 'melee'"
-                            }
                         }
                     }
                 ]
@@ -2130,7 +2104,6 @@ WFRP4E.PrepareSystemItems = function() {
                     value : 1,
                     numbered: true
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
@@ -2153,16 +2126,13 @@ WFRP4E.PrepareSystemItems = function() {
                     value : null,
                     numbered: false
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
                         label: "Tests related to movement of any kind",
                         script: `args.fields.modifier -= 20`,
                         options: {
-                            dialog: {
                                 activateScript: "return ['ws', 'bs', 'ag'].includes(args.characteristic)"
-                            }
                         }
                     },
                     {
@@ -2188,7 +2158,6 @@ WFRP4E.PrepareSystemItems = function() {
                     value : null,
                     numbered: false
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
@@ -2237,7 +2206,6 @@ WFRP4E.PrepareSystemItems = function() {
                     value : null,
                     numbered: false
                 },
-                transferData: {},
                 scriptData: [
                     {
                         trigger: "dialog",
@@ -2245,10 +2213,8 @@ WFRP4E.PrepareSystemItems = function() {
                         script: `args.abort = true
                         ui.notifications.error(game.i18n.localize("EFFECT.ShooterEngagedError"))`,
                         options: {
-                            dialog: {
                                 hideScript: "return !args.weapon || args.weapon.isMelee || args.weapon.properties.qualities.pistol",
                                 activateScript: "return args.weapon.isRanged && !args.weapon.properties.qualities.pistol"
-                            }
                         }
                     }
                 ]
@@ -2333,10 +2299,14 @@ WFRP4E.scriptTriggers = {
     "getInitiativeFormula" : "Get Initiative",
     "createToken" : "Create Token",
     "deleteEffect" : "Effect Deleted",
-    "endTurn" : "End Turn",
+    "startCombat"  : "WH.Trigger.StartCombat",
+    "startRound" : "WH.Trigger.StartRound",
     "startTurn" : "Start Turn",
+    "updateCombat"  : "WH.Trigger.UpdateCombat",
+    "endTurn" : "End Turn",
     "endRound" : "End Round",
-    "endCombat" : "End Combat"
+    "endCombat" : "End Combat",
+
 }
 
 WFRP4E.syncTriggers = [

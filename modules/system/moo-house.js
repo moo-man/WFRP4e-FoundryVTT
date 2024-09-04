@@ -41,8 +41,8 @@ export default function () {
   if (game.settings.get("wfrp4e", "mooConditionTriggers"))
   {
     config.statusEffects.forEach(e => {
-      if (e.applicationData?.conditionTrigger == "endRound")
-        e.applicationData.conditionTrigger = "endTurn"
+      if (e.system.condition.trigger == "endRound")
+        e.system.condition.trigger = "endTurn"
     })
 
     config.conditionDescriptions.bleeding = config.conditionDescriptions.bleeding.replace("Round", "Turn")

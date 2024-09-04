@@ -67,7 +67,7 @@ export default function () {
       //Once per roll (or at least, not on a reroll card)
       //Test must be failed 
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
 
     };
@@ -78,7 +78,7 @@ export default function () {
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL 
     };
     let canApplyDarkDeals = function (li) {
@@ -86,7 +86,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.type == "character"
     };
 
@@ -95,7 +95,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && game.user.isGM
     };
 
@@ -104,7 +104,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner
     };
 
@@ -113,7 +113,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return game.user.isGM && test && test.opposedMessages.length >= 2
     };
 
@@ -122,7 +122,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.getOppose()?.resultMessage)
     };
 
@@ -131,7 +131,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return (message.isOwner || message.isAuthor) && test && test instanceof CastTest && test.result.critical && game.settings.get("wfrp4e", "useWoMOvercast") && !test.result.totalPower
     };
 

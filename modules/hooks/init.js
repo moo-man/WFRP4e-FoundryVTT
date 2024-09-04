@@ -217,17 +217,6 @@ export default function() {
       type: Boolean
     });
 
-    // Register Status on Turn Start
-    game.settings.register("wfrp4e", "statusOnTurnStart", {
-      name: "SETTINGS.StatusTurnStart",
-      hint: "SETTINGS.StatusTurnStartHint",
-      scope: "world",
-      config: true,
-      default: true,
-      type: Boolean
-    });
-
-
     // Register Focus on Turn Start
     game.settings.register("wfrp4e", "focusOnTurnStart", {
       name: "SETTINGS.FocusTurnStart",

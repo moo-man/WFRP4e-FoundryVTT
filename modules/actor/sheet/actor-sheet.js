@@ -675,8 +675,6 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     html.on('click', '.open-vehicle', this._onVehicleClick.bind(this));
     html.on('click', '.remove-vehicle', this._onVehicleRemove.bind(this));
     html.on('click', '.aspect-use', this._onAspectClick.bind(this))
-    
-    html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -1468,17 +1466,6 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     catch (error) {
       warhammer.utility.log("Could not randomize: " + error, true)
     }
-  }
-
-  _onTriggerScript(ev)
-  {
-      let uuid = this._getUUID(ev);
-      let index = this._getIndex(ev);
-
-      let effect =  fromUuidSync(uuid);
-      let script = effect.manualScripts[index];
-
-      script.execute({actor : this.actor});
   }
 
   // Add condition description dropdown

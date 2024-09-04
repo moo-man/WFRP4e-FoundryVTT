@@ -48,7 +48,7 @@ export default function () {
                overlay = {src: f.icon, tint};
                continue;
              }
-             promises.push(this._drawEffect(f.icon, tint,  foundry.utils.getProperty(f, "flags.wfrp4e.value")));
+             promises.push(this._drawEffect(f.icon, tint,  f.system.condition.value));
            }
      
            // Next draw token effects

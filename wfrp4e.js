@@ -73,6 +73,7 @@ import socketHandlers from "./modules/system/socket-handlers.js";
 import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
+import CombatHelpersWFRP from "./modules/system/combat.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -175,6 +176,8 @@ Hooks.once("init", function () {
     tags : new TagManager(),
     trade : new TradeManager()
   }
+
+  CombatHelpersWFRP.registerHelpers();
 
   CONFIG.Actor.documentClass = ActorWFRP4e;
   CONFIG.Item.documentClass = ItemWfrp4e;

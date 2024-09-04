@@ -17,7 +17,8 @@ export class WFRP4eActiveEffectModel extends WarhammerActiveEffectModel {
         let schema = super.defineSchema();
         schema.condition = new fields.SchemaField({
             value : new fields.NumberField({nullable : true}),
-            numbered : new fields.BooleanField({initial: false})
+            numbered : new fields.BooleanField({initial: false}),
+            trigger : new fields.StringField()
         })
 
         return schema;

@@ -42,11 +42,11 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         this.parent.updateSource(preCreateData);
     }
 
-    _onUpdate(data, options, user) {
+    async _onUpdate(data, options, user) {
         super._onUpdate();
         if (game.user.id == user)
         {
-            this.checkSize();
+            await this.checkSize();
         }
     }
 
