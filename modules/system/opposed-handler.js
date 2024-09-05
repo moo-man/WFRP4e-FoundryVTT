@@ -147,7 +147,7 @@ export default class OpposedHandler {
         whisper: this.options.whisper,
         blind: this.options.blind,
         system : {
-          opposeData : this.data
+          opposedData : this.data
         }
     }
 
@@ -197,7 +197,7 @@ export default class OpposedHandler {
   }
 
   async updateMessageData() {
-    let updateData = { "system.opposeData": this.data }
+    let updateData = { "system.opposedData": this.data }
     if (this.message && game.user.isGM) {
       await this.message.update(updateData)
     }
@@ -216,9 +216,10 @@ export default class OpposedHandler {
     let html = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", opposeResult)
     let chatOptions = {
       user: game.user.id,
+      type : "opposed",
       content: html,
       system : {
-        opposeTestData: opposeData,
+        opposedTestData: opposeData,
         handlerId: this.message.id,
       },
       whisper: options.whisper,

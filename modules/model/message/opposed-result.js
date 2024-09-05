@@ -14,6 +14,6 @@ export class OpposedTestMessage extends foundry.abstract.DataModel
 
     get opposedTest() 
     {
-        return new OpposedTest(this.opposedResultData);
+        return OpposedTest.recreate(this.opposedTestData);
     }
 }

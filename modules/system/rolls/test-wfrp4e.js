@@ -1279,6 +1279,10 @@ export default class TestWFRP {
     return this.context.targets.map(i => WFRP_Utility.getSpeaker(i))
   }
 
+  get targetTokens() {
+    return this.context.targets.map(i => game.scenes.get(i.scene)?.tokens.get(i.token))
+  }
+
   get doesDamage() {
     return !!this.result.damage || !!this.result.diceDamage || !!this.result.additionalDamage
   }

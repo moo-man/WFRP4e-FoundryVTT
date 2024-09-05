@@ -42,9 +42,9 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
             if (!avoidTest.reversed)
             {
                 // If the avoid test is marked as opposed, it has to win, not just succeed
-                if (avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+                if (avoidTest.opposed && this.sourceTest)
                 {
-                    return test.result.SL > this.getFlag("wfrp4e", "sourceTest").result?.SL;
+                    return parseInt(test.result.SL) > parseInt(this.sourceTest.result?.SL);
                 }
                 else 
                 {
@@ -54,9 +54,9 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
             else  // Reversed - Failure removes the effect
             {
                 // If the avoid test is marked as opposed, it has to win, not just succeed
-                if (avoidTest.opposed && this.getFlag("wfrp4e", "sourceTest"))
+                if (avoidTest.opposed && this.sourceTest)
                 {
-                    return test.result.SL < this.getFlag("wfrp4e", "sourceTest").result?.SL;
+                    return parseInt(test.result.SL) < parseInt(this.sourceTest.result?.SL);
                 }
                 else 
                 {
