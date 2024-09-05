@@ -793,7 +793,7 @@ export default class TestWFRP extends WarhammerTestBase{
     if (game.settings.get("wfrp4e", "manualChatCards") && !this.message)
       this.result.roll = this.result.SL = null;
 
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && messageData.sound?.includes("dice"))
       messageData.sound = undefined;
 
     let templateData = {

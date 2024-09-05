@@ -537,7 +537,7 @@ export default class Migration {
 
   static removeLoreEffects(docData)
   {
-    let loreEffects = (docData.effects || []).filter(i => i.flags.wfrp4e?.lore)
+    let loreEffects = (docData.effects || []).filter(i => i.flags?.wfrp4e?.lore)
     if (loreEffects.length)
     {
       warhammer.utility.log("Removing lore effects for " + docData.name, true, loreEffects);
