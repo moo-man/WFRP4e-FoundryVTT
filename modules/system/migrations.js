@@ -306,7 +306,7 @@ export default class Migration {
     }
     effectModels = effectModels.filter(e => !foundry.utils.isEmpty(e));
 
-    await this.actor.updateEmbeddedDocuments("ActiveEffect", effectModels);
+    await actor.updateEmbeddedDocuments("ActiveEffect", effectModels);
   }
 
   static migrateJournalData(journal)
