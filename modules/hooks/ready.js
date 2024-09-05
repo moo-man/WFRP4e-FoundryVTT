@@ -51,7 +51,7 @@ export default function () {
 
 
 
-    const MIGRATION_VERSION = 9;
+    const MIGRATION_VERSION = 10;
     let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `<h1>The Effect Refactor</h1>
@@ -62,8 +62,10 @@ export default function () {
         <p>If Talents aren't replaced in this way, you may notice that the Roll Dialog won't have the selectable SL bonuses from the Talents.<p/>
         
         <p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/effects/effect-refactor.html">Read more about the Effect Refactor</a></p>
+
+        <p>Note that if this is a brand new world, you can disregard this message.</p>
         `
-      }, {speaker : {alias : "ATTENTION"}}
+      }, {speaker : {alias : "ATTENTION - PLEASE READ"}}
         )
       game.wfrp4e.migration.migrateWorld()
     }

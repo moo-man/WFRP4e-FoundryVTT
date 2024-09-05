@@ -1,7 +1,9 @@
+import { DialogTooltips } from "./tooltips";
 
 export default class RollDialog extends WarhammerRollDialog {
 
-    tooltipConfig = {modifier : "", slBonus : game.i18n.localize("DIALOG.SLBonus"), successBonus : game.i18n.localize("DIALOG.SuccessBonus"), difficulty : ""};
+    // tooltipConfig = {modifier : "", slBonus : game.i18n.localize("DIALOG.SLBonus"), successBonus : game.i18n.localize("DIALOG.SuccessBonus"), difficulty : ""};
+    static tooltipClass = DialogTooltips;
 
     testClass = null;
 
@@ -123,6 +125,11 @@ export default class RollDialog extends WarhammerRollDialog {
     _computeTargets(target)
     {
 
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+        html.find("[name='advantage']").change(this._onAdvantageChanged.bind(this));
     }
 
     _onFieldChange(ev) 

@@ -3,8 +3,9 @@ import OpposedHandler from "../opposed-handler.js";
 import WFRP_Audio from "../audio-wfrp4e.js";
 import CrewTest from "../crew-test.js"
 
-export default class TestWFRP {
+export default class TestWFRP extends WarhammerTestBase{
   constructor(data, actor) {
+    super();
     if (!data)
       data = {}
     this.data = {
@@ -1210,22 +1211,6 @@ export default class TestWFRP {
 
   get fortuneUsed() {
     return { reroll: this.context.fortuneUsedReroll, SL: this.context.fortuneUsedAddSL }
-  }
-
-
-  get damageEffects() 
-  {
-      return this.item.damageEffects;
-  }
-
-  get targetEffects() 
-  {
-      return this.item.targetEffects;
-  }
-
-  get areaEffects() 
-  {
-      return this.item.areaEffects;
   }
   
 

@@ -7,8 +7,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         _migrateEffect(data, context);
         super(data, context);
     }
-
-
+    
     async resistEffect()
     {
         let result = await super.resistEffect();

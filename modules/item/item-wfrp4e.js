@@ -372,62 +372,6 @@ export default class ItemWfrp4e extends WarhammerItem
   }
 
   //#endregion
- 
-
-  // If item.getScripts is called, filter scripts specifying "Item" document type
-  // if the item was "Actor" document type, it would be transferred to the actor and 
-  // the actor's getScripts would run it instead
-  // 
-  // This is important as roll dialogs call actor.getScripts() and then item.getScripts()
-  // so that when an item is used, it can specifically add its dialog scripts
-  // (prevents the need to check in the script code whether or not the item is being used)
-  getScripts(trigger)
-  {
-      let effects = Array.from(this.allApplicableEffects()).
-          filter(effect => 
-              effect.system.transferData.type == "document" && 
-              effect.system.transferData.documentType == "Item");
-
-      let fromActor = this.actor?.getScriptsApplyingToItem(this) || [];
-
-      return effects.reduce((prev, current) => prev.concat(current.scripts), []).concat(fromActor).filter(i => i.trigger == trigger);
-  }
-
-  _getTypedEffects(type)
-  {
-      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.system.transferData.type == type);
-
-      return effects;
-  }
-
-   *allApplicableEffects() 
-   {
-     for(let effect of this.effects.contents.concat(this.system.getOtherEffects()))//.filter(e => this.system.effectIsApplicable(e));
-     {
-      if (!effect.disabled)
-        yield effect
-     }
-   }
- 
-   get damageEffects() 
-   {
-       return this._getTypedEffects("damage");
-   }
- 
-   get targetEffects() 
-   {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.system.transferData.area.aura.transferred));
-   }
- 
-   get areaEffects() 
-   {
-       return this._getTypedEffects("area");
-   }
-
-   get manualScripts() 
-   {
-      return this.effects.reduce((scripts, effect) => scripts.concat(effect.manualScripts), [])
-   }
    
   get mountDamage() {
     return this.system.mountDamage || this.system.Damage;

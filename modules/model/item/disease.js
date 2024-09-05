@@ -136,7 +136,7 @@ export class DiseaseModel extends BaseItemModel {
       // Add symptoms from input
       await this.parent.createEmbeddedDocuments("ActiveEffect", symptomEffects)
   
-      this.parent.update({ "system.symptoms.value": text })
+      return this.parent.update({ "system.symptoms.value": text })
   }
 
   async start(type, update=false)

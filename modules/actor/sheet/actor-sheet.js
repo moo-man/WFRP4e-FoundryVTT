@@ -621,7 +621,6 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     html.on('click', '.repeater', this._onRepeaterClick.bind(this));
     html.on('click', '.item-toggle', this._onItemToggle.bind(this));
     html.on('click', '.item-remove', this._onItemRemove.bind(this));
-    html.on('click', '.item-delete', this._onItemDelete.bind(this));
     html.on('click', '.fist-icon', this._onUnarmedClick.bind(this));
     html.on('click', '.item-create', this._onItemCreate.bind(this));
     html.on('click', '.aggregate', this._onAggregateClick.bind(this));
@@ -1208,10 +1207,9 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     return this.actor.decrementDiseases()
   }
 
-  _onItemDelete(ev) {
-    let li = $(ev.currentTarget).parents(".item")
-    let itemId = this._getId(ev);
-    if (this.actor.items.get(itemId).name == "Boo") {
+  async _onDeleteEmbeddedDoc(ev) {
+    let doc = await this._getDocumentAsync(ev);
+    if (doc.name == "Boo") {
       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav` }, false)
       return
     }
@@ -1224,7 +1222,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
         buttons: {
           yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
-              await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+              doc.delete();
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },

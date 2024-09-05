@@ -44,7 +44,7 @@ export default class Migration {
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
-        let updateData = Migration.migrateItemData(i.toObject());
+        let updateData = Migration.migrateItemData(i);
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
@@ -639,6 +639,7 @@ static _migrateEffectFlags(effect)
             testIndependent : applicationData.testIndependent,
             preApplyScript : applicationData.preApplyScript,
             equipTransfer : applicationData.equipTransfer,
+            enableConditionScript : applicationData.enableConditionScript,
             filter : applicationData.filter,
             prompt : applicationData.prompt,
             selfOnly,
@@ -655,12 +656,12 @@ static _migrateEffectFlags(effect)
               }
           },
         },
-        scriptData: scriptData,
+        scriptData: effect.system.scriptData.length ? effect.system.scriptData : scriptData,
         zone: {},
         sourceData: {
-            item : effect.getFlag("wfrp4e", "sourceItem"),
-            test : effect.getFlag("wfrp4e", "sourceTest"),
-            area : effect.getFlag("wfrp4e", "fromArea"),
+            item : effect.flags?.wfrp4e?.sourceItem,
+            test : effect.flags?.wfrp4e?.sourceTest,
+            area : effect.flags?.wfrp4e?.fromArea,
         }
     }
 

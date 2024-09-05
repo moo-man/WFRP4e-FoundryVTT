@@ -878,7 +878,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (totalWoundLoss > 0)
     {
-      let damageEffects = opposedTest.attackerTest.item?.damageEffects;
+      let damageEffects = opposedTest.attackerTest?.damageEffects;
       let filtered = [];
       for(let effect of damageEffects)
       {
@@ -1417,6 +1417,12 @@ export default class ActorWFRP4e extends WarhammerActor
       this.update({ "flags.-=oppose": null })
     }
 
+  }
+
+  // Filter out disabled traits
+  get auraEffects() 
+  {
+      return this.items.filter(i => i.type != "trait" || !i.system.disabled).reduce((acc, item) => acc.concat(item.effects.contents), []).concat(this.effects.contents).filter(e => e.system.transferData.type == "aura" && !e.system.transferData.area.aura.transferred).filter(i => i.active);
   }
 
 

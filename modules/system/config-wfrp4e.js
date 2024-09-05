@@ -1087,6 +1087,7 @@ WFRP4E.premiumModules = {
     "wfrp4e-salzenmund" : "Salzenmund: City of Salt and Silver",
     "wfrp4e-owb2" : "Old World Bundle II",
     "wfrp4e-soc" : "Sea of Claws",
+    "wfrp4e-lustria" : "Lustria",
 }
 
 WFRP4E.trade = { 
@@ -2322,5 +2323,10 @@ WFRP4E.syncTriggers = [
     "prepareItem",
     "getInitiativeFormula"
 ];
+
+WFRP4E.triggerMapping = {
+    "update" : "updateDocument",
+    "addItems" : "onCreate"
+};
    
 export default WFRP4E
