@@ -85,7 +85,15 @@ export default class ActorWFRP4e extends WarhammerActor
     }
   }
 
-  
+  _onUpdateDescendantDocuments(...args)
+  {
+      super._onUpdateDescendantDocuments(...args);
+      // If an owned item (trait specifically) is disabled, check auras
+      if (args[1] == "items" && args[3].some(update => (hasProperty(update, "system.disabled"))))
+      {
+          TokenHelpers.updateAuras(this.getActiveTokens()[0]?.document);
+      }
+  }  
   
   /**
    * @override 

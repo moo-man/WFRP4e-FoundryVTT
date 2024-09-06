@@ -8,7 +8,7 @@ export default class WFRP_Audio {
         console.warn("wfrp4e | Sound file not found for context: %o", context)
         return
       }
-      game.wfrp4e.utility.log(`wfrp4e | Playing Sound: ${sound.file}`)
+      warhammer.utility.log(`wfrp4e | Playing Sound: ${sound.file}`)
       AudioHelper.play({ src: sound.file }, sound.global)
     })
     

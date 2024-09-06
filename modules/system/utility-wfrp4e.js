@@ -878,7 +878,7 @@ export default class WFRP_Utility {
   }
   
   static logHomebrew(message) {
-    this.log("Applying Homebrew Rule: " + message, true)
+    warhammer.utility.log("Applying Homebrew Rule: " + message, true)
   }
 
   static extractLinkLabel(link)
