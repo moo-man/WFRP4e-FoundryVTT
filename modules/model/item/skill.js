@@ -54,10 +54,10 @@ export class SkillModel extends BaseItemModel {
       }
     
 
-    async _preCreate(data, options, user) {
-        await super._preCreate(data, options, user);
-
-        if (this.parent.isOwned && this.grouped.value == "isSpec" && data.name) {
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
+        let diff = foundry.utils.diffObject(data, this.parent);
+        if (this.parent.isOwned && this.grouped.value == "isSpec" && diff.name) {
             this._handleSkillNameChange(data.name)
         }
     }
