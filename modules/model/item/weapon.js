@@ -266,13 +266,6 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
     computeOwned() {
 
-        if (this.weaponGroup.value == "blackpowder")
-        {
-            let effect = foundry.utils.deepClone(game.wfrp4e.utility.getSystemEffects().blackpowder);
-            effect.system.transferData.type = "target";
-            this.weaponGroup.effect = new ActiveEffect.implementation(effect, {parent : this.parent});
-        }
-
         if (this.isRanged && this.ammo && (this.skillToUse || this.parent.actor.type == "vehicle"))
             this._addProperties(this.ammo.properties)
 

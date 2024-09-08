@@ -2232,6 +2232,225 @@ WFRP4E.PrepareSystemItems = function() {
             },
         }
     ]
+
+
+    this.propertyEffects = {
+
+        // Qualities
+        accurate: {
+            name : game.i18n.localize("PROPERTY.Accurate"),
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item"
+                },
+                scriptData : [{
+                    label : "Accurate",
+                    trigger : "dialog",
+                    script : "args.fields.modifier += 10;",
+                    options : {
+                        hideScript : "",
+                        activateScript : "return true"
+                    }
+                }]
+            }
+        },
+        blackpowder: {
+            img : "systems/wfrp4e/icons/blank.png",
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            system: {
+                transferData : {
+                    type : "target",
+                    documentType : "Actor"
+                },
+                scriptData: [
+                    {
+                        label: "@effect.name",
+                        trigger: "immediate",
+                        script: `
+                            test = await this.actor.setupSkill("Cool", {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                            await test.roll();
+                            if (test.failed)
+                            {
+                                this.actor.addCondition("broken");
+                            }
+                            return false;
+                        `
+                    }
+                ]
+            }
+        },
+        blast: {
+            name : game.i18n.localize("PROPERTY.Blast"),
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item"
+                },
+                scriptData : [{
+                    label : "Blast",
+                    trigger : "rollWeaponTest",
+                    script : "if (args.test.succeeded) args.result.other.push(`<a class='aoe-template' data-type='radius'><i class='fas fa-ruler-combined'></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)",
+                }]
+            }
+        },
+        damaging: {
+            name : game.i18n.localize("PROPERTY.Damaging"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        defensive: {
+            name : game.i18n.localize("PROPERTY.Defensive"),
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Actor",
+                    equipTransfer: true
+                },
+                scriptData : [{
+                    label : "Blast",
+                    trigger : "dialog",
+                    script : "args.fields.slBonus++;",
+                    options : {
+                        activateScript : "return args.actor.attacker",
+                        hideScript : "return !args.actor.attacker"
+                    }
+                }]
+            }
+        },
+        distract: {
+            name : game.i18n.localize("PROPERTY.Distract"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        entangle: {
+            name : game.i18n.localize("PROPERTY.Entangle"),
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+                scriptData : [{
+                    label : "Entangle",
+                    trigger : "applyDamage",
+                    script : "args.actor.addCondition('entangled')"
+                }]
+            }
+
+        },
+        fast: {
+            name : game.i18n.localize("PROPERTY.Fast"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        hack: {
+            name : game.i18n.localize("PROPERTY.Hack"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        impact: {
+            name : game.i18n.localize("PROPERTY.Impact"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        impale: {
+            name : game.i18n.localize("PROPERTY.Impale"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        magical: {
+            name : game.i18n.localize("PROPERTY.Magical"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        penetrating: {
+            name : game.i18n.localize("PROPERTY.Penetrating"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        pistol: {
+            name : game.i18n.localize("PROPERTY.Pistol"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        precise: {
+            name : game.i18n.localize("PROPERTY.Precise"),
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item"
+                },
+                scriptData : [{
+                    label : "Precise",
+                    trigger : "dialog",
+                    script : "args.fields.successBonus += 1;",
+                    options : {
+                        hideScript : "",
+                        activateScript : "return true"
+                    }
+                }]
+            }
+        },
+        pummel: {
+            name : game.i18n.localize("PROPERTY.Pummel"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        repeater: {
+            name : game.i18n.localize("PROPERTY.Repeater"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        shield: {
+            name : game.i18n.localize("PROPERTY.Shield"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        trapblade: {
+            name : game.i18n.localize("PROPERTY.TrapBlade"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        unbreakable: {
+            name : game.i18n.localize("PROPERTY.Unbreakable"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        wrap: {
+            name : game.i18n.localize("PROPERTY.Wrap"),
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+
+
+
+
+        // Flaws
+        dangerous: {
+            name : game.i18n.localize("PROPERTY.Dangerous"), 
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        imprecise: {
+            name : game.i18n.localize("PROPERTY.Imprecise"), 
+            img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item"
+                },
+                scriptData : [{
+                    label : "Imprecise",
+                    trigger : "dialog",
+                    script : "args.fields.slBonus -= 1;",
+                    options : {
+                        hideScript : "",
+                        activateScript : "return true"
+                    }
+                }]
+            }
+        },
+        reload: {
+            name : game.i18n.localize("PROPERTY.Reload"), 
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        slow: {
+            name : game.i18n.localize("PROPERTY.Slow"), 
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        tiring: {
+            name : game.i18n.localize("PROPERTY.Tiring"), 
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+        undamaging: {
+            name : game.i18n.localize("PROPERTY.Undamaging"), 
+            img : "systems/wfrp4e/icons/blank.png",
+        },
+    }
+
 }
 
 

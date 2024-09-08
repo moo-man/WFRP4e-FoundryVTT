@@ -378,14 +378,6 @@ export default class CastTest extends TestWFRP {
     return this.item.ingredient && this.item.ingredient.quantity.value > 0
   }
 
-  get effects() {
-    let effects = super.effects;
-    if (this.item.system.lore.effect?.application == "apply")
-      effects.push(this.item.system.lore.effect)
-    return effects
-  }
-
-
   get spell() {
     return this.item
   }
