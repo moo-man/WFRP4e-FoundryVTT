@@ -79,7 +79,8 @@ export default function () {
           let item = await fromUuid(id)
           if (item)
           {
-            item.updateSource(data)
+            const diff = item.updateSource(data)
+            console.log({diff})
             game.wfrp4e.utility.logHomebrew("mooHomebrewItemChanges: " + id + ` (${item.name})`)
           }
         }
