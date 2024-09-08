@@ -2,7 +2,7 @@
     "Compendium.wfrp4e-core.items.1IZWRr7BYOIcqPlQ": {
         "system": {
             "description": {
-                "value": "<p>Your experience, talent or training lets you more safely manipulate the Winds of Magic. Whenever you roll on a miscast table as a result of a successful Channelling Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+                "value": "<p>Your experience, talent or training lets you more safely manipulate the Winds of Magic. Whenever you roll on a miscast table as a result of a successful Channelling Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscast table with the same modifier, or the miscast is nullified if it was a Minor Miscast.</p>"
             }
         },
         "effects": [
@@ -994,7 +994,7 @@
     "Compendium.wfrp4e-core.items.BYChSVfMG004eflQ": {
         "system": {
             "description": {
-                "value": "<p>You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error.&nbsp; Whenever you roll on a miscast table as a result of a successful Casting Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+                "value": "<p>You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error.&nbsp; Whenever you roll on a miscast table as a result of a successful Casting Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscast table with the same modifier, or the miscast is nullified if it was a Minor Miscast.</p>"
             }
         },
         "effects": [
