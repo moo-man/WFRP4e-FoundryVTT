@@ -1,3 +1,5 @@
+import WFRP_Utility from "./utility-wfrp4e";
+
 export default class Advancement
 {
     actor = null;
@@ -294,6 +296,52 @@ export default class Advancement
         this.actor.update(updateObj);
       }
 
+    async advanceSpeciesCharacteristics()
+    {
+
+      let species = this.actor.details.species.value;
+      let subspecies = this.actor.details.species.subspecies;
+         
+      let creatureMethod = false;
+      let characteristics = this.actor.toObject().system.characteristics;
+      if (this.actor.type == "creature" || !species) creatureMethod = true;
+
+      if (!creatureMethod) 
+      {
+        let averageCharacteristics = await WFRP_Utility.speciesCharacteristics(species, true, subspecies);
+        for (let char in characteristics) 
+        {
+          if (characteristics[char].initial != averageCharacteristics[char].value) creatureMethod = true
+        }
+      }
+      if (!creatureMethod) 
+      {
+        let rolledCharacteristics = await WFRP_Utility.speciesCharacteristics(species, false, subspecies);
+        for (let char in rolledCharacteristics) 
+        {
+          characteristics[char].initial = rolledCharacteristics[char].value
+        }
+        await this.actor.update({ "system.characteristics": characteristics })
+      }
+      else if (creatureMethod) 
+      {
+        let roll = new Roll("2d10");
+        await roll.roll();
+        let characteristics = this.actor.toObject().system.characteristics;
+        for (let char in characteristics) 
+        {
+          if (characteristics[char].initial == 0)
+            continue
+          characteristics[char].initial -= 10;
+          characteristics[char].initial += (await roll.reroll()).total;
+          if (characteristics[char].initial < 0)
+            characteristics[char].initial = 0
+        }
+        await this.actor.update({ "system.characteristics": characteristics })
+      }
+      return
+    }
+
   /**
    * Advances an actor's skills based on their species and character creation rules
    * 
@@ -302,7 +350,7 @@ export default class Advancement
     * and advance the first 3 selected by 5, and the second 3 selected by 3. This function uses the advanceSkill()
     * helper defined below.
    */
-  async _advanceSpeciesSkills() {
+  async advanceSpeciesSkills() {
     let skillList
 
     // A species may not be entered in the actor, so use some error handling.
@@ -330,13 +378,15 @@ export default class Advancement
         skillsSelected.push(skillSelector.total);
     }
 
+    let skills = [];
     // Advance the first 3 by 5, advance the second 3 by 3.
     for (let skillIndex = 0; skillIndex < skillsSelected.length; skillIndex++) {
       if (skillIndex <= 2)
-        await this._advanceSkill(skillList[skillsSelected[skillIndex]], 5)
+        skills.push(await this._advanceSkill(skillList[skillsSelected[skillIndex]], 5))
       else
-        await this._advanceSkill(skillList[skillsSelected[skillIndex]], 3)
+        skills.push(await this._advanceSkill(skillList[skillsSelected[skillIndex]], 3))
     }
+    this.actor.update({items : skills});
   }
 
 
@@ -350,7 +400,7 @@ export default class Advancement
    * the last element of the talent list is a number denoting the number of random talents. This function uses
    * the advanceTalent() helper defined below.
    */
-  async _advanceSpeciesTalents() {
+  async advanceSpeciesTalents() {
     // A species may not be entered in the actor, so use some error handling.
     let talentList
     try {
@@ -365,12 +415,13 @@ export default class Advancement
       throw error
     }
     let talentSelector;
+    let talentsToAdd = [];
     for (let talent of talentList) {
       if (!isNaN(talent)) // If is a number, roll on random talents
       {
         for (let i = 0; i < talent; i++) {
           let result = await game.wfrp4e.tables.rollTable("talents")
-          await this._advanceTalent(result.object.text);
+          talentsToAdd.push(await this._advanceTalent(result.object.text));
         }
         continue
       }
@@ -382,13 +433,15 @@ export default class Advancement
       // Randomly choose a talent option and advance it.
       if (talentOptions.length > 1) {
         talentSelector = await new Roll(`1d${talentOptions.length} - 1`).roll()
-        await this._advanceTalent(talentOptions[talentSelector.total])
+        talentsToAdd.push(await this._advanceTalent(talentOptions[talentSelector.total]));
       }
       else // If no option, simply advance the talent.
       {
-        await this._advanceTalent(talent)
+        talentsToAdd.push(await this._advanceTalent(talent));
       }
     }
+
+    this.actor.createEmbeddedDocuments("Item", talentsToAdd);
 
   }
 

@@ -45,15 +45,15 @@ const PropertiesMixin = (cls) => class extends cls
         }
 
         else return {
-            qualities: this.constructor._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
-            flaws: this.constructor._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
+            qualities: this.constructor.propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
+            flaws: this.constructor.propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
         }
     }
 
     get originalProperties() {
         let properties = {
-            qualities: this.constructor._propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList()),
-            flaws: this.constructor._propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList()),
+            qualities: this.constructor.propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList()),
+            flaws: this.constructor.propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList()),
             unusedQualities: {}
         }
         return properties;
@@ -147,7 +147,7 @@ const PropertiesMixin = (cls) => class extends cls
         }
     }
 
-    static _propertyArrayToObject(array, propertyObject) {
+    static propertyArrayToObject(array, propertyObject) {
 
         let properties = {}
 
