@@ -556,8 +556,8 @@ export default class ChatWFRP {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let effectUuid = event.currentTarget.dataset.uuid;
 
-    let test = game.messages.get(messageId).system.test
-    let radius
+    let test = game.messages.get(messageId).system.test;
+    let radius;
     if (test?.result.overcast?.usage.target)
     {
       radius = test.result.overcast.usage.target.current;
@@ -574,7 +574,7 @@ export default class ChatWFRP {
     {
         return;
     }
-    let template = await AreaTemplate.fromEffect(effectUuid, null, null, foundry.utils.diffObject(effectData, effect.convertToApplied()));
+    let template = await AreaTemplate.fromEffect(effectUuid, null, radius, foundry.utils.diffObject(effectData, effect.convertToApplied()));
     await template.drawPreview(event);
   }
 
