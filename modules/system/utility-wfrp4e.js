@@ -101,7 +101,7 @@ export default class WFRP_Utility {
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].speciesTraits)
     {
-      traits = game.wfrp4e.config.subspecies[species][subspecies].speciesTraits || {};
+      traits = game.wfrp4e.config.subspecies[species][subspecies].speciesTraits || [];
     }
 
     return { skills, talents, randomTalents, talentReplacement, traits };
