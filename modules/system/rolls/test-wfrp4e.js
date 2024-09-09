@@ -1177,7 +1177,7 @@ export default class TestWFRP extends WarhammerTestBase{
           this.context.fortuneUsedAddSL = true;
           this.addSL(1)
         }
-        this.actor.update({ "system.status.fortune.value": this.system.status.fortune.value - 1 });
+        this.actor.update({ "system.status.fortune.value": this.actor.system.status.fortune.value - 1 });
       }
     }
 
