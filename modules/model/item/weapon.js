@@ -14,7 +14,8 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "" }),
+            dice: new fields.StringField({ initial: "" })
         });
         schema.weaponGroup = new fields.SchemaField({
             value: new fields.StringField({ initial: "basic" })

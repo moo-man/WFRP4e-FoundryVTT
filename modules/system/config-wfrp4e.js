@@ -2330,5 +2330,10 @@ WFRP4E.triggerMapping = {
     "update" : "updateDocument",
     "addItems" : "onCreate"
 };
+
+WFRP4E.getZoneTraitEffects = (region) => 
+{
+    return [];
+}
    
 export default WFRP4E
