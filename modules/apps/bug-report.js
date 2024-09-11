@@ -154,7 +154,7 @@ export default class BugReportFormWfrp4e extends Application {
 
 
     async loadIssues() {
-        WFRP_Utility.log("Loading GitHub Issues...")
+        warhammer.utility.log("Loading GitHub Issues...")
         if (this.constructor.issues.length == 0)
         {
 
@@ -178,9 +178,9 @@ export default class BugReportFormWfrp4e extends Application {
         }
         else 
         {
-            WFRP_Utility.log("Skipping requests, issues already loaded");
+            warhammer.utility.log("Skipping requests, issues already loaded");
         }
-        WFRP_Utility.log("Issues: ", undefined, this.constructor.issues)
+        warhammer.utility.log("Issues: ", undefined, this.constructor.issues)
         return this.constructor.issues;
     }
 
@@ -229,7 +229,7 @@ export default class BugReportFormWfrp4e extends Application {
 
     async checkVersions() {
         let latest = {}
-        WFRP_Utility.log("Checking Version Numbers...")
+        warhammer.utility.log("Checking Version Numbers...")
         for (let key in game.wfrp4e.config.premiumModules) {
             if (key == game.system.id) {
                 // Have to use release tag instead of manifest version because CORS doesn't allow downloading release asset for some reason
@@ -246,9 +246,9 @@ export default class BugReportFormWfrp4e extends Application {
                 });
                 latest[key] = !foundry.utils.isNewerVersion(manifest.version, game.modules.get(key).version)
             }
-            WFRP_Utility.log(key + ": " + latest[key])
+            warhammer.utility.log(key + ": " + latest[key])
         }
-        WFRP_Utility.log("Version Status:", undefined, latest);
+        warhammer.utility.log("Version Status:", undefined, latest);
         return latest;
     }
 

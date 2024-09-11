@@ -1,8 +1,8 @@
 {
-    "Compendium.wfrp4e-core.talents.1IZWRr7BYOIcqPlQ": {
-        "data": {
+    "Compendium.wfrp4e-core.items.1IZWRr7BYOIcqPlQ": {
+        "system": {
             "description": {
-                "value": "<p>Your experience, talent or training lets you more safely manipulate the Winds of Magic. Whenever you roll on a miscast table as a result of a successful Channelling Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+                "value": "<p>Your experience, talent or training lets you more safely manipulate the Winds of Magic. Whenever you roll on a miscast table as a result of a successful Channelling Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscast table with the same modifier, or the miscast is nullified if it was a Minor Miscast.</p>"
             }
         },
         "effects": [
@@ -31,7 +31,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.ywpZfCr5SxGBfDbV": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Chamon)",
                 "Intuition",
@@ -46,7 +46,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.zqJCLbUwhl4ttrw2": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Shyish)",
                 "Dodge",
@@ -73,7 +73,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.zuST5RpmAC0g9jGS": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Shyish)",
                 "Dodge",
@@ -98,7 +98,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.70eb3fw0COeid5GK": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Azyr)",
                 "Intuition",
@@ -113,7 +113,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.IFVfg9zvOvRH5arR": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Hysh)",
                 "Entertain (Singing)",
@@ -128,7 +128,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.IHC39zVZ5LDXGysD": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Aqshy)",
                 "Cool",
@@ -146,7 +146,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.04opjbLrU6yL4EUx": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Azyr)",
                 "Intuition",
@@ -172,8 +172,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-archives1.archives1-items.qBqfo35CFyWAAAnX": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.qBqfo35CFyWAAAnX": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -211,8 +211,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.ByHt0vTWRIuHS2r8": {
-        "data": {
+    "Compendium.wfrp4e-core.items.ByHt0vTWRIuHS2r8": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -245,8 +245,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.qim3Ad0ldTS9mXDj": {
-        "data": {
+    "Compendium.wfrp4e-core.items.qim3Ad0ldTS9mXDj": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -261,8 +261,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.kFROfGFdExfyJTg9": {
-        "data": {
+    "Compendium.wfrp4e-core.items.kFROfGFdExfyJTg9": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -278,8 +278,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.X8WFQf0HB9yXKjdD": {
-        "data": {
+    "Compendium.wfrp4e-core.items.X8WFQf0HB9yXKjdD": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -305,7 +305,7 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.U94l3IDj3xfIc78i": {
+    "Compendium.wfrp4e-core.items.U94l3IDj3xfIc78i": {
         "flags": {
             "wfrp4e": {
                 "optimalRange": "normal"
@@ -313,7 +313,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.OBLt5TXumqhXpTJB": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Shyish)",
                 "Dodge",
@@ -327,8 +327,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.xdAP96GGDb87m0Pr": {
-        "data": {
+    "Compendium.wfrp4e-core.items.xdAP96GGDb87m0Pr": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -344,8 +344,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.HDQVaCTpIy2PBdYu": {
-        "data": {
+    "Compendium.wfrp4e-core.items.HDQVaCTpIy2PBdYu": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -361,8 +361,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-archives1.archives1-items.nyUbN0JaeXNQUbUT": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.nyUbN0JaeXNQUbUT": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -394,8 +394,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.ksRqHiMVpIL07Ij1": {
-        "data": {
+    "Compendium.wfrp4e-core.items.ksRqHiMVpIL07Ij1": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -419,8 +419,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.M71CyisSXU0I7V1S": {
-        "data": {
+    "Compendium.wfrp4e-core.items.M71CyisSXU0I7V1S": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -435,8 +435,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.ddXgrDWZXSM3nXaf": {
-        "data": {
+    "Compendium.wfrp4e-core.items.ddXgrDWZXSM3nXaf": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -451,8 +451,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-archives1.archives1-items.XurSURwIt8pnoOlJ": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.XurSURwIt8pnoOlJ": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -504,7 +504,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.Gx1WB8mmt8IAI1YR": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ghyran)",
                 "Dodge",
@@ -518,8 +518,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-archives1.archives1-items.aQE698skxSqkrdmO": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.aQE698skxSqkrdmO": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -551,8 +551,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-archives1.archives1-items.BIW1jibsj1mZTKq0": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.BIW1jibsj1mZTKq0": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -584,8 +584,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-archives1.archives1-items.yaQBcwPMyEyP7H2f": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.yaQBcwPMyEyP7H2f": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -621,8 +621,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.NQ4OVp1ZfinJ7lQH": {
-        "data": {
+    "Compendium.wfrp4e-core.items.NQ4OVp1ZfinJ7lQH": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -646,8 +646,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.2mE771fGEEB38OqG": {
-        "data": {
+    "Compendium.wfrp4e-core.items.2mE771fGEEB38OqG": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -671,8 +671,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-archives1.archives1-items.LIzUGidgb1mkXcZB": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.LIzUGidgb1mkXcZB": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -684,16 +684,16 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.talents.0pXva9EODy9bngQX": {
-        "data": {
+    "Compendium.wfrp4e-core.items.0pXva9EODy9bngQX": {
+        "system": {
             "description": {
                 "value": "<p>You have trained how to make false attacks in close combat to fool your opponent. You may now make a Feint for your Action against any opponent using a weapon. This is resolved with an Unopposed Melee (Fencing) Test against a creature. If you succeed, and you attack the same opponent before the end of the next Round, you may add the SL of your Feint to your attack roll.</p>"
             }
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.uSxXVJogASbJ62hl": {
-        "data": {
+    "Compendium.wfrp4e-core.items.uSxXVJogASbJ62hl": {
+        "system": {
             "damage": {
                 "value": "SB+2"
             },
@@ -720,8 +720,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.QnFLWJmz2DN76Dx5": {
-        "data": {
+    "Compendium.wfrp4e-core.items.QnFLWJmz2DN76Dx5": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -741,7 +741,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.pytEYItxG2wwp9j6": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ulgu)",
                 "Intuition",
@@ -766,7 +766,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.htaOTnb6T6PpPxUz": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ulgu)",
                 "Intuition",
@@ -792,8 +792,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.CXg7XOFJwu4LZ9LM": {
-        "data": {
+    "Compendium.wfrp4e-core.items.CXg7XOFJwu4LZ9LM": {
+        "system": {
             "reach": {
                 "value": "vLong"
             },
@@ -815,8 +815,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.zuFTVmBtN51K94Xy": {
-        "data": {
+    "Compendium.wfrp4e-core.items.zuFTVmBtN51K94Xy": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -852,8 +852,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.K34pxV6XsxhoZRiQ": {
-        "data": {
+    "Compendium.wfrp4e-core.items.K34pxV6XsxhoZRiQ": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -882,7 +882,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.FOm0hZjT5dDJgJsy": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ghyran)",
                 "Dodge",
@@ -908,8 +908,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.1tHkTZYaauicIh8I": {
-        "data": {
+    "Compendium.wfrp4e-core.items.1tHkTZYaauicIh8I": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -945,8 +945,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.vI0oorwbZdlszudf": {
-        "data": {
+    "Compendium.wfrp4e-core.items.vI0oorwbZdlszudf": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -991,10 +991,10 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.talents.BYChSVfMG004eflQ": {
-        "data": {
+    "Compendium.wfrp4e-core.items.BYChSVfMG004eflQ": {
+        "system": {
             "description": {
-                "value": "<p>You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error.&nbsp; Whenever you roll on a miscast table as a result of a successful Casting Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscat table with the same modifier, or the miscast is nuillifed if it was a Minor Miscast.</p>"
+                "value": "<p>You instinctively understand the language of Magick, and are capable of articulating the most complex phrases rapidly without error.&nbsp; Whenever you roll on a miscast table as a result of a successful Casting Test, you may apply a -10 modifier to the table result for each level of this talent. If the result is 0 or below, either roll on the lesser miscast table with the same modifier, or the miscast is nullified if it was a Minor Miscast.</p>"
             }
         },
         "effects": [
@@ -1022,8 +1022,8 @@
         ],
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.q3dEaQLL3ZYCZtU4": {
-        "data": {
+    "Compendium.wfrp4e-core.items.q3dEaQLL3ZYCZtU4": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1039,7 +1039,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.qoFHBdGFMMNdLsS0": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Chamon)",
                 "Intuition",
@@ -1060,7 +1060,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.nBTA2gulRmVTqbAg": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ghyran)",
                 "Dodge",
@@ -1081,7 +1081,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.qxQ7mix9uVxDG0Ev": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Hysh)",
                 "Entertain (Singing)",
@@ -1101,8 +1101,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.kOfcQJQOgmGsqA5U": {
-        "data": {
+    "Compendium.wfrp4e-core.items.kOfcQJQOgmGsqA5U": {
+        "system": {
             "flaws": {
                 "value": [
                     {
@@ -1114,8 +1114,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.RHkj94yUJp620xr1": {
-        "data": {
+    "Compendium.wfrp4e-core.items.RHkj94yUJp620xr1": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1136,7 +1136,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.7htxL8GBQQgu7o4Z": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Chamon)",
                 "Intuition",
@@ -1163,7 +1163,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.D1z8KMZHxOaX9h7s": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Chamon)",
                 "Intuition",
@@ -1190,7 +1190,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.z68pp7fmwamKE9v2": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Azyr)",
                 "Intuition",
@@ -1215,7 +1215,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.PxiWFSSOsRVAjx8i": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ghyran)",
                 "Dodge",
@@ -1240,7 +1240,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.2kHrVyBJURfTeItC": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Hysh)",
                 "Entertain (Singing)",
@@ -1267,7 +1267,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.pwvyjPpzrmIfx7LP": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Hysh)",
                 "Entertain (Singing)",
@@ -1294,7 +1294,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.xp2jXItHqZ1O3fV1": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Aqshy)",
                 "Cool",
@@ -1318,8 +1318,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.careers.1DIMUn1Cj5rohWJV": {
-        "data": {
+    "Compendium.wfrp4e-core.items.1DIMUn1Cj5rohWJV": {
+        "system": {
             "skills": [
                 "Channelling (Any Color)",
                 "Dodge",
@@ -1343,8 +1343,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.talents.0hn6UaKq8CoZP2zD": {
-        "data": {
+    "Compendium.wfrp4e-core.items.0hn6UaKq8CoZP2zD": {
+        "system": {
             "tests": {
                 "value": ""
             }
@@ -1379,8 +1379,8 @@
         ],
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.G2yEH6caM0FJ9s0G": {
-        "data": {
+    "Compendium.wfrp4e-core.items.G2yEH6caM0FJ9s0G": {
+        "system": {
             "damage": {
                 "value": "SB+4"
             },
@@ -1411,8 +1411,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.Bda4Wvnlt3q5zkKC": {
-        "data": {
+    "Compendium.wfrp4e-core.items.Bda4Wvnlt3q5zkKC": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1423,8 +1423,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.PnYGK5FPgEGM1Ck3": {
-        "data": {
+    "Compendium.wfrp4e-core.items.PnYGK5FPgEGM1Ck3": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1461,7 +1461,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.vQuqedgxchpBwvFD": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Aqshy)",
                 "Cool",
@@ -1482,7 +1482,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.fGaS3pBRfv05GzBO": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Aqshy)",
                 "Cool",
@@ -1508,8 +1508,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.GkeMJrsqxQIek1xK": {
-        "data": {
+    "Compendium.wfrp4e-core.items.GkeMJrsqxQIek1xK": {
+        "system": {
             "damage": {
                 "value": "SB+2"
             },
@@ -1532,8 +1532,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.Uuu0bA2DmNp8o2JF": {
-        "data": {
+    "Compendium.wfrp4e-core.items.Uuu0bA2DmNp8o2JF": {
+        "system": {
             "damage": {
                 "value": "SB+3"
             },
@@ -1550,8 +1550,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.M23N8sjzEp16abQQ": {
-        "data": {
+    "Compendium.wfrp4e-core.items.M23N8sjzEp16abQQ": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1591,8 +1591,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.8dKmuti5IuIs9AJA": {
-        "data": {
+    "Compendium.wfrp4e-core.items.8dKmuti5IuIs9AJA": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1628,7 +1628,7 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.NyIwm2Ge60jnUZft": {
+    "Compendium.wfrp4e-core.items.NyIwm2Ge60jnUZft": {
         "flags": {
             "wfrp4e": {
                 "optimalRange": "short"
@@ -1636,7 +1636,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.Jg8DwOfDXBvGiQT0": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ulgu)",
                 "Intuition",
@@ -1659,15 +1659,15 @@
     "Compendium.arcane-marks-careers.arcanecareers.JSh5YtZMiJrS28UN": {
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.CRNrEnLXTGXVT1UW": {
+    "Compendium.wfrp4e-core.items.CRNrEnLXTGXVT1UW": {
         "flags": {
             "wfrp4e": {
                 "optimalRange": "short"
             }
         }
     },
-    "Compendium.wfrp4e-archives1.archives1-items.7cVsB1Ss3cXMySl5": {
-        "data": {
+    "Compendium.wfrp4e-archives1.items.7cVsB1Ss3cXMySl5": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1683,8 +1683,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.7Bpc5I8Arucy3w4q": {
-        "data": {
+    "Compendium.wfrp4e-core.items.7Bpc5I8Arucy3w4q": {
+        "system": {
             "damage": {
                 "value": "SB + 2"
             }
@@ -1695,8 +1695,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.zIuarD5mB0EF0ji0": {
-        "data": {
+    "Compendium.wfrp4e-core.items.zIuarD5mB0EF0ji0": {
+        "system": {
             "damage": {
                 "value": "SB+3"
             },
@@ -1722,8 +1722,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.KSwMbO8dqISoGuIo": {
-        "data": {
+    "Compendium.wfrp4e-core.items.KSwMbO8dqISoGuIo": {
+        "system": {
             "damage": {
                 "value": "SB + 3"
             }
@@ -1734,8 +1734,8 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.Xjwk84KnOKDaiZs1": {
-        "data": {
+    "Compendium.wfrp4e-core.items.Xjwk84KnOKDaiZs1": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1750,7 +1750,7 @@
             }
         }
     },
-    "Compendium.wfrp4e-core.trappings.bwyUJua7I9hNg9WS": {
+    "Compendium.wfrp4e-core.items.bwyUJua7I9hNg9WS": {
         "flags": {
             "wfrp4e": {
                 "optimalRange": "short"
@@ -1758,7 +1758,7 @@
         }
     },
     "Compendium.arcane-marks-careers.arcanecareers.Y2ULm27eRXzBwDwW": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Shyish)",
                 "Dodge",
@@ -1779,7 +1779,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.nLQP9P5mh8Zj5ByE": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Ulgu)",
                 "Intuition",
@@ -1800,7 +1800,7 @@
         "flags": {}
     },
     "Compendium.arcane-marks-careers.arcanecareers.lfqDYa6Glg2OUONa": {
-        "data": {
+        "system": {
             "skills": [
                 "Channelling (Azyr)",
                 "Intuition",
@@ -1820,8 +1820,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.CdP1xLEJbe289beI": {
-        "data": {
+    "Compendium.wfrp4e-core.items.CdP1xLEJbe289beI": {
+        "system": {
             "qualities": {
                 "value": [
                     {
@@ -1849,8 +1849,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.careers.JeWuOwm0nM4V1brh": {
-        "data": {
+    "Compendium.wfrp4e-core.items.JeWuOwm0nM4V1brh": {
+        "system": {
             "skills": [
                 "Channelling (Any Color)",
                 "Dodge",
@@ -1870,8 +1870,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.careers.bTPBxrayfzeVmGsh": {
-        "data": {
+    "Compendium.wfrp4e-core.items.bTPBxrayfzeVmGsh": {
+        "system": {
             "skills": [
                 "Channelling (Any Color)",
                 "Dodge",
@@ -1897,8 +1897,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.careers.WiMLDa950d9wsbbZ": {
-        "data": {
+    "Compendium.wfrp4e-core.items.WiMLDa950d9wsbbZ": {
+        "system": {
             "skills": [
                 "Channelling (Any Color)",
                 "Dodge",
@@ -1912,8 +1912,8 @@
         },
         "flags": {}
     },
-    "Compendium.wfrp4e-core.trappings.N3aHfG4XASsiNoRv": {
-        "data": {
+    "Compendium.wfrp4e-core.items.N3aHfG4XASsiNoRv": {
+        "system": {
             "qualities": {
                 "value": [
                     {

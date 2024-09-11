@@ -1,3 +1,4 @@
+import Advancement from "../../system/advancement";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
@@ -28,8 +29,18 @@ export class SkillModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of SkillModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isSkill() {
+        return true;
+    }
+
     get cost() {
-          return WFRP_Utility._calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
+          return Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }
 
     get modified() {
@@ -43,10 +54,10 @@ export class SkillModel extends BaseItemModel {
       }
     
 
-    async preUpdateChecks(data) {
-        await super.preUpdateChecks(data);
-
-        if (this.parent.isOwned && this.grouped.value == "isSpec" && data.name) {
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
+        let diff = foundry.utils.diffObject(data, this.parent);
+        if (this.parent.isOwned && this.grouped.value == "isSpec" && diff.name) {
             this._handleSkillNameChange(data.name)
         }
     }

@@ -1,4 +1,4 @@
-let test = await args.actor.setupSkill("Dodge", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
+let test = await args.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 let damage = parseInt(this.effect.sourceTest.result.SL)
 
@@ -12,4 +12,4 @@ else
    damage = damage + 10
    this.actor.addCondition("entangled", 3)
 }
-this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {loc : "roll", suppressMsg: true}))
+this.script.message(await this.actor.applyBasicDamage(damage, {loc : "roll", suppressMsg: true}))

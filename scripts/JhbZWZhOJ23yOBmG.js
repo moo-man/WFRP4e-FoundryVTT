@@ -26,9 +26,8 @@ const extendedTestData = {
     {
       name: `Repair the ${this.item.name}`,
       icon: this.item.img,
-      flags: {
-        wfrp4e: {
-          applicationData: {
+      system: {
+        transferData : {
             type: "document",
             documentType: "Item"
           },
@@ -38,14 +37,13 @@ const extendedTestData = {
               script: `
               let id = this.item.flags.wfrp4e.fromEffect;
               let effect = this.actor.appliedEffects.find(e => e.id === id);
-              this.script.scriptMessage("${repaired_message}");
+              this.script.message("${repaired_message}");
               await effect.item.delete();
             `,
               trigger: "deleteEffect"
             }
           ]
         }
-      }
       }
   ]
 };

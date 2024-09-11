@@ -1,13 +1,13 @@
 import VehicleCrew from "../../apps/vehicle-crew.js";
 import VehicleCumulativeModifiersConfig from "../../apps/vehicle-modifiers.js";
 import VehicleMoveConfig from "../../apps/vehicle-move.js";
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Vehicle Sheets.
  *
  */
-export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eVehicle extends ActorSheetWFRP4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
     foundry.utils.mergeObject(options,

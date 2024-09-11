@@ -55,7 +55,7 @@ export default class TraitDialog extends AttackDialog {
 
 
       return new Promise(resolve => {
-        let dlg = new this(fields, data, resolve, options)
+        let dlg = new this(data, fields, options, resolve)
         if (options.bypass)
         {
             dlg.bypass()
@@ -67,9 +67,9 @@ export default class TraitDialog extends AttackDialog {
     })
     }
 
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.item = this.data.trait.id || this.data.trait.toObject()
         data.characteristicToUse = this.data.characteristic;
         return data;

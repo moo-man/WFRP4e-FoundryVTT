@@ -5,7 +5,7 @@
                             {
                                 fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb").then(disease => {
                                     this.actor.createEmbeddedDocuments("Item", [disease.toObject()])
-                                    this.script.scriptNotification("Gained " + disease.name)
+                                    this.script.notification("Gained " + disease.name)
                                 })
                             }
                             

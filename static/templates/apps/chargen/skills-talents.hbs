@@ -109,6 +109,18 @@
         {{/each}}
       </div>
     </div>
+
+  {{#if traits.length}}
+    <p class="centered">{{{localize "CHARGEN.SkillsTalents.Traits"}}}</p>
+    <div class="trait-list">
+        {{#each traits}}
+          <div class="trait flexcol">
+            <a class="item-lookup styled" data-type="trait"><i class="fas fa-suitcase"></i> {{this}}</a>
+          </div>
+        {{/each}}
+    </div>
+  {{/if}}
+
   </div>
   <div class="controls">
     <button type="submit">{{localize "Submit"}}</button>

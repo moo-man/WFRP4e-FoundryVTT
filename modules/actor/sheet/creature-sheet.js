@@ -1,16 +1,16 @@
 
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Creature Sheets.
  *
- * ActorSheetWfrp4eCreature is assigned to Creature type actors, which have a very 
+ * ActorSheetWFRP4eCreature is assigned to Creature type actors, which have a very 
  * different layout in their sheet compared to the others, requiring different 
  * functionality in the main tab (creature overview), as well as the notes tab, 
  * where the user excludes traits.
  * 
  */
-export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eCreature extends ActorSheetWFRP4e {
 
 
   // V10 - Dialogs need focus for default button to work with the Enter key. Hovering over traits in the overview focuses on them (required for delete key to work)
@@ -135,11 +135,11 @@ export default class ActorSheetWfrp4eCreature extends ActorSheetWfrp4e {
         {
           if (effect.isTargetApplied)
           {
-            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+            effectButtons += `<a class="apply-target" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
           }
           else if (effect.isAreaApplied)
           {
-            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+            effectButtons += `<a class="place-area" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
           }
         }
         div.append(`<div>${effectButtons}</div>`)

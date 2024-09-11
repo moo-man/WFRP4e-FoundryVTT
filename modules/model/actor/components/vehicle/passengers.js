@@ -1,4 +1,3 @@
-import ItemDialog from "../../../../apps/item-dialog";
 import WFRP_Utility from "../../../../system/utility-wfrp4e";
 
 let fields = foundry.data.fields;
@@ -22,7 +21,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
             {
                 passenger.actor = actor,
                 passenger.linked = actor.prototypeToken.actorLink,
-                passenger.img = WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
+                passenger.img = warhammer.utility.replacePopoutPath(actor.prototypeToken.texture.src),
                 passenger.roles = passenger.roleIds.map(id => roles.find(r => r.id == id)).filter(i => i);
             }
             else 
@@ -91,7 +90,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         let passenger = list.find(i => i.id == id);
         if (passenger)
         {
-            mergeData(passenger, data);
+            foundry.utils.mergeObject(passenger, data);
         }
         return list;
     }

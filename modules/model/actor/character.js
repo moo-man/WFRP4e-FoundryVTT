@@ -17,25 +17,24 @@ export class CharacterModel extends StandardActorModel {
         return schema;
     }
 
-    preCreateData(data, options) {
-        let preCreateData = super.preCreateData(data, options);
-        foundry.utils.mergeObject(preCreateData, {
-            "prototypeToken.sight": { enabled: true },
-            "prototypeToken.actorLink": true,
-            "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY
-        });
-        return preCreateData;
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
+        this.parent.updateSource({
+          "prototypeToken.sight": { enabled: true },
+          "prototypeToken.actorLink": true,
+          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY
+        })
     }
 
 
-    async preUpdateChecks(data, options) {
-        await super.preUpdateChecks(data, options);
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
 
         this._handleExperienceChange(data, options)
     }
 
-    updateChecks(data, options, user) {
-        let update = super.updateChecks(data, options, user);
+    async _onUpdate(data, options, user) {
+        await super._onUpdate(data, options, user);
         if(!options.skipCorruption && foundry.utils.getProperty(data, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
@@ -45,8 +44,6 @@ export class CharacterModel extends StandardActorModel {
         {
           this._registerChatAward(options.fromMessage)
         }
-        return update;
-        // this._checkEncumbranceEffects(this.parent);
     }
 
     computeBase() {
@@ -54,11 +51,11 @@ export class CharacterModel extends StandardActorModel {
         super.computeBase();
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items, flags);
+    computeDerived() {
+        super.computeDerived();
 
-        this.computeCorruption(items, flags)
-        this.computeCareer(items, flags)
+        this.computeCorruption()
+        this.computeCareer()
 
         this.details.experience.current = this.details.experience.total - this.details.experience.spent;
     }
@@ -99,6 +96,27 @@ export class CharacterModel extends StandardActorModel {
     get currentCareer() 
     {
         return this.parent.getItemTypes("career").find(c => c.current.value)
+    }
+    
+    awardExp(amount, reason, message=null) 
+    {
+      let experience = foundry.utils.duplicate(this.details.experience)
+      experience.total += amount
+      experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
+      this.parent.update({ "system.details.experience": experience }, {fromMessage : message});
+      ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
+    }
+
+    addToExpLog(amount, reason, newSpent, newTotal) 
+    {
+      if (!newSpent)
+        newSpent = this.details.experience.spent
+      if (!newTotal)
+        newTotal = this.details.experience.total
+
+      let expLog = foundry.utils.duplicate(this.details.experience.log || [])
+      expLog.push({ amount, reason, spent: newSpent, total: newTotal, type: newSpent ? "spent" : "total" });
+      return expLog
     }
 
     _handleExperienceChange(data) {

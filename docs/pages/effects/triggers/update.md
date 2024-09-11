@@ -31,7 +31,7 @@ let broken = this.actor.hasCondition("broken")
 if (broken)
 {
     broken.delete();
-    this.script.scriptNotification("Removed Broken")
+    this.script.notification("Removed Broken")
 }
 ```
 
@@ -51,7 +51,7 @@ let fatigued = this.actor.hasCondition("fatigued")
 if (!fatigued)
 {
     this.actor.addCondition("fatigued");
-    this.script.scriptNotification("Added Fatigued")
+    this.script.notification("Added Fatigued")
 }
 ```
 

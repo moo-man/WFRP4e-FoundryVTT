@@ -116,7 +116,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
-    this.actor = {type: "character", system: foundry.utils.deepClone(game.release.generation == 12 ? game.system.template.Actor.character : game.system.model.Actor.character), items: [] }
+    this.actor = {type: "character", system: foundry.utils.deepClone(game.system.template.Actor.character), items: [] }
 
     if (!game.user.isGM)
     {
@@ -290,14 +290,14 @@ export default class CharGenWfrp4e extends FormApplication {
         {
           items = [items]
         }
-        this.actor.items = this.actor.items.concat(items)
+        this.actor.items = this.actor.items.concat(items.filter(i => i))
       }
 
       let money = await WFRP_Utility.allMoneyItems()
 
       money.forEach(m => m.system.quantity.value = 0)
 
-      this.actor.items = this.actor.items.concat(money)
+      this.actor.items = this.actor.items.concat(money.filter(m => !this.actor.items.find(existing => existing.name == m.name)))
 
       // Get basic skills, add advancements (if skill advanced and isn't basic, find and add it)
       let skills = await WFRP_Utility.allBasicSkills();
@@ -373,7 +373,11 @@ export default class CharGenWfrp4e extends FormApplication {
 
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
-        let document = await Actor.create(this.actor);
+        // Must create items separately so preCreate scripts run
+        let actorItems = this.actor.items;
+        this.actor.items = [];
+        let document = await Actor.create(this.actor, {skipItems : true});
+        await document.createEmbeddedDocuments("Item", actorItems)
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }
@@ -382,10 +386,11 @@ export default class CharGenWfrp4e extends FormApplication {
         let tempActor = await Actor.create(this.actor, {temporary: true})
         for(let i of tempActor.items.contents)
         {
+          // Run preCreate scripts
           await i._preCreate(i._source, {}, game.user.id);
         }
         const payload =  {id : game.user.id, data : tempActor.toObject()}
-        let id = await game.wfrp4e.socket.executeOnUserAndWait("GM", "createActor", payload);
+        let id = await SocketHandlers.executeOnUserAndWait("GM", "createActor", payload);
         let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
           actor.sheet.render(true)

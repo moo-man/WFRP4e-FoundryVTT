@@ -4,5 +4,5 @@ if (test.failed)
 {
     let damage = this.effect.sourceTest.result.damage
 
-    this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true}))
+    this.script.message(await this.actor.applyBasicDamage(damage, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true}))
 }

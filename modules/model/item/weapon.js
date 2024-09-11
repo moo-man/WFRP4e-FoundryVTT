@@ -1,10 +1,16 @@
 import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
 import {StandardActorModel} from "../actor/standard";
+import {EquippableItemModel} from "./components/equippable.js";
 
 let fields = foundry.data.fields;
 
-export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
+/**
+ *
+ * @extends EquippableItemModel
+ * @mixes PropertiesMixin
+ */
+export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({
@@ -49,9 +55,17 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
             value: new fields.BooleanField({ initial: false })
         });
 
-        schema.equipped = new fields.BooleanField({ initial: false })
-
         return schema;
+    }
+
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleRoleModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isWeapon() {
+        return true;
     }
 
     //#region getters 
@@ -64,9 +78,8 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         return this.modeOverride?.value == "ranged" || (game.wfrp4e.config.groupToType[this.weaponGroup.value] == "ranged" && this.modeOverride?.value != "melee")
     }
 
-    get isEquipped() {
-
-        return this.equipped
+    get weighsLessEquipped() {
+        return false;
     }
 
     get WeaponGroup() {
@@ -153,29 +166,26 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
       //#endregion
 
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
 
         if (this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle") {
-            foundry.utils.setProperty(preCreateData, "system.equipped", true); // TODO: migrate this into a unified equipped property
+            this.updateSource({"system.equipped" : true}); // TODO: migrate this into a unified equipped property
         }
-
-        return preCreateData;
     }
 
 
-    async preUpdateChecks(data) {
-        await super.preUpdateChecks(data);
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
 
         if (this.weaponGroup.value == "throwing" && foundry.utils.getProperty(data, "system.ammunitionGroup.value") == "throwing") {
             delete data.system.ammunitionGroup.value
             return ui.notifications.notify(game.i18n.localize("SHEET.ThrowingAmmoError"))
         }
-    }
 
-    toggleEquip()
-    {
-        return this.parent.update({"system.equipped" : !this.isEquipped})
+        if (foundry.utils.hasProperty(data, "system.equipped")) {
+            data["system.offhand.value"] = false;
+        }
     }
 
     get usesHands()
@@ -192,12 +202,30 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
             {
                 locations.push(actor.secondaryArmLoc);
             }
-            else 
+            else
             {
                 locations.push(actor.mainArmLoc)
             }
         }
         return locations;
+    }
+
+    get equipPoints() {
+        return this.twohanded.value ? 2 : 1;
+        // return this.usesHands.length;
+    }
+
+    async toggleEquip(data = {}) {
+        return await super.toggleEquip(data);
+    }
+
+    get canEquip() {
+        const actor = this.parent.actor;
+        if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
+            return actor.equipPointsUsed + this.equipPoints <= actor.equipPointsAvailable;
+        }
+
+        return true;
     }
 
     get properties() {
@@ -237,13 +265,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
 
 
     computeOwned() {
-
-        if (this.weaponGroup.value == "blackpowder")
-        {
-            let effect = foundry.utils.deepClone(game.wfrp4e.utility.getSystemEffects().blackpowder);
-            effect.flags.wfrp4e.applicationData.type = "target";
-            this.weaponGroup.effect = new ActiveEffect.implementation(effect, {parent : this.parent});
-        }
 
         if (this.isRanged && this.ammo && (this.skillToUse || this.parent.actor.type == "vehicle"))
             this._addProperties(this.ammo.properties)
@@ -318,7 +339,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         if (game.settings.get("wfrp4e", "mooRangeBands")) {
             game.wfrp4e.utility.logHomebrew("mooRangeBands")
             if (!this.parent.getFlag("wfrp4e", "optimalRange"))
-                game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
+                warhammer.utility.log("Warning: No Optimal Range set for " + this.name)
 
             rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = this.#optimalDifference(game.i18n.localize("Point Blank")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Point Blank")}`].difficulty
@@ -349,7 +370,7 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
     #optimalDifference(range)
     {
         let keys = Object.keys(game.wfrp4e.config.rangeBands)
-        let rangeKey = game.wfrp4e.utility.findKey(range, game.wfrp4e.config.rangeBands)
+        let rangeKey = warhammer.utility.findKey(range, game.wfrp4e.config.rangeBands)
         let weaponRange = this.parent.getFlag("wfrp4e", "optimalRange")
         if (!weaponRange || !rangeKey)
             return 1
@@ -546,12 +567,6 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
         return super.getOtherEffects().concat(other);
     }
 
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
-
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);
 
@@ -621,5 +636,13 @@ export class WeaponModel extends PropertiesMixin(PhysicalItemModel) {
 
         properties = properties.filter(p => !!p);
         return properties;
+    }
+
+    static migrateData(data)
+    {
+        super.migrateData(data);
+        if (data.equipped && typeof data.equipped !== 'object') {
+            data.equipped = {value: data.equipped};
+        }
     }
 }

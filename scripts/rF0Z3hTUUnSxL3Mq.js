@@ -33,5 +33,5 @@ let optional = [belligerent, bestial, big, blessed, champion, die, fast, frenzy,
 let chosen = await ItemDialog.create(optional, "unlimited", "Choose Optional Traits");
 
 items = items.concat(chosen || [])
-this.script.scriptNotification(`Adding ${items.map(i => i.name).join(", ")}`);
+this.script.notification(`Adding ${items.map(i => i.name).join(", ")}`);
 this.actor.createEmbeddedDocuments("Item", items, {fromEffect : this.effect.id})

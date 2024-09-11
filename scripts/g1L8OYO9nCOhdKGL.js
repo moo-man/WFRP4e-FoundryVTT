@@ -6,7 +6,7 @@ let damage = (await new Roll(`1d10 + ${parseInt(this.effect.sourceTest.result.SL
 
 await damage.toMessage(this.script.getChatData())
 
-this.script.scriptMessage(await args.actor.applyBasicDamage(
+this.script.message(await args.actor.applyBasicDamage(
   damage.total,
   {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg: true}
 ))

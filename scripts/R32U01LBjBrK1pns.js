@@ -23,7 +23,7 @@
         <p><strong>Personality Quirk</strong>: ${personalityQuirk}</p>
         `
         
-        this.script.scriptMessage(bio, {whisper : ChatMessage.getWhisperRecipients("GM")})
+        this.script.message(bio, {whisper : ChatMessage.getWhisperRecipients("GM")})
 
         await this.actor.update({"system.details.gmnotes.value" : bio})
 

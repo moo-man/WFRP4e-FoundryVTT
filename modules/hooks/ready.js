@@ -5,6 +5,7 @@ import MooHouseRules from "../system/moo-house.js"
 export default function () {
   Hooks.on("ready", async () => {
 
+    SocketHandlers.register.bind(SocketHandlers)();
 
     Object.defineProperty(game.user, "isUniqueGM", {
       get: function () { return game.user.id == game.users.activeGM.id }
@@ -13,7 +14,7 @@ export default function () {
     //***** Change cursor styles if the setting is enabled *****
 
     if (game.settings.get('wfrp4e', 'customCursor')) {
-      WFRP_Utility.log('Using custom cursor', true)
+      warhammer.utility.log('Using custom cursor', true)
       if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png")) {
         let link = document.createElement('link');
         link.setAttribute('rel', 'stylesheet')
@@ -23,7 +24,7 @@ export default function () {
         document.head.appendChild(link);
       }
       else {
-        WFRP_Utility.log('No custom cursor found', true)
+        warhammer.utility.log('No custom cursor found', true)
       }
     }
 
@@ -35,8 +36,6 @@ export default function () {
       ui.notifications.notify(game.i18n.localize("AutoFillAdvantageDisabled"), {permanent : true})
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
-
-    game.wfrp4e.socket.register();
 
     const body = $("body");
     body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
@@ -52,19 +51,21 @@ export default function () {
 
 
 
-    const MIGRATION_VERSION = 9;
+    const MIGRATION_VERSION = 10;
     let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `<h1>The Effect Refactor</h1>
-        <p>WFRP4e Version 7.1.0 has entirely reworked how Active Effects are implemented, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>
+        <p>If you are updating from pre-WFRP4e Version 7.1.0, Active Effect scripting has been greatly reworked, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>
         
         <p><strong>Minimum</strong>: Make sure your preimum modules are updated! Delete module content you've imported in your world, then replace every Talent on your unique Actors, like Player Characters or other ones you've created yourself. Reimport the module content you wish to use, which should be updated with the latest Items.</p>
         
         <p>If Talents aren't replaced in this way, you may notice that the Roll Dialog won't have the selectable SL bonuses from the Talents.<p/>
         
         <p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/effects/effect-refactor.html">Read more about the Effect Refactor</a></p>
+
+        <p>Note that if this is a brand new world, you can disregard this message.</p>
         `
-      }, {speaker : {alias : "ATTENTION"}}
+      }, {speaker : {alias : "ATTENTION - PLEASE READ"}}
         )
       game.wfrp4e.migration.migrateWorld()
     }
@@ -83,14 +84,6 @@ export default function () {
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     game.wfrp4e.tags.createTags();
-
-    
-    if (game.release.generation == 12)
-    {
-      ui.notifications.warn("Please note that the <strong>WFRP4e System</strong> has not been made fully compatible with V12 and issues may occur.")
-    }
-
-
   })
 
   FoundryOverrides();

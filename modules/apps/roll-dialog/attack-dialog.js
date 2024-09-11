@@ -181,7 +181,7 @@ export default class AttackDialog extends SkillDialog
         }
     }
 
-    async _onInputChanged(ev) 
+    async _onFieldChange(ev) 
     {
       if (ev.currentTarget.name == "charging")
       {
@@ -204,6 +204,6 @@ export default class AttackDialog extends SkillDialog
           this.flags.charging = ev.currentTarget.checked;
         }
       }
-        super._onInputChanged(ev)
+        super._onFieldChange(ev)
     }
 }

@@ -1,38 +1,4 @@
-import AreaHelpers from "./area-helpers.js";
-import WFRP_Utility from "./utility-wfrp4e.js";
-
 export default function () {
-
-
-  // Convert functions that move data between world and compendium to retain ID
-  Actors.prototype.fromCompendium = keepID(Actors.prototype.fromCompendium);
-  Items.prototype.fromCompendium = keepID(Items.prototype.fromCompendium);
-  Journal.prototype.fromCompendium = keepID(Journal.prototype.fromCompendium);
-  Scenes.prototype.fromCompendium = keepID(Scenes.prototype.fromCompendium);
-  RollTables.prototype.fromCompendium = keepID(RollTables.prototype.fromCompendium);
-
-  Actor.implementation.prototype.toCompendium = keepID(Actor.implementation.prototype.toCompendium);
-  Item.implementation.prototype.toCompendium = keepID(Item.implementation.prototype.toCompendium);
-  JournalEntry.implementation.prototype.toCompendium = keepID(JournalEntry.implementation.prototype.toCompendium);
-  Scene.implementation.prototype.toCompendium = keepID(Scene.implementation.prototype.toCompendium);
-  RollTable.implementation.prototype.toCompendium = keepID(RollTable.implementation.prototype.toCompendium);
-
-
-
-  function keepID(orig)
-  {
-    return function(...args)
-    {
-      try {
-        args[1].keepId = true;
-      }
-      catch(e)
-      {
-        console.error("Error setting keepId: " + e);
-      }
-      return orig.bind(this)(...args);
-    }
-  }
 
   // Modify the initiative formula depending on whether the actor has ranks in the Combat Reflexes talent
   Combatant.prototype._getInitiativeFormula = function () {
@@ -82,7 +48,7 @@ export default function () {
                overlay = {src: f.icon, tint};
                continue;
              }
-             promises.push(this._drawEffect(f.icon, tint,  foundry.utils.getProperty(f, "flags.wfrp4e.value")));
+             promises.push(this._drawEffect(f.icon, tint,  f.system.condition.value));
            }
      
            // Next draw token effects
@@ -125,109 +91,4 @@ export default function () {
       
       return this.effects.addChild(icon);
     }
-
-
-//   /**
-// * Handle toggling a token status effect icon
-// * @private
-// */
-  TokenHUD.prototype._onToggleEffect = function (event, { overlay = false } = {}) {
-    event.preventDefault();
-    event.stopPropagation();
-    let img = event.currentTarget;
-    const effect = (img.dataset.statusId && this.object.actor) ?
-      CONFIG.statusEffects.find(e => e.id === img.dataset.statusId) :
-      img.getAttribute("src");
-
-    if (event.button == 0)
-      return this.object.incrementCondition(effect)
-    if (event.button == 2)
-      return this.object.decrementCondition(effect)
-    //return this.object.toggleEffect(effect, {overlay});
-  }
-
-
-  Token.prototype.incrementCondition = async function (effect, { active, overlay = false } = {}) {
-    const existing = this.actor.hasCondition(effect.id);
-    if (!existing || Number.isNumeric(getProperty(existing, "flags.wfrp4e.value")))
-      await this.actor.addCondition(effect.id)
-    else if (existing) // Not numeric, toggle if existing
-      await this.actor.removeCondition(effect.id)
-
-    // Update the Token HUD
-    if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
-    return active;
-  }
-
-  Token.prototype.decrementCondition = async function (effect, { active, overlay = false } = {}) {
-    await this.actor.removeCondition(effect.id)
-
-    // Update the Token HUD
-    if (this.hasActiveHUD) canvas.tokens.hud.refreshStatusIcons();
-    return active;
-  }
-
-
-  Token.prototype.renderAuras = function()
-  {
-    let actor = this.actor;
-    this.auras = this.auras || [];
-
-    for(let aura of this.auras)
-    {
-      aura.destroy();
-    }
-
-    if (this.isVisible)
-    {
-      this.auras = actor.auras.filter(auraEffect => auraEffect.applicationData.renderAura).map(aura => {
-        let template = AreaHelpers.effectToTemplate(aura)
-        let child = this.addChild(template)
-        child.draw().then(t => {
-          // Return the template to the center of the token, its PIXI parent
-          // must use this.document as on initial world load this.x/y is 0
-          t.template.x -= this.document.x;
-          t.template.y -= this.document.y;
-        });
-        return child;
-      })
-    }
-  }
-  
-  /**
-   * Handle JournalEntry document drop data
-   * @param {DragEvent} event   The drag drop event
-   * @param {object} data       The dropped data transfer data
-   * @protected
-   */
-  NotesLayer.prototype._onDropData = async function(event, data) {
-    let entry;
-    const coords = this._canvasCoordinatesFromDrop(event);
-    if ( !coords ) return false;
-    const noteData = {x: coords[0], y: coords[1]};
-    if ( data.type === "JournalEntry" ) entry = await JournalEntry.implementation.fromDropData(data);
-    if ( data.type === "JournalEntryPage" ) {
-      const page = await JournalEntryPage.implementation.fromDropData(data);
-      entry = page.parent;
-      noteData.pageId = page.id;
-      noteData.flags = {anchor : data.anchor }
-    }
-    if ( entry?.compendium ) {
-      const journalData = game.journal.fromCompendium(entry);
-      entry = await JournalEntry.implementation.create(journalData);
-    }
-    noteData.entryId = entry?.id;
-    return this._createPreview(noteData, {top: event.clientY - 20, left: event.clientX + 40});
-  }
-
- let _NoteConfigSubmitData = NoteConfig.prototype._getSubmitData
-  
-  NoteConfig.prototype._getSubmitData = function(updateData={})
-  {
-    let data = _NoteConfigSubmitData.bind(this)(updateData)
-
-    data["flags.anchor"] = this.object.flags.anchor
-    return data
-  } 
 }
-  

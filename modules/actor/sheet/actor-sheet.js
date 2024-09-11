@@ -1,30 +1,30 @@
-import MarketWfrp4e from "../../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../../apps/market-wfrp4e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import WFRP_Audio from "../../system/audio-wfrp4e.js"
 import NameGenWfrp from "../../apps/name-gen.js";
-import EffectWfrp4e from "../../system/effect-wfrp4e.js";
-import WFRP4eSheetMixin from "./mixin.js"
-import AbilityTemplate from "../../system/aoe.js";
+import ActiveEffectWFRP4e from "../../system/effect-wfrp4e.js";
 import { GenericAspectModel } from "../../model/item/generic.js";
+import Advancement from "../../system/advancement.js";
+import {EquippableItemModel} from "../../model/item/components/equippable.js";
 
 /**
  * Provides the data and general interaction with Actor Sheets - Abstract class.
  *
- * ActorSheetWfrp4e provides the general interaction and data organization shared among all 
+ * ActorSheetWFRP4e provides the general interaction and data organization shared among all 
  * actor sheets, as this is an abstract class, inherited by either Character, NPC, or Creature
  * specific actor sheet classes. When rendering an actor sheet, getData() is called, which is
  * a large and key that prepares the actor data for display, processing the raw data
  * and items and compiling them into data to display on the sheet. Additionally, this class
  * contains all the main events that respond to sheet interaction in activateListeners().
  *
- * @see   ActorWfrp4e - Data and main computation model (this.actor)
- * @see   ActorSheetWfrp4eCharacter - Character sheet class
- * @see   ActorSheetWfrp4eNPC - NPC sheet class
- * @see   ActorSheetWfrp4eCreature - Creature sheet class
+ * @see   ActorWFRP4e - Data and main computation model (this.actor)
+ * @see   ActorSheetWFRP4eCharacter - Character sheet class
+ * @see   ActorSheetWFRP4eNPC - NPC sheet class
+ * @see   ActorSheetWFRP4eCreature - Creature sheet class
  *
- * @property {ActorWfrp4e} actor
+ * @property {ActorWFRP4e} actor
  */
-export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
+export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   static get defaultOptions() {
     const options = super.defaultOptions;
@@ -52,47 +52,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     this.element.find(".configure-token").attr({"data-tooltip" : game.i18n.localize("SHEET.Token"), "data-tooltip-direction" : "UP"});
     this.element.find(".import").attr({"data-tooltip" : game.i18n.localize("SHEET.Import"), "data-tooltip-direction" : "UP"});
 
-    WFRP_Utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
-    WFRP_Utility.addLinkSources(this.element);
+    warhammer.utility.replacePopoutTokens(this.element); // Opposed attackers show as tokens, replace popout versions with normal
 
     this._refocus(this._element)
 
   }
-
-  // /**
-  //  * Saves all the scroll positions in the sheet for setScrollPos() to use
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position saved to
-  //  * this.scrollPos array, which is used when rendering (rendering a sheet resets all 
-  //  * scroll positions by default).
-  //  */
-  // _saveScrollPos() {
-  //   if (this.form === null)
-  //     return;
-
-  //   const html = $(this.form).parent();
-  //   this.scrollPos = [];
-  //   let lists = $(html.find(".save-scroll"));
-  //   for (let list of lists) {
-  //     this.scrollPos.push($(list).scrollTop());
-  //   }
-  // }
-
-  // /**
-  //  * Sets all scroll positions to what was saved by saveScrollPos()
-  //  * 
-  //  * All elements in the sheet that use ".save-scroll" class has their position set to what was
-  //  * saved by saveScrollPos before rendering. 
-  //  */
-  // _setScrollPos() {
-  //   if (this.scrollPos) {
-  //     const html = $(this.form).parent();
-  //     let lists = $(html.find(".save-scroll"));
-  //     for (let i = 0; i < lists.length; i++) {
-  //       $(lists[i]).scrollTop(this.scrollPos[i]);
-  //     }
-  //   }
-  // }
 
   _refocus(html) {
     try {
@@ -106,7 +70,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       }
     }
     catch (e) {
-      WFRP_Utility.log("Could not refocus tabbed element on character sheet")
+      warhammer.utility.log("Could not refocus tabbed element on character sheet")
     }
   }
 
@@ -114,7 +78,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
    * Provides the data to the template when rendering the actor sheet
    * 
    * This is called when rendering the sheet, where it calls the base actor class
-   * to organize, process, and prepare all actor data for display. See ActorWfrp4e.prepare()
+   * to organize, process, and prepare all actor data for display. See ActorWFRP4e.prepare()
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
@@ -387,18 +351,18 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   addConditionData(sheetData) {
     try {
-      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
-      let currentConditions = this.actor.conditions
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWFRP4e(e));
+      let currentConditions = this.actor.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
       
       for (let condition of conditions) {
         let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
         if (owned) {
           condition.existing = true
-          condition.flags.wfrp4e.value = owned.conditionValue;
+          condition.system.condition.value = owned.conditionValue;
         }
         else if (condition.isNumberedCondition) {
-          condition.flags.wfrp4e.value = 0
+          condition.system.condition.value = 0
         }
       }
       sheetData.effects.conditions = conditions
@@ -486,7 +450,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         catch(e)
         {
           ui.notifications.error("Error formatting armour section using Hit Location Table, using fallback implementation")
-          WFRP_Utility.log("Hit Location Format Error: " + e, true)
+          warhammer.utility.log("Hit Location Format Error: " + e, true)
           AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
         }
       }
@@ -571,7 +535,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
                 let test = await this.actor.setupChannell(spell, options);
                 await test.roll();
                 if (test.context.channelUntilSuccess) {
-                  await WFRP_Utility.sleep(200);
+                  await warhammer.utility.sleep(200);
                   do {
                     if (test.item.cn.SL >= test.item.cn.value) {
                       break;
@@ -581,7 +545,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
                     }
                     test.context.messageId = null; // Clear message so new message is made
                     await test.roll();
-                    await WFRP_Utility.sleep(200);
+                    await warhammer.utility.sleep(200);
                   } while (true);
                 }
               }
@@ -657,7 +621,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.repeater', this._onRepeaterClick.bind(this));
     html.on('click', '.item-toggle', this._onItemToggle.bind(this));
     html.on('click', '.item-remove', this._onItemRemove.bind(this));
-    html.on('click', '.item-delete', this._onItemDelete.bind(this));
     html.on('click', '.fist-icon', this._onUnarmedClick.bind(this));
     html.on('click', '.item-create', this._onItemCreate.bind(this));
     html.on('click', '.aggregate', this._onAggregateClick.bind(this));
@@ -671,7 +634,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('change', '.ammo-selector', this._onSelectAmmo.bind(this));
     html.on('click', '.randomize', this._onRandomizeClicked.bind(this));
     html.on('change', '.input.species', this._onSpeciesEdit.bind(this));
-    html.on('click', '.effect-delete', this._onEffectDelete.bind(this));
     html.on('mousedown', '.prayer-roll', this._onPrayerRoll.bind(this));
     html.on('click', '.effect-create', this._onEffectCreate.bind(this));
     html.on('click', '.item-checkbox', this._onCheckboxClick.bind(this));
@@ -712,11 +674,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     html.on('click', '.open-vehicle', this._onVehicleClick.bind(this));
     html.on('click', '.remove-vehicle', this._onVehicleRemove.bind(this));
     html.on('click', '.aspect-use', this._onAspectClick.bind(this))
-
-    
-    html.on("click", ".trigger-script", this._onTriggerScript.bind(this));
-    html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
-    html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
 
     // Item Dragging
     let handler = this._onDragStart.bind(this);
@@ -911,7 +868,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     if (this.actor.type == "character")
     {
-      let resolved = await WFRP_Utility.advancementDialog(ch, newValue, "characteristic", this.actor)
+      let resolved = await Advancement.advancementDialog(ch, newValue, "characteristic", this.actor)
 
       // If not resolved, reset characteristic ui value
       if (!resolved)
@@ -936,7 +893,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let itemToEdit = this.actor.items.get(itemId);
     if (this.actor.type == "character")
     {
-      let resolved = await WFRP_Utility.advancementDialog(
+      let resolved = await Advancement.advancementDialog(
         itemToEdit,
         Number(ev.target.value), 
         "skill", 
@@ -1137,7 +1094,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
     let memorize = true;
     if (this.actor.type == "character") {
-      memorize = await WFRP_Utility.memorizeCostDialog(spell, this.actor)
+      memorize = await Advancement.memorizeCostDialog(spell, this.actor)
     }
 
     if (!memorize) 
@@ -1172,33 +1129,16 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
 
   async _onDiseaseRoll(ev) {
-    const itemId = this._getId(ev);
-    let disease = this.actor.items.get(itemId).toObject();
-    const type = ev.target.dataset["type"];
+    const disease = this._getDocument(ev);
 
-    if (!isNaN(disease.system[type].value)) {
-      if (ev.button === 0) {
-        disease = await this.actor.decrementDisease(disease, false);
-      } else {
-        let number = Number(disease.system[type].value)
-        disease.system[type].value = ++number;
-
-        if (type === "incubation")
-          disease.system.duration.active = false;
-      }
-    } else if (ev.button === 0) {
-      try {
-        disease.system[type].value = (await new Roll(disease.system[type].value).roll()).total;
-
-        if (type === "duration")
-          disease.system.duration.active = true;
-      } catch {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseDisease"));
-      }
+    if (ev.button === 0) 
+    {
+      disease.system.decrement();
+    } 
+    else 
+    {
+      disease.system.increment();
     }
-
-    if (disease)
-      await this.actor.updateEmbeddedDocuments("Item", [disease]);
   }
 
   async _onInjuryDurationClick(ev) {
@@ -1267,10 +1207,9 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     return this.actor.decrementDiseases()
   }
 
-  _onItemDelete(ev) {
-    let li = $(ev.currentTarget).parents(".item")
-    let itemId = this._getId(ev);
-    if (this.actor.items.get(itemId).name == "Boo") {
+  async _onDeleteEmbeddedDoc(ev) {
+    let doc = await this._getDocumentAsync(ev);
+    if (doc.name == "Boo") {
       AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}squeek.wav` }, false)
       return
     }
@@ -1283,7 +1222,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         buttons: {
           yes: {
             icon: '<i class="fa fa-check"></i>', label: game.i18n.localize("Yes"), callback: async dlg => {
-              await this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+              doc.delete();
               li.slideUp(200, () => this.render(false))
             }
           }, cancel: { icon: '<i class="fas fa-times"></i>', label: game.i18n.localize("Cancel") },
@@ -1304,30 +1243,22 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     return item.update({ "system.countEnc.value": !item.countEnc.value })
   }
 
-  _onItemToggle(ev) {
-    let itemId = this._getId(ev);
-    let item = this.actor.items.get(itemId).toObject()
+  async _onItemToggle(ev) {
     let equippedState;
-    if (item.type == "armour") {
-      item.system.worn.value = !item.system.worn.value;
-      equippedState = item.system.worn.value
-    } else if (item.type == "weapon") {
-      item.system.equipped = !item.system.equipped;
-      equippedState = item.system.equipped
-      let newEqpPoints = item.system.twohanded.value ? 2 : 1
-      if (game.settings.get("wfrp4e", "limitEquippedWeapons") && this.actor.type != "vehicle")
-        if (this.actor.equipPointsUsed + newEqpPoints > this.actor.equipPointsAvailable && equippedState) {
-          AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav` }, false)
-          return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"))
-        }
-      foundry.utils.setProperty(item, "system.offhand.value", false)
+    let itemId = this._getId(ev);
+    let item = this.actor.items.get(itemId);
+
+    if (!item) return;
+    if (!(item.system instanceof EquippableItemModel)) return;
+
+    if (!item.system.isEquipped && !item.system.canEquip) {
+      AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}/no.wav`}, false);
+      return ui.notifications.error(game.i18n.localize("ErrorLimitedWeapons"));
     }
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories") {
-      item.system.worn = !item.system.worn;
-      equippedState = item.system.worn
-    }
+
+    equippedState = await item.system.toggleEquip();
+
     WFRP_Audio.PlayContextAudio({ item: this.actor.items.get(itemId), action: "equip", outcome: equippedState })
-    this.actor.updateEmbeddedDocuments("Item", [item])
   }
 
   _onCheckboxClick(ev) {
@@ -1367,8 +1298,9 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   _onWornClick(ev) {
     let itemId = this._getId(ev);
-    let item = this.actor.items.get(itemId)
-    return item.update({ "system.worn.value": !item.worn.value })
+    let item = this.actor.items.get(itemId);
+
+    return item?.system.toggleEquip();
   }
 
   _onQuantityClick(ev) {
@@ -1431,7 +1363,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   }
   async _onConditionToggle(ev) {
     let condKey = $(ev.currentTarget).parents(".sheet-condition").attr("data-cond-id")
-    if (game.wfrp4e.config.statusEffects.find(e => e.id == condKey).flags.wfrp4e.value == null) {
+    if (!game.wfrp4e.config.statusEffects.find(e => e.id == condKey).system.condition.numbered) {
       if (this.actor.hasCondition(condKey))
         await this.actor.removeCondition(condKey)
       else 
@@ -1450,7 +1382,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     let subspecies
     if (split.length > 1)
       subspecies = split[1].replace(")", "").trim()
-    let speciesKey = WFRP_Utility.findKey(species, game.wfrp4e.config.species) || species
+    let speciesKey = warhammer.utility.findKey(species, game.wfrp4e.config.species) || species
     let subspeciesKey = ""
     if (subspecies) {
       for (let sub in game.wfrp4e.config.subspecies[speciesKey]) {
@@ -1485,64 +1417,24 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
 
   async _onRandomizeClicked(ev) {
     ev.preventDefault();
-    let species = this.actor.details.species.value;
-    let subspecies = this.actor.details.species.subspecies;
+    let advancement = new Advancement(this.actor);
+
     try {
       switch (ev.target.text) {
-        case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
-          let characteristics = this.actor.toObject().system.characteristics;
-          if (this.actor.type == "creature" || !species) creatureMethod = true;
-          if (!creatureMethod) {
-            let averageCharacteristics = await WFRP_Utility.speciesCharacteristics(species, true, subspecies);
-            for (let char in characteristics) {
-              if (characteristics[char].initial != averageCharacteristics[char].value) creatureMethod = true
-            }
-          }
-          if (!creatureMethod) {
-            let rolledCharacteristics = await WFRP_Utility.speciesCharacteristics(species, false, subspecies);
-            for (let char in rolledCharacteristics) {
-              characteristics[char].initial = rolledCharacteristics[char].value
-            }
-            await this.actor.update({ "system.characteristics": characteristics })
-          }
-          else if (creatureMethod) {
-            let roll = new Roll("2d10");
-            await roll.roll();
-            let characteristics = this.actor.toObject().system.characteristics;
-            for (let char in characteristics) {
-              if (characteristics[char].initial == 0)
-                continue
-              characteristics[char].initial -= 10;
-              characteristics[char].initial += (await roll.reroll()).total;
-              if (characteristics[char].initial < 0)
-                characteristics[char].initial = 0
-            }
-            await this.actor.update({ "system.characteristics": characteristics })
-          }
+        case game.i18n.localize("RANDOMIZER.C"): 
+          advancement.advanceSpeciesCharacteristics()
           return
-
         case game.i18n.localize("RANDOMIZER.S"):
-          this.actor._advanceSpeciesSkills()
+          advancement.advanceSpeciesSkills()
           return
         case game.i18n.localize("RANDOMIZER.T"):
-          this.actor._advanceSpeciesTalents()
+          advancement.advanceSpeciesTalents()
           return
       }
     }
     catch (error) {
-      WFRP_Utility.log("Could not randomize: " + error, true)
+      warhammer.utility.log("Could not randomize: " + error, true)
     }
-  }
-
-  _onTriggerScript(ev)
-  {
-      let uuid = this._getUUID(ev);
-      let index = this._getIndex(ev);
-
-      let effect =  fromUuidSync(uuid);
-      let script = effect.manualScripts[index];
-
-      script.execute({actor : this.actor});
   }
 
   // Add condition description dropdown
@@ -1607,7 +1499,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _onMoneyIconClicked(ev) {
     ev.preventDefault();
     let money = this.actor.getItemTypes("money");
-    let newMoney = MarketWfrp4e.consolidateMoney(money.map(i => i.toObject()));
+    let newMoney = MarketWFRP4e.consolidateMoney(money.map(i => i.toObject()));
     return this.actor.updateEmbeddedDocuments("Item", newMoney)
   }
 
@@ -1706,48 +1598,6 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
       aspect.system.use();
     }
   }
-
-  async _onApplyTargetEffect(event) {
-
-    let applyData = {};
-    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
-    let effect = await fromUuid(uuid);
-    if (effect) 
-    {
-      applyData = { effectData: [effect.convertToApplied()] }
-    }
-    else 
-    {
-      return ui.notifications.error("Unable to find effect to apply")
-    }
-
-    // let effect = actor.populateEffect(effectId, item, test)
-
-    let targets = Array.from(game.user.targets).map(t => t.actor)    
-    if (!(await effect.runPreApplyScript({targets})))
-    {
-      return
-    }
-    game.user.updateTokenTargets([]);
-    game.user.broadcastActivity({ targets: [] });
-
-    for (let target of targets) 
-    {
-      await target.applyEffect(applyData);
-    }
-  }
-
-  async _onPlaceAreaEffect(event) {
-    let effectUuid = event.currentTarget.dataset.uuid;
-    let effect = await fromUuid(effectUuid)
-    if (!(await effect.runPreApplyScript()))
-    {
-      return
-    }
-    let template = await AbilityTemplate.fromEffect(effectUuid)
-    await template.drawPreview(event);
-  }
-
 
   //#endregion
 
@@ -1891,7 +1741,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         data.status.resilience.value = dragData.payload.resilience;
         data.status.resolve.value = dragData.payload.resilience;
         data.system.details.experience.total += dragData.payload.exp;
-        data.system.details.experience.log = this.actor._addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
+        data.system.details.experience.log = this.actor.system.addToExpLog(dragData.payload.exp, "Character Creation", undefined, data.system.details.experience.total)
       }
       for (let c in game.wfrp4e.config.characteristics) {
         data.characteristics[c].initial = dragData.payload.characteristics[c].value
@@ -1933,7 +1783,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
   _onDropExperience(dragData) {
     let system = foundry.utils.duplicate(this.actor._source.system);
     system.details.experience.total += dragData.payload;
-    system.details.experience.log = this.actor._addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
+    system.details.experience.log = this.actor.system.addToExpLog(dragData.payload, "Character Creation", undefined, system.details.experience.total);
     this.actor.update({ "system": system })
   }
 
@@ -2082,11 +1932,11 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
         {
           if (effect.isTargetApplied)
           {
-            effectButtons += `<a class="apply-target-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
+            effectButtons += `<a class="apply-target" data-uuid=${effect.uuid}><i class="fa-solid fa-crosshairs"></i> ${effect.name}</a>`
           }
           else if (effect.isAreaApplied)
           {
-            effectButtons += `<a class="place-area-effect" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
+            effectButtons += `<a class="place-area" data-uuid=${effect.uuid}><i class="fa-solid fa-ruler-combined"></i> ${effect.name}</a>`
           }
         }
         div.append(`<div>${effectButtons}</div>`)
@@ -2304,7 +2154,7 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     }
     else // Otherwise, just lookup the key for the property and use that to lookup the description
     {
-      propertyKey = WFRP_Utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
+      propertyKey = warhammer.utility.findKey(WFRP_Utility.parsePropertyName(property), properties)
     }
 
     let propertyDescription = "<b>" + property + "</b>" + ": " + propertyDescr[propertyKey];
@@ -2386,14 +2236,14 @@ export default class ActorSheetWfrp4e extends WFRP4eSheetMixin(ActorSheet) {
     else if (classes.hasClass("weapon-group")) {
       let weaponGroup = ev.target.text;
       let weaponGroupKey = "";
-      weaponGroupKey = WFRP_Utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
+      weaponGroupKey = warhammer.utility.findKey(weaponGroup, game.wfrp4e.config.weaponGroups);
       expansionText = game.wfrp4e.config.weaponGroupDescriptions[weaponGroupKey];
     }
     // Expand the weapon's reach description
     else if (classes.hasClass("weapon-reach")) {
       let reach = ev.target.text;
       let reachKey;
-      reachKey = WFRP_Utility.findKey(reach, game.wfrp4e.config.weaponReaches);
+      reachKey = warhammer.utility.findKey(reach, game.wfrp4e.config.weaponReaches);
       expansionText = game.wfrp4e.config.reachDescription[reachKey];
     }
 

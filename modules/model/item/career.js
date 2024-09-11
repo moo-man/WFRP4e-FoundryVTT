@@ -32,13 +32,24 @@ export class CareerModel extends BaseItemModel
         schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
         return schema;
     }
+      /**
+   * Used to identify an Item as one being a child or instance of CareerModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isCareer() {
+    return true;
+  }
 
 
-    createChecks()
+    async _onCreate(data, options, user)
     {
+        await super._onCreate(data, options, user);
+        
         if (this.parent.actor?.type == "creature") 
         {
-            this.parent.actor.advanceNPC(this.parent);
+            await this.parent.actor.system.advance(this.parent);
         }
     }
 

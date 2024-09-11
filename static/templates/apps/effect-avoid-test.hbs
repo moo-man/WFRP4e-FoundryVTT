@@ -1,0 +1,32 @@
+<div class="form-group">
+    <label>{{localize "Characteristic"}}</label>
+    <div class="form-fields">
+        <select name="system.transferData.avoidTest.characteristic">
+            {{#select system.transferData.avoidTest.characteristic}}
+                {{#each (config "characteristics")}}
+                    <option value="{{@key}}">{{this}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label>{{localize "Skill"}}</label>
+    <div class="form-fields">
+        <input type="text" name="system.transferData.avoidTest.skill" value="{{system.transferData.avoidTest.skill}}">
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label>{{localize "Difficulty"}}</label>
+    <div class="form-fields">
+        <select name="system.transferData.avoidTest.difficulty">
+        {{#select system.transferData.avoidTest.difficulty}}
+            <option value=""></option>
+            {{#each (config "difficultyLabels")}}
+              <option value="{{@key}}">{{this}}</option>
+            {{/each}}
+        {{/select}}
+        </select>
+    </div>
+</div>

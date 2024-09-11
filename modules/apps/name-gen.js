@@ -8,7 +8,7 @@
 
 export default class NameGenWfrp {
   static _loadNames() {
-    WFRP_Utility.log("Loading Names...", true)
+    warhammer.utility.log("Loading Names...", true)
 
     // Surname option 1
     fetch("systems/wfrp4e/names/human_surnames.txt").then(r => r.text()).then(async nameText => {

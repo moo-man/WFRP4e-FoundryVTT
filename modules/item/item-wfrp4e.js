@@ -1,12 +1,11 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import WFRP4eDocumentMixin from "../actor/mixin"
 
 /**
  * @extends Item
- * @mixes WFRP4eDocumentMixin
+ * @mixes WarhammerItem
  * @category - Documents
  */
-export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
+export default class ItemWfrp4e extends WarhammerItem
 {
   async _preCreate(data, options, user) {
     let migration = game.wfrp4e.migration.migrateItemData(this)
@@ -15,7 +14,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     if (!foundry.utils.isEmpty(migration))
     {
       this.updateSource(migration)
-      WFRP_Utility.log("Migrating Item: " + this.name, true, migration)
+      warhammer.utility.log("Migrating Item: " + this.name, true, migration)
     }
 
     await super._preCreate(data, options, user)
@@ -59,7 +58,7 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
       // Cannot simply call runScripts here because that would only be for Item effects
       // If an item has a transfered effect, it won't call "addItems" scripts because the effect's
       // onCreate method isn't called. Same reason handleImmediate scripts doesn't call runScripts
-      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == "document" && ["Actor", "Item"].includes(effect.applicationData.documentType));
+      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.system.transferData.type == "document" && ["Actor", "Item"].includes(effect.system.transferData.documentType));
       for(let effect of effects)
       {
         for(let script of effect.scripts.filter(s => s.trigger == "addItems"))
@@ -78,11 +77,6 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     if (game.user.id != user)
     {
         return;
-    }
-    
-    if (foundry.utils.hasProperty(data, "system.worn") || foundry.utils.hasProperty(data, "system.equipped"))
-    {
-      await Promise.all(this.runScripts("equipToggle", {equipped : this.isEquipped}))
     }
 
     if (this.actor) {
@@ -142,15 +136,15 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
     async handleImmediateScripts(data, options, user)
     {
         let effects = Array.from(this.allApplicableEffects()).filter(effect => 
-            effect.applicationData.type == "document" && 
-            effect.applicationData.documentType == "Actor"); // We're looking for actor because if the immediate script was for the Item, it would've been called when it was created. 
+            effect.system.transferData.type == "document" && 
+            effect.system.transferData.documentType == "Actor"); // We're looking for actor because if the immediate script was for the Item, it would've been called when it was created. 
 
         for(let e of effects)
         {
             let keepEffect = await e.handleImmediateScripts(data, options, user);
             if (keepEffect == false) // Can't actually delete the effect because it's owned by an item in _preCreate. Change it to `other` type so it doesn't show in the actor
             {
-                e.updateSource({"flags.wfrp4e.applicationData.type" : "other"});
+                e.updateSource({"system.transferData.type" : "other"});
             }
         }
 
@@ -182,6 +176,82 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
 
   }
 
+  async addCondition(effect, value = 1, mergeData={}) {
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
+    if (typeof (effect) === "string")
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+
+    let existing = this.hasCondition(effect.id)
+
+    if (existing && !existing.isNumberedCondition)
+      return existing
+    else if (existing) 
+    {
+      return existing.update({"system.condition.value" : existing.conditionValue + value})
+    }
+    else if (!existing) {
+      effect.name = game.i18n.localize(effect.name);
+
+      if (effect.system.condition.numbered)
+        effect.system.condition.value = value;
+        
+      effect["statuses"] = [effect.id];
+
+      foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
+
+      delete effect.id
+      return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})
+    }
+  }
+
+  async removeCondition(effect, value = 1) {
+    if (typeof (effect) === "string")
+      effect = foundry.utils.duplicate(game.wfrp4e.config.statusEffects.find(e => e.id == effect))
+    if (!effect)
+      return "No Effect Found"
+
+    if (!effect.id)
+      return "Conditions require an id field"
+
+    if (value == 0)
+    {
+      return;
+    }
+    if (typeof value == "string")
+    {
+      value = parseInt(value)
+    }
+
+    let existing = this.hasCondition(effect.id);
+
+    if (existing && !existing.isNumberedCondition) 
+    {
+      return existing.delete();
+    }
+    else if (existing) 
+    {
+      await existing.update({"system.condition.value" : existing.conditionValue - value});
+    }
+
+    if (existing.conditionValue <= 0)
+    {
+      return existing.delete();
+    }
+  }
 
 
   /**
@@ -302,62 +372,6 @@ export default class ItemWfrp4e extends WFRP4eDocumentMixin(Item)
   }
 
   //#endregion
- 
-
-  // If item.getScripts is called, filter scripts specifying "Item" document type
-  // if the item was "Actor" document type, it would be transferred to the actor and 
-  // the actor's getScripts would run it instead
-  // 
-  // This is important as roll dialogs call actor.getScripts() and then item.getScripts()
-  // so that when an item is used, it can specifically add its dialog scripts
-  // (prevents the need to check in the script code whether or not the item is being used)
-  getScripts(trigger)
-  {
-      let effects = Array.from(this.allApplicableEffects()).
-          filter(effect => 
-              effect.applicationData.type == "document" && 
-              effect.applicationData.documentType == "Item");
-
-      let fromActor = this.actor?.getScriptsApplyingToItem(this) || [];
-
-      return effects.reduce((prev, current) => prev.concat(current.scripts), []).concat(fromActor).filter(i => i.trigger == trigger);
-  }
-
-  _getTypedEffects(type)
-  {
-      let effects = Array.from(this.allApplicableEffects()).filter(effect => effect.applicationData.type == type);
-
-      return effects;
-  }
-
-   *allApplicableEffects() 
-   {
-     for(let effect of this.effects.contents.concat(this.system.getOtherEffects()))//.filter(e => this.system.effectIsApplicable(e));
-     {
-      if (!effect.disabled)
-        yield effect
-     }
-   }
- 
-   get damageEffects() 
-   {
-       return this._getTypedEffects("damage");
-   }
- 
-   get targetEffects() 
-   {
-       return this._getTypedEffects("target").concat(this._getTypedEffects("aura").filter(e => e.applicationData.targetedAura));
-   }
- 
-   get areaEffects() 
-   {
-       return this._getTypedEffects("area");
-   }
-
-   get manualScripts() 
-   {
-      return this.effects.reduce((scripts, effect) => scripts.concat(effect.manualScripts), [])
-   }
    
   get mountDamage() {
     return this.system.mountDamage || this.system.Damage;

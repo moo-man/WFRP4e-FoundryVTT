@@ -11,7 +11,7 @@ await this.actor.removeSystemEffect("stinkingdrunk1")
 await this.actor.addCondition("fatigued")
 const duration = 10 - parseInt(this.actor.system.characteristics.t.bonus)
 this.effect.updateSource({"duration.rounds" : duration});
-this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> has lost all alcohol related penalties and gains the Fatigued Condition for ${duration} hours.</p>`, 
+this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> has lost all alcohol related penalties and gains the Fatigued Condition for ${duration} hours.</p>`, 
 {
   whisper: ChatMessage.getWhisperRecipients("GM"), 
   blind: true 

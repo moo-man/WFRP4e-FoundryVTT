@@ -1,5 +1,3 @@
-
-import ItemDialog from "../apps/item-dialog.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
@@ -231,13 +229,13 @@ export default class WFRP_Tables {
   }
 
   static findTable(key, column) {
-    WFRP_Utility.log(`Finding Table key: ${key} column: ${column}`)
+    warhammer.utility.log(`Finding Table key: ${key} column: ${column}`)
     let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
     let table 
 
     // Look at table settings first
     let tableSettings = game.settings.get("wfrp4e", "tableSettings");
-    WFRP_Utility.log(`Table Settings: `, undefined, tableSettings)
+    warhammer.utility.log(`Table Settings: `, undefined, tableSettings)
 
     // If tableSettings has comma separated ids, return them as columns
     let id = tableSettings[`${key}${column ? "-"+column : ""}`]?.split(",");
@@ -255,13 +253,13 @@ export default class WFRP_Tables {
 
     if (table)
     {
-      WFRP_Utility.log("Found Table with settings")
+      warhammer.utility.log("Found Table with settings")
     }
 
     if (!table)
     {
 
-      WFRP_Utility.log("Table not found with settings, finding first table that matches")
+      warhammer.utility.log("Table not found with settings, finding first table that matches")
 
       // If more than one table with that key, and column is specified, return that column
       if (tables.length > 1 && column)
@@ -281,7 +279,7 @@ export default class WFRP_Tables {
         }}
 
       }
-    WFRP_Utility.log("Find Table returns", undefined, table)
+    warhammer.utility.log("Find Table returns", undefined, table)
     return table;
 
   }

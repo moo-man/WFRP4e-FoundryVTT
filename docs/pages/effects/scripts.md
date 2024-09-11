@@ -22,9 +22,9 @@ While all scripts have their own arguments that are dependent on their triggers,
 
 The script object has data about the script, like it's label and code, but it also have some useful helper functions.
 
-`script.scriptNotification(content, type)` - Creates a notification formatted as "**Effect Name**: Message"
+`script.notification(content, type)` - Creates a notification formatted as "**Effect Name**: Message"
 
-`script.scriptMessage(content, chatData)` - Creates a ChatMessage with the `alias` of the Actor or Item name owning the effect, and the `flavor` as the effect name
+`script.message(content, chatData)` - Creates a ChatMessage with the `alias` of the Actor or Item name owning the effect, and the `flavor` as the effect name
 
 `script.getChatData()` - Creates a chat data object with the alias and flavor set as described above.
 

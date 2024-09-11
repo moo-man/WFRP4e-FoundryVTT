@@ -12,24 +12,36 @@
       {{localize "CHARGEN.Species.SelectSpecies"}}
     </div>
     
+        {{#unless context.roll}}
+    <div class="buttons">
+      <a class = 'chargen-button' data-button = 'onRollSpecies'>{{localize "Roll"}}</a>
+    </div>
+    {{/unless}}
+
     <ul>
     {{#each species as |species key|}}
     <li><a class = "species-select" data-species="{{key}}">{{species}}</a></li>
     {{/each}}
-    </ul>
+    </ul>    
+
 
     {{#if context.choose}}
     <div><b>{{localize "Choose"}}:</b> {{configLookup "species" context.choose}}</div>
     {{else if context.roll}}
     <div><b>{{localize "Roll"}}:</b> {{context.roll.roll}} - {{context.roll.result}}</div>
     {{/if}}
-    
 
-    {{#unless context.roll}}
-    <div class="buttons">
-      <a class = 'chargen-button' data-button = 'onRollSpecies'>{{localize "Roll"}}</a>
-    </div>
-    {{/unless}}
+
+    {{#if extraSpecies}}
+      <hr>
+      <h2>{{localize "CHARGEN.Species.ExtraSpeciesOptions"}}</h2>
+      <ul>
+        {{#each extraSpecies as |species key|}}
+          <li><a class="species-select" data-species="{{key}}">{{species}}</a></li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
   </div>
   <div class="select-subspecies">
     <div class="centered">
@@ -60,3 +72,4 @@
 </div>
 </form>
 
+{{> chargen.species.preview}}

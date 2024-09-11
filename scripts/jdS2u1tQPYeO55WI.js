@@ -39,7 +39,7 @@ if (type == "corrosion")
 		}
 		if (msg)
 		{
-			this.script.scriptMessage(msg, {speaker : {alias : args.actor.name}});
+			this.script.message(msg, {speaker : {alias : args.actor.name}});
 		}
 	}
 }

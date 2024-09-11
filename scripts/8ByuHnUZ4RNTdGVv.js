@@ -12,5 +12,5 @@ if (!this.actor.has("Undead") && !this.actor.has("Daemonic"))
 
 }
 else {
-    this.script.scriptNotification(`<strong>${this.actor.name}</strong> is immune to ${this.effect.name}`)
+    this.script.notification(`<strong>${this.actor.name}</strong> is immune to ${this.effect.name}`)
 }

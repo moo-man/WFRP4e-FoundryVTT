@@ -1,4 +1,4 @@
-let careers = await game.wfrp4e.utility.findAll("career", "", true);
+let careers = await warhammer.utility.findAllItems("career", "", true);
 careers.forEach(c => {
     if (!c.id)
     {

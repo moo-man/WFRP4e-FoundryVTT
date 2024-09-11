@@ -6,14 +6,12 @@
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
 
-import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
-import OpposedWFRP from "./opposed-wfrp4e.js";
-import AOETemplate from "./aoe.js"
-import ItemDialog from "../apps/item-dialog.js";
+import OpposedHandler from "./opposed-handler.js";
 import TradeManager from "./trade/trade-manager.js";
 
 
@@ -95,7 +93,7 @@ export default class ChatWFRP {
     html.on('click', '.trade-buy-click', TradeManager.buyCargo.bind(TradeManager));
 
     html.on('change', '.card-edit', this._onCardEdit.bind(this))
-    html.on('click', '.opposed-toggle', OpposedWFRP.opposedClicked.bind(OpposedWFRP))
+    html.on('click', '.opposed-toggle', OpposedHandler.opposedClicked.bind(OpposedHandler))
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
     html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
@@ -108,8 +106,8 @@ export default class ChatWFRP {
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
     html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
-    html.on("click", ".apply-target-effect", this._onApplyTargetEffect.bind(this))
-    html.on("click", ".place-area-effect", this._onPlaceAreaEffect.bind(this))
+    html.on("click", ".apply-target", WarhammerChatListeners.onApplyTargetEffect)
+    html.on("click", ".place-area", this._onPlaceAreaEffect.bind(this))
     html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
     html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
@@ -125,7 +123,7 @@ export default class ChatWFRP {
 
       let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
 
-      AOETemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
+      AreaTemplate.fromString(event.currentTarget.text, actorId, itemId, messageId, type=="diameter").drawPreview(event);
     });
 
     // Post an item property (quality/flaw) description when clicked
@@ -145,19 +143,19 @@ export default class ChatWFRP {
   static _onApplyDamageClick(ev)
   {
     let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.getOpposedTest();
+    let opposedTest = message.system.opposedTest;
 
     if (!opposedTest.defenderTest.actor.isOwner)
       return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
     opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-      .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+      .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
   }
 
   static async _onApplyHackClick(ev)
   {
     let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.getOpposedTest();
+    let opposedTest = message.system.opposedTest;
 
     if (!opposedTest.defenderTest.actor.isOwner)
       return ui.notifications.error("ErrorHackPermission", {localize : true})
@@ -186,7 +184,7 @@ export default class ChatWFRP {
       messageId = button.parents('.message').attr("data-message-id"),
       message = game.messages.get(messageId);
 
-    let test = message.getTest()
+    let test = message.system.test
     test.context.edited = true;
 
     test.context.previousResult = foundry.utils.duplicate(test.result);
@@ -239,7 +237,7 @@ export default class ChatWFRP {
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
-    let test = msg.getTest()
+    let test = msg.system.test
     let overcastChoice = event.currentTarget.dataset.overcast;
     // Set overcast and rerender card
     test._overcast(overcastChoice)
@@ -261,7 +259,7 @@ export default class ChatWFRP {
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
 
-    let test = msg.getTest()
+    let test = msg.system.test
     // Reset overcast and rerender card
     test._overcastReset()
         
@@ -279,7 +277,7 @@ export default class ChatWFRP {
     let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
     if (!msg.isOwner && !msg.isAuthor)
       return ui.notifications.error("CHAT.EditError")
-    let test = msg.getTest()
+    let test = msg.system.test
     test.moveVortex();
 
   }
@@ -308,7 +306,7 @@ export default class ChatWFRP {
   static _onUnopposedButtonClicked(event) {
     event.preventDefault()
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).getOppose();
+    let oppose = game.messages.get(messageId).system.opposedHandler;
     oppose.resolveUnopposed();
   }
 
@@ -316,7 +314,7 @@ export default class ChatWFRP {
   {
     let id = event.currentTarget.dataset.itemId;
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).getOppose();
+    let oppose = game.messages.get(messageId).system.opposedHandler;
     oppose.resolveOpposed(id);
   }
 
@@ -327,7 +325,7 @@ export default class ChatWFRP {
     // data-button tells us what button was clicked
     switch ($(event.currentTarget).attr("data-button")) {
       case "rollAvailability":
-        MarketWfrp4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
+        MarketWFRP4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
         break;
       case "payItem":
         if (!game.user.isGM) {
@@ -336,7 +334,7 @@ export default class ChatWFRP {
           if (msg.flags.transfer)
             itemData = JSON.parse(msg.flags.transfer).payload
           if (actor) {
-            let money = MarketWfrp4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+            let money = MarketWFRP4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
               actor.updateEmbeddedDocuments("Item", money);
@@ -357,7 +355,7 @@ export default class ChatWFRP {
           let actor = game.user.character;
           if (actor) {
             let dataExchange = $(event.currentTarget).attr("data-amount");
-            let money = MarketWfrp4e.creditCommand(dataExchange, actor);
+            let money = MarketWFRP4e.creditCommand(dataExchange, actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
               actor.updateEmbeddedDocuments("Item", money);
@@ -375,7 +373,7 @@ export default class ChatWFRP {
               {
                 messageUpdate = { "flags.wfrp4e.instances": instances };
               }
-              game.socket.emit("system.wfrp4e", { type: "updateMsg", payload: { id: msg.id, updateData: messageUpdate } })
+              game.socket.emit("system.wfrp4e", { type: "updateMessage", payload: { id: msg.id, updateData: messageUpdate } })
             }
           } else {
             ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
@@ -390,7 +388,7 @@ export default class ChatWFRP {
           rarity: $(event.currentTarget).attr("data-rarity").toLowerCase(),
           modifier: 0
         };
-        MarketWfrp4e.testForAvailability(options);
+        MarketWFRP4e.testForAvailability(options);
         break;
     }
   }
@@ -407,15 +405,15 @@ export default class ChatWFRP {
     else
       originalPayString = msg.getFlag("wfrp4e", "originalPrice")
 
-    let originalAmount = MarketWfrp4e.parseMoneyTransactionString(originalPayString)
-    let currentAmount = MarketWfrp4e.parseMoneyTransactionString(payString)
+    let originalAmount = MarketWFRP4e.parseMoneyTransactionString(originalPayString)
+    let currentAmount = MarketWFRP4e.parseMoneyTransactionString(payString)
 
     let originalBPAmount = originalAmount.gc * 240 + originalAmount.ss * 12 + originalAmount.bp
     let bpAmount = currentAmount.gc * 240 + currentAmount.ss * 12 + currentAmount.bp
     bpAmount += Math.round((originalBPAmount * .1)) * multiplier
 
-    let newAmount = MarketWfrp4e.makeSomeChange(bpAmount, 0)
-    let newPayString = MarketWfrp4e.amountToString(newAmount)
+    let newAmount = MarketWFRP4e.makeSomeChange(bpAmount, 0)
+    let newPayString = MarketWFRP4e.amountToString(newAmount)
     html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
     let newContent = html.find(".message-content").html()
     newContent = newContent.replace(`${currentAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${currentAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${currentAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`, `${newAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${newAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${newAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`)
@@ -509,7 +507,7 @@ export default class ChatWFRP {
       {
         if (!alreadyAwarded.includes(t.actor.id)) 
         {
-          t.actor.awardExp(amount, reason, msg.id)
+          t.actor.system.awardExp(amount, reason, msg.id)
         }
         else
         {
@@ -529,7 +527,7 @@ export default class ChatWFRP {
         return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 
       foundry.utils.setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
-      game.user.character.awardExp(amount, reason, msg.id)
+      game.user.character.system.awardExp(amount, reason, msg.id)
     }
   }
 
@@ -551,76 +549,15 @@ export default class ChatWFRP {
     if (game.user.isGM)
       message.update(conditionResult)
     else
-      await game.wfrp4e.socket.executeOnUserAndWait("GM", "updateMsg", { id: msgId, updateData: conditionResult });
-  }
-
-  static async _onApplyTargetEffect(event) {
-
-    let applyData = {};
-    let uuid = event.target.dataset.uuid// || (event.target.dataset.lore ? "lore" : "")
-    let effectPath = event.target.dataset.path;
-    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let message = game.messages.get(messageId);
-    let test = message.getTest()
-    let actor = test.actor;
-    let item = test.item;
-    let effect;
-
-    if (!actor.isOwner)
-      return ui.notifications.error("CHAT.ApplyError")
-
-
-    if (effectPath)
-    {
-      effect = foundry.utils.getProperty(item, effectPath)
-      applyData = {effectData : [effect.toObject()]}
-    }
-    else if (uuid)
-    {
-      applyData = {effectUuids : uuid}
-      effect = await fromUuid(uuid);
-    }
-    else 
-    {
-      return ui.notifications.error("Unable to find effect to apply")
-    }
-
-
-
-    // let effect = actor.populateEffect(effectId, item, test)
-    
-    let targets = (game.user.targets.size ? Array.from(game.user.targets) : test.context.targets.map(t => WFRP_Utility.getToken(t))).map(t => t.actor)
-
-    if (!(await effect.runPreApplyScript({test, targets})))
-    {
-      return
-    }
-    
-    game.user.updateTokenTargets([]);
-    game.user.broadcastActivity({ targets: [] });
-          
-    if (item && // If spell's Target and Range is "You", Apply to caster, not targets
-      item.range && 
-      item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
-      item.target && 
-      item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
-      {
-        targets = [actor]
-      }
-
-      applyData.messageId = messageId;
-      for(let target of targets)
-      {
-        await target.applyEffect(applyData);
-      }
+      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
   }
 
   static async _onPlaceAreaEffect(event) {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let effectUuid = event.currentTarget.dataset.uuid;
 
-    let test = game.messages.get(messageId).getTest()
-    let radius
+    let test = game.messages.get(messageId).system.test;
+    let radius;
     if (test?.result.overcast?.usage.target)
     {
       radius = test.result.overcast.usage.target.current;
@@ -632,17 +569,18 @@ export default class ChatWFRP {
     }
 
     let effect = await fromUuid(effectUuid)
-    if (!(await effect.runPreApplyScript({test})))
+    let effectData = effect.convertToApplied();
+    if (!(await effect.runPreApplyScript({effectData})))
     {
-      return
+        return;
     }
-    let template = await AOETemplate.fromEffect(effectUuid, messageId, radius);
+    let template = await AreaTemplate.fromEffect(effectUuid, null, radius, foundry.utils.diffObject(effectData, effect.convertToApplied()));
     await template.drawPreview(event);
   }
 
   static _onOpposedImgClick(event) {
     let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
-    let oppose = msg.getOppose();
+    let oppose = msg.system.opposedHandler;
     let speaker
 
     if ($(event.currentTarget).hasClass("attacker"))

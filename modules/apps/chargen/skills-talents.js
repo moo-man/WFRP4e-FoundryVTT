@@ -7,7 +7,7 @@ export class SkillsTalentsStage extends ChargenStage {
     const options = super.defaultOptions;
     options.resizable = true;
     options.width = 450;
-    options.height = 800;
+    options.height = 850;
     options.classes.push("skills-talents");
     options.minimizable = true;
     options.cannotResubmit = true
@@ -20,7 +20,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
   constructor(...args) {
     super(...args);
-    let { skills, talents, randomTalents, talentReplacement } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
+    let { skills, talents, randomTalents, talentReplacement, traits } = WFRP_Utility.speciesSkillsTalents(this.data.species, this.data.subspecies);
 
     for (let [key, value] of Object.entries(randomTalents)) {
       let table = game.wfrp4e.tables.findTable(key);
@@ -70,6 +70,7 @@ export class SkillsTalentsStage extends ChargenStage {
     }
 
     this.context.talentReplacement = talentReplacement;
+    this.context.speciesTraits = traits;
   }
 
   get template() {
@@ -84,8 +85,9 @@ export class SkillsTalentsStage extends ChargenStage {
       choices: [],
       randomTalents: {}
     },
+    speciesTraits : [],
     careerSkills: {},
-    careerTalents: {}
+    careerTalents: {},
   };
 
   async getData() {
@@ -165,8 +167,9 @@ export class SkillsTalentsStage extends ChargenStage {
 
     data.careerSkills = this.context.careerSkills;
     data.careerTalents = this.context.careerTalents;
+    data.traits = this.context.speciesTraits;
     data.pointsAllocated = 40 - Object.values(this.context.careerSkills).reduce((prev, current) => prev + current, 0)
-
+    
     return data;
   }
 
@@ -244,11 +247,22 @@ export class SkillsTalentsStage extends ChargenStage {
       } catch(error) {
         // Ignore not found.
         // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
-        WFRP_Utility.log(`Talent ${i} was not found`, {error, context: this.context});
+        warhammer.utility.log(`Talent ${i} was not found`, {error, context: this.context});
+      }
+    }));
+
+    let traits = await Promise.all(this.context.speciesTraits.map(async i => {
+      try {
+        return await WFRP_Utility.findItem(i, "trait");
+      } catch(error) {
+        // Ignore not found.
+        // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
+        warhammer.utility.log(`Trait ${i} was not found`, {error, context: this.context});
       }
     }));
 
     this.data.items.talents = talents.filter(i => i);
+    this.data.items.traits = traits.filter(i => i);
     super._updateObject(ev, formData)
 
   }
