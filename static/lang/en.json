@@ -219,6 +219,7 @@
     "SHEET.Expand" : "Expand",
     "SHEET.Collapse" : "Collapse",
     "SHEET.TemporaryEffectHint" : "These Active Effects come from the owning Actor. To interact with it, do so through the Actor's sheet",
+    "SHEET.ExperienceLog" : "Experience Log",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",

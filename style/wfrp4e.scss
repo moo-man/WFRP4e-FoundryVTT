@@ -12,7 +12,7 @@
         object-fit: contain;
     }
 
-    .inactive {
+    .inactive:not(.prosemirror) {
         opacity: 0.5;
     }
 

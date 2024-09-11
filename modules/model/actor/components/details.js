@@ -13,10 +13,10 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField()
         });
         schema.biography = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.HTMLField()
         });
         schema.gmnotes = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.HTMLField()
         });
         schema.size = new fields.SchemaField({
             value: new fields.StringField({ initial: "avg" })
