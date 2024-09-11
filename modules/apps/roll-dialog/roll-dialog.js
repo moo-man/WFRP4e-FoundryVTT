@@ -163,12 +163,12 @@ export default class RollDialog extends WarhammerRollDialog {
     }
     _defaultFields() 
     {
-        return {
+        return mergeObject({
             modifier : 0,
             successBonus : 0,
             slBonus : 0,
             difficulty : this._defaultDifficulty(),
-        };
+        }, super._defaultFields());
     }
 
     createBreakdown()

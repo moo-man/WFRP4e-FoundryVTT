@@ -430,7 +430,7 @@ export default class TestWFRP extends WarhammerTestBase{
         }
       }
       catch (e) {
-        game.wfrp4e.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
+        warhammer.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
       }
     }
     //@/HOUSE
@@ -793,7 +793,7 @@ export default class TestWFRP extends WarhammerTestBase{
     if (game.settings.get("wfrp4e", "manualChatCards") && !this.message)
       this.result.roll = this.result.SL = null;
 
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && chatOptions.sound?.includes("dice"))
+    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && messageData.sound?.includes("dice"))
       messageData.sound = undefined;
 
     let templateData = {
@@ -1177,7 +1177,7 @@ export default class TestWFRP extends WarhammerTestBase{
           this.context.fortuneUsedAddSL = true;
           this.addSL(1)
         }
-        this.actor.update({ "system.status.fortune.value": this.system.status.fortune.value - 1 });
+        this.actor.update({ "system.status.fortune.value": this.actor.system.status.fortune.value - 1 });
       }
     }
 

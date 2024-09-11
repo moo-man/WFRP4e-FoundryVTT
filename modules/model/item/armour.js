@@ -190,7 +190,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     if (data.worn?.value) {
-      data.equipped.value = data.worn.value;
+      foundry.utils.setProperty(data, "equipped.value", data.worn.value);
     }
   }
 

@@ -84,10 +84,10 @@ export default function () {
           }
         }
         catch {
-          game.wfrp4e.utility.log("Could not find item " + id)
+          warhammer.utility.log("Could not find item " + id)
         }
       }
-      game.wfrp4e.utility.log("Compendium changes will revert if homebrew items is deactivated and the game is refreshed")
+      warhammer.utility.log("Compendium changes will revert if homebrew items is deactivated and the game is refreshed")
     })
     if (game.user.isGM)
     {

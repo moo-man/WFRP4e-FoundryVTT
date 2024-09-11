@@ -85,7 +85,15 @@ export default class ActorWFRP4e extends WarhammerActor
     }
   }
 
-  
+  _onUpdateDescendantDocuments(...args)
+  {
+      super._onUpdateDescendantDocuments(...args);
+      // If an owned item (trait specifically) is disabled, check auras
+      if (args[1] == "items" && args[3].some(update => (hasProperty(update, "system.disabled"))))
+      {
+          TokenHelpers.updateAuras(this.getActiveTokens()[0]?.document);
+      }
+  }  
   
   /**
    * @override 
@@ -1195,7 +1203,7 @@ export default class ActorWFRP4e extends WarhammerActor
   async applyTerror(value, name = undefined) {
     value = value || 1
     let terror = foundry.utils.duplicate(game.wfrp4e.config.systemItems.terror)
-    terror.flags.wfrp4e.terrorValue = value
+    foundry.utils.setProperty(terror, "flags.wfrp4e.terrorValue", value);
     let scripts = new ActiveEffectWFRP4e(terror, {parent: this}).scripts;
     for (let s of scripts) {
       await s.execute({ actor: this });

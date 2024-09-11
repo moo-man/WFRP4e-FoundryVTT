@@ -101,7 +101,7 @@ export default class WFRP_Utility {
 
     if (subspecies && game.wfrp4e.config.subspecies[species][subspecies].speciesTraits)
     {
-      traits = game.wfrp4e.config.subspecies[species][subspecies].speciesTraits || {};
+      traits = game.wfrp4e.config.subspecies[species][subspecies].speciesTraits || [];
     }
 
     return { skills, talents, randomTalents, talentReplacement, traits };
@@ -878,7 +878,7 @@ export default class WFRP_Utility {
   }
   
   static logHomebrew(message) {
-    this.log("Applying Homebrew Rule: " + message, true)
+    warhammer.utility.log("Applying Homebrew Rule: " + message, true)
   }
 
   static extractLinkLabel(link)

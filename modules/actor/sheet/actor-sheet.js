@@ -1417,47 +1417,18 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   async _onRandomizeClicked(ev) {
     ev.preventDefault();
-    let species = this.actor.details.species.value;
-    let subspecies = this.actor.details.species.subspecies;
+    let advancement = new Advancement(this.actor);
+
     try {
       switch (ev.target.text) {
-        case game.i18n.localize("RANDOMIZER.C"): let creatureMethod = false;
-          let characteristics = this.actor.toObject().system.characteristics;
-          if (this.actor.type == "creature" || !species) creatureMethod = true;
-          if (!creatureMethod) {
-            let averageCharacteristics = await WFRP_Utility.speciesCharacteristics(species, true, subspecies);
-            for (let char in characteristics) {
-              if (characteristics[char].initial != averageCharacteristics[char].value) creatureMethod = true
-            }
-          }
-          if (!creatureMethod) {
-            let rolledCharacteristics = await WFRP_Utility.speciesCharacteristics(species, false, subspecies);
-            for (let char in rolledCharacteristics) {
-              characteristics[char].initial = rolledCharacteristics[char].value
-            }
-            await this.actor.update({ "system.characteristics": characteristics })
-          }
-          else if (creatureMethod) {
-            let roll = new Roll("2d10");
-            await roll.roll();
-            let characteristics = this.actor.toObject().system.characteristics;
-            for (let char in characteristics) {
-              if (characteristics[char].initial == 0)
-                continue
-              characteristics[char].initial -= 10;
-              characteristics[char].initial += (await roll.reroll()).total;
-              if (characteristics[char].initial < 0)
-                characteristics[char].initial = 0
-            }
-            await this.actor.update({ "system.characteristics": characteristics })
-          }
+        case game.i18n.localize("RANDOMIZER.C"): 
+          advancement.advanceSpeciesCharacteristics()
           return
-
         case game.i18n.localize("RANDOMIZER.S"):
-          this.actor._advanceSpeciesSkills()
+          advancement.advanceSpeciesSkills()
           return
         case game.i18n.localize("RANDOMIZER.T"):
-          this.actor._advanceSpeciesTalents()
+          advancement.advanceSpeciesTalents()
           return
       }
     }

@@ -45,8 +45,8 @@ const PropertiesMixin = (cls) => class extends cls
         }
 
         this._properties = {
-            qualities: this.constructor._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList(), this.parent),
-            flaws: this.constructor._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
+            qualities: this.constructor.propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList(), this.parent),
+            flaws: this.constructor.propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
         }
 
         return this._properties;
@@ -54,8 +54,8 @@ const PropertiesMixin = (cls) => class extends cls
 
     get originalProperties() {
         let properties = {
-            qualities: this.constructor._propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList(),  this.parent),
-            flaws: this.constructor._propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
+            qualities: this.constructor.propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList(),  this.parent),
+            flaws: this.constructor.propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
             unusedQualities: {}
         }
         return properties;
@@ -155,7 +155,7 @@ const PropertiesMixin = (cls) => class extends cls
         }
     }
 
-    static _propertyArrayToObject(array, propertyObject, document) {
+    static propertyArrayToObject(array, propertyObject, document) {
 
         let properties = {}
 

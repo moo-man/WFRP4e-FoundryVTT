@@ -2226,10 +2226,12 @@ WFRP4E.PrepareSystemItems = function() {
             id: "dead",
             statuses: ["dead"],
             name: "WFRP4E.ConditionName.Dead",
-            condition : {
-                value : null,
-                numbered: false
-            },
+            system : {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
+            }
         }
     ]
 

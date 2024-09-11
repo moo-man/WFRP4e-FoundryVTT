@@ -376,7 +376,7 @@ export default class CharGenWfrp4e extends FormApplication {
         // Must create items separately so preCreate scripts run
         let actorItems = this.actor.items;
         this.actor.items = [];
-        let document = await Actor.create(this.actor);
+        let document = await Actor.create(this.actor, {skipItems : true});
         await document.createEmbeddedDocuments("Item", actorItems)
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")

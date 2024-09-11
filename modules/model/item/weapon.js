@@ -339,7 +339,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (game.settings.get("wfrp4e", "mooRangeBands")) {
             game.wfrp4e.utility.logHomebrew("mooRangeBands")
             if (!this.parent.getFlag("wfrp4e", "optimalRange"))
-                game.wfrp4e.utility.log("Warning: No Optimal Range set for " + this.name)
+                warhammer.utility.log("Warning: No Optimal Range set for " + this.name)
 
             rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = this.#optimalDifference(game.i18n.localize("Point Blank")) * -20 + 20
             delete rangeBands[`${game.i18n.localize("Point Blank")}`].difficulty

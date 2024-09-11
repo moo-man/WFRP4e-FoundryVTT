@@ -507,7 +507,7 @@ export default class ChatWFRP {
       {
         if (!alreadyAwarded.includes(t.actor.id)) 
         {
-          t.actor.awardExp(amount, reason, msg.id)
+          t.actor.system.awardExp(amount, reason, msg.id)
         }
         else
         {
@@ -527,7 +527,7 @@ export default class ChatWFRP {
         return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
 
       foundry.utils.setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
-      game.user.character.awardExp(amount, reason, msg.id)
+      game.user.character.system.awardExp(amount, reason, msg.id)
     }
   }
 
@@ -556,8 +556,8 @@ export default class ChatWFRP {
     let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
     let effectUuid = event.currentTarget.dataset.uuid;
 
-    let test = game.messages.get(messageId).system.test
-    let radius
+    let test = game.messages.get(messageId).system.test;
+    let radius;
     if (test?.result.overcast?.usage.target)
     {
       radius = test.result.overcast.usage.target.current;
@@ -569,11 +569,12 @@ export default class ChatWFRP {
     }
 
     let effect = await fromUuid(effectUuid)
-    if (!(await effect.runPreApplyScript({effectData : effect.convertToApplied()})))
-      {
-          return;
-      }
-      let template = await AreaTemplate.fromEffect(effectUuid, null, null, foundry.utils.diffObject(effectData, effect.convertToApplied()));
+    let effectData = effect.convertToApplied();
+    if (!(await effect.runPreApplyScript({effectData})))
+    {
+        return;
+    }
+    let template = await AreaTemplate.fromEffect(effectUuid, null, radius, foundry.utils.diffObject(effectData, effect.convertToApplied()));
     await template.drawPreview(event);
   }
 
