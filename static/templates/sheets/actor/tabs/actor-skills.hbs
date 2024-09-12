@@ -14,7 +14,7 @@
             </div>
             <div class="list-content">
                 {{#each skills.basic}}
-                    <div class="list-row">
+                    <div class="list-row" data-nodrag="true" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <a class="label">{{this.name}}</a>
@@ -52,7 +52,7 @@
             </div>
             <div class="list-content">
                 {{#each skills.advanced}}
-                    <div class="list-row">
+                    <div class="list-row" data-nodrag="true" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <a class="label">{{this.name}}</a>

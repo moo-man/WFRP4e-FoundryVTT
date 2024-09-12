@@ -1,4 +1,4 @@
-import EffectWfrp4e from "../../../../modules/system/effect-wfrp4e";
+import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
 import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 const { ActorSheetV2 } = foundry.applications.sheets
 const { HandlebarsApplicationMixin } = foundry.applications.api
@@ -20,7 +20,7 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
     window: {
       resizable: true
     },
-    dragDrop: [{ dragSelector: '[data-uuid]', dropSelector: null }],
+    dragDrop: [{ dragSelector: '[data-uuid]:not([data-nodrag])', dropSelector: null }],
   }
 
   static TABS = {
@@ -91,6 +91,91 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
     });
   }
 
+    /**
+   * Define whether a user is able to begin a dragstart workflow for a given drag selector
+   * @param {string} selector       The candidate HTML selector for dragging
+   * @returns {boolean}             Can the current user drag this selector?
+   * @protected
+   */
+    _canDragStart(selector) {
+      // game.user fetches the current user
+      return this.isEditable;
+    }
+  
+  
+    /**
+     * Define whether a user is able to conclude a drag-and-drop workflow for a given drop selector
+     * @param {string} selector       The candidate HTML selector for the drop target
+     * @returns {boolean}             Can the current user drop on this selector?
+     * @protected
+     */
+    _canDragDrop(selector) {
+      // game.user fetches the current user
+      return this.isEditable;
+    }
+  
+  
+    /**
+     * Callback actions which occur at the beginning of a drag start workflow.
+     * @param {DragEvent} event       The originating DragEvent
+     * @protected
+     */
+    async _onDragStart(event) {
+      const el = event.currentTarget;
+      if ('link' in event.target.dataset) return;
+  
+      // Extract the data you need
+      let dragData = null;
+
+      if (el.dataset.uuid)
+      {
+        let document = await fromUuid(el.dataset.uuid);
+        dragData = document.toDragData();
+      }
+
+  
+      if (!dragData) return;
+  
+      // Set data transfer
+      event.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+    }
+  
+  
+    /**
+     * Callback actions which occur when a dragged element is over a drop target.
+     * @param {DragEvent} event       The originating DragEvent
+     * @protected
+     */
+    _onDragOver(event) {}
+  
+  
+    /**
+     * Callback actions which occur when a dragged element is dropped on a target.
+     * @param {DragEvent} event       The originating DragEvent
+     * @protected
+     */
+    async _onDrop(event) 
+    {
+      const data = TextEditor.getDragEventData(event);
+
+      if (data.type && typeof this["_onDrop" + data.type] == "function")
+      {
+        this["_onDrop" + data.type](data)
+      }
+    }
+
+    async _onDropItem(data)
+    {
+      let document = await fromUuid(data.uuid);
+      return await this.document.createEmbeddedDocuments(data.type, [document]);
+    }
+
+    async _onDropActiveEffect(data)
+    {
+      let document = await fromUuid(data.uuid);
+      return await this.document.createEmbeddedDocuments(data.type, [document]);
+    }
+
   /**
  * Returns an array of DragDrop instances
  * @type {DragDrop[]}
@@ -99,8 +184,10 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
     return this.#dragDrop;
   }
 
-  // TODO: Maybe this isn't needed in V13?
   _onRender(_context, _options) {
+    this.#dragDrop.forEach((d) => d.bind(this.element));
+    
+    // TODO: Maybe this isn't needed in V13?
     this.element.querySelectorAll("prose-mirror").forEach((editor) => {
       editor.addEventListener("change", (ev) => {
         this.actor.update({ [`system.${ev.target.name}`]: ev.target.value })
@@ -198,24 +285,25 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
 
   _getConditionData(context) {
     try {
-      let conditions = foundry.utils.deepClone(game.wfrp4e.config.statusEffects).map(e => new EffectWfrp4e(e));
-      let currentConditions = this.actor.conditions
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWFRP4e(e));
+      let currentConditions = this.actor.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
-
+      
       for (let condition of conditions) {
         let owned = currentConditions.find(e => e.conditionId == condition.conditionId)
         if (owned) {
           condition.existing = true
-          condition.flags.wfrp4e.value = owned.conditionValue;
+          condition.system.condition.value = owned.conditionValue;
         }
         else if (condition.isNumberedCondition) {
-          condition.flags.wfrp4e.value = 0
+          condition.system.condition.value = 0
         }
       }
-      return conditions
+      return conditions;
     }
-    catch (e) {
-      ui.notifications.error("Error Adding Condition Data: " + e)
+    catch (e)
+    {
+      ui.notifications.error("Error Adding Condition Data: " + e);
     }
   }
 

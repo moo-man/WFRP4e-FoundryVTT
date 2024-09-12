@@ -48,7 +48,7 @@
         </div>
         <div class="list-content">
             {{#each inventory.money.items}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -87,7 +87,7 @@
                 </div>
                 <div class="list-content">
                     {{#each this.items as |item|}}
-                        <div class="list-row">
+                        <div class="list-row" data-uuid="{{this.uuid}}">
                             <div class="row-content">
                                 <div class="list-name">
                                     <img src="{{this.img}}">
@@ -130,7 +130,7 @@
             </div>
             <div class="list-content">
                 {{#each inventory.containers.items}}
-                    <div class="list-row">
+                    <div class="list-row" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">

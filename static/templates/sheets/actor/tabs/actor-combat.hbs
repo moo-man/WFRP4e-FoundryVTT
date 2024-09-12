@@ -46,7 +46,7 @@
         <div class="list-content weapon-list">
             {{#each items.weapon}}
                 {{#if this.system.isMelee}}
-                    <div class="list-row">
+                    <div class="list-row" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
@@ -113,7 +113,7 @@
         <div class="list-content weapon-list">
             {{#each items.weapon}}
                 {{#if this.system.isRanged}}
-                    <div class="list-row">
+                    <div class="list-row" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">

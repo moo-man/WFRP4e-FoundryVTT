@@ -10,7 +10,7 @@
         </div>
         <div class="list-content">
             {{#each items.trait}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -35,7 +35,7 @@
         </div>
         <div class="list-content">
             {{#each items.talent}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">

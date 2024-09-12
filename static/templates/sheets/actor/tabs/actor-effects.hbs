@@ -29,7 +29,7 @@
         </div>
         <div class="list-content">
             {{#each effects.temporary}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
                     </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="list-content">
             {{#each items.injury}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -90,7 +90,7 @@
         </div>
         <div class="list-content">
             {{#each items.critical}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -115,7 +115,7 @@
         </div>
         <div class="list-content">
             {{#each items.psychology}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -138,7 +138,7 @@
         </div>
         <div class="list-content">
             {{#each items.mutation}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
@@ -167,7 +167,7 @@
         <div class="list-content">
             {{#each items.disease}}
                 {{#if item.system.show}}
-                    <div class="list-row">
+                    <div class="list-row" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
@@ -208,7 +208,7 @@
         </div>
         <div class="list-content">
             {{#each effects.temporary}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
                     </div>
@@ -236,7 +236,7 @@
         </div>
         <div class="list-content">
             {{#each effects.disabled}}
-                <div class="list-row">
+                <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content inactive">
                         {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
                     </div>
