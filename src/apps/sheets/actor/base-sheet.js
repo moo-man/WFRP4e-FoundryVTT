@@ -1,3 +1,4 @@
+import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
 import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
 import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 const { ActorSheetV2 } = foundry.applications.sheets
@@ -16,6 +17,9 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
     classes: ["wfrp4e", "actor"],
     actions: {
 
+    },
+    position : {
+      height: 750
     },
     window: {
       resizable: true
@@ -176,6 +180,12 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
       return await this.document.createEmbeddedDocuments(data.type, [document]);
     }
 
+      // From Income results - drag money value over to add
+  _onDropIncome(data) 
+  {
+    this.document.updateEmbeddedDocuments("Item", MarketWFRP4e.addMoneyTo(this.document, data.amount));
+  }
+
   /**
  * Returns an array of DragDrop instances
  * @type {DragDrop[]}
@@ -204,6 +214,8 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
     context.tabs = this._prepareTabs(options);
     context.fields = this.actor.system.schema.fields;
     context.source = this.document.toObject();
+    context.enriched = await this._handleEnrichment()
+
     return context;
   }
 
@@ -221,8 +233,6 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
       case "trappings":
         await this._prepareTrappingsContext(context);
         break;
-      case "notes":
-        await this._prepareNotesContext(context);
     }
 
     return context;
@@ -491,10 +501,6 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
   //#endregion
 
 
-  async _prepareNotesContext(context) {
-    context.enriched = await this._handleEnrichment()
-  }
-
   async _handleEnrichment() {
     let enrichment = {}
     enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
@@ -502,5 +508,82 @@ export default class BaseActorSheet extends HandlebarsApplicationMixin(ActorShee
 
     return expandObject(enrichment)
   }
+
+    // Shared listeners between different document sheets 
+    _getId(ev) 
+    {
+        return this._getDataAttribute(ev, "id");
+    }
+    
+    _getIndex(ev) 
+    {
+        return Number(this._getDataAttribute(ev, "index"));
+    }
+
+    _getKey(ev) 
+    {
+        return this._getDataAttribute(ev, "key");
+    }
+
+    _getType(ev) 
+    {
+        return this._getDataAttribute(ev, "type");
+    }
+
+    _getPath(ev) 
+    {
+        return this._getDataAttribute(ev, "path");
+    }
+
+    _getCollection(ev) 
+    {
+        return this._getDataAttribute(ev, "collection") || "items";
+    }
+
+    _getUUID(ev)
+    {
+        return this._getDataAttribute(ev, "uuid");
+    }
+
+
+    /**
+     * Search for an HTML data property, specified as data-<property>
+     * First search target of the event, then search in parent properties
+     * @param {Event} ev Event triggered
+     * @param {string} property data-<property> being searched for
+     * @returns {object} property found
+     */
+    _getDataAttribute(ev, property)
+    {
+        let value = ev.target.dataset[property];
+
+        if (!value) 
+        {
+            const parent = $(ev.target).parents(`[data-${property}]`);
+            if (parent) 
+            {
+                value = parent[0]?.dataset[property];
+            }
+        }
+        return value;
+    }
+
+    _getDocument(event)
+    {
+        let id = this._getId(event);
+        let collection = this._getCollection(event);
+        let uuid = this._getUUID(event);
+
+        return (uuid ? fromUuidSync(uuid) : this.object[collection].get(id));
+    }
+
+    _getDocumentAsync(event)
+    {
+        let id = this._getId(event);
+        let collection = this._getCollection(event);
+        let uuid = this._getUUID(event);
+
+        return (uuid ? fromUuid(uuid) : this.object[collection].get(id));
+    }
 
 }

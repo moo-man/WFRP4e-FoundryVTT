@@ -65,6 +65,11 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         return {}
     }
 
+    getInitialItems()
+    {
+      return [];
+    }
+
     // Resize tokens based on size property
     checkSize() {
         let actor = this.parent

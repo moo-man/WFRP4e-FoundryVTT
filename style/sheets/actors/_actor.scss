@@ -4,6 +4,10 @@
         }
     }
 
+    section.tab {
+        overflow-y: auto
+    }
+
     .sheet-header {
         display: flex;
         flex-direction: column;
@@ -183,5 +187,10 @@
                 }
             }
         }
+    }
+
+    fieldset {
+        border-color: var(--color-cool-3);
+        margin: 10px 0px;
     }
 }

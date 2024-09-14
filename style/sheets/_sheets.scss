@@ -27,6 +27,18 @@
         border: 1px solid var(--color-cool-3);
     }
 
+    .editor-section {
+        .header {
+            height: 1.5rem;
+            line-height: 1.5rem;
+            padding-left: 5px;
+            background: var(--color-cool-3);
+        }
+        min-height: 100px;
+        .editor-content {
+        }
+    }
+
     .sheet-list {
         display: flex;
         flex-direction: column;
@@ -105,7 +117,7 @@
 
                 display: flex;
                 align-items: center;
-                justify-content: center;
+                justify-content: space-around;
             }
 
             input,

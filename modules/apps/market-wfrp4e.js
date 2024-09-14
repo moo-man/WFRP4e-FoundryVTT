@@ -575,4 +575,53 @@ export default class MarketWFRP4e {
 
       return {earned, type : tier, item}
   }
+
+
+  static addMoneyTo(actor, moneyString) {
+    // Money string is in the format of <amt><type>, so 12b, 5g, 1.5g
+    let type = moneyString.slice(-1);
+    let amt;
+    // Failure means divide by two, so mark whether we should add half a gold or half a silver, just round pennies
+    let halfS = false, halfG = false
+    if (type === "b")
+      amt = Math.round(moneyString.slice(0, -1));
+    else if (type === "s") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfS = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    else if (type === "g") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfG = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    let money = actor.getItemTypes("money").map(m => m.toObject());
+
+    let moneyItem;
+    switch (type) {
+      case 'b':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.BP"));
+        break;
+      case 's':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.SS"));
+        break;
+      case 'g':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.GC"));
+        break;
+    }
+
+    // If 0, means they failed the roll by -6 or more, delete all money
+    if (!amt && !halfG && !halfS)
+      money.forEach(m => m.system.quantity.value = 0);
+    else // Otherwise, add amount to designated type
+      moneyItem.system.quantity.value += amt;
+
+    // add halves
+    if (halfS)
+      money.find(i => i.name === game.i18n.localize("NAME.BP")).system.quantity.value += 6;
+    if (halfG)
+      money.find(i => i.name === game.i18n.localize("NAME.SS")).system.quantity.value += 10;
+
+    return money;
+  }
 }

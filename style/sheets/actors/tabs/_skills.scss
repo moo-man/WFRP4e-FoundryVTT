@@ -1,6 +1,7 @@
 .wfrp4e.actor.sheet {
     section.tab[data-tab="skills"] {
         height: calc(100% - 200px);
+        overflow-y: unset;
     }
 
     .skill-lists {
