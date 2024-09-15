@@ -2328,7 +2328,8 @@ WFRP4E.syncTriggers = [
 
 WFRP4E.triggerMapping = {
     "update" : "updateDocument",
-    "addItems" : "onCreate"
+    "addItems" : "onCreate",
+    "preUpdate" : "preUpdateDocument"
 };
 
 WFRP4E.getZoneTraitEffects = (region) => 
