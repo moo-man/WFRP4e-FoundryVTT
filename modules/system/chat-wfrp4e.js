@@ -569,12 +569,12 @@ export default class ChatWFRP {
     }
 
     let effect = await fromUuid(effectUuid)
-    let effectData = effect.convertToApplied();
+    let effectData = effect.convertToApplied(test);
     if (!(await effect.runPreApplyScript({effectData})))
     {
         return;
     }
-    let template = await AreaTemplate.fromEffect(effectUuid, null, radius, foundry.utils.diffObject(effectData, effect.convertToApplied()));
+    let template = await AreaTemplate.fromEffect(effectUuid, messageId, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
     await template.drawPreview(event);
   }
 

@@ -27,6 +27,7 @@ export class CareerModel extends BaseItemModel
         });
         schema.characteristics = new fields.ArrayField(new fields.StringField());
         schema.skills = new fields.ArrayField(new fields.StringField());
+        schema.addedSkills = new fields.ArrayField(new fields.StringField());
         schema.talents = new fields.ArrayField(new fields.StringField());
         schema.trappings = new fields.ArrayField(new fields.StringField());
         schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
@@ -54,7 +55,7 @@ export class CareerModel extends BaseItemModel
     }
 
 
-     changeSkillName(oldName, newName) {
+     changeSkillName(newName, oldName) {
         let careerSkills = foundry.utils.duplicate(this.skills)
 
         // If career has the skill, change the name

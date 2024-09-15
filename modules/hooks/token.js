@@ -73,7 +73,7 @@ export default function() {
                 tokenUpdate.x += canvas.grid.size / 4
                 tokenUpdate.y += canvas.grid.size / 4
               }
-              mountToken.update(tokenUpdate)
+              mountToken.document.update(tokenUpdate)
             }
           }
         }

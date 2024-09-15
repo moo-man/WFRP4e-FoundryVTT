@@ -14,7 +14,8 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
             value: new fields.StringField()
         });
         schema.damage = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField(),
+            dice: new fields.StringField({ initial: "" })
         });
         schema.ammunitionType = new fields.SchemaField({
             value: new fields.StringField()

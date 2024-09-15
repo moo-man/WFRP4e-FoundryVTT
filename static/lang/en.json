@@ -1763,6 +1763,8 @@
     "EFFECT.ItemChoice" : "Item Choice",
     "EFFECT.CanBeAsync" : "Script can use async/await keywords",
     "EFFECT.BlackpowderShock" : "Blackpowder Shock",
+    "EFFECT.CharacteristicsModifier" : "Characteristics (Modifier)",
+    "EFFECT.CharacteristicsInitial" : "Characteristics (Initial)",
 
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
