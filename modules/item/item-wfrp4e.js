@@ -18,29 +18,6 @@ export default class ItemWfrp4e extends WarhammerItem
     }
 
     await super._preCreate(data, options, user)
-    if (this.isOwned)
-    {
-        let allow = await this.system.allowCreation(data, options, user);
-        if (!allow)
-        {
-            return false;
-        }
-    }
-
-    if (options.fromEffect)
-    {
-      this.updateSource({"flags.wfrp4e.fromEffect" : options.fromEffect});
-    }
-
-    if (this.isOwned)
-    {
-        await Promise.all(this.actor.runScripts("createItem", this));
-        await this._handleConditions(data, options);
-    }
-
-    //_preCreate for effects is where immediate scripts run
-    // Effects that come with Items aren't called, so handle them here
-    await this.handleImmediateScripts(data, options, user);
   }
 
   async _onCreate(data, options, user)
