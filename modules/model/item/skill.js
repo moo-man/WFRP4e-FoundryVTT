@@ -56,9 +56,19 @@ export class SkillModel extends BaseItemModel {
 
     async _preUpdate(data, options, user) {
         await super._preUpdate(data, options, user);
-        let diff = foundry.utils.diffObject(data, this.parent);
-        if (this.parent.isOwned && this.grouped.value == "isSpec" && diff.name) {
-            this._handleSkillNameChange(data.name)
+        if (data.name)
+        {
+            options.oldName = this.parent.name
+        }
+    }
+
+    async _onUpdate(data, options, user)
+    {
+        await super._onUpdate(data, options, user);
+
+        if (this.parent.isOwned && this.grouped.value == "isSpec" && options.oldName) 
+        {
+            this._handleSkillNameChange(data.name, options.oldName)
         }
     }
 
@@ -82,8 +92,7 @@ export class SkillModel extends BaseItemModel {
       }
 
     // If an owned (grouped) skill's name is changing, change the career data to match
-    _handleSkillNameChange(newName) {
-        let oldName = this.parent.name
+    _handleSkillNameChange(newName, oldName) {
         let currentCareer = this.parent.actor?.currentCareer;
         if (!currentCareer) 
         {
@@ -91,7 +100,7 @@ export class SkillModel extends BaseItemModel {
         }
         else 
         {
-            currentCareer.system.changeSkillName(oldName, newName)
+            currentCareer.system.changeSkillName(newName, oldName)
         }
     }
 
