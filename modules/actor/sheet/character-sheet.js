@@ -87,7 +87,7 @@ export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
         }
 
         // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
-        for (let sk of career.skills) {
+        for (let sk of career.skills.concat(career.system.addedSkills)) {
           let trainedSkill = sheetData.actor.getItemTypes("skill").find(s => s.name.toLowerCase() == sk.toLowerCase())
           if (trainedSkill) 
             trainedSkill.system._addCareerData(career)

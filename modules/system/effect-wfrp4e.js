@@ -88,6 +88,11 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
     
         let item = test?.item;
 
+        if (test)
+        {
+            effect.system.sourceData.test = test;
+        }
+
         let duration
         if (test && test.result.overcast && test.result.overcast.usage.duration) {
             duration = test.result.overcast.usage.duration.current;

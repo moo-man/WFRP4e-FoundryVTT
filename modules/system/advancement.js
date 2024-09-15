@@ -85,7 +85,7 @@ export default class Advancement
       if (item instanceof Item)
       {
         let currentCareer = actor.currentCareer
-        if (currentCareer.system.skills.find(i => i == item.name))
+        if (currentCareer.system.skills.concat(currentCareer.system.addedSkills).find(i => i == item.name))
         {
           career = true;
         }
