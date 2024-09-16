@@ -1,6 +1,6 @@
-import BaseActorSheet from "./base-sheet"
+import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class CharacterSheet extends BaseActorSheet
+export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["character"],
@@ -9,7 +9,7 @@ export default class CharacterSheet extends BaseActorSheet
         },
         window : {
           resizable : true
-        }
+        },
       }
 
       static PARTS = {
@@ -23,16 +23,13 @@ export default class CharacterSheet extends BaseActorSheet
         trappings: { template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-inventory.hbs' },
         notes: { template: 'systems/wfrp4e/templates/sheets/actor/character/character-notes.hbs' },
       }
-
-
+      
       async _prepareContext(options)
       {
         let context = await super._prepareContext(options);
         context.experienceLog = this._condenseXPLog()
         return context;
       }
-  
-  
     
     _condenseXPLog() {
       let condensed= []

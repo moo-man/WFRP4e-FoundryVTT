@@ -68,13 +68,13 @@ import loadScripts from "./loadScripts.js"
 import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
 import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
 import TradeManager from "./modules/system/trade/trade-manager.js";
-import CharacterSheet from "./src/apps/sheets/actor/character-sheet.js";
 import { WFRP4eActiveEffectModel } from "./modules/model/effect/effect.js";
 import socketHandlers from "./modules/system/socket-handlers.js";
 import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
+import CharacterWFRP4eSheet from "./src/apps/sheets/actor/character-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -89,7 +89,7 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("wfrp4e", CharacterSheet, { types: ["character"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", CharacterWFRP4eSheet, { types: ["character"], makeDefault: true });
   // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
   // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
   // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
