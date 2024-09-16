@@ -74,7 +74,7 @@ import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
-import CharacterWFRP4eSheet from "./src/apps/sheets/actor/character-sheet.js";
+import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -89,10 +89,12 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("wfrp4e", CharacterWFRP4eSheet, { types: ["character"], makeDefault: true });
-  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eNPC, { types: ["npc"], makeDefault: true });
-  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eCreature, { types: ["creature"], makeDefault: true });
-  // Actors.registerSheet("wfrp4e", ActorSheetWfrp4eVehicle, { types: ["vehicle"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacter, { types: ["character"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"] });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreature, { types: ["creature"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"], makeDefault: true });
+  
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})

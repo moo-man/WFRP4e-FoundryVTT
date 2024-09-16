@@ -16,7 +16,7 @@
   ],
   "esmodules" : [],
   "scripts": ["wfrp4e.js", "./libs/pixi-filters.js"],
-  "styles": ["wfrp4e.css"],
+  "styles": ["wfrp4e.css", "css/wfrp4e.css"],
   "packs": [
     {
       "name": "basic",

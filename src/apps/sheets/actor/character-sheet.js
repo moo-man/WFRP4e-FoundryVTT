@@ -1,6 +1,6 @@
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["character"],
