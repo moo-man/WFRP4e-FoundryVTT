@@ -43,7 +43,7 @@ args.actor.system.details.move.value /= 2
 args.item.system.damage.value = "SB + 6";
 ```
 
-**Notes**: We don't need to take any precautions against the bug mentioned above as the value is *set* to "SB + 6", so being set twice doesn't change anything. 
+**Notes**: We don't need to take any precautions against the bug mentioned above as the value is *set* to "SB + 6", so being set twice doesn't change anything. See [Prepare Owned Data](./prepareOwned.md) to accomplish this with an alternate trigger.
 
 ### Add Damaging to a Weapon
 
@@ -56,4 +56,4 @@ if (!this.item.system.properties.qualities.damaging)
 }
 ```
 
-**Notes**: We don't want to add a second Damaging property if the weapon already has it, this also guards against the bug mentioned above.
+**Notes**: We don't want to add a second Damaging property if the weapon already has it, this also guards against the bug mentioned above. See [Prepare Owned Data](./prepareOwned.md) to accomplish this with an alternate trigger.
