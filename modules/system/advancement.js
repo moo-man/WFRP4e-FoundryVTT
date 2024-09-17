@@ -74,7 +74,7 @@ export default class Advancement
 
   static advancementDialog(item, advances, type, actor)
   {
-    let start = item instanceof Item ? item.advances.value : actor.characteristics[item].advances
+    let start = item instanceof Item ? item.advances.value : actor.system.characteristics[item].advances
     let end = advances;
     let name = item instanceof Item ? item.name : game.wfrp4e.config.characteristics[item]
 

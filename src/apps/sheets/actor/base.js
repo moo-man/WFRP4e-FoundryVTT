@@ -6,6 +6,10 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
+    actions : {
+      rollTest : this._onRollTest,
+      toggleSummary : this._toggleSummary
+    },
     defaultTab : "main"
   }
 
@@ -89,7 +93,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     return expandObject(enrichment)
   }
 
-  async _onCreateEffect(ev)
+  static async _onCreateEffect(ev)
     {
         let type = ev.currentTarget.dataset.category;
         let effectData = { name: localize("WH.NewEffect"), img: "icons/svg/aura.svg" };
@@ -111,21 +115,41 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         this.object.createEmbeddedDocuments("ActiveEffect", [effectData]).then(effects => effects[0].sheet.render(true));
     }
 
-    async _onEditEmbeddedDoc(ev)
+    static async _onRollTest(ev)
     {
-        let doc = await this._getDocumentAsync(ev);
-        doc?.sheet.render(true);
+      let test;
+      switch (ev.target.dataset.type)
+      {
+        case "characteristic": 
+          test = await this.document.setupCharacteristic(ev.target.dataset.characteristic)
+      }
+
+      test?.roll();
     }
 
-    async _onDeleteEmbeddedDoc(ev)
+    static async _toggleSummary(ev)
     {
-        let doc = await this._getDocumentAsync(ev);
-        doc?.delete();
+      let item = await this._getDocumentAsync(ev);
+      if (item)
+      {
+        let expandData = await item.system.expandData({secrets: this.actor.isOwner});
+        this._toggleDropdown(ev, expandData.description.value);
+      }
     }
 
-    async _onEffectToggle(ev)
+    async _toggleDropdown(ev, content)
     {
-        let doc = await this._getDocumentAsync(ev);
-        doc.update({"disabled" : !doc.disabled});
+      let dropdownElement = this._getParent(ev.target, ".list-row").querySelector(".dropdown-content");
+      if (dropdownElement.classList.contains("collapsed"))
+      {
+        dropdownElement.innerHTML = content;
+        dropdownElement.style.height = `${dropdownElement.scrollHeight}px`;
+        dropdownElement.classList.replace("collapsed", "expanded");
+      }
+      else if (dropdownElement.classList.contains("expanded"))
+      {
+        dropdownElement.style.height = `0px`;
+        dropdownElement.classList.replace("expanded", "collapsed");
+      }
     }
 }

@@ -8,12 +8,14 @@
                         <label>
                             {{localize (configLookup "characteristicsAbbrev" @key)}}
                         </label>
-                        {{#if this.complete}}
-                            <a class="advancement-indicator" data-tooltip="{{this.cost}} XP"
-                                data-target="{{@key}}">&#10003;</a>
-                        {{else if this.career}}
-                            <a class="advancement-indicator" data-tooltip="{{this.cost}} XP"
-                                data-target="{{@key}}">+</a>
+                        {{#if this.career}}
+                            <a class="advancement-indicator" data-action="advanceCharacteristic" data-tooltip="{{this.cost}} XP" data-characteristic="{{@key}}">
+                                {{#if this.complete}}
+                                &#10003;
+                                {{else if this.career}}
+                                +
+                                {{/if}}
+                                </a>
                         {{/if}}
                     </div>
                 </th>
@@ -39,6 +41,18 @@
             </td>
             {{#each system.characteristics}}
                 <td>
+                    <input name="system.characteristics.{{@key}}.advances" type="number" value="{{this.advances}}">
+                </td>
+            {{/each}}
+        </tr>
+        <tr>
+            <td>
+                <label>
+                    {{localize "Modifier"}}
+                </label>
+            </td>
+            {{#each system.characteristics}}
+                <td>
                     <input name="system.characteristics.{{@key}}.modifier" type="number" value="{{this.modifier}}">
                 </td>
             {{/each}}
@@ -51,7 +65,7 @@
             </td>
             {{#each system.characteristics}}
                 <td>
-                    <div><a>{{this.value}}</a></div>
+                    <div><a data-action="rollTest" data-type="characteristic" data-characteristic="{{@key}}">{{this.value}}</a></div>
                 </td>
             {{/each}}
         </tr>
@@ -59,30 +73,28 @@
 
     <div class="attribute-row flexrow">
         <div class="attribute-box movement">
-            <div class="field" style="grid-column: 1 / span 4"><input type="text"></div>
-            <div class="field" style="grid-column: 5 / span 4"><input type="text"></div>
-            <div class="field" style="grid-column: 9 / span 4"><input type="text"></div>
+            <div class="field" style="grid-column: 1 / span 4"><input type="text" name="system.details.move.value" value="{{system.details.move.value}}"></div>
+            <div class="field" style="grid-column: 5 / span 4"><input type="text" name="system.details.move.walk" value="{{system.details.move.walk}}"></div>
+            <div class="field" style="grid-column: 9 / span 4"><input type="text" name="system.details.move.run" value="{{system.details.move.run}}"></div>
             <div class="label" style="grid-column: 1 / span 4"><label class="centered">Move</label></div>
             <div class="label" style="grid-column: 5 / span 4"><label class="centered">Walk</label></div>
             <div class="label" style="grid-column: 9 / span 4"><label class="centered">Run</label></div>
         </div>
         <div class="attribute-box metacurrencies">
             <div class="label" style="grid-column: 1 / span 4"><label>Fortune</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a>{{system.status.fortune.value}}</a></div>
+            <div class="field" style="grid-column: 5 / span 2"><a data-action="metaClick" data-meta-type="fortune">{{system.status.fortune.value}}</a></div>
             <div class="label" style="grid-column: 7 / span 4"><label>Resolve</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a>{{system.status.fate.value}}</a></div>
+            <div class="field" style="grid-column: 11 / span 2"><a data-action="metaClick" data-meta-type="fate">{{system.status.fate.value}}</a></div>
             <div class="label" style="grid-column: 1 / span 4"><label>Fate</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a>{{system.status.resolve.value}}</a></div>
+            <div class="field" style="grid-column: 5 / span 2"><a data-action="metaClick" data-meta-type="resolve">{{system.status.resolve.value}}</a></div>
             <div class="label" style="grid-column: 7 / span 4"><label>Resilience</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a>{{system.status.resilience.value}}</a></div>
+            <div class="field" style="grid-column: 11 / span 2"><a data-action="metaClick" data-meta-type="resilience">{{system.status.resilience.value}}</a></div>
         </div>
         <div class="attribute-box wounds">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">Wounds</label> <a
                     data-tooltip=""="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a></div>
-            <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value"
-                    value="{{system.status.wounds.value}}"></div>
-            <div class="field" style="grid-column: 7 / span 6"><input type="number" name="system.status.wounds.max"
-                    value="{{system.status.wounds.max}}"></div>
+            <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" name="system.status.wounds.max" value="{{system.status.wounds.max}}"></div>
         </div>
 
     </div>
@@ -90,7 +102,7 @@
         <div class="attribute-box criticals">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">Critical Wounds</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" readonly
-                    value="{{items.nonTrivialCriticals.length}}"></div>
+                    value="{{nonTrivialCriticals.length}}"></div>
             <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#unless
                     actor.flags.autoCalcCritW}}readonly{{/unless}} name="system.status.criticalWounds.max"
                     value="{{system.status.criticalWounds.max}}"></div>
@@ -99,9 +111,7 @@
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">Corruption</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number"
                     name="system.status.corruption.value" value="{{system.status.corruption.value}}"></div>
-            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#unless
-                    actor.flags.autoCalcCorruption}}readonly{{/unless}} name="system.status.corruption.max"
-                    value="{{system.status.corruption.value}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#unless actor.flags.autoCalcCorruption}}readonly{{/unless}} name="system.status.corruption.max" value="{{system.status.corruption.max}}"></div>
         </div>
         <div class="attribute-box experience">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">Experience</label></div>
@@ -134,23 +144,29 @@
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
-                            <a class="label">{{this.name}}</a>
+                            <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
                         </div>
+                        {{#if this.system.current.value}}
+                        <div class="small"><a data-tooltip="Roll Income" data-tooltip-direction="LEFT" data-action="rollIncome"><i class="fa-solid fa-coins"></i></a></div>
+                        {{/if}}
                         <div>
                             {{#if this.system.current.value}}
-                                <a><i class="far fa-check-circle"></i></a>
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.current.value"><i class="far fa-check-circle"></i></a>
                             {{else}}
-                                <a><i class="far fa-circle"></i></a>
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.current.value"><i class="far fa-circle"></i></a>
                             {{/if}}
                         </div>
                         <div>
                             {{#if this.system.complete.value}}
-                                <a><i class="far fa-check-circle"></i></a>
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.complete.value"><i class="far fa-check-circle"></i></a>
                             {{else}}
-                                <a><i class="far fa-circle"></i></a>
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.complete.value"><i class="far fa-circle"></i></a>
                             {{/if}}
                         </div>
                     <div class="list-controls"></div>
+                    </div>
+                    <div class="dropdown-content collapsed">
+
                     </div>
                 </div>
             {{/each}}

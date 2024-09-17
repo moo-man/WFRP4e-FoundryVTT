@@ -75,6 +75,15 @@
                         </div>
                     </div>
                 {{/each}}
+                {{#each system.details.career.system.untrainedSkills}}
+                    <div class="list-row inactive" data-nodrag="true">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <a class="label" data-action="addUntrainedSkill">{{this}}</a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
             </div>
         </div>
     </div>

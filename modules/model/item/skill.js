@@ -79,7 +79,7 @@ export class SkillModel extends BaseItemModel {
     }
 
 
-    _addCareerData(career) {
+    addCareerData(career) {
         if (!career)
           return
           

@@ -172,4 +172,14 @@ export class CharacterStatusModel extends StandardStatusModel {
         });
         return schema;
     }
+
+    increment(type)
+    {
+        return {[`system.${this.schema.fieldPath}.${type}.value`] : this[type].value + 1}
+    }
+
+    decrement(type)
+    {
+        return {[`system.${this.schema.fieldPath}.${type}.value`] : this[type].value - 1}
+    }
 }

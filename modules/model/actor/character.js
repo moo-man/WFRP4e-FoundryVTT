@@ -2,6 +2,7 @@ import { CharacteristicsModel } from "./components/characteristics";
 import { CharacterStatusModel } from "./components/status";
 import { CharacterDetailsModel } from "./components/details";
 import { StandardActorModel } from "./standard";
+import Advancement from "../../system/advancement";
 let fields = foundry.data.fields;
 
 export class CharacterModel extends StandardActorModel {
@@ -26,15 +27,41 @@ export class CharacterModel extends StandardActorModel {
         })
     }
 
+    async _preUpdate(data, options, user) 
+    {
+      await super._preUpdate(data, options, user);
+      if (!options.skipExperienceChecks)
+      {
+        await this._checkCharacteristicChange(data, options, user);
+      }
+    }
 
-    async _preUpdate(data, options, user) {
-        await super._preUpdate(data, options, user);
-
-        this._handleExperienceChange(data, options)
+    async _checkCharacteristicChange(data, options, user)
+    {
+      let charChanges = getProperty(options.changed, "system.characteristics")
+      if (charChanges)
+      {
+        let keys = Object.keys(charChanges);
+        for(let c of keys)
+        {
+          if (charChanges[c].advances)
+          {
+            let resolved = await Advancement.advancementDialog(c, charChanges[c].advances, "characteristic", this.parent)
+            if (!resolved)
+            {
+              charChanges[c].advances = this.characteristics[c].advances;
+              data.system.characteristics[c].advances = this.characteristics[c].advances;
+              this.parent.sheet.render(true); // this doesn't feel right but otherwise the inputted value will still be on the sheet
+            }
+          }
+        }
+      }
     }
 
     async _onUpdate(data, options, user) {
         await super._onUpdate(data, options, user);
+        this._handleExperienceChange(data, options)
+
         if(!options.skipCorruption && foundry.utils.getProperty(data, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
@@ -74,24 +101,63 @@ export class CharacterModel extends StandardActorModel {
 
     computeCareer()
     {
-        let currentCareer = this.currentCareer
-        if (currentCareer) {
-          let { standing, tier } = this._applyStatusModifier(currentCareer.status)
+        let career = this.currentCareer
+        let actorSkills = this.parent.itemTypes.skill
+        let actorTalents = this.parent.itemTypes.talent
+        if (career) 
+        {
+          let { standing, tier } = this._applyStatusModifier(career.system.status)
           this.details.status.standing = standing
           this.details.status.tier = tier
           this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
-        }
-        else
-          this.details.status.value = ""
-    
-        if (currentCareer) {
-          let availableCharacteristics = currentCareer.characteristics
-          for (let char in this.characteristics) {
+          this.details.career = career
+          career.system.untrainedSkills = [];
+          career.system.untrainedTalents = [];
+
+          
+          let availableCharacteristics = career.system.characteristics
+          for (let char in this.characteristics) 
+          {
             if (availableCharacteristics.includes(char))
-              this.characteristics[char].career = true;
+            {
+                this.characteristics[char].career = true;
+                if (this.characteristics[char].advances >= career.system.level.value * 5) 
+                {
+                  this.characteristics[char].complete = true;
+                }
+              }
+          }
+
+                  
+          // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
+          for (let sk of career.system.skills.concat(career.system.addedSkills)) 
+          {
+            let trainedSkill = actorSkills.find(s => s.name.toLowerCase() == sk.toLowerCase())
+            if (trainedSkill) 
+              trainedSkill.system.addCareerData(career)
+            else 
+              career.system.untrainedSkills.push(sk);
+            
+          }
+
+          // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
+          for (let talent of career.system.talents) 
+          {
+              let trainedTalent = actorTalents.find(t => t.name == talent)
+              if (trainedTalent) 
+                trainedTalent.system.addCareerData(career)
+              else 
+                career.system.untrainedTalents.push(talent);
           }
         }
+        else
+        {
+          this.details.status.value = ""
+        }
+    
     }
+
+    
 
     get currentCareer() 
     {
