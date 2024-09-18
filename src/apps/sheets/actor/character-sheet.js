@@ -1,4 +1,5 @@
 import Advancement from "../../../../modules/system/advancement";
+import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
 export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
@@ -8,6 +9,8 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
         actions: {
           metaClick : {buttons: [0, 2], handler : this._onMetaClick},
           advanceCharacteristic : {buttons: [0, 2], handler : this._onAdvanceCharacteristic},
+          advanceSkill : {buttons: [0, 2], handler : this._onAdvanceSkill},
+          addUntrainedSkill : this._onAddUntrainedSkill,
           rollIncome : this._onRollIncome
         },
         window : {
@@ -79,6 +82,30 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
       let type = ev.target.dataset.metaType;
       this.actor.update(ev.button == 0 ? this.actor.system.status.increment(type) : this.actor.system.status.decrement(type))
     }
+
+    static async _onAddUntrainedSkill(ev)
+    {
+      let skill = await WFRP_Utility.findSkill(ev.target.text);
+
+      // Right click - show sheet
+      if (ev.button == 2) {
+        skill.sheet.render(true);
+      }
+      else {
+        try {
+          if (await Dialog.confirm({ title: game.i18n.localize("SHEET.AddSkillTitle"), content: `<p>${game.i18n.localize("SHEET.AddSkillPrompt")}</p>`}))
+          {
+            this.actor.createEmbeddedDocuments("Item", [skill]);
+          }
+        }
+        catch
+        {
+          console.error(error)
+          ui.notifications.error(error)
+        }
+      }
+    }
+
 
     static async _onRollIncome(ev)
     {
@@ -158,6 +185,52 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
       }
       
       this.actor.update({system}, {skipExperienceChecks : true});
+    }
+
+    static _onAdvanceSkill(ev)
+    {
+      ev.stopPropagation();
+      let skill = this._getDocument(ev);
+      let system = this.actor.system.toObject()
+      let update = {items : []}
+      if(!skill)
+      {
+        return;
+      }
+      ev.target.style.pointerEvents = "none"
+
+      if (ev.button == 0) {
+        // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
+        let cost = Advancement.calculateAdvCost(skill.system.advances.value, "skill", skill.system.advances.costModifier)
+        try 
+        {
+          Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), skill.name);
+          system.details.experience.spent = Number(system.details.experience.spent) + cost;
+          update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value + 1})
+
+          system.details.experience.log = this.actor.system.addToExpLog(cost, skill.name, system.details.experience.spent)
+          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: skill.name}))
+          update.system = system;
+        } 
+        catch(error) 
+        {
+          ui.notifications.error(error);
+        }
+      }
+      else if (ev.button == 2) {
+        // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
+        if (skill.system.advances.value == 0)
+            return this.render(true); // Rerender to allow clicking again
+        let cost = Advancement.calculateAdvCost(skill.system.advances.value - 1, "skill", skill.system.advances.costModifier)
+        system.details.experience.spent = Number(system.details.experience.spent) - cost;
+        update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value - 1})
+
+        system.details.experience.log = this.actor.system.addToExpLog(-1 * cost, skill.name, system.details.experience.spent)
+        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : skill.name}))
+        update.system = system;
+      }
+
+      this.actor.update(update, {skipExperienceChecks : true});
     }
 
       

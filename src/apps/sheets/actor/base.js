@@ -8,7 +8,9 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     classes: ["wfrp4e"],
     actions : {
       rollTest : this._onRollTest,
-      toggleSummary : this._toggleSummary
+      toggleSummary : this._toggleSummary,
+      openContextMenu : this._onContextMenu,
+      toggleExtendedTests : this._toggleExtendedTests
     },
     defaultTab : "main"
   }
@@ -26,6 +28,33 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
     return tabs;
   }
+
+  _setupContextMenus()
+  {
+      return  [ContextMenu.create(this, this.element, ".list-row", this._getListContextOptions()), ContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})]
+  }
+
+  _getListContextOptions()
+  { 
+    return [
+      {
+        name: "Edit",
+        icon: '<i class="fas fa-edit"></i>',
+        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        callback: async li => {
+          const document = await fromUuid(li.data("uuid"));
+          document.sheet.render(true);
+        }
+      },
+      {
+        name: "Remove",
+        icon: '<i class="fas fa-times"></i>',
+        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        callback: li => fromUuid(li.data("uuid")).then(doc => doc.delete())
+      },
+    ];
+  }
+
 
   // From Income results - drag money value over to add
   _onDropIncome(data)
@@ -118,13 +147,31 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     static async _onRollTest(ev)
     {
       let test;
+      let document = await this._getDocumentAsync(ev);
       switch (ev.target.dataset.type)
       {
         case "characteristic": 
           test = await this.document.setupCharacteristic(ev.target.dataset.characteristic)
+          break;
+        case "skill":
+          test = await this.document.setupSkill(document.name)
+          break;
+        case "extendedTest":
+          test = await this.document.setupExtendedTest(document);
+          break;
       }
 
       test?.roll();
+    }
+
+    static async _onContextMenu(ev)
+    {
+    }
+
+    static async _toggleExtendedTests(ev)
+    {
+      let parent = this._getParent(ev.target, ".tab")
+      Array.from(parent.querySelectorAll(".extended-tests, .skill-lists, .extended-toggle")).forEach(el => el.classList.toggle("hidden"))
     }
 
     static async _toggleSummary(ev)

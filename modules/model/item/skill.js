@@ -60,6 +60,19 @@ export class SkillModel extends BaseItemModel {
         {
             options.oldName = this.parent.name
         }
+
+        let actor = this.parent.actor
+
+        if (actor?.type == "character" && getProperty(options.changed, "system.advances.value") && !options.skipExperienceChecks)
+        {
+            let resolved = await Advancement.advancementDialog(this.parent, data.system.advances.value, "skill", actor)
+    
+            if (!resolved)  
+            {
+                data.system.advances.value = this.advances.value;
+                this.parent.actor.sheet.render(true) // this doesn't feel right but otherwise the inputted value will still be on the sheet
+            }
+        }
     }
 
     async _onUpdate(data, options, user)

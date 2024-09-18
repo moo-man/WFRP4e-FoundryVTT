@@ -118,6 +118,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
+
+                .list-control {
+                    flex: 1
+                }
             }
 
             input,
@@ -133,9 +137,8 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                
                 flex: 0 0 100px;
-
+                
                 &.flex {
                     flex: 1
                 }
@@ -175,5 +178,23 @@
             }
         }
 
+        .progress-bar {
+            margin: 4px 0px;
+            display: flex;
+            width: 100%;
+            border: 1px solid var(--color-warm-3);
+            height: 50%;
+            height: 1rem;
+            .fill {
+                background-color: var(--color-warm-3);
+            }
+        }
+        
+        #context-menu {
+            width: 50%;
+            li.context-item {
+                line-height: 1rem;
+            }
+        }
     }
 }
