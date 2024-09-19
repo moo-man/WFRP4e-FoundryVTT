@@ -172,9 +172,17 @@
         .dropdown-content {
 
             transition: height 0.3s ease-in-out;
+            overflow: hidden;
+            line-height: 1.5rem;
+            box-sizing: border-box;
+            &.expanded {
+                padding: 5px;
+                > * {
+                    margin: 0px;
+                }
+            }
             &.collapsed {
                 height: 0px;
-                overflow: hidden;
             }
         }
 

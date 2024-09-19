@@ -143,11 +143,18 @@ export class CharacterModel extends StandardActorModel {
           // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
           for (let talent of career.system.talents) 
           {
-              let trainedTalent = actorTalents.find(t => t.name == talent)
-              if (trainedTalent) 
-                trainedTalent.system.addCareerData(career)
+              let trainedTalent = actorTalents.filter(t => t.name == talent)
+              if (trainedTalent.length)
+              {
+                for(let t of trainedTalent)
+                {
+                  t.system.addCareerData(career)
+                }
+              }
               else 
+              {
                 career.system.untrainedTalents.push(talent);
+              }
           }
         }
         else

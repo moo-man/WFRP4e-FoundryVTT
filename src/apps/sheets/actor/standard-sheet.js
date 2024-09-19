@@ -60,10 +60,23 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
   _prepareSkillsContext(context) {
     context.skills = {
-      basic: this.actor.itemTypes["skill"].filter(i => i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
-      advanced: this.actor.itemTypes["skill"].filter(i => i.system.advanced.value == "adv" || i.system.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
+      basic: this.actor.itemTypes.skill.filter(i => i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
+      advanced: this.actor.itemTypes.skill.filter(i => i.system.advanced.value == "adv" || i.system.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
     }
   }
+
+  // Consolidate talents
+  _prepareTalentsContext(context) {
+    let talents = context.items.talent;
+    context.items.talent = [];
+    talents.forEach(t => {
+      if (!context.items.talent.find(existing => existing.name == t.name))
+      {
+        context.items.talent.push(t);
+      }
+    })
+  }
+
   //#region Trappings
   _prepareTrappingsContext(context) {
 

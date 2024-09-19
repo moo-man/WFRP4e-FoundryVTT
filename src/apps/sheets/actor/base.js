@@ -159,6 +159,9 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         case "extendedTest":
           test = await this.document.setupExtendedTest(document);
           break;
+        case "trait":
+          test = await this.document.setupTrait(document);
+          break;
       }
 
       test?.roll();
