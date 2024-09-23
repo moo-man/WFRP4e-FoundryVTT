@@ -39,6 +39,18 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     return schema;
   }
 
+  _preUpdate(data, options, user)
+  {
+    if (data.system?.APdamage)
+    {
+      for(let loc in data.system.APdamage)
+      {
+        let maxDamageAtLocation = this.AP[loc] + Number(this.properties.qualities.durable?.value || 0)
+        data.system.APdamage[loc] = Math.clamp(data.system.APdamage[loc], 0, maxDamageAtLocation)
+      }
+    }
+  }
+
   /**
    * Used to identify an Item as one being a child or instance of ArmourModel
    *
@@ -77,7 +89,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
   get currentAP() {
     let currentAP = foundry.utils.deepClone(this.AP)
     for (let loc in currentAP) {
-        currentAP[loc] -= this.properties.qualities.durable  // If durable, subtract its value from APDamage
+        currentAP[loc] -= this.properties.qualities.durable  // If durable, subtract its value from APdamage
                           ? Math.max(0, (this.APdamage[loc] - (this.properties.qualities.durable?.value || 0)))
                           : this.APdamage[loc]
     }

@@ -24,8 +24,8 @@ export class PhysicalItemModel extends BaseItemModel
             value: new fields.StringField()
         });
         schema.damageToItem = new fields.SchemaField({
-            value: new fields.NumberField(),
-            shield: new fields.NumberField(),
+            value: new fields.NumberField({min: 0}),
+            shield: new fields.NumberField({min: 0}),
         });
         return schema;
     }

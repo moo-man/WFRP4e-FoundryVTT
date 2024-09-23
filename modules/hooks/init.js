@@ -716,6 +716,7 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
+      "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
       "systems/wfrp4e/templates/partials/container-contents.hbs",

@@ -1,6 +1,6 @@
 @import "./actors/index";
 
-.wfrp4e.sheet {
+.wfrp4e.sheet.application {
 
     nav.sheet-tabs {
         border-color: var(--color-cool-3);
@@ -140,7 +140,7 @@
                 flex: 0 0 100px;
                 
                 &.flex {
-                    flex: 1
+                    flex: 1;
                 }
 
                 &.fit {

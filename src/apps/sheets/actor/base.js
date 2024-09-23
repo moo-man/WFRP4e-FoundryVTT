@@ -9,8 +9,13 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     actions : {
       rollTest : this._onRollTest,
       toggleSummary : this._toggleSummary,
+      toggleSummaryAlt : {buttons: [2], handler : this._toggleSummary}, // TODO secondary actions
       openContextMenu : this._onContextMenu,
-      toggleExtendedTests : this._toggleExtendedTests
+      toggleExtendedTests : this._toggleExtendedTests,
+      removeAttacker : this._onRemoveAttacker,
+      itemPropertyDropdown : this._onItemPropertyDropdown,
+      combatDropdown : this._onCombatDropdown,
+      clickCondition : {buttons : [0, 2], handler : this._onClickCondition}
     },
     defaultTab : "main"
   }
@@ -31,7 +36,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   _setupContextMenus()
   {
-      return  [ContextMenu.create(this, this.element, ".list-row", this._getListContextOptions()), ContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})]
+      return  [ContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), ContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})]
   }
 
   _getListContextOptions()
@@ -70,6 +75,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     context.effects.passive = this._consolidateEffects(context.effects.passive)
     context.effects.temporary = this._consolidateEffects(context.effects.temporary)
     context.effects.disabled = this._consolidateEffects(context.effects.disabled)
+    context.effects.system = game.wfrp4e.utility.getSystemEffects(this.actor.type == "vehicle");
+
   }
 
 
@@ -113,6 +120,15 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   //#endregion
 
+  _addEventListeners()
+  {
+    super._addEventListeners();
+      this.element.querySelector(".system-effects")?.addEventListener("change", (ev) => {
+        let key = ev.target.value;
+        this.actor.addSystemEffect(key)
+      })
+  }
+
 
   async _handleEnrichment() {
     let enrichment = {}
@@ -148,19 +164,27 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     {
       let test;
       let document = await this._getDocumentAsync(ev);
+      let options = {fields : {}};
+      if (ev.target.dataset.modifier)
+      {
+        options.fields.modifier = Number(ev.target.dataset.modifier) || 0;
+      }
       switch (ev.target.dataset.type)
       {
         case "characteristic": 
-          test = await this.document.setupCharacteristic(ev.target.dataset.characteristic)
+          test = await this.document.setupCharacteristic(ev.target.dataset.characteristic, options)
           break;
         case "skill":
-          test = await this.document.setupSkill(document.name)
+          test = await this.document.setupSkill(document.name, options)
           break;
         case "extendedTest":
-          test = await this.document.setupExtendedTest(document);
+          test = await this.document.setupExtendedTest(document, options);
           break;
         case "trait":
-          test = await this.document.setupTrait(document);
+          test = await this.document.setupTrait(document, options);
+          break;
+        case "weapon":
+          test = await this.document.setupWeapon(document, options);
           break;
       }
 
@@ -176,6 +200,23 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       let parent = this._getParent(ev.target, ".tab")
       Array.from(parent.querySelectorAll(".extended-tests, .skill-lists, .extended-toggle")).forEach(el => el.classList.toggle("hidden"))
     }
+
+    static _onRemoveAttacker(ev) {
+      this.actor.update({ "flags.-=oppose": null })
+    }
+
+    static _onClickCondition(ev) {
+      let conditionKey = this._getParent(ev.target, ".condition")?.dataset.key
+      let existing = this.actor.hasCondition(conditionKey)
+      
+      if (!existing?.isNumberedCondition && ev.button == 0)
+      {
+        this.actor.removeCondition(conditionKey);
+      }
+      
+      ev.button == 0 ? this.actor.addCondition(conditionKey) : this.actor.removeCondition(conditionKey) 
+    }
+
 
     static async _toggleSummary(ev)
     {
@@ -195,11 +236,85 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         dropdownElement.innerHTML = content;
         dropdownElement.style.height = `${dropdownElement.scrollHeight}px`;
         dropdownElement.classList.replace("collapsed", "expanded");
+        // Fit content can't be animated, but we would like it be flexible height, so wait until animation finishes then add fit-content
+        // sleep(500).then(() => dropdownElement.style.height = `fit-content`);
+        
       }
       else if (dropdownElement.classList.contains("expanded"))
       {
+        // dropdownElement.style.height = `${dropdownElement.scrollHeight}px`;
         dropdownElement.style.height = `0px`;
         dropdownElement.classList.replace("expanded", "collapsed");
       }
     }
+
+    static async _onItemPropertyDropdown(ev) {
+      let item = await this._getDocumentAsync(ev);
+      let type = ev.target.dataset.type;
+      let properties = Object.values(item.system.properties[type])
+      if (type == "qualities")
+      {
+        properties = properties.concat(Object.values(item.system.properties.unusedQualities), Object.values(item.system.properties.inactiveQualities));
+      }
+      let propData = properties.find(p => p.display == ev.target.text);
+      let key = propData.key;
+      let value = propData.value;
+      let propertyDescriptions = foundry.utils.mergeObject(foundry.utils.deepClone(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions);
+      if (key)
+      {
+        let description = propertyDescriptions[key]?.replace("(Rating)", value) || `Description for ${ev.target.text} was not found`;
+        
+        this._toggleDropdown(ev, description)
+      }
+    }
+
+    static async _onCombatDropdown(ev) {
+      let property = ev.target.dataset.property;
+      let item = await this._getDocumentAsync(ev);
+      let description = "";
+
+      switch(property)
+      {
+        case "group":
+          description = game.wfrp4e.config.weaponGroupDescriptions[item.system.weaponGroup.value];
+          break;
+        case "reach":
+          description = game.wfrp4e.config.reachDescription[item.system.reach.value];
+          break;
+        case "special":
+          description = item.system.properties.special;
+          break;
+        case "specialAmmmo":
+          description = item.system.properties.specialAmmo;
+          break;
+        case "range":
+            if (!game.settings.get("wfrp4e", "mooRangeBands"))
+            {
+
+              description =
+              `<a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+                `
+                
+            }
+            //@HOUSE
+            else {
+              game.wfrp4e.utility.logHomebrew("mooRangeBands")
+              description =
+              `<a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier}</a><br>
+                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier}</a><br>
+                `
+            }
+          break;
+      }
+        
+      this._toggleDropdown(ev, description)
+    }
+
 }

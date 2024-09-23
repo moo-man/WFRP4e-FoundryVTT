@@ -7,7 +7,16 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   static DEFAULT_OPTIONS = {
     position : {
       height: 750
-    }
+    },
+    actions : {
+      useDodge : this._onDodgeClick,
+      useUnarmed : this._onUnarmedClick,
+      useImprovised : this._onImprovisedClick,
+      useStomp : this._onStompClick,
+      removeMount : this._removeMount,
+      dismount : this._dismount,
+      showMount : this._showMount
+    },
   }
 
   static TABS = {
@@ -57,6 +66,36 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       label: "Notes",
     }
   }
+
+    /**
+     * Callback actions which occur when a dragged element is over a drop target.
+     * @param {DragEvent} event       The originating DragEvent
+     * @protected
+     */
+    _onDragOver(event) {
+      console.log(event.target);
+    }
+
+    _onDropActor(document, event)
+    {
+      let mount = fromUuidSync(document.uuid);
+      if (event.target.classList.contains("mount-drop"))
+      {
+        if (game.wfrp4e.config.actorSizeNums[mount.system.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
+          return ui.notifications.error(game.i18n.localize("MountError"))
+  
+        let mountData = {
+          id: mount.id,
+          mounted: true,
+          isToken: false
+        }
+        if(this.actor.prototypeToken.actorLink && !mount.prototypeToken.actorLink)
+          ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
+  
+        this.actor.update({ "system.status.mount": mountData })
+          
+      }
+    }
 
   _prepareSkillsContext(context) {
     context.skills = {
@@ -242,5 +281,49 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     return itemsInContainers
   }
   //#endregion
+
+
+  static _onUnarmedClick(ev) {
+    ev.preventDefault();
+    let unarmed = game.wfrp4e.config.systemItems.unarmed
+    this.actor.setupWeapon(unarmed).then(setupData => {
+      this.actor.weaponTest(setupData)
+    })
+  }
+  static _onDodgeClick(ev) {
+      this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true}).then(test => {
+        test.roll();
+      });
+  }
+  static _onImprovisedClick(ev) {
+    ev.preventDefault();
+    let improv = game.wfrp4e.config.systemItems.improv;
+    this.actor.setupWeapon(improv).then(setupData => {
+      this.actor.weaponTest(setupData)
+    })
+  }
+
+  static _onStompClick(ev) {
+    ev.preventDefault();
+    let stomp = game.wfrp4e.config.systemItems.stomp;
+    this.actor.setupTrait(stomp).then(setupData => {
+      this.actor.traitTest(setupData)
+    })
+  }
+
+  static _dismount(ev) {
+    ev.stopPropagation();
+    this.actor.update({ "system.status.mount.mounted": !this.actor.status.mount.mounted })
+  }
+
+  static _removeMount(ev) {
+    ev.stopPropagation();
+    let mountData = { id: "", mounted: false, isToken: false }
+    this.actor.update({ "system.status.mount": mountData })
+  }
+
+  static _onContextMenushowMount(ev) {
+    this.actor.mount.sheet.render(true)
+  }
 
 }
