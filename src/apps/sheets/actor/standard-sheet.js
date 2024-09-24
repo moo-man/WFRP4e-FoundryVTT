@@ -116,6 +116,39 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     })
   }
 
+    // Organize Spells
+    _prepareMagicContext(context) {
+      let spells = context.items.spell;
+      context.items.spell = {petty : [], lore : []};
+      spells.forEach(s => {
+        if (s.system.lore.value == "petty")
+        {
+          context.items.spell.petty.push(s);
+        }
+        else 
+        {
+          context.items.spell.lore.push(s);
+        }
+      })
+    }
+
+    // Organize Prayers
+    _prepareReligionContext(context) {
+      let prayer = context.items.prayer;
+      context.items.prayer = {blessing : [], miracle : []};
+      prayer.forEach(p => {
+        if (p.system.type.value == "blessing")
+        {
+          context.items.prayer.blessing.push(p);
+        }
+        else 
+        {
+          context.items.prayer.miracle.push(p);
+        }
+      })
+    }
+
+
   //#region Trappings
   _prepareTrappingsContext(context) {
 
@@ -207,27 +240,31 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       }
     }
 
-    // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
+    const ingredients = {
+      label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
+      items: this.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
+      show: false,
+      collapsed : collapsed?.ingredients,
+      dataType: "trapping"
+    }
     const money = {
-      items: this.actor.itemTypes["money"],
+      items: this.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
       show: true,
-      collapsed: false
+      collapsed : false
     }
     const containers = {
-      items: this.actor.itemTypes["container"],
+      items: this.actor.getItemTypes("container"),
       show: false
     }
     const misc = {}
     let inContainers = []; // inContainers is the temporary storage for items within a container
 
-
-    if (this.actor.hasSpells || this.actor.type == "vehicle") {
+    
+    if (this.actor.hasSpells || this.actor.type == "vehicle")
       inContainers = this._filterItemCategory(ingredients, inContainers)
-    }
-    else {
-      // categories.misc.items = categories.misc.items.concat(ingredients.items)
-    }
+    else
+      categories.misc.items = categories.misc.items.concat(ingredients.items)
 
     // Allow 3rd party modules to expand Inventory by adding new categories
     Hooks.callAll("wfrp4e:constructInventory", this, categories, collapsed);
@@ -267,7 +304,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
     context.inventory = {
       categories,
-      // ingredients,
+      ingredients,
       money,
       containers,
       misc

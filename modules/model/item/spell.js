@@ -56,6 +56,15 @@ export class SpellModel extends OvercastItemModel {
         return schema;
     }
 
+    async _preUpdate(data, options, user)
+    {
+      await super._preUpdate(data, options, user)
+      if (foundry.utils.hasProperty(data, "system.cn.SL"))
+      {
+          data.system.cn.SL = Math.clamp(data.system.cn.SL, 0, data.system.cn.value || this.cn.value)
+      }
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of SpellModel
      *
@@ -114,8 +123,8 @@ export class SpellModel extends OvercastItemModel {
 
     computeBase() {
         let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
-        foundry.utils.setProperty(lore, "flags.wfrp4e.path", "system.lore.effect");
         if (lore) {
+            foundry.utils.setProperty(lore, "flags.wfrp4e.path", "system.lore.effect");
             this.lore.effect = new ActiveEffectWFRP4e(lore, { parent: this.parent });
         }
         this._addSpellDescription();

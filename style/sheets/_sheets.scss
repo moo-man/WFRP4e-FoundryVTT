@@ -4,12 +4,19 @@
 
     nav.sheet-tabs {
         border-color: var(--color-cool-3);
+        gap: 0px;
         a {
             flex: 1
         }
         .active {
             background-color: var(--color-cool-3);
             text-shadow: none;
+        }
+
+        > [data-tab]
+        {
+            padding: 8px 0px;
+            flex: 1;
         }
 
     }

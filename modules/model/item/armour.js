@@ -39,8 +39,9 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     return schema;
   }
 
-  _preUpdate(data, options, user)
+  async _preUpdate(data, options, user)
   {
+    await super._preUpdate(data, options, user);
     if (data.system?.APdamage)
     {
       for(let loc in data.system.APdamage)

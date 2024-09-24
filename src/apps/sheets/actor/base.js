@@ -186,9 +186,62 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         case "weapon":
           test = await this.document.setupWeapon(document, options);
           break;
+        case "spell":
+          test = await this.castOrChannelPrompt(document, options);
+          break;
+        case "prayer":
+          test = await this.actor.setupPrayer(document, options);
+          break;
       }
 
       test?.roll();
+    }
+
+    castOrChannelPrompt(spell, options = {}) {
+      // Do not show the dialog for Petty spells, just cast it.
+      if (spell.system.lore.value == "petty" || spell.system.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
+      {
+        return this.actor.setupCast(spell, options)
+      }
+      else {
+          return Dialog.wait({
+            title: game.i18n.localize("DIALOG.CastOrChannel"),
+            content: `<div class="cast-channel-dialog selection"> 
+                      <p>${game.i18n.localize("DIALOG.CastChannel")}</p> 
+                      </div>`,
+            buttons: {
+              cast: {
+                label: game.i18n.localize("Cast"),
+                callback: btn => {
+                  return this.actor.setupCast(spell, options);
+                }
+              },
+              channel: {
+                label: game.i18n.localize("Channel"),
+                callback: async btn => {
+                  return this.actor.setupChannell(spell, options);
+                  // TODO: move this elsewhere
+                  // await test.roll();
+                  // if (test.context.channelUntilSuccess) {
+                  //   await warhammer.utility.sleep(200);
+                  //   do {
+                  //     if (test.item.cn.SL >= test.item.cn.value) {
+                  //       break;
+                  //     }
+                  //     if (test.result.minormis || test.result.majormis || test.result.catastrophicmis) {
+                  //       break;
+                  //     }
+                  //     test.context.messageId = null; // Clear message so new message is made
+                  //     await test.roll();
+                  //     await warhammer.utility.sleep(200);
+                  //   } while (true);
+                  // }
+                }
+              }
+            },
+            default: 'cast'
+          });
+      }
     }
 
     static async _onContextMenu(ev)
