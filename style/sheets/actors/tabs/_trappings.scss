@@ -63,4 +63,40 @@
             }
         }
     }
+
+    .container-contents {
+        .collapsed-rows,
+        .list-row
+        {
+            position: relative;
+            &::before {
+                position: absolute;
+                left: -1rem;
+                top: 0rem;
+                content: "";
+                width: 1rem;
+                height: 14px;
+                border: 1px solid var(--color-cool-3);
+                border-radius: 0px 3px 3px;
+                border-top: none;
+                border-right: none;
+            }
+            &::after {
+                position: absolute;
+                left: -2rem;
+                top: -1.5rem;
+                content: "";
+                width: 1rem;
+                height: 2rem;
+                border-right: 1px solid var(--color-cool-3);
+            }
+
+            &:first-child
+            {
+                &::after {
+                    content: unset;
+                }
+            }
+        }
+    }
 }

@@ -294,7 +294,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
       cont.system.carries.current = Math.floor(cont.system.carries.current * 10) / 10;
-      cont.collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
+      cont.system.collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
     context.inventory = {
