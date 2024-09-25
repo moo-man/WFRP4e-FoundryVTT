@@ -1,8 +1,8 @@
 <div class="sheet-list">
   <div class="list-header row-content">
-        <a class="ap-source" data-tooltip="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
-        <a class="ap-source" data-tooltip="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
-        <span class="ap-source" data-tooltip="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
+        <a class="ap-source armour" data-tooltip="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
+        <a class="ap-source shield" data-tooltip="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
+        <span class="ap-source toughness" data-tooltip="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
         <span class="flex location-label">{{locData.label}}</span>
         <span class="ap-label small">{{localize "AP"}}</span>
   </div>

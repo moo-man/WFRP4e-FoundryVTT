@@ -117,6 +117,42 @@ export default class MarketWFRP4e {
 
     return money;
   }
+  
+  static convertMoney(money, type)
+  {
+
+    money = money.map(m => m.toObject());
+  
+    if (type == "gc")
+    {
+      let currentGC = money.find(i => i.name == game.i18n.localize("NAME.GC"))
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+
+      if (currentGC && currentSS && currentGC.system.quantity.value )
+      {
+        currentGC.system.quantity.value -= 1;
+        currentSS.system.quantity.value += 20
+        return [currentGC, currentSS];
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+    
+    if (type == "ss")
+    {
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+      let currentBP = money.find(i => i.name == game.i18n.localize("NAME.BP"))
+
+      if (currentBP && currentSS  && currentSS.system.quantity.value)
+      {
+        currentSS.system.quantity.value -= 1;
+        currentBP.system.quantity.value += 12
+        return [currentBP, currentSS];
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+  }
 
   /**
    * Execute a /credit amount and add the money to the player inventory

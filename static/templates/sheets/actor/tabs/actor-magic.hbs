@@ -35,7 +35,7 @@
             <div class="tiny" data-tooltip="{{localize 'SHEET.SL'}}">{{localize "SL"}}</div>
             <div class="tiny" data-tooltip="{{localize 'Memorized'}}">M</div>
             <div class="list-controls">
-                <a class="list-control" data-action="createItem" data-type="trait">
+                <a class="list-control" data-action="createItem" data-type="spell">
                     <i class="fas fa-plus"></i>
                 </a>
             </div>
@@ -50,11 +50,11 @@
                         </div>
 
                         <div class="flex">
-                            <select data-action="editProperty" data-uuid="{{this.system.id}}">
+                            <select data-action="editProperty" data-uuid="{{this.uuid}}" data-path="system.currentIng.value">
                             {{#select this.system.currentIng.value}}
                             <option value="">{{localize "None"}}</option>
-                            {{#each this.system.ingredientList as |ing i|}}
-                            <option value="{{ing.id}}">{{ing.name}} ({{ing.quantity.value}})</option>
+                            {{#each this.system.ingredientList as |ingredient|}}
+                            <option value="{{ingredient.id}}">{{ingredient.name}} ({{ingredient.quantity.value}})</option>
                             {{/each}}
                             {{/select}}
                             </select>

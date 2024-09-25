@@ -15,7 +15,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       removeAttacker : this._onRemoveAttacker,
       itemPropertyDropdown : this._onItemPropertyDropdown,
       combatDropdown : this._onCombatDropdown,
-      clickCondition : {buttons : [0, 2], handler : this._onClickCondition}
+      clickCondition : {buttons : [0, 2], handler : this._onClickCondition},
+      removeFromContainer : this._onRemoveItemFromContainer,
+      convertCurrency : this._onConvertCurrency,
+      consolidateCurrency : this._onConsolidateCurrency,
+      collapseSection : this._onCollapseSection,
+      createItem : this._onCreateItem
     },
     defaultTab : "main"
   }
@@ -60,6 +65,29 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     ];
   }
 
+  async _onDropItem(data, ev)
+  {
+      let containerDropElement = this._getParent(ev.target, ".container-drop")
+      if (containerDropElement)
+      {
+        let document = await fromUuid(data.uuid);
+        let container = await fromUuid(containerDropElement.dataset.uuid);
+
+        //
+        if (container.id == document.system.location.value)
+        {
+          return super._onDropItem(data, ev);
+        }
+        if (container)
+        {
+          document.update({"system.location.value" : container.id})
+        }
+      }
+      else 
+      {
+        return super._onDropItem(data, ev);
+      }
+  }
 
   // From Income results - drag money value over to add
   _onDropIncome(data)
@@ -140,7 +168,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   static async _onCreateEffect(ev)
     {
-        let type = ev.currentTarget.dataset.category;
+        let type = ev.target.dataset.category;
         let effectData = { name: localize("WH.NewEffect"), img: "icons/svg/aura.svg" };
         if (type == "temporary")
         {
@@ -158,6 +186,28 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             effectData.img = this.object.img;
         }
         this.object.createEmbeddedDocuments("ActiveEffect", [effectData]).then(effects => effects[0].sheet.render(true));
+    }
+
+    static async _onCreateItem(ev) 
+    {
+        let type = this._getParent(ev.target, "[data-type]").dataset.type;
+        let category = this._getParent(ev.target, "[data-type]").dataset.category;
+        let itemData = {type, name : `New ${game.i18n.localize(CONFIG.Item.typeLabels[type])}`}
+
+        if (type == "trapping")
+        {
+          itemData["system.trappingType.value"] = category;
+        }
+        else if (type == "spell" && category == "petty")
+        {
+          itemData["system.lore.value"] = category;
+        }
+        else if (type == "miracle")
+        {
+          itemData["system.type.value"] = category;
+        }
+
+        this.document.createEmbeddedDocuments("Item", [itemData]).then(item => item[0].sheet.render(true));
     }
 
     static async _onRollTest(ev)
@@ -270,6 +320,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       ev.button == 0 ? this.actor.addCondition(conditionKey) : this.actor.removeCondition(conditionKey) 
     }
 
+    static async _onRemoveItemFromContainer(ev)
+    {
+      let item = await this._getDocumentAsync(ev);
+      return item.update({ "system.location.value": "" })
+    }
+
 
     static async _toggleSummary(ev)
     {
@@ -368,6 +424,32 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
         
       this._toggleDropdown(ev, description)
+    }
+
+    static _onConvertCurrency(ev) 
+    {
+
+      ev.preventDefault();
+      let type = this._getParent(ev.target, "a").dataset.type;
+      let money = this.actor.itemTypes.money;
+      let itemData = MarketWFRP4e.convertMoney(money, type);
+      return this.actor.updateEmbeddedDocuments("Item", itemData)
+    }
+
+    static _onConsolidateCurrency(ev) 
+    {
+      ev.preventDefault();
+      let money = this.actor.itemTypes.money;
+      let newMoney = MarketWFRP4e.consolidateMoney(money.map(i => i.toObject()));
+      return this.actor.updateEmbeddedDocuments("Item", newMoney)
+    }
+
+    static _onCollapseSection(ev)
+    {
+      let section = this._getParent(ev.target, "a").dataset.section;
+      let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[section]
+  
+      this.actor.setFlag("wfrp4e", `sheetCollapsed.${section}`, !collapsed);
     }
 
 }

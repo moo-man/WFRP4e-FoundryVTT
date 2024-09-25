@@ -93,7 +93,6 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
           ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
   
         this.actor.update({ "system.status.mount": mountData })
-          
       }
     }
 
@@ -224,11 +223,11 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
         collapsed: collapsed?.misc,
         dataType: "trapping"
       },
-      ingredients: {
+      ingredient: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
         items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "ingredient"),
         show: false,
-        collapsed: collapsed?.ingredients,
+        collapsed: collapsed?.ingredient,
         dataType: "trapping"
       },
       cargo: {
@@ -240,13 +239,6 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       }
     }
 
-    const ingredients = {
-      label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
-      items: this.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
-      show: false,
-      collapsed : collapsed?.ingredients,
-      dataType: "trapping"
-    }
     const money = {
       items: this.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
@@ -262,9 +254,12 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
     
     if (this.actor.hasSpells || this.actor.type == "vehicle")
-      inContainers = this._filterItemCategory(ingredients, inContainers)
+      inContainers = this._filterItemCategory(categories.ingredient, inContainers)
     else
-      categories.misc.items = categories.misc.items.concat(ingredients.items)
+    {
+      categories.misc.items = categories.misc.items.concat(categories.ingredient.items)
+      delete categories.ingredient
+    }
 
     // Allow 3rd party modules to expand Inventory by adding new categories
     Hooks.callAll("wfrp4e:constructInventory", this, categories, collapsed);
@@ -293,8 +288,8 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
-      cont.system.carrying = itemsInside.filter(i => i.type != "container");    // cont.system.carrying -> items the container is carrying
-      cont.system.packsInside = itemsInside.filter(i => i.type == "container"); // cont.system.packsInside -> containers the container is carrying
+      cont.system.carrying = itemsInside.filter(i => i.type != "container").sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
+      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort);; // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
@@ -304,7 +299,6 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
     context.inventory = {
       categories,
-      ingredients,
       money,
       containers,
       misc

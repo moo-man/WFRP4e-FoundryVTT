@@ -44,13 +44,11 @@
             }
             
         }
-
-        .extended-tests {
-            .list-controls {
-                flex: 0 0 3rem;
-            }
-        }
-
     }
     
+    .extended-tests {
+        .list-header a {
+            margin: 0px 5px;
+        }
+    }
 }

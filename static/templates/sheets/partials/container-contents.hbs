@@ -1,0 +1,43 @@
+<div class="container-contents level-{{level}}" style="margin-left: 30px">
+{{#each pack.system.carrying}}
+      <div class="list-row" data-uuid="{{this.uuid}}">
+        <div class="row-content">
+            <div class="list-name">
+                <img src="{{this.img}}">
+                <a class="label">{{this.name}}</a>
+                <a data-action="stepProperty" data-path="system.quantity.value">({{this.system.quantity.value}})</a>
+            </div>
+            <div class="small">{{this.system.encumbrance.total}}</div>
+            <div class="list-controls">
+                    <a data-action="removeFromContainer" data-tooltip="{{localize 'SHEET.RemoveItem'}}"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
+            </div>
+        </div>
+      </div>
+{{/each}}
+
+{{#each pack.system.packsInside}}
+    <div class="list-row container-drop" data-uuid="{{this.uuid}}">
+        <div class="row-content">
+            <div class="list-name">
+                <img src="{{this.img}}">
+                <a class="label">{{this.name}}</a>
+                           ({{this.system.carries.current}} / {{this.system.carries.value}})
+            </div>
+                {{#if this.system.countEnc.value}}
+                    <a data-tooltip="{{localize 'SHEET.CountEncOn'}}" data-action="toggleProperty" data-path="system.countEnc.value"><i class="far fa-check-circle"></i></a> 
+                {{else}}
+                    <a data-tooltip="{{localize 'SHEET.CountEncOff'}}" class="inactive" data-action="toggleProperty" data-path="system.countEnc.value"><i class="far fa-circle"></i></a>
+                {{/if}}
+                                    <a class="inactive disabled"><i class="far fa-circle"></i></a>
+
+            <div class="small">{{this.system.encumbrance.total}}</div>
+            <div class="list-controls">
+                    <a data-action="removeFromContainer" data-tooltip="{{localize 'SHEET.RemoveItem'}}"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="list-content">
+        {{> systems/wfrp4e/templates/sheets/partials/container-contents.hbs level=(add 1 ../level) pack=this}}
+    </div>
+{{/each}}
+</div>
