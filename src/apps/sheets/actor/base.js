@@ -41,7 +41,11 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   _setupContextMenus()
   {
-      return  [ContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), ContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})]
+      // return  
+      return [
+        WarhammerContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), 
+        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})
+      ];
   }
 
   _getListContextOptions()
@@ -52,7 +56,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         icon: '<i class="fas fa-edit"></i>',
         condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
         callback: async li => {
-          const document = await fromUuid(li.data("uuid"));
+          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          const document = await fromUuid(uuid);
           document.sheet.render(true);
         }
       },
@@ -60,7 +65,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         name: "Remove",
         icon: '<i class="fas fa-times"></i>',
         condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
-        callback: li => fromUuid(li.data("uuid")).then(doc => doc.delete())
+        callback: async li => 
+        {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          const document = await fromUuid(uuid);
+          document.delete();
+        }
       },
     ];
   }

@@ -46,14 +46,14 @@
         <div class="list-content weapon-list">
             {{#each items.weapon}}
                 {{#if (and this.system.isMelee this.system.isEquipped)}}
-                    <div class="list-row" data-uuid="{{this.uuid}}" class="nocontext">
+                    <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
                                 <a class="label" data-action="rollTest" data-type="weapon">{{this.name}}</a>
                             </div>
                             <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
-                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" {{#if this.damageToItem.value}}classe="damaged"{{/if}} data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
+                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
                             <a data-action="combatDropdown" data-property="reach">{{this.Reach}}</a>
                         </div>
                         <div class="item-property-row">
@@ -111,7 +111,7 @@
         <div class="list-content weapon-list">
             {{#each items.weapon}}
                 {{#if (and this.system.isRanged this.system.isEquipped)}}
-                    <div class="list-row" data-uuid="{{this.uuid}}" class="nocontext">
+                    <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
@@ -126,7 +126,7 @@
                                 {{/each}}
                             {{/select}}
                             </select>
-                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" {{#if this.damageToItem.value}}classe="damaged"{{/if}} data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
+                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
                             <a data-action="combatDropdown" data-property="range">{{this.Range}} {{localize "yds"}}</a>
                         </div>
                         <div class="item-property-row">
