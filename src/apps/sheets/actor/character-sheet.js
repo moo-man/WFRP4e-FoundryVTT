@@ -1,3 +1,4 @@
+import CareerSelector from "../../../../modules/apps/career-selector";
 import Advancement from "../../../../modules/system/advancement";
 import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
@@ -7,13 +8,13 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
     static DEFAULT_OPTIONS = {
         classes: ["character"],
         actions: {
-          metaClick : {buttons: [0, 2], handler : this._onMetaClick},
           advanceCharacteristic : {buttons: [0, 2], handler : this._onAdvanceCharacteristic},
           advanceSkill : {buttons: [0, 2], handler : this._onAdvanceSkill},
           advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
           addUntrainedSkill : this._onAddUntrainedSkill,
           addUntrainedTalent : this._onAddUntrainedTalent,
-          rollIncome : this._onRollIncome
+          rollIncome : this._onRollIncome,
+          changeCareer : this._onChangeCareer
         },
         window : {
           resizable : true
@@ -78,13 +79,6 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
           log.reason += ` (${log.counter})`
       }
       return condensed.reverse()
-    }
-
-    
-    static async _onMetaClick(ev)
-    {
-      let type = ev.target.dataset.metaType;
-      this.actor.update(ev.button == 0 ? this.actor.system.status.increment(type) : this.actor.system.status.decrement(type))
     }
 
     static async _onAddUntrainedSkill(ev)
@@ -168,6 +162,11 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
           ui.notifications(error)
         }
       }
+    }
+
+    static _onChangeCareer(ev)
+    {
+      new CareerSelector(this.document).render(true);
     }
 
 

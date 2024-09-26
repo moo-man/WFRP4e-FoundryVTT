@@ -12,13 +12,9 @@
             {{#each items.trait}}
                 <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
-                        <div class="list-name">
-                            <img src="{{this.img}}">
-                                    {{#if this.system.rollable.value}}
-                                    <a class="label" data-action="rollTest" data-type="trait" data-action="toggleSummaryAlt">{{this.system.DisplayName}} <i class="fas fa-dice" style="opacity: 0.7"></i></a>
-                                    {{else}}
-                                    <a class="label" data-action="toggleSummary">{{this.system.DisplayName}}</a>
-                                    {{/if}}
+                        <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
+                            <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest" data-type="trait"{{/if}}>
+                            <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
                         </div>
                         <div class="list-controls">
                             <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>

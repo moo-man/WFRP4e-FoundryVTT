@@ -159,16 +159,16 @@ export class CharacterStatusModel extends StandardStatusModel {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.fortune = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.fate = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.resilience = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.resolve = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         return schema;
     }

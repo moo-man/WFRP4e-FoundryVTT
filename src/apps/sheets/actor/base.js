@@ -13,6 +13,24 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           icon : 'fa-solid fa-gear',
           label : "Actor Settings",
           action : "configureActor"
+        },
+        {
+          action: "configurePrototypeToken",
+          icon: "fa-solid fa-user-circle",
+          label: "TOKEN.TitlePrototype",
+          ownership: "OWNER"
+        },
+        {
+          action: "showPortraitArtwork",
+          icon: "fa-solid fa-image",
+          label: "SIDEBAR.CharArt",
+          ownership: "OWNER"
+        },
+        {
+          action: "showTokenArtwork",
+          icon: "fa-solid fa-image",
+          label: "SIDEBAR.TokenArt",
+          ownership: "OWNER"
         }
       ]
     },
@@ -81,6 +99,17 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
           const document = await fromUuid(uuid);
           document.delete();
+        }
+      },
+      {
+        name: "Post to Chat",
+        icon: '<i class="fas fa-comment"></i>',
+        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        callback: async li => 
+        {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          const document = await fromUuid(uuid);
+          document.postItem();
         }
       },
     ];

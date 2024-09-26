@@ -82,13 +82,13 @@
         </div>
         <div class="attribute-box metacurrencies">
             <div class="label" style="grid-column: 1 / span 4"><label>Fortune</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a data-action="metaClick" data-meta-type="fortune">{{system.status.fortune.value}}</a></div>
+            <div class="field" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.fortune.value">{{system.status.fortune.value}}</a></div>
             <div class="label" style="grid-column: 7 / span 4"><label>Resolve</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a data-action="metaClick" data-meta-type="fate">{{system.status.fate.value}}</a></div>
+            <div class="field" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.fate.value">{{system.status.fate.value}}</a></div>
             <div class="label" style="grid-column: 1 / span 4"><label>Fate</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a data-action="metaClick" data-meta-type="resolve">{{system.status.resolve.value}}</a></div>
+            <div class="field" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.resolve.value">{{system.status.resolve.value}}</a></div>
             <div class="label" style="grid-column: 7 / span 4"><label>Resilience</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a data-action="metaClick" data-meta-type="resilience">{{system.status.resilience.value}}</a></div>
+            <div class="field" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.resilience.value">{{system.status.resilience.value}}</a></div>
         </div>
         <div class="attribute-box wounds">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">Wounds</label> <a
@@ -133,7 +133,7 @@
             <div>Current</div>
             <div>Complete</div>
             <div class="list-controls">
-                <a class="list-control add-career">
+                <a data-action="changeCareer" class="item-control">   
                     <i class="fas fa-plus"></i>
                 </a>
             </div>
