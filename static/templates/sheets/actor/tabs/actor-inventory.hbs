@@ -112,7 +112,7 @@
                             <div class="row-content">
                                 <div class="list-name">
                                     <img src="{{this.img}}">
-                                    <a class="label">{{this.name}}</a>
+                                    <a class="label" data-action="toggleSummary">{{this.name}}</a>
                                 </div>
                                 {{#if (eq @../key "ingredients")}}
                                 <div class="flex">
@@ -139,6 +139,10 @@
                                 <div class="list-controls">
                                     <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
                                 </div>
+                            </div>
+                            {{> sheetButtons document=this}}
+                            <div class="dropdown-content collapsed">
+
                             </div>
                         </div>
                     {{/each}}

@@ -48,9 +48,9 @@
                 {{#if (and this.system.isMelee this.system.isEquipped)}}
                     <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
-                            <div class="list-name">
+                            <div class="list-name rollable" data-action="rollTest" data-type="weapon">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="rollTest" data-type="weapon">{{this.name}}</a>
+                                <a class="label">{{this.name}}</a>
                             </div>
                             <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
                             <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
@@ -91,6 +91,7 @@
                             {{/if}}
 
                         </div>
+                        {{> sheetButtons document=this}}
                         <div class="dropdown-content collapsed">
 
                         </div>
@@ -113,9 +114,9 @@
                 {{#if (and this.system.isRanged this.system.isEquipped)}}
                     <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
-                            <div class="list-name">
+                            <div class="list-name rollable" data-action="rollTest" data-type="weapon">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="rollTest" data-type="weapon">{{this.name}}</a>  
+                                <a class="label">{{this.name}}</a>  
                             </div>
                             <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
                             <select data-action="editProperty" data-path="system.currentAmmo.value">
@@ -185,6 +186,7 @@
                                     {{{array this.system.Flaws "" action="itemPropertyDropdown" type="flaws"}}}
                             {{/if}}
                         </div>
+                        {{> sheetButtons document=this}}
                         <div class="dropdown-content collapsed">
 
                         </div>

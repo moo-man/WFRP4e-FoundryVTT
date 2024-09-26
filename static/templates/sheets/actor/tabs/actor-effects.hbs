@@ -34,13 +34,7 @@
                         <div class="row-content">
                             {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
                         </div>
-                        {{#if effect.manualScripts.length}}
-                            <div class="row-content">
-                                <div class="manual-script-buttons">
-                                    {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
-                                </div>
-                            </div>
-                        {{/if}}
+                        {{> sheetButtons document=this}}
                     </div>
                 {{/each}}
             </div>
@@ -80,6 +74,10 @@
 
                             <div class="list-controls"></div>
                         </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
                     </div>
                 {{/each}}
             </div>
@@ -108,6 +106,10 @@
 
                             <div class="list-controls"></div>
                         </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
                     </div>
                 {{/each}}
             </div>
@@ -133,6 +135,10 @@
 
                             <div class="list-controls"></div>
                         </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
                     </div>
                 {{/each}}
             </div>
@@ -157,6 +163,10 @@
                             </div>
 
                             <div class="list-controls"></div>
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
                         </div>
                     </div>
                 {{/each}}
@@ -208,6 +218,10 @@
 
                                 <div class="list-controls"></div>
                             </div>
+                            {{> sheetButtons document=this}}
+                            <div class="dropdown-content collapsed">
+
+                            </div>
                         </div>
                     {{/if}}
                 {{/each}}
@@ -230,13 +244,7 @@
                         <div class="row-content">
                             {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
                         </div>
-                        {{#if effect.manualScripts.length}}
-                            <div class="row-content">
-                                <div class="manual-script-buttons">
-                                    {{> systems/wfrp4e/templates/partials/manual-scripts.hbs scripts=effect.manualScripts}}
-                                </div>
-                            </div>
-                        {{/if}}
+                        {{> sheetButtons document=this}}
                     </div>
                 {{/each}}
             </div>

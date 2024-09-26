@@ -1,3 +1,4 @@
+import ActorSettings from "../../../../modules/apps/actor-settings";
 import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
 import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
 
@@ -6,6 +7,15 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
+    window : {
+      controls : [
+        {
+          icon : 'fa-solid fa-gear',
+          label : "Actor Settings",
+          action : "configureActor"
+        }
+      ]
+    },
     actions : {
       rollTest : this._onRollTest,
       toggleSummary : this._toggleSummary,
@@ -20,7 +30,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       convertCurrency : this._onConvertCurrency,
       consolidateCurrency : this._onConsolidateCurrency,
       collapseSection : this._onCollapseSection,
-      createItem : this._onCreateItem
+      createItem : this._onCreateItem,
+      configureActor : this._onConfigureActor
     },
     defaultTab : "main"
   }
@@ -161,10 +172,28 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   _addEventListeners()
   {
     super._addEventListeners();
-      this.element.querySelector(".system-effects")?.addEventListener("change", (ev) => {
-        let key = ev.target.value;
-        this.actor.addSystemEffect(key)
+    this.element.querySelector(".system-effects")?.addEventListener("change", (ev) => {
+      let key = ev.target.value;
+      this.actor.addSystemEffect(key)
+    });
+
+    this.element.querySelectorAll(".rollable").forEach(element => {
+      element.addEventListener("mouseenter", ev => {
+        let img = ev.target.matches("img") ? ev.target : ev.target.querySelector("img") ;
+        if (img)
+        {
+          this._icon = img.src;
+          img.src = "systems/wfrp4e/ui/buttons/d10.webp";
+        }
       })
+      element.addEventListener("mouseleave", ev => {
+        let img = ev.target.matches("img") ? ev.target : ev.target.querySelector("img") ;
+        if (img)
+        {
+          img.src = this._icon;
+        }
+      })
+    });
   }
 
 
@@ -212,7 +241,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         {
           itemData["system.lore.value"] = category;
         }
-        else if (type == "miracle")
+        else if (type == "prayer")
         {
           itemData["system.type.value"] = category;
         }
@@ -220,16 +249,22 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         this.document.createEmbeddedDocuments("Item", [itemData]).then(item => item[0].sheet.render(true));
     }
 
+    static async _onConfigureActor(ev)
+    {
+      new ActorSettings(this.actor).render(true);
+    }
+
     static async _onRollTest(ev)
     {
       let test;
       let document = await this._getDocumentAsync(ev);
       let options = {fields : {}};
-      if (ev.target.dataset.modifier)
+      let target = this._getParent(ev.target, "[data-action='rollTest']")
+      if (target)
       {
-        options.fields.modifier = Number(ev.target.dataset.modifier) || 0;
+        options.fields.modifier = Number(target.dataset.modifier) || 0;
       }
-      switch (ev.target.dataset.type)
+      switch (target.dataset.type)
       {
         case "characteristic": 
           test = await this.document.setupCharacteristic(ev.target.dataset.characteristic, options)

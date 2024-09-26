@@ -733,6 +733,10 @@ export default function() {
       "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
 
+    loadTemplates({            
+      sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
+    });
+
     // Load name construction from files
     NameGenWfrp._loadNames();
 
