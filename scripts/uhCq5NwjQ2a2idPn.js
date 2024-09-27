@@ -25,7 +25,7 @@ const extendedTestData = {
   effects: [
     {
       name: `Repair the ${this.item.name}`,
-      icon: this.item.img,
+      img: this.item.img,
       system: {
         transferData : {
             type: "document",

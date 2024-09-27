@@ -46,7 +46,7 @@ this.script.message(`<p><b>${speaker.alias}</b> finished wrapping itself around 
 
 let effect = {
   name: extendedTest.name,
-  icon: extendedTest.img,
+  img: extendedTest.img,
   system: {
     transferData : {
         type: "document",

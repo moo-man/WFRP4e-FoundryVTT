@@ -5,9 +5,9 @@
     amberTalons.system.equipped = true;
     amberTalons.system.qualities.value.push({name : "magical"})
     amberTalons.effects.push({
-        label : "Amber Talons",
+        name : "Amber Talons",
         transfer: false,
-        icon : "modules/wfrp4e-core/icons/spells/amber-talons.png" ,
+        img : "modules/wfrp4e-core/icons/spells/amber-talons.png" ,
         system: {
           transferData : {
                   documentType : "Item"

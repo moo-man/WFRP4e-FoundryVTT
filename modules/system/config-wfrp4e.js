@@ -1047,7 +1047,8 @@ WFRP4E.symptomDescriptions = {}
 WFRP4E.symptomTreatment = {}
 WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
-WFRP4E.effectScripts = {}
+WFRP4E.effectScripts = {};
+WFRP4E.propertyEffects = {};
 
 WFRP4E.effectKeysTemplate = "systems/wfrp4e/templates/apps/effect-key-options.hbs",
 WFRP4E.avoidTestTemplate = "systems/wfrp4e/templates/apps/effect-avoid-test.hbs",
@@ -1254,7 +1255,7 @@ WFRP4E.PrepareSystemItems = function() {
             effects:
                 [{
                     name: game.i18n.localize("NAME.Fear"),
-                    icon: "systems/wfrp4e/icons/conditions/fear.png",
+                    img: "systems/wfrp4e/icons/conditions/fear.png",
                     statuses : ["fear"],
                     system: {
                             transferData : {},
@@ -1288,7 +1289,7 @@ WFRP4E.PrepareSystemItems = function() {
 
         terror: {
             name: game.i18n.localize("NAME.Terror"),
-            icon: "systems/wfrp4e/icons/conditions/terror.png",
+            img: "systems/wfrp4e/icons/conditions/terror.png",
             system: {
                 transferData : {},
                 scriptData : [
@@ -1319,7 +1320,7 @@ WFRP4E.PrepareSystemItems = function() {
     this.systemEffects = foundry.utils.mergeObject(this.systemEffects, {
         "fear": {
             name: game.i18n.localize("NAME.Fear"),
-            icon: "systems/wfrp4e/icons/conditions/fear.png",
+            img: "systems/wfrp4e/icons/conditions/fear.png",
             statuses: ["fear"],
             flags: {
                 wfrp4e: {
@@ -1352,7 +1353,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "enc1": {
             name: game.i18n.localize("EFFECT.Encumbrance") + " 1",
-            icon: "systems/wfrp4e/icons/effects/enc1.png",
+            img: "systems/wfrp4e/icons/effects/enc1.png",
             statuses: ["enc1"],
             system: {
                 transferData: {},
@@ -1376,7 +1377,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "enc2": {
             name: game.i18n.localize("EFFECT.Encumbrance") + " 2",
-            icon: "systems/wfrp4e/icons/effects/enc2.png",
+            img: "systems/wfrp4e/icons/effects/enc2.png",
             statuses: ["enc2"],
             system: {
                 transferData: {},
@@ -1399,7 +1400,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "enc3": {
             name: game.i18n.localize("EFFECT.Encumbrance") + " 3",
-            icon: "systems/wfrp4e/icons/effects/enc3.png",
+            img: "systems/wfrp4e/icons/effects/enc3.png",
             statuses: ["enc3"],
             system: {
                 transferData: {},
@@ -1414,7 +1415,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "cold1": {
             name: game.i18n.localize("EFFECT.ColdExposure") + " 1",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["cold1"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1424,7 +1425,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "cold2": {
             name: game.i18n.localize("EFFECT.ColdExposure") + " 2",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["cold2"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1444,7 +1445,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "cold3": {
             name: game.i18n.localize("EFFECT.ColdExposure") + " 3",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["cold3"],
             system: {
                 transferData: {},
@@ -1469,7 +1470,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "heat1": {
             name: game.i18n.localize("EFFECT.HeatExposure") + " 1",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["heat1"],
             changes: [
                 { key: "system.characteristics.int.modifier", mode: 2, value: -10 },
@@ -1479,7 +1480,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "heat2": {
             name: game.i18n.localize("EFFECT.HeatExposure") + " 2",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["heat2"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1499,7 +1500,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "heat3": {
             name: game.i18n.localize("EFFECT.HeatExposure") + " 3",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["heat3"],
             system: {
                 transferData: {},
@@ -1523,7 +1524,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "thirst1": {
             name: game.i18n.localize("EFFECT.Thirst") + " 1",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["thirst1"],
             changes: [
                 { key: "system.characteristics.int.modifier", mode: 2, value: -10 },
@@ -1534,7 +1535,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "thirst2": {
             name: game.i18n.localize("EFFECT.Thirst") + " 2+",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["thirst2"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1573,7 +1574,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "starvation1": {
             name: game.i18n.localize("EFFECT.Starvation") + " 1",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["starvation1"],
             changes: [
                 { key: "system.characteristics.s.modifier", mode: 2, value: -10 },
@@ -1584,7 +1585,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "starvation2": {
             name: game.i18n.localize("EFFECT.Starvation") + " 2",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["starvation2"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1623,7 +1624,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "blackpowder": {
             name: game.i18n.localize("EFFECT.BlackpowderShock"),
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["blackpowder"],
             flags: {
                 wfrp4e: {
@@ -1652,7 +1653,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "infighting": {
             name: game.i18n.localize("EFFECT.Infighting"),
-            icon: "modules/wfrp4e-core/icons/talents/in-fighter.png",
+            img: "modules/wfrp4e-core/icons/talents/in-fighter.png",
             statuses: ["infighting"],
             system: {
                 transferData: {},
@@ -1684,7 +1685,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "defensive": {
             name: game.i18n.localize("EFFECT.OnDefensive"),
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["defensive"],
             system: {
                 transferData: {},
@@ -1714,7 +1715,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "dualwielder": {
             name: game.i18n.localize("EFFECT.DualWielder"),
-            icon: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
+            img: "modules/wfrp4e-core/icons/talents/dual-wielder.png",
             statuses: ["dualwielder"],
             system: {
                 transferData: {},
@@ -1738,7 +1739,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "consumealcohol1": {
             name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 1",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["consumealcohol1"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -10 },
@@ -1750,7 +1751,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "consumealcohol2": {
             name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 2",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["consumealcohol2"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -20 },
@@ -1762,7 +1763,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "consumealcohol3": {
             name: game.i18n.localize("EFFECT.ConsumeAlcohol") + " 3",
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["consumealcohol3"],
             changes: [
                 { key: "system.characteristics.bs.modifier", mode: 2, value: -30 },
@@ -1774,7 +1775,7 @@ WFRP4E.PrepareSystemItems = function() {
         },
         "stinkingdrunk1": {
             name: game.i18n.localize("EFFECT.MarienburghersCourage"),
-            icon: "",
+            img: "systems/wfrp4e/icons/blank.png",
             statuses: ["stinkingdrunk1"],
             system: {
                 transferData: {},
@@ -1795,7 +1796,7 @@ WFRP4E.PrepareSystemItems = function() {
 
     this.statusEffects = [
         {
-            icon: "systems/wfrp4e/icons/conditions/bleeding.png",
+            img: "systems/wfrp4e/icons/conditions/bleeding.png",
             id: "bleeding",
             statuses: ["bleeding"],
             name: "WFRP4E.ConditionName.Bleeding",
@@ -1866,7 +1867,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/poisoned.png",
+            img: "systems/wfrp4e/icons/conditions/poisoned.png",
             id: "poisoned",
             statuses: ["poisoned"],
             name: "WFRP4E.ConditionName.Poisoned",
@@ -1917,7 +1918,7 @@ WFRP4E.PrepareSystemItems = function() {
 
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/ablaze.png",
+            img: "systems/wfrp4e/icons/conditions/ablaze.png",
             id: "ablaze",
             statuses: ["ablaze"],
             name: "WFRP4E.ConditionName.Ablaze",
@@ -1973,7 +1974,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/deafened.png",
+            img: "systems/wfrp4e/icons/conditions/deafened.png",
             id: "deafened",
             statuses: ["deafened"],
             name: "WFRP4E.ConditionName.Deafened",
@@ -1992,7 +1993,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/stunned.png",
+            img: "systems/wfrp4e/icons/conditions/stunned.png",
             id: "stunned",
             statuses: ["stunned"],
             name: "WFRP4E.ConditionName.Stunned",
@@ -2020,7 +2021,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/entangled.png",
+            img: "systems/wfrp4e/icons/conditions/entangled.png",
             id: "entangled",
             statuses: ["entangled"],
             name: "WFRP4E.ConditionName.Entangled",
@@ -2042,7 +2043,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/fatigued.png",
+            img: "systems/wfrp4e/icons/conditions/fatigued.png",
             id: "fatigued",
             statuses: ["fatigued"],
             name: "WFRP4E.ConditionName.Fatigued",
@@ -2064,7 +2065,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/blinded.png",
+            img: "systems/wfrp4e/icons/conditions/blinded.png",
             id: "blinded",
             statuses: ["blinded"],
             name: "WFRP4E.ConditionName.Blinded",
@@ -2096,7 +2097,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/broken.png",
+            img: "systems/wfrp4e/icons/conditions/broken.png",
             id: "broken",
             statuses: ["broken"],
             name: "WFRP4E.ConditionName.Broken",
@@ -2118,7 +2119,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/prone.png",
+            img: "systems/wfrp4e/icons/conditions/prone.png",
             id: "prone",
             statuses: ["prone"],
             name: "WFRP4E.ConditionName.Prone",
@@ -2150,7 +2151,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/surprised.png",
+            img: "systems/wfrp4e/icons/conditions/surprised.png",
             id: "surprised",
             statuses: ["surprised"],
             name: "WFRP4E.ConditionName.Surprised",
@@ -2174,7 +2175,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/unconscious.png",
+            img: "systems/wfrp4e/icons/conditions/unconscious.png",
             id: "unconscious",
             statuses: ["unconscious"],
             name: "WFRP4E.ConditionName.Unconscious",
@@ -2186,7 +2187,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/grappling.png",
+            img: "systems/wfrp4e/icons/conditions/grappling.png",
             id: "grappling",
             statuses: ["grappling"],
             name: "WFRP4E.ConditionName.Grappling",
@@ -2198,7 +2199,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/conditions/engaged.png",
+            img: "systems/wfrp4e/icons/conditions/engaged.png",
             id: "engaged",
             statuses: ["engaged"],
             name: "WFRP4E.ConditionName.Engaged",
@@ -2222,7 +2223,7 @@ WFRP4E.PrepareSystemItems = function() {
             }
         },
         {
-            icon: "systems/wfrp4e/icons/defeated.png",
+            img: "systems/wfrp4e/icons/defeated.png",
             id: "dead",
             statuses: ["dead"],
             name: "WFRP4E.ConditionName.Dead",
@@ -2236,7 +2237,7 @@ WFRP4E.PrepareSystemItems = function() {
     ]
 
 
-    this.propertyEffects = {
+    foundry.utils.mergeObject(propertyEffects, {
 
         // Qualities
         accurate: {
@@ -2299,6 +2300,11 @@ WFRP4E.PrepareSystemItems = function() {
         damaging: {
             name : game.i18n.localize("PROPERTY.Damaging"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         defensive: {
             name : game.i18n.localize("PROPERTY.Defensive"),
@@ -2322,6 +2328,11 @@ WFRP4E.PrepareSystemItems = function() {
         distract: {
             name : game.i18n.localize("PROPERTY.Distract"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         entangle: {
             name : game.i18n.localize("PROPERTY.Entangle"),
@@ -2341,30 +2352,65 @@ WFRP4E.PrepareSystemItems = function() {
         fast: {
             name : game.i18n.localize("PROPERTY.Fast"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         hack: {
             name : game.i18n.localize("PROPERTY.Hack"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         impact: {
             name : game.i18n.localize("PROPERTY.Impact"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         impale: {
             name : game.i18n.localize("PROPERTY.Impale"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         magical: {
             name : game.i18n.localize("PROPERTY.Magical"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         penetrating: {
             name : game.i18n.localize("PROPERTY.Penetrating"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         pistol: {
             name : game.i18n.localize("PROPERTY.Pistol"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         precise: {
             name : game.i18n.localize("PROPERTY.Precise"),
@@ -2387,26 +2433,56 @@ WFRP4E.PrepareSystemItems = function() {
         pummel: {
             name : game.i18n.localize("PROPERTY.Pummel"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         repeater: {
             name : game.i18n.localize("PROPERTY.Repeater"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         shield: {
             name : game.i18n.localize("PROPERTY.Shield"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         trapblade: {
             name : game.i18n.localize("PROPERTY.TrapBlade"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         unbreakable: {
             name : game.i18n.localize("PROPERTY.Unbreakable"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         wrap: {
             name : game.i18n.localize("PROPERTY.Wrap"),
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
 
 
@@ -2416,6 +2492,11 @@ WFRP4E.PrepareSystemItems = function() {
         dangerous: {
             name : game.i18n.localize("PROPERTY.Dangerous"), 
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         imprecise: {
             name : game.i18n.localize("PROPERTY.Imprecise"), 
@@ -2438,20 +2519,40 @@ WFRP4E.PrepareSystemItems = function() {
         reload: {
             name : game.i18n.localize("PROPERTY.Reload"), 
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         slow: {
             name : game.i18n.localize("PROPERTY.Slow"), 
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         tiring: {
             name : game.i18n.localize("PROPERTY.Tiring"), 
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
         undamaging: {
             name : game.i18n.localize("PROPERTY.Undamaging"), 
             img : "systems/wfrp4e/icons/blank.png",
+            system : {
+                transferData : {
+                    documentType : "Item",
+                },
+            }
         },
-    }
+    })
 
 }
 
