@@ -11,16 +11,16 @@
         </div>
     </div>
     
-    {{#if attacker}} 
+    {{#if actor.attacker}} 
     <div class="attacker">
         <div class="header">Attacker</div>
         <div class="details">
-            <img src="{{tokenImg attacker.test.actor}}">
+            <img src="{{tokenImg actor.attacker.test.actor}}">
             <div class="test">
-                <div>{{tokenName attacker.test.actor}}</div>
-                <div>{{attacker.test.preData.title}}</div>
+                <div>{{tokenName actor.attacker.test.actor}}</div>
+                <div>{{actor.attacker.test.context.chatOptions.title}}</div>
             </div>
-            <a data-tooltip="{{localize 'SHEET.RemoveAttacker'}}"><i class="fas fa-times"></i></a>
+            <a data-tooltip="{{localize 'SHEET.RemoveAttacker'}}" data-action="removeAttacker"><i class="fas fa-times"></i></a>
         </div>
     </div>
     {{/if}}
@@ -28,13 +28,13 @@
     <div class="sheet-list">
         <div class="list-header row-content">
             <div class="list-name">{{localize "SHEET.MeleeWeaponHeader"}}
-                <a class="unarmed list-button" data-tooltip="{{localize 'SHEET.Unarmed'}}">
+                <a class="list-button" data-action="useUnarmed" data-tooltip="{{localize 'SHEET.Unarmed'}}">
                     <i class="fa fa-fist-raised"></i>
                 </a>
-                <a class="dodge list-button" data-tooltip="{{localize 'SHEET.Dodge'}}">
+                <a class="list-button" data-action="useDodge" data-tooltip="{{localize 'SHEET.Dodge'}}">
                     <i class="fas fa-reply"></i>
                 </a>
-                <a class="improvised list-button" data-tooltip="{{localize 'SHEET.Improvised'}}">
+                <a class="list-button" data-action="useImprovised" data-tooltip="{{localize 'SHEET.Improvised'}}">
                     <i class="fas fa-question"></i>
                 </a>
             </div>
@@ -45,56 +45,55 @@
         </div>
         <div class="list-content weapon-list">
             {{#each items.weapon}}
-                {{#if this.system.isMelee}}
-                    <div class="list-row" data-uuid="{{this.uuid}}">
+                {{#if (and this.system.isMelee this.system.isEquipped)}}
+                    <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
-                            <div class="list-name">
+                            <div class="list-name rollable" data-action="rollTest" data-type="weapon">
                                 <img src="{{this.img}}">
                                 <a class="label">{{this.name}}</a>
                             </div>
-                            <a>{{this.WeaponGroup}}</a>
-                            <a class="weapon-damage {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
-                            <a>{{this.Reach}}</a>
+                            <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
+                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
+                            <a data-action="combatDropdown" data-property="reach">{{this.Reach}}</a>
                         </div>
-                        <div class="row-content">
+                        <div class="item-property-row">
+
                             {{#if this.twohanded.value}}
                                 <div>{{localize "ITEM.TwoHanded"}}</div>
                             {{else if this.offhand.value}}
-                                <a><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                                <a data-action="toggleProperty" data-path="system.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
                             {{else if ../actor.noOffhand}}
-                                <a><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                                <a data-action="toggleProperty" data-path="system.offhand.value"><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
                             {{/if}}
                             {{#if this.system.properties.special}}
-                                <a>{{localize "Special"}}</a>
+                                <a data-action="combatDropdown" data-property="special">{{localize "Special"}}</a>
                             {{/if}}
 
+
                             {{#if this.system.Qualities.length}}
-                                <div class="item-properties">
                                     <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
-                                    {{{array this.system.Qualities}}}
-                                </div>
+                                    {{{array this.system.Qualities "" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.UnusedQualities.length}}
-                                <div class="item-properties" style="opacity : 0.5;">
-                                    <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
-                                    {{{array this.system.UnusedQualities}}}
-                                </div>
+                                    <div class="property-icon inactive">{{localize "SHEET.Qualities"}}</div>
+                                    {{{array this.system.UnusedQualities "inactive" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.InactiveQualities.length}}
-                                <div class="item-properties" style="opacity : 0.5;">
                                     <div class="property-icon">{{localize "SHEET.Or"}}</div>
-                                    {{{array this.system.InactiveQualities "inactive"}}}
-                                </div>
+                                    {{{array this.system.InactiveQualities "" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.Flaws.length}}
-                                <div class="item-properties">
                                     <div class="property-icon">{{localize "SHEET.Flaws"}}</div>
-                                    {{{array this.system.Flaws}}}
-                                </div>
+                                    {{{array this.system.Flaws "" action="itemPropertyDropdown" type="flaws"}}}
                             {{/if}}
+
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
                         </div>
                     </div>
                 {{/if}}
@@ -112,15 +111,15 @@
         </div>
         <div class="list-content weapon-list">
             {{#each items.weapon}}
-                {{#if this.system.isRanged}}
-                    <div class="list-row" data-uuid="{{this.uuid}}">
+                {{#if (and this.system.isRanged this.system.isEquipped)}}
+                    <div class="list-row nocontext" data-uuid="{{this.uuid}}">
                         <div class="row-content">
-                            <div class="list-name">
+                            <div class="list-name rollable" data-action="rollTest" data-type="weapon">
                                 <img src="{{this.img}}">
                                 <a class="label">{{this.name}}</a>  
                             </div>
-                            <a>{{this.WeaponGroup}}</a>
-                            <select>
+                            <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
+                            <select data-action="editProperty" data-path="system.currentAmmo.value">
                             {{#select this.currentAmmo.value}}
                                 <option value="">{{localize "NoneAmmo"}}</option>
                                 {{#each this.ammoList as |ammo|}}
@@ -128,16 +127,16 @@
                                 {{/each}}
                             {{/select}}
                             </select>
-                            <a class="weapon-damage {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
-                            <a>{{this.Reach}}</a>
+                            <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
+                            <a data-action="combatDropdown" data-property="range">{{this.Range}} {{localize "yds"}}</a>
                         </div>
-                            <div class="row-content">
+                        <div class="item-property-row">
                             {{#if this.twohanded.value}}
                                 <div>{{localize "ITEM.TwoHanded"}}</div>
                             {{else if this.offhand.value}}
-                                <a><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                                <a data-action="toggleProperty" data-path="system.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
                             {{else if ../actor.noOffhand}}
-                                <a><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                                <a data-action="toggleProperty" data-path="system.offhand.value"><i class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
                             {{/if}}
 
                             {{#if this.system.loading}}
@@ -160,39 +159,36 @@
 
 
                             {{#if this.system.properties.special}}
-                                <a>{{localize "Special"}}</a>
+                                <a data-action="combatDropdown" data-property="special">{{localize "Special"}}</a>
                             {{/if}}
 
                             {{#if this.system.properties.specialAmmo}}
-                                <a>{{localize "Special Ammo"}}</a>
+                                <a data-action="combatDropdown" data-property="specialAmmo">{{localize "Special Ammo"}}</a>
                             {{/if}}
+
                             {{#if this.system.Qualities.length}}
-                                <div class="item-properties">
                                     <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
-                                    {{{array this.system.Qualities}}}
-                                </div>
+                                    {{{array this.system.Qualities "" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.UnusedQualities.length}}
-                                <div class="item-properties" style="opacity : 0.5;">
-                                    <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
-                                    {{{array this.system.UnusedQualities}}}
-                                </div>
+                                    <div class="property-icon inactive">{{localize "SHEET.Qualities"}}</div>
+                                    {{{array this.system.UnusedQualities "inactive" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.InactiveQualities.length}}
-                                <div class="item-properties" style="opacity : 0.5;">
                                     <div class="property-icon">{{localize "SHEET.Or"}}</div>
-                                    {{{array this.system.InactiveQualities "inactive"}}}
-                                </div>
+                                    {{{array this.system.InactiveQualities "" action="itemPropertyDropdown" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.Flaws.length}}
-                                <div class="item-properties">
                                     <div class="property-icon">{{localize "SHEET.Flaws"}}</div>
-                                    {{{array this.system.Flaws}}}
-                                </div>
+                                    {{{array this.system.Flaws "" action="itemPropertyDropdown" type="flaws"}}}
                             {{/if}}
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
                         </div>
                     </div>
                 {{/if}}
@@ -202,27 +198,27 @@
         
         <div class="armour">
             <div class="flexrow">
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="head" locData=(lookup system.status.armour "head")}}
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="body" locData=(lookup system.status.armour "body")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="head" locData=(lookup system.status.armour "head")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="body" locData=(lookup system.status.armour "body")}}
             </div>
             <div class="flexrow">
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="lArm" locData=(lookup system.status.armour "lArm")}}
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="rArm" locData=(lookup system.status.armour "rArm")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="lArm" locData=(lookup system.status.armour "lArm")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="rArm" locData=(lookup system.status.armour "rArm")}}
             </div>
             <div class="flexrow">
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="lLeg" locData=(lookup system.status.armour "lLeg")}}
-                {{> systems/wfrp4e/templates/partials/armour-location.hbs loc="rLeg" locData=(lookup system.status.armour "rLeg")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="lLeg" locData=(lookup system.status.armour "lLeg")}}
+                {{> systems/wfrp4e/templates/sheets/partials/armour-location.hbs loc="rLeg" locData=(lookup system.status.armour "rLeg")}}
             </div>
         </div>
 
 
 <div class="mount-section">
-    {{#if actor.status.mount.mounted}}
+    {{#if actor.system.mount}}
         <div class="mounted">
             <div class="mount-header">
                 {{localize "Mount"}} {{#if actor.status.mount.isToken}} ({{localize "Token"}}){{/if}}
             </div>
-            <div class="mount-details">
+            <div class="mount-details {{#unless actor.status.mount.mounted}}inactive{{/unless}}" data-action="showMount">
                 <div class="mount-img">
                     <img src="{{actor.mount.img}}">
                 </div>
@@ -238,8 +234,12 @@
                     </div>
                 </div>
                 <div class="mount-controls">
-                    <a data-tooltip="{{localize 'SHEET.RemoveMount'}}"><i class="fas fa-times"></i></a>
-                    <a data-tooltip="{{localize 'SHEET.Dismount'}}"><i class="fas fa-arrow-down"></i></a>
+                    <a data-action="removeMount" data-tooltip="{{localize 'SHEET.RemoveMount'}}"><i class="fas fa-times"></i></a>
+                    {{#if actor.system.status.mount.mounted}}
+                    <a data-action="dismount" data-tooltip="{{localize 'SHEET.Dismount'}}"><i class="fas fa-arrow-down"></i></a>
+                    {{else}}
+                    <a data-action="dismount" data-tooltip="{{localize 'Mount'}}"><i class="fas fa-arrow-up"></i></a>
+                    {{/if}}
                 </div>
             </div>
         </div>

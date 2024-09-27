@@ -7,7 +7,16 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   static DEFAULT_OPTIONS = {
     position : {
       height: 750
-    }
+    },
+    actions : {
+      useDodge : this._onDodgeClick,
+      useUnarmed : this._onUnarmedClick,
+      useImprovised : this._onImprovisedClick,
+      useStomp : this._onStompClick,
+      removeMount : this._removeMount,
+      dismount : this._dismount,
+      showMount : this._showMount
+    },
   }
 
   static TABS = {
@@ -58,12 +67,87 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
   }
 
+    /**
+     * Callback actions which occur when a dragged element is over a drop target.
+     * @param {DragEvent} event       The originating DragEvent
+     * @protected
+     */
+    _onDragOver(event) {
+      console.log(event.target);
+    }
+
+    _onDropActor(document, event)
+    {
+      let mount = fromUuidSync(document.uuid);
+      if (event.target.classList.contains("mount-drop"))
+      {
+        if (game.wfrp4e.config.actorSizeNums[mount.system.details.size.value] < game.wfrp4e.config.actorSizeNums[this.actor.details.size.value])
+          return ui.notifications.error(game.i18n.localize("MountError"))
+  
+        let mountData = {
+          id: mount.id,
+          mounted: true,
+          isToken: false
+        }
+        if(this.actor.prototypeToken.actorLink && !mount.prototypeToken.actorLink)
+          ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
+  
+        this.actor.update({ "system.status.mount": mountData })
+      }
+    }
+
   _prepareSkillsContext(context) {
     context.skills = {
-      basic: this.actor.itemTypes["skill"].filter(i => i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
-      advanced: this.actor.itemTypes["skill"].filter(i => i.system.advanced.value == "adv" || i.system.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
+      basic: this.actor.itemTypes.skill.filter(i => i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),
+      advanced: this.actor.itemTypes.skill.filter(i => i.system.advanced.value == "adv" || i.system.grouped.value == "isSpec").sort(WFRP_Utility.nameSorter)
     }
   }
+
+  // Consolidate talents
+  _prepareTalentsContext(context) {
+    let talents = context.items.talent;
+    context.items.talent = [];
+    talents.forEach(t => {
+      if (!context.items.talent.find(existing => existing.name == t.name))
+      {
+        context.items.talent.push(t);
+      }
+    })
+  }
+
+    // Organize Spells
+    _prepareMagicContext(context) {
+      let spells = context.items.spell;
+      context.items.spell = {petty : [], lore : []};
+      spells.forEach(s => {
+        if (s.system.lore.value == "petty")
+        {
+          context.items.spell.petty.push(s);
+        }
+        else 
+        {
+          context.items.spell.lore.push(s);
+        }
+      })
+    }
+
+    // Organize Prayers
+    _prepareReligionContext(context) {
+      let prayer = context.items.prayer;
+      context.items.prayer = {blessing : [], miracle : []};
+      prayer.forEach(p => {
+        if (p.system.type.value == "blessing")
+        {
+          context.items.prayer.blessing.push(p);
+        }
+        else 
+        {
+          context.items.prayer.miracle.push(p);
+        }
+      })
+    }
+
+
   //#region Trappings
   _prepareTrappingsContext(context) {
 
@@ -139,11 +223,11 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
         collapsed: collapsed?.misc,
         dataType: "trapping"
       },
-      ingredients: {
+      ingredient: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
         items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "ingredient"),
         show: false,
-        collapsed: collapsed?.ingredients,
+        collapsed: collapsed?.ingredient,
         dataType: "trapping"
       },
       cargo: {
@@ -155,26 +239,26 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       }
     }
 
-    // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
     const money = {
-      items: this.actor.itemTypes["money"],
+      items: this.actor.getItemTypes("money"),
       total: 0,     // Total coinage value
       show: true,
-      collapsed: false
+      collapsed : false
     }
     const containers = {
-      items: this.actor.itemTypes["container"],
+      items: this.actor.getItemTypes("container"),
       show: false
     }
     const misc = {}
     let inContainers = []; // inContainers is the temporary storage for items within a container
 
-
-    if (this.actor.hasSpells || this.actor.type == "vehicle") {
-      inContainers = this._filterItemCategory(ingredients, inContainers)
-    }
-    else {
-      // categories.misc.items = categories.misc.items.concat(ingredients.items)
+    
+    if (this.actor.hasSpells || this.actor.type == "vehicle")
+      inContainers = this._filterItemCategory(categories.ingredient, inContainers)
+    else
+    {
+      categories.misc.items = categories.misc.items.concat(categories.ingredient.items)
+      delete categories.ingredient
     }
 
     // Allow 3rd party modules to expand Inventory by adding new categories
@@ -204,18 +288,17 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
-      cont.system.carrying = itemsInside.filter(i => i.type != "container");    // cont.system.carrying -> items the container is carrying
-      cont.system.packsInside = itemsInside.filter(i => i.type == "container"); // cont.system.packsInside -> containers the container is carrying
+      cont.system.carrying = itemsInside.filter(i => i.type != "container").sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
+      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort);; // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
       cont.system.carries.current = Math.floor(cont.system.carries.current * 10) / 10;
-      cont.collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
+      cont.system.collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
     }
 
     context.inventory = {
       categories,
-      // ingredients,
       money,
       containers,
       misc
@@ -229,5 +312,49 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     return itemsInContainers
   }
   //#endregion
+
+
+  static _onUnarmedClick(ev) {
+    ev.preventDefault();
+    let unarmed = game.wfrp4e.config.systemItems.unarmed
+    this.actor.setupWeapon(unarmed).then(setupData => {
+      this.actor.weaponTest(setupData)
+    })
+  }
+  static _onDodgeClick(ev) {
+      this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true}).then(test => {
+        test.roll();
+      });
+  }
+  static _onImprovisedClick(ev) {
+    ev.preventDefault();
+    let improv = game.wfrp4e.config.systemItems.improv;
+    this.actor.setupWeapon(improv).then(setupData => {
+      this.actor.weaponTest(setupData)
+    })
+  }
+
+  static _onStompClick(ev) {
+    ev.preventDefault();
+    let stomp = game.wfrp4e.config.systemItems.stomp;
+    this.actor.setupTrait(stomp).then(setupData => {
+      this.actor.traitTest(setupData)
+    })
+  }
+
+  static _dismount(ev) {
+    ev.stopPropagation();
+    this.actor.update({ "system.status.mount.mounted": !this.actor.status.mount.mounted })
+  }
+
+  static _removeMount(ev) {
+    ev.stopPropagation();
+    let mountData = { id: "", mounted: false, isToken: false }
+    this.actor.update({ "system.status.mount": mountData })
+  }
+
+  static _onContextMenushowMount(ev) {
+    this.actor.mount.sheet.render(true)
+  }
 
 }

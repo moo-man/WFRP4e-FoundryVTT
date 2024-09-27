@@ -716,9 +716,10 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
+      "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
+      "systems/wfrp4e/templates/sheets/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
-      "systems/wfrp4e/templates/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
       "systems/wfrp4e/templates/partials/overcasts.hbs",
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
@@ -731,6 +732,10 @@ export default function() {
       "systems/wfrp4e/templates/items/item-description.hbs",
       "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
+
+    loadTemplates({            
+      sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
+    });
 
     // Load name construction from files
     NameGenWfrp._loadNames();

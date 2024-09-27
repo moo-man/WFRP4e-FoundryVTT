@@ -1,15 +1,33 @@
 @import "./actors/index";
 
-.wfrp4e.sheet {
+.wfrp4e.sheet.application {
+
+    .rollable {
+        > * {
+            cursor: pointer;
+        }
+        &:hover {
+            img {
+                box-shadow: 0px 0px 10px var(--color-cool-3) inset;
+            }
+        }
+    }
 
     nav.sheet-tabs {
         border-color: var(--color-cool-3);
+        gap: 0px;
         a {
             flex: 1
         }
         .active {
             background-color: var(--color-cool-3);
             text-shadow: none;
+        }
+
+        > [data-tab]
+        {
+            padding: 8px 0px;
+            flex: 1;
         }
 
     }
@@ -118,6 +136,10 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-around;
+
+                .list-control {
+                    flex: 1
+                }
             }
 
             input,
@@ -133,11 +155,10 @@
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                
                 flex: 0 0 100px;
-
+                
                 &.flex {
-                    flex: 1
+                    flex: 1;
                 }
 
                 &.fit {
@@ -166,5 +187,44 @@
             }
         }
 
+        .dropdown-content {
+
+            transition: height 0.3s ease-in-out;
+            overflow: hidden;
+            line-height: 1.5rem;
+            box-sizing: border-box;
+            &.expanded {
+                padding: 5px;
+                > * {
+                    margin: 0px;
+                }
+            }
+            &.collapsed {
+                height: 0px;
+            }
+        }
+
+        .progress-bar {
+            margin: 4px 0px;
+            display: flex;
+            width: 100%;
+            border: 1px solid var(--color-warm-3);
+            height: 50%;
+            height: 1rem;
+            .fill {
+                background-color: var(--color-warm-3);
+            }
+        }
+        
+
+        .sheet-effect-buttons {
+            margin: 3px 0px;
+            height: 1rem;
+            display: flex;
+            button {
+                flex : 0 0 content;
+                font-size: var(--font-size-12);
+            } 
+        }
     }
 }

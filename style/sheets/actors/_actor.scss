@@ -1,4 +1,4 @@
-.wfrp4e.actor.sheet {
+.wfrp4e.actor.sheet.application {
     input {
         &:focus {
         }
@@ -172,19 +172,28 @@
 
     .sheet-list {
         margin-top: 10px;
-        .row-content {
-            > .item-properties {
-                align-items: center;
-                display: flex;
-                flex-direction: row;
-                border:3px solid var(--color-cool-3);
-                padding-right: 5px;
-                .property-icon {
-                    background: var(--color-cool-3);
-                    font-weight: bold;
-                    width: 1.5rem;
-                    margin-right: 5px;
-                }
+        .item-property-row {
+            height: unset;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+            a {
+                margin-left: 3px;
+            }
+
+            .separator {
+                margin-right: 3px;
+            }
+            .property-icon {
+                background: var(--color-cool-3);
+                border-radius: 50%;
+                font-weight: bold;
+                width: 1.5rem;
+                height: 1.5rem;
+                line-height: 1.5rem;
+                text-align: center;
+                margin: 0px 3px;
             }
         }
     }

@@ -1709,20 +1709,15 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-id");
 
-    let item = (await Item.implementation.fromDropData(dragData))?.toObject()
+    let item = (await Item.implementation.fromDropData(dragData))
+    let update = {system : {location : {value : dropID}}};
+    
+    if (item.system.isEquippable)
+    {
+      update.system.equipped = {value : false};
+    }
 
-    item.system.location.value = dropID; // Change location value of item to the id of the container it is in
-
-    //  this will unequip/remove items like armor and weapons when moved into a container
-    if (item.type == "armour")
-      item.system.worn.value = false;
-    if (item.type == "weapon")
-      item.system.equipped = false;
-    if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
-      item.system.worn = false;
-
-
-    return this.actor.updateEmbeddedDocuments("Item", [item]);
+    return item.update(update);
   }
 
   // Dropping a character creation result

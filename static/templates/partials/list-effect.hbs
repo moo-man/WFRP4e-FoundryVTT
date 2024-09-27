@@ -1,20 +1,20 @@
 <div class="list-name">
     <img src="{{effect.img}}">
-    <a class="label">{{effect.name}}</a>
+    <a class="label" data-action="editEmbedded" data-uuid="{{effect.uuid}}">{{effect.name}}</a>
 </div>
 
-<div>
+<div class="flex">
     {{#if effect.isCrewApplied}}
         <a data-uuid="{{effect.actor.uuid}}"><i class="fa-solid fa-dharmachakra"></i>{{effect.actor.name}}</a>
     {{else if effect.item}}
         {{#if (eq effect.item.type "disease")}}
             {{#if effect.item.system.show}}
-                <a data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
+                <a data-action="editEmbedded" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
             {{else}}
                 ???
             {{/if}}
         {{else}} <!-- If not a disease -->
-            <a data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
+            <a data-action="editEmbedded" data-uuid="{{effect.item.uuid}}"><i class="fa-solid fa-suitcase"></i>{{effect.source}}</a>
         {{/if}}
     {{else}}
         {{effect.source}}
@@ -23,12 +23,12 @@
 
 
 <div class="list-controls">
-      <a title="{{localize 'SHEET.ToggleEffect'}}"><i class="far fa-check-circle"></i></a>
+      <a data-action="toggleProperty" data-path="disabled" data-tooltip="{{localize 'SHEET.ToggleEffect'}}">{{#if effect.disabled}}<i class="far fa-circle"></i>{{else}}<i class="far fa-check-circle"></i>{{/if}}</a>
       {{#if effect.isCrewApplied}}
-        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}"><i class="fas fa-xmark"></i></a>
       {{else if effect.item}}
-        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteItemEffect'}}"><i class="fas fa-xmark"></i></a>
       {{else}}
-        <a class="list-control" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
       {{/if}}
 </div>

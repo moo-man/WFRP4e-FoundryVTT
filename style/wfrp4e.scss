@@ -2,7 +2,7 @@
 @import "./sheets/sheets";
 
 
-.wfrp4e {
+.wfrp4e.application {
     a {
         cursor: pointer
     }
@@ -18,6 +18,10 @@
 
     .disabled {
         pointer-events: none;
+    }
+
+    .hidden {
+        display: none;
     }
 
     .centered {

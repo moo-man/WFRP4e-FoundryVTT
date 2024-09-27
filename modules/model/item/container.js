@@ -53,14 +53,15 @@ export class ContainerModel extends EquippableItemModel {
     {
         await super._onUpdate(data, options, user);
 
-        if (data.system?.location?.value) {
+        if (data.system?.location?.value) 
+        {
             let allContainers = this.parent.actor?.getItemTypes("container")
             if (this.formsLoop(this.parent, allContainers))
             {
               ui.notifications.error("Loop formed - Resetting Container Location")
-              data["system.location.value"] = "";
+              this.parent.update({"system.location.value" : ""});
             }
-          }
+        }
     }
 
 

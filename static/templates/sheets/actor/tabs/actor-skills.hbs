@@ -1,4 +1,36 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+
+    <div class="sheet-list extended-tests condensed hidden">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Extended Test"}} <a data-action="toggleExtendedTests" class="list-control"><i class="fa-solid fa-reply"></i></a></div>
+            <div class="large flex">{{localize "ITEM.Progress"}}</div>
+            <div></div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="extendedTest"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.extendedTest}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <a class="label" data-action="rollTest" data-type="extendedTest">{{this.name}}</a>
+                        </div>
+                        <div class="large flex">
+                            <div class="progress-bar">
+                                <div class="fill" style="width: {{pct this.system.SL.current this.system.SL.target}}%"></div>
+                            </div>
+                        </div>
+                        <div><a class="prevent-context" data-action="stepProperty" data-path="system.SL.current" data-uuid="{{this.uuid}}">{{this.system.SL.current}} / {{this.system.SL.target}} {{localize "SuccessLevels"}}</a></div>
+                        <div class="list-controls">
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
     <div class="skill-lists">
         <div class="sheet-list condensed">
             <div class="list-header row-content">
@@ -7,9 +39,6 @@
                 <div class="tiny">{{localize "SHEET.AdvAbbrev"}}</div>
                 <div class="small">{{localize "Total"}}</div>
                 <div class="list-controls">
-                    <a class="list-control">
-                        <i class="fas fa-plus"></i>
-                    </a>
                 </div>
             </div>
             <div class="list-content">
@@ -17,22 +46,29 @@
                     <div class="list-row" data-nodrag="true" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
-                                <a class="label">{{this.name}}</a>
+                                <a class="label" data-action="rollTest" data-type="skill">{{this.name}}</a>
+                                
+                                {{#if this.system.advances.indicator}}
+                                    <a class="advancement-indicator" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
+                                        {{#if this.system.advances.complete}}
+                                        &#10003;
+                                        {{else}}
+                                        +
+                                        {{/if}}
+                                    </a>
+                                {{/if}}
                             </div>
 
                             <div class="tiny">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
                             <div class="tiny">{{this.characteristic.value}}</div>
 
                             <div class="tiny advances">
-                                <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
+                                <input data-action="editProperty" data-path="system.advances.value" type="number" value="{{this.system.advances.value}}" />
                             </div>
 
-                            <a class="skill-total small {{this.system.modified}}">{{this.system.total.value}}</a>
+                            <a class="skill-total small {{this.system.modified}}" data-action="rollTest" data-type="skill">{{this.system.total.value}}</a>
 
 
-                            <div class="list-controls">
-                                <a class="list-control list-delete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-                            </div>
                         </div>
                     </div>
                 {{/each}}
@@ -45,9 +81,6 @@
                 <div class="tiny">{{localize "SHEET.AdvAbbrev"}}</div>
                 <div class="small">{{localize "Total"}}</div>
                 <div class="list-controls">
-                    <a class="list-control">
-                        <i class="fas fa-plus"></i>
-                    </a>
                 </div>
             </div>
             <div class="list-content">
@@ -55,22 +88,39 @@
                     <div class="list-row" data-nodrag="true" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
-                                <a class="label">{{this.name}}</a>
+                                <a class="label" data-action="rollTest" data-type="skill">
+                                    {{this.name}}
+                                    {{#if this.system.advances.indicator}}
+                                        <a class="advancement-indicator" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
+                                            {{#if this.system.advances.complete}}
+                                            &#10003;
+                                            {{else}}
+                                            +
+                                            {{/if}}
+                                        </a>
+                                    {{/if}}
+                                </a>
                             </div>
 
                             <div class="tiny">{{configLookup "characteristicsAbbrev" this.system.characteristic.value}}</div>
                             <div class="tiny">{{this.characteristic.value}}</div>
 
                             <div class="tiny advances">
-                                <input data-id="{{this.id}}" type="number" value="{{this.advances.value}}" />
+                                <input data-action="editProperty" data-path="system.advances.value" type="number" value="{{this.system.advances.value}}" />
                             </div>
 
 
-                            <a class="skill-total small {{this.system.modified}}">{{this.system.total.value}}</a>
+                            <a class="skill-total small {{this.system.modified}}" data-action="rollTest" data-type="skill">{{this.system.total.value}}</a>
 
 
-                            <div class="list-controls">
-                                <a class="list-control list-delete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                        </div>
+                    </div>
+                {{/each}}
+                {{#each system.details.career.system.untrainedSkills}}
+                    <div class="list-row inactive" data-nodrag="true">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <a class="label" data-action="addUntrainedSkill">{{this}}</a>
                             </div>
                         </div>
                     </div>
@@ -78,14 +128,10 @@
             </div>
         </div>
     </div>
-    <div class="sheet-list">
+    
+    <div class="sheet-list extended-toggle">
         <div class="list-header row-content">
-            <div class="list-name">Extended Tests</div>
-            <div class="list-controls">
-                <a class="list-control add-career">
-                    <i class="fas fa-plus"></i>
-                </a>
-            </div>
+            <a class="list-name" data-action="toggleExtendedTests">{{items.extendedTest.length}} Extended Tests</a>
         </div>
     </div>
 </section>

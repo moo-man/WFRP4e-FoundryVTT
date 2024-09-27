@@ -25,7 +25,7 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
             value: new fields.NumberField({ initial: 4 }),
         });
         schema.god = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({label : game.i18n.localize("Blessed By")})
         });
         schema.status = new fields.SchemaField({
             value: new fields.StringField(),
