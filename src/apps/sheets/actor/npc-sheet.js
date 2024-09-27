@@ -78,9 +78,6 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
       async _prepareContext(options)
       {
         let context = await super._prepareContext(options);
-        
-
-        
         return context;
       }
     

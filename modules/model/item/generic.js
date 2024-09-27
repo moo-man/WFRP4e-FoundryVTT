@@ -18,6 +18,10 @@ export class GenericAspectModel extends BaseItemModel
         return true;
     }
 
+    get tags() {
+        return super.tags.add("aspect");
+    }
+
     get placement() 
     {
         return this.constructor.placement;

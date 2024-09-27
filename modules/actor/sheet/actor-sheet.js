@@ -162,9 +162,10 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     items.aspects = {
       talents : {}, 
       effects : {}, 
-      combat : {}
+      combat : {},
+      magic: {}
     }
-    sheetData.actor.items.contents.filter(i => i.system instanceof GenericAspectModel).forEach(item => {
+    sheetData.actor.items.contents.filter(i => i.system.isAspect).forEach(item => {
         if (items.aspects[item.system.placement][item.system.pluralLabel])
         {
           items.aspects[item.system.placement][item.system.pluralLabel].push(item);

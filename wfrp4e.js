@@ -75,6 +75,7 @@ import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
 import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
+import { GenericAspectModel } from "./modules/model/item/generic.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -153,9 +154,10 @@ Hooks.once("init", function () {
       ItemProperties,
       ChargenStage
     },
-    entities: {
+    documents: {
       ActorWFRP4e,
-      ItemWfrp4e
+      ItemWfrp4e,
+      GenericAspectModel
     },
     rolls : {
       TestWFRP,

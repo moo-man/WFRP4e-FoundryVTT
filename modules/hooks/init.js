@@ -735,6 +735,7 @@ export default function() {
     loadTemplates({            
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
+      aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
     });
 
     // Load name construction from files

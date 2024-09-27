@@ -49,7 +49,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       consolidateCurrency : this._onConsolidateCurrency,
       collapseSection : this._onCollapseSection,
       createItem : this._onCreateItem,
-      configureActor : this._onConfigureActor
+      configureActor : this._onConfigureActor,
+      useAspect : this._onUseAspect
     },
     defaultTab : "main"
   }
@@ -67,6 +68,30 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
     return tabs;
   }
+
+  async _prepareContext(options)
+  {
+    let context = await super._prepareContext(options);
+    let aspects = {
+      talents : {}, 
+      effects : {}, 
+      combat : {},
+      magic: {}
+    }
+    this.actor.itemTags.aspect.forEach(item => {
+        if (aspects[item.system.placement][item.system.pluralLabel])
+        {
+          aspects[item.system.placement][item.system.pluralLabel].push(item);
+        }
+        else 
+        {
+          aspects[item.system.placement][item.system.pluralLabel] = [item];
+        }
+    })
+    context.items.aspect = aspects
+    return context;
+  }
+
 
   _setupContextMenus()
   {
@@ -292,6 +317,15 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     static async _onConfigureActor(ev)
     {
       new ActorSettings(this.actor).render(true);
+    }
+
+    static async _onUseAspect(ev)
+    {
+      let document = await this._getDocumentAsync(ev);
+      if (document && document.system.usable)
+      {
+        document.system.use();
+      }
     }
 
     static async _onRollTest(ev)

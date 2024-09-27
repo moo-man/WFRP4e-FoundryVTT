@@ -73,7 +73,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
      * @protected
      */
     _onDragOver(event) {
-      console.log(event.target);
+      
     }
 
     _onDropActor(document, event)
