@@ -724,7 +724,6 @@ export default function() {
       "systems/wfrp4e/templates/partials/overcasts.hbs",
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
       "systems/wfrp4e/templates/partials/manual-scripts.hbs",
-      "systems/wfrp4e/templates/partials/aspect-list.hbs",
       "systems/wfrp4e/templates/partials/list-effect.hbs",
       "systems/wfrp4e/templates/chat/roll/test-card.hbs",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
@@ -735,6 +734,7 @@ export default function() {
 
     loadTemplates({            
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
+      aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
     });
 
     // Load name construction from files
