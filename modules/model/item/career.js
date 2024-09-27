@@ -108,6 +108,12 @@ export class CareerModel extends BaseItemModel
             default: 'yes'
         }).render(true);
     }
+
+    // Career should only be applied if career is active
+    effectIsApplicable(effect) 
+    {
+        return this.current.value;
+    }
     
 
     async expandData(htmlOptions) {
