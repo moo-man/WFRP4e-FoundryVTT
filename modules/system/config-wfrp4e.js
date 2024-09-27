@@ -2237,7 +2237,7 @@ WFRP4E.PrepareSystemItems = function() {
     ]
 
 
-    foundry.utils.mergeObject(propertyEffects, {
+    foundry.utils.mergeObject(this.propertyEffects, {
 
         // Qualities
         accurate: {
@@ -2255,7 +2255,13 @@ WFRP4E.PrepareSystemItems = function() {
                         hideScript : "",
                         activateScript : "return true"
                     }
-                }]
+                },
+                {
+                    label : "Script",
+                    trigger : "manual",
+                    script : "this.script.notification('test')",
+                }
+            ],
             }
         },
         blackpowder: {
