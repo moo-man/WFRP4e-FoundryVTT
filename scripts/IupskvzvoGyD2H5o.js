@@ -3,12 +3,17 @@ if (this.actor.type != "character")
     return;
 }
 
-let god = await ValueDialog.create("Enter a Deity", "Blessed")
+let god = await ValueDialog.create({text : "Enter a Deity", title :  "Blessed"})
 
 if (god)
 {
     let prayers = await warhammer.utility.findAllItems("prayer", "Loading Prayers")
     let blessings = prayers.filter(p => p.system.god.value.split(",").map(i => i.trim().toLowerCase()).includes(god.toLowerCase()) && p.system.type.value == "blessing")
+    let godBlessings = game.wfrp4e.config.godBlessings[god.toLowerCase()] || [];
+    if (godBlessings.length)
+    {
+        blessings = blessings.concat(await Promise.all(godBlessings.filter(bls => !(blessings.map(i => i.uuid).includes(bls.uuid))).map(fromUuid)));
+    }
     if (blessings.length)
     {
         this.script.notification("Adding " + blessings.map(i => i.name).join(", "))

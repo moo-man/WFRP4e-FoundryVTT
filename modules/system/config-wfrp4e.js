@@ -1049,6 +1049,7 @@ WFRP4E.modTypes = {}
 WFRP4E.symptomEffects = {}
 WFRP4E.effectScripts = {};
 WFRP4E.propertyEffects = {};
+WFRP4E.godBlessings = {}
 
 WFRP4E.effectKeysTemplate = "systems/wfrp4e/templates/apps/effect-key-options.hbs",
 WFRP4E.avoidTestTemplate = "systems/wfrp4e/templates/apps/effect-avoid-test.hbs",
