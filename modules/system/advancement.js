@@ -183,7 +183,7 @@ export default class Advancement
   
   static miracleGainedDialog(miracle, actor)
   {
-    let xp = 100 * (actor.itemTypes["prayer"].filter(p => p.prayerType.value == "miracle").length)
+    let xp = 100 * (actor.itemTags["prayer"].filter(p => p.prayerType.value == "miracle").length)
     if (xp) {
       new Dialog({
         title: game.i18n.localize("DIALOG.GainPrayer"),
@@ -228,11 +228,11 @@ export default class Advancement
 
     if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
+      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
     }
     else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.itemTypes["spell"].filter(i => i.lore.value == spell.lore.value).length;
+      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value == spell.lore.value).length;
       if (currentlyKnown < bonus)
         return 0 // First WPB petty spells are free
     }

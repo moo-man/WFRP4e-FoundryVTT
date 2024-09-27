@@ -823,7 +823,7 @@ export default class WFRP_Utility {
       return actor.setupCharacteristic(itemName, bypassData).then(test => test.roll());
     }
     else {
-      item = actor ? actor.itemTypes[itemType].find(i => i.name === itemName) : null;
+      item = actor ? actor.itemTags[itemType].find(i => i.name === itemName) : null;
     }
     if (!item) return ui.notifications.warn(`${game.i18n.localize("ErrorMacroItemMissing")} ${itemName}`);
 

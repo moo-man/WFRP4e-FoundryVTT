@@ -161,7 +161,7 @@ export default class MarketWFRP4e {
    */
   static creditCommand(amount, actor, options = {}) {
     //First we parse the amount
-    let moneyItemInventory = actor.getItemTypes("money").map(i => i.toObject());
+    let moneyItemInventory = actor.itemTags["money"].map(i => i.toObject());
     let moneyToSend = this.parseMoneyTransactionString(amount);
     let msg = `<h3><b>${game.i18n.localize("MARKET.CreditCommand")}</b></h3>`;
     let errorOccured = false;
@@ -226,7 +226,7 @@ export default class MarketWFRP4e {
    */
   static payCommand(command, actor, options = {}) {
     //First we parse the command
-    let moneyItemInventory = actor.getItemTypes("money").map(i => i.toObject())
+    let moneyItemInventory = actor.itemTags["money"].map(i => i.toObject())
     let moneyToPay = this.parseMoneyTransactionString(command);
     let msg = `<h3><b>${game.i18n.localize("MARKET.PayCommand")}</b></h3>`;
     let errorOccured = false;
@@ -631,7 +631,7 @@ export default class MarketWFRP4e {
         halfG = true;
       amt = Math.floor(moneyString.slice(0, -1))
     }
-    let money = actor.getItemTypes("money").map(m => m.toObject());
+    let money = actor.itemTags["money"].map(m => m.toObject());
 
     let moneyItem;
     switch (type) {

@@ -108,7 +108,7 @@ export default class SkillDialog extends CharacteristicDialog {
         let wearingMail = false;
         let wearingPlate = false;
 
-        for (let a of this.actor.itemTypes["armour"].filter(i => i.isEquipped)) {
+        for (let a of this.actor.itemTags["armour"].filter(i => i.isEquipped)) {
             // For each armor, apply its specific penalty value, as well as marking down whether
             // it qualifies for armor type penalties (wearingMail/Plate)
 

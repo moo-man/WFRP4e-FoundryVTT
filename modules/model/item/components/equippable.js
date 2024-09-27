@@ -46,6 +46,11 @@ export class EquippableItemModel extends PhysicalItemModel {
     return true;
   }
 
+  get tags() 
+  {
+    return super.tags.add("equippable");
+  }
+
   /**
    * @returns {boolean}
    */

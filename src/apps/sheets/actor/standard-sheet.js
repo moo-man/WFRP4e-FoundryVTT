@@ -156,7 +156,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     const categories = {
       weapons: {
         label: game.i18n.localize("WFRP4E.TrappingType.Weapon"), // Label - what is displayed in the inventory section header
-        items: this.actor.itemTypes["weapon"], // Array of items in the sectio.filter(i => !i.system.location.value)n
+        items: this.actor.itemTags["weapon"], // Array of items in the sectio.filter(i => !i.system.location.value)n
         toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
         toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
         show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
@@ -165,7 +165,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       },
       armor: {
         label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
-        items: this.actor.itemTypes["armour"],
+        items: this.actor.itemTags["armour"],
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
@@ -174,14 +174,14 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       },
       ammunition: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
-        items: this.actor.itemTypes["ammunition"],
+        items: this.actor.itemTags["ammunition"],
         show: false,
         collapsed: collapsed?.ammunition,
         dataType: "ammunition"
       },
       clothingAccessories: {
         label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "clothingAccessories"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "clothingAccessories"),
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
@@ -190,49 +190,49 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       },
       booksAndDocuments: {
         label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "booksAndDocuments"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "booksAndDocuments"),
         show: false,
         collapsed: collapsed?.booksAndDocuments,
         dataType: "trapping"
       },
       toolsAndKits: {
         label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "toolsAndKits" || i.system.trappingType.value == "tradeTools"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "toolsAndKits" || i.system.trappingType.value == "tradeTools"),
         show: false,
         collapsed: collapsed?.toolsAndKits,
         dataType: "trapping"
       },
       foodAndDrink: {
         label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "foodAndDrink"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "foodAndDrink"),
         show: false,
         collapsed: collapsed?.foodAndDrink,
         dataType: "trapping"
       },
       drugsPoisonsHerbsDraughts: {
         label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "drugsPoisonsHerbsDraughts"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "drugsPoisonsHerbsDraughts"),
         show: false,
         collapsed: collapsed?.drugsPoisonsHerbsDraughts,
         dataType: "trapping"
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "misc" || !i.system.trappingType.value),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "misc" || !i.system.trappingType.value),
         show: true,
         collapsed: collapsed?.misc,
         dataType: "trapping"
       },
       ingredient: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
-        items: this.actor.itemTypes["trapping"].filter(i => i.system.trappingType.value == "ingredient"),
+        items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "ingredient"),
         show: false,
         collapsed: collapsed?.ingredient,
         dataType: "trapping"
       },
       cargo: {
         label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
-        items: this.actor.itemTypes["cargo"],
+        items: this.actor.itemTags["cargo"],
         show: false,
         collapsed: collapsed?.cargo,
         dataType: "cargo"
@@ -240,13 +240,13 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
 
     const money = {
-      items: this.actor.getItemTypes("money"),
+      items: this.actor.itemTags["money"],
       total: 0,     // Total coinage value
       show: true,
       collapsed : false
     }
     const containers = {
-      items: this.actor.getItemTypes("container"),
+      items: this.actor.itemTags["container"],
       show: false
     }
     const misc = {}
@@ -272,7 +272,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
     // Add names of containers to item.location object. Used for ammo selection
     inContainers.forEach(i => {
-      const container = this.actor.itemTypes["container"].find(c => c.id === i.system.location.value);
+      const container = this.actor.itemTags["container"].find(c => c.id === i.system.location.value);
       i.system.location.name = container?.name || false;
     });
 
@@ -284,7 +284,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
     // ******************************** Container Setup ***********************************
 
-    for (var cont of this.actor.itemTypes["container"]) // For each container
+    for (var cont of this.actor.itemTags["container"]) // For each container
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);

@@ -39,6 +39,11 @@ export class PhysicalItemModel extends BaseItemModel
         get isPhysical() {
             return true;
         }
+
+        get tags() 
+        {
+            return super.tags.add("physical");
+        }
     
 
     async _preCreate(data, options, user)

@@ -14,6 +14,11 @@ let fields = foundry.data.fields;
             }),
         } 
      }
+
+     get tags()
+     {
+        return new Set().add(this.parent.type);
+     }
  
 
      async _preCreate(data, options, user)

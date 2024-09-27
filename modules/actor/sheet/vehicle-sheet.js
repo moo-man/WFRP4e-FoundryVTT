@@ -175,7 +175,7 @@ export default class ActorSheetWFRP4eVehicle extends ActorSheetWFRP4e {
 
     let actor = await this.actor.system.passengers.choose();
 
-    let test = await actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") });
+    let test = await actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.itemTags["ammunition"] });
     test.roll();
   }
 

@@ -201,8 +201,8 @@ export class StandardActorModel extends BaseActorModel {
 
         this.runScripts("preAPCalc", args);
 
-        this.parent.getItemTypes("armour").filter(a => a.isEquipped).forEach(a => this.status.addArmourItem(a))
-        this.parent.getItemTypes("weapon").filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => this.status.addShieldItem(i))
+        this.parent.itemTags["armour"].filter(a => a.isEquipped).forEach(a => this.status.addArmourItem(a))
+        this.parent.itemTags["weapon"].filter(i => i.properties.qualities.shield && i.isEquipped).forEach(i => this.status.addShieldItem(i))
         
         this.runScripts("APCalc", args);
     }

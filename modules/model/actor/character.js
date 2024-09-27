@@ -168,7 +168,7 @@ export class CharacterModel extends StandardActorModel {
 
     get currentCareer() 
     {
-        return this.parent.getItemTypes("career").find(c => c.current.value)
+        return this.parent.itemTags["career"].find(c => c.current.value)
     }
     
     awardExp(amount, reason, message=null) 

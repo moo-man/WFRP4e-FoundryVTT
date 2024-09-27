@@ -55,7 +55,7 @@ export class ContainerModel extends EquippableItemModel {
 
         if (data.system?.location?.value) 
         {
-            let allContainers = this.parent.actor?.getItemTypes("container")
+            let allContainers = this.parent.actor?.itemTags["container"]
             if (this.formsLoop(this.parent, allContainers))
             {
               ui.notifications.error("Loop formed - Resetting Container Location")

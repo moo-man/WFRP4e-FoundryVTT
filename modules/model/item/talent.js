@@ -59,7 +59,7 @@ export class TalentModel extends BaseItemModel {
 
     get Advances() {
         if (this.parent.isOwned) {
-          let talents = this.parent.actor.getItemTypes("talent")
+          let talents = this.parent.actor.itemTags["talent"]
           return talents.filter(i => i.name == this.parent.name).reduce((prev, current) => prev += current.advances.value, 0)
         }
         else {

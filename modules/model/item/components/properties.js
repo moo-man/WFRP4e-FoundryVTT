@@ -23,6 +23,11 @@ const PropertiesMixin = (cls) => class extends cls
         return true;
     }
 
+    get tags() 
+    {
+        return super.tags.add("properties");
+    }
+
     //#region getters
 
     get loading() {

@@ -107,7 +107,7 @@ export class VehicleModel extends BaseActorModel {
         }
 
         this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
-        this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.total, 0)
+        this.status.encumbrance.mods = this.parent.itemTags["vehicleMod"].reduce((prev, current) => prev + current.encumbrance.total, 0)
         this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
         this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
 

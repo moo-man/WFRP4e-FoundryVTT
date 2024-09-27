@@ -94,7 +94,7 @@ export class PrayerModel extends OvercastItemModel
 
     getSkillToUse(actor) {
       actor = actor || this.parent.actor;
-      let skills = actor?.getItemTypes("skill") || []
+      let skills = actor?.itemTags["skill"] || []
       let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
       return skill;
     }

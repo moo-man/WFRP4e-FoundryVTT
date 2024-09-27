@@ -29,7 +29,7 @@ export default class PrayerDialog extends SkillDialog {
         options.title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
         options.title += options.appendTitle || "";
 
-        data.skill = data.actor.itemTypes["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+        data.skill = data.actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
         data.characteristic = data.skill?.system.characteristic.key || "fel";
 
         data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])

@@ -127,36 +127,36 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     let items = {}
 
     items.skills = {
-      basic: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
-      advanced: sheetData.actor.getItemTypes("skill").filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
+      basic: sheetData.actor.itemTags["skill"].filter(i => i.advanced.value == "bsc" && i.grouped.value == "noSpec"),
+      advanced: sheetData.actor.itemTags["skill"].filter(i => i.advanced.value == "adv" || i.grouped.value == "isSpec")
     }
 
-    items.careers = sheetData.actor.getItemTypes("career").reverse()
-    items.criticals = sheetData.actor.getItemTypes("critical")
+    items.careers = sheetData.actor.itemTags["career"].reverse()
+    items.criticals = sheetData.actor.itemTags["critical"]
     items.nonTrivialCriticals = items.criticals.filter(c => Number.isNumeric(c.system.wounds.value))
-    items.diseases = sheetData.actor.getItemTypes("disease")
-    items.injuries = sheetData.actor.getItemTypes("injury")
-    items.mutations = sheetData.actor.getItemTypes("mutation")
-    items.psychologies = sheetData.actor.getItemTypes("psychology")
-    items.traits = sheetData.actor.getItemTypes("trait")
-    items.extendedTests = sheetData.actor.getItemTypes("extendedTest")
-    items.vehicleMods = sheetData.actor.getItemTypes("vehicleMod")
-    items.vehicleTests = sheetData.actor.getItemTypes("vehicleTest")
-    items.vehicleRoles = sheetData.actor.getItemTypes("vehicleRole")
+    items.diseases = sheetData.actor.itemTags["disease"]
+    items.injuries = sheetData.actor.itemTags["injury"]
+    items.mutations = sheetData.actor.itemTags["mutation"]
+    items.psychologies = sheetData.actor.itemTags["psychology"]
+    items.traits = sheetData.actor.itemTags["trait"]
+    items.extendedTests = sheetData.actor.itemTags["extendedTest"]
+    items.vehicleMods = sheetData.actor.itemTags["vehicleMod"]
+    items.vehicleTests = sheetData.actor.itemTags["vehicleTest"]
+    items.vehicleRoles = sheetData.actor.itemTags["vehicleRole"]
 
     items.grimoire = {
-      petty: sheetData.actor.getItemTypes("spell").filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
-      lore: sheetData.actor.getItemTypes("spell").filter(i => (i.lore.value != "petty" && i.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty")) || !i.lore.value)
+      petty: sheetData.actor.itemTags["spell"].filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
+      lore: sheetData.actor.itemTags["spell"].filter(i => (i.lore.value != "petty" && i.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty")) || !i.lore.value)
     }
 
     items.prayers = {
-      blessings: sheetData.actor.getItemTypes("prayer").filter(i => i.prayerType.value == "blessing"),
-      miracles: sheetData.actor.getItemTypes("prayer").filter(i => i.prayerType.value == "miracle" || !i.prayerType.value)
+      blessings: sheetData.actor.itemTags["prayer"].filter(i => i.prayerType.value == "blessing"),
+      miracles: sheetData.actor.itemTags["prayer"].filter(i => i.prayerType.value == "miracle" || !i.prayerType.value)
     }
 
     items.equipped = {
-      weapons: sheetData.actor.getItemTypes("weapon").filter(i => i.isEquipped),
-      armour: sheetData.actor.getItemTypes("armour").filter(i => i.isEquipped)
+      weapons: sheetData.actor.itemTags["weapon"].filter(i => i.isEquipped),
+      armour: sheetData.actor.itemTags["armour"].filter(i => i.isEquipped)
     }
 
     items.aspects = {
@@ -194,7 +194,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     const categories = {
       weapons: {
         label: game.i18n.localize("WFRP4E.TrappingType.Weapon"), // Label - what is displayed in the inventory section header
-        items: sheetData.actor.getItemTypes("weapon"), // Array of items in the sectio.filter(i => !i.location.value)n
+        items: sheetData.actor.itemTags["weapon"], // Array of items in the sectio.filter(i => !i.location.value)n
         toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
         toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
         show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
@@ -203,7 +203,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       },
       armor: {
         label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
-        items: sheetData.actor.getItemTypes("armour"),
+        items: sheetData.actor.itemTags["armour"],
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
@@ -212,14 +212,14 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       },
       ammunition: {
         label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
-        items: sheetData.actor.getItemTypes("ammunition"),
+        items: sheetData.actor.itemTags["ammunition"],
         show: false,
         collapsed : collapsed?.ammunition,
         dataType: "ammunition"
       },
       clothingAccessories: {
         label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "clothingAccessories"),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "clothingAccessories"),
         toggle: true,
         toggleName: game.i18n.localize("Worn"),
         show: false,
@@ -228,42 +228,42 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       },
       booksAndDocuments: {
         label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "booksAndDocuments"),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "booksAndDocuments"),
         show: false,
         collapsed : collapsed?.booksAndDocuments,
         dataType: "trapping"
       },
       toolsAndKits: {
         label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "toolsAndKits" || i.trappingType.value == "tradeTools"),
         show: false,
         collapsed : collapsed?.toolsAndKits,
         dataType: "trapping"
       },
       foodAndDrink: {
         label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "foodAndDrink"),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "foodAndDrink"),
         show: false,
         collapsed : collapsed?.foodAndDrink,
         dataType: "trapping"
       },
       drugsPoisonsHerbsDraughts: {
         label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "drugsPoisonsHerbsDraughts"),
         show: false,
         collapsed : collapsed?.drugsPoisonsHerbsDraughts,
         dataType: "trapping"
       },
       misc: {
         label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
-        items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
+        items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "misc" || !i.trappingType.value),
         show: true,
         collapsed : collapsed?.misc,
         dataType: "trapping"
       },
       cargo: {
         label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
-        items: sheetData.actor.getItemTypes("cargo"),
+        items: sheetData.actor.itemTags["cargo"],
         show: false,
         collapsed : collapsed?.cargo,
         dataType: "cargo"
@@ -273,19 +273,19 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     // Money and ingredients are not in inventory object because they need more customization - note in actor-inventory.html that they do not exist in the main inventory loop
     const ingredients = {
       label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
-      items: sheetData.actor.getItemTypes("trapping").filter(i => i.trappingType.value == "ingredient"),
+      items: sheetData.actor.itemTags["trapping"].filter(i => i.trappingType.value == "ingredient"),
       show: false,
       collapsed : collapsed?.ingredients,
       dataType: "trapping"
     }
     const money = {
-      items: sheetData.actor.getItemTypes("money"),
+      items: sheetData.actor.itemTags["money"],
       total: 0,     // Total coinage value
       show: true,
       collapsed : false
     }
     const containers = {
-      items: sheetData.actor.getItemTypes("container"),
+      items: sheetData.actor.itemTags["container"],
       show: false
     }
     const misc = {}
@@ -308,7 +308,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
     // Add names of containers to item.location object. Used for ammo selection
     inContainers.forEach(i => {
-      const container = this.actor.getItemTypes("container").find(c => c.id === i.location.value);
+      const container = this.actor.itemTags["container"].find(c => c.id === i.location.value);
       i.location.name = container?.name || false;
     });
 
@@ -320,7 +320,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
     // ******************************** Container Setup ***********************************
 
-    for (var cont of this.actor.getItemTypes("container")) // For each container
+    for (var cont of this.actor.itemTags["container"]) // For each container
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.location.value == cont.id);
@@ -419,7 +419,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   _consolidateTalents() {
-    let talents = this.actor.getItemTypes("talent")
+    let talents = this.actor.itemTags["talent"]
     let consolidated = []
     for (let talent of talents) {
       let existing = consolidated.find(t => t.name == talent.name)
@@ -802,7 +802,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     })
   }
   async _onRestClick(ev) {
-    let skill = this.actor.getItemTypes("skill").find(s => s.name == game.i18n.localize("NAME.Endurance"));
+    let skill = this.actor.itemTags["skill"].find(s => s.name == game.i18n.localize("NAME.Endurance"));
     let options = {rest: true, tb: this.actor.characteristics.t.bonus, skipTargets: true}
     if (skill)
       this.actor.setupSkill(skill, options).then(setupData => {
@@ -996,8 +996,8 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     if (!location) location = $(ev.currentTarget).closest(".column").attr("data-location");
     if (!location) return;
 
-    let armourTraits = this.actor.getItemTypes("trait").filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
-    let armourItems = this.actor.getItemTypes("armour").filter(i => i.isEquipped).sort((a, b) => a.sort - b.sort)
+    let armourTraits = this.actor.itemTags["trait"].filter(i => i.name.toLowerCase() == game.i18n.localize("NAME.Armour").toLowerCase()).map(i => i.toObject());
+    let armourItems = this.actor.itemTags["armour"].filter(i => i.isEquipped).sort((a, b) => a.sort - b.sort)
     let armourToDamage;
     let usedTrait = false;
     // Damage traits first
@@ -1062,7 +1062,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
 
   _onShieldClick(ev) {
-    let shields = this.actor.getItemTypes("weapon").filter(i => i.isEquipped && i.properties.qualities.shield)
+    let shields = this.actor.itemTags["weapon"].filter(i => i.isEquipped && i.properties.qualities.shield)
     for (let s of shields) {
       let shieldQualityValue = s.properties.qualities.shield.value
       if (ev.button == 2) {
@@ -1322,7 +1322,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   async _onAggregateClick(ev) {
     let itemType = $(ev.currentTarget).attr("data-type")
     if (itemType == "ingredient") itemType = "trapping"
-    let items = this.actor.getItemTypes(itemType).map(i => i.toObject())
+    let items = this.actor.itemTags[itemType].map(i => i.toObject())
     for (let i of items) {
       let duplicates = items.filter(x => x.name == i.name)
       if (duplicates.length > 1) {
@@ -1498,7 +1498,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   _onMoneyIconClicked(ev) {
     ev.preventDefault();
-    let money = this.actor.getItemTypes("money");
+    let money = this.actor.itemTags["money"];
     let newMoney = MarketWFRP4e.consolidateMoney(money.map(i => i.toObject()));
     return this.actor.updateEmbeddedDocuments("Item", newMoney)
   }
@@ -1790,7 +1790,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   _onConvertCurrencyClick(ev) {
     let type = ev.currentTarget.dataset.type
-    let money = this.actor.getItemTypes("money").map(m => m.toObject());
+    let money = this.actor.itemTags["money"].map(m => m.toObject());
 
     if (type == "gc")
     {
@@ -2018,7 +2018,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
     // Roll a career income skill
     html.on("click", ".career-income", ev => {
-      let skill = this.actor.getItemTypes("skill").find(i => i.name === ev.target.text.trim())
+      let skill = this.actor.itemTags["skill"].find(i => i.name === ev.target.text.trim())
       let career = this.actor.items.get($(ev.target).attr("data-career-id"));
       if (!skill) {
         ui.notifications.error(game.i18n.localize("SHEET.SkillMissingWarning"))
@@ -2134,7 +2134,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
     type = type.includes(",") ? type.split(",") : [type]
 
-    let items = type.reduce((prev, current) => prev.concat(this.actor.getItemTypes(current).map(i => i.toObject())), []);
+    let items = type.reduce((prev, current) => prev.concat(this.actor.itemTags[current].map(i => i.toObject())), []);
     items = items.sort((a,b) => a.name < b.name ? -1 : 1);
     for(let i = 1; i < items.length; i++)
       items[i].sort = items[i-1].sort + 10000
