@@ -234,6 +234,17 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     return expandObject(enrichment)
   }
 
+    /**
+     * Prevent effects from stacking up each form submission
+   * @override
+   */
+    async _processSubmitData(event, form, submitData) {
+      let diffData = foundry.utils.diffObject(this.document.toObject(false), submitData)
+      await this.document.update(diffData);
+    }
+  
+
+  //#region Action Handlers
   static async _onCreateEffect(ev)
     {
         let type = ev.target.dataset.category;
@@ -526,4 +537,5 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       this.actor.setFlag("wfrp4e", `sheetCollapsed.${section}`, !collapsed);
     }
 
+    //#endregion
 }
