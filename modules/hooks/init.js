@@ -716,6 +716,8 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
+      "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
+      "systems/wfrp4e/templates/sheets/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
       "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
@@ -723,12 +725,17 @@ export default function() {
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
       "systems/wfrp4e/templates/partials/manual-scripts.hbs",
       "systems/wfrp4e/templates/partials/aspect-list.hbs",
+      "systems/wfrp4e/templates/partials/list-effect.hbs",
       "systems/wfrp4e/templates/chat/roll/test-card.hbs",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
       "systems/wfrp4e/templates/items/item-header.hbs",
       "systems/wfrp4e/templates/items/item-description.hbs",
       "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
+
+    loadTemplates({            
+      sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
+    });
 
     // Load name construction from files
     NameGenWfrp._loadNames();

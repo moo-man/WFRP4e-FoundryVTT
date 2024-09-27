@@ -1,0 +1,57 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{#if (isGM)}}
+        <div class="editor-section">
+            <div class="header">GM Notes</div>
+            {{editor enrichment.system.details.gmnotes.value target="system.details.gmnotes.value" engine="prosemirror" button=true editable=true}}
+        </div>
+    {{/if}}
+
+    <div class="editor-section">
+        <div class="header">Notes</div>
+        {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror" button=true editable=true}}
+    </div>
+
+        <fieldset>
+            <legend>{{localize "Personal Ambitions"}}</legend>
+            <div class="form-group">
+                <label>{{localize "Short Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.short-term" type="text" value="{{system.details.personal-ambitions.short-term}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "Long Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.long-term" type="text" value="{{system.details.personal-ambitions.long-term}}" />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{{localize "Party Ambitions"}}</legend>
+
+            <div class="form-group">
+                <label>{{localize "Short Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.party-ambitions.short-term" type="text" value="{{system.details.party-ambitions.short-term}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "Long Term"}}</label>
+                <div class="form-fields">
+                   <input name="system.details.party-ambitions.long-term" type="text" value="{{system.details.party-ambitions.long-term}}" />
+                </div>
+            </div>
+        </fieldset>
+
+
+        <div class="form-group">
+            <label>{{localize "Motivation"}}</label>
+                <div class="form-fields">
+                <input name="system.details.motivation.value" type="text" value="{{system.details.motivation.value}}" />
+            </div>
+        </div>
+
+</section>

@@ -397,7 +397,7 @@ export default class OpposedTest {
       attackerHitloc.result = this.defender.convertHitLoc(attackerHitloc.result)
       attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
 
-      let hitlocToUse
+      let hitlocToUse;
 
       // Remap the hit location roll to the defender's hit location table, note the change if it is different
       let remappedHitLoc = await game.wfrp4e.tables.rollTable(this.defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })

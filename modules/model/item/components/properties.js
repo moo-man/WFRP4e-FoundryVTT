@@ -108,7 +108,7 @@ const PropertiesMixin = (cls) => class extends cls
 
     getOtherEffects()
     {
-        return super.getOtherEffects().concat(Object.values(mergeObject(this.properties.qualities, this.properties.flaws), {inplace : false}).map(p => p.effect).filter(i => i) || []);
+        return super.getOtherEffects().concat(Object.values(foundry.utils.mergeObject(foundry.utils.deepClone(this.properties.qualities), this.properties.flaws)).map(p => p.effect).filter(i => i) || []);
     }
 
 

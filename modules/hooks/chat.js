@@ -441,8 +441,8 @@ export default function() {
       amount.setAttribute("draggable", true)
       amount.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          type : "money",
-          payload: $(amount).attr("data-amt")
+          type : "Income",
+          amount: $(amount).attr("data-amt")
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })

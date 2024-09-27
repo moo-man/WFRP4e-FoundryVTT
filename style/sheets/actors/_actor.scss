@@ -1,0 +1,205 @@
+.wfrp4e.actor.sheet.application {
+    input {
+        &:focus {
+        }
+    }
+
+    section.tab {
+        overflow-y: auto
+    }
+
+    .sheet-header {
+        display: flex;
+        flex-direction: column;
+        img {
+            width: 95px;
+            height: 95px;
+        }
+        .header-row {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        .header-rows {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .header-group {
+            @include flex;
+            margin: 0 0.5rem;
+            display:flex;
+            flex-direction: column;
+            flex: 1;
+            input {
+                background: none;
+                border: none;
+                line-height: 1.5rem;
+                height: 1.5rem;
+                padding: 0 0.1rem;
+            }
+            label {
+                border-top: 1px solid var(--color-cool-3);
+                padding: 0.1rem 0.1rem;
+                text-wrap: nowrap;
+            }
+        }
+    }
+
+    .characteristic-table {
+        margin: 0px;
+        border: none;
+        border-radius: 0px;
+        text-align: center;
+        background:none;
+
+        tr {
+            &:nth-child(even)
+            {
+                background: none;
+            }
+            &:last-child {
+                td { 
+                    border-bottom: none;
+                }
+            }
+            background: none;
+        }
+
+
+        td {
+            border: 1px solid var(--color-cool-3);
+            height: 30px;
+            &:first-child {
+                text-align: left;
+                border-left: none;
+                width: 10%;
+            }
+            &:last-child {
+                border-right: none;
+            }
+            
+            padding: 0px 0px;
+        }
+        input {
+            border: none;
+            height: 100%;
+            margin: 0px;
+            border-radius: 0px;
+        }
+
+        .table-header {
+            th div {
+                position: relative;
+                .advancement-indicator {
+                    position: absolute;
+                    top: -50%;
+                    left: 80%;
+                    font-size: var(--font-size-14);
+                }
+            }
+        }
+    }
+
+
+    .attribute-box {
+        margin: 5px 5px;
+
+        &:first-child {
+            margin-left: 0px;
+        }
+        &:last-child {
+            margin-right: 0px;
+        }
+
+        flex: 1;
+        border: 1px solid var(--color-cool-3);
+        border-right: none;
+        height: 45px;
+
+        display: grid;
+        grid-template-columns: repeat(12, 8.333%);
+        grid-template-rows: repeat(2, 50%);
+
+        > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input {
+            height: 100%;
+            width: 100%;
+            border-radius: 0px;
+            text-align: center;
+        }
+
+        .field {
+            border-right: 1px solid var(--color-cool-3);
+            width: 100%;
+        }
+
+        .label {
+            border-right: 1px solid var(--color-cool-3);
+            width: 100%;
+        }
+
+        &.movement {
+            flex: 2;
+            div:nth-child(-n + 3) {
+                border-bottom: 1px solid var(--color-cool-3);
+            }
+        }
+
+        &.corruption,
+        &.criticals,
+        &.wounds {
+
+            a {
+                margin: 0px 5px;
+                font-size: var(--font-size-12);
+            }
+
+            .label {
+                border-bottom: 1px solid var(--color-cool-3);
+            }
+        }
+    }
+
+
+
+    .sheet-list {
+        margin-top: 10px;
+        .item-property-row {
+            height: unset;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+            a {
+                margin-left: 3px;
+            }
+
+            .separator {
+                margin-right: 3px;
+            }
+            .property-icon {
+                background: var(--color-cool-3);
+                border-radius: 50%;
+                font-weight: bold;
+                width: 1.5rem;
+                height: 1.5rem;
+                line-height: 1.5rem;
+                text-align: center;
+                margin: 0px 3px;
+            }
+        }
+    }
+
+    fieldset {
+        border-color: var(--color-cool-3);
+        margin: 10px 0px;
+    }
+}

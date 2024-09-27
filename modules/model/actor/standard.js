@@ -300,7 +300,7 @@ export class StandardActorModel extends BaseActorModel {
 
 
     async _handleGroupAdvantage(data, options) {
-        if (!options.skipGroupAdvantage && foundry.utils.hasProperty(data, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage")) {
+        if (!options.skipGroupAdvantage && foundry.utils.hasProperty(options.changed, "system.status.advantage.value") && game.settings.get("wfrp4e", "useGroupAdvantage")) {
             let combatant = game.combat?.getCombatantByActor(this.parent);
 
             if (!combatant) {

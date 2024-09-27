@@ -71,7 +71,7 @@ export class TalentModel extends BaseItemModel {
         this.advances.indicator = this.advances.force;
     }
 
-    _addCareerData(career) {
+    addCareerData(career) {
         if (!career)
             return
 

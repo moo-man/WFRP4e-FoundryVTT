@@ -15503,8 +15503,8 @@ background : #0a1829d9
     border: none
   }
 
-  .sheet nav.sheet-tabs,
-  .sheet .sheet-tabs {
+  .app.sheet nav.sheet-tabs,
+  .app.sheet .sheet-tabs {
     border: none
   }
 #wfrp4e-browser .name-icon {
@@ -16267,7 +16267,7 @@ input[name="dd-import.importPath"] {
   border: none
 }
 
-.sheet .sheet-tabs {
+.app.sheet .sheet-tabs {
   border: none
 }
 
