@@ -52,6 +52,10 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     }
   }
 
+  get tags() {
+    return super.tags.add("armour");
+  }
+
   /**
    * Used to identify an Item as one being a child or instance of ArmourModel
    *
