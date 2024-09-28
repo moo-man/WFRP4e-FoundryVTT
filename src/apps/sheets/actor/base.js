@@ -78,7 +78,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       combat : {},
       magic: {}
     }
-    this.actor.itemTags.aspect.forEach(item => {
+    this.actor.itemTags.aspect?.forEach(item => {
         if (aspects[item.system.placement][item.system.pluralLabel])
         {
           aspects[item.system.placement][item.system.pluralLabel].push(item);
