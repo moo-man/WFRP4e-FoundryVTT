@@ -115,7 +115,7 @@ export default class TradeGenerator
         let name = "TRADE." + cargoKey.capitalize(); // Auto-build tanslation key
         this.tradeData = { name: game.i18n.localize(name), town: this.settlement.name.capitalize(), merchant};
 
-        let itemData = { system: foundry.utils.duplicate(game.system.model.Item.cargo) };
+        let itemData = { system: foundry.utils.duplicate(game.model.Item.cargo) };
         itemData.name = game.i18n.format("TRADE.CargoItemName", { name: this.tradeData.name })
         itemData.system.cargoType.value = cargoKey
         itemData.system.origin.value = this.tradeData.town
@@ -317,7 +317,7 @@ export default class TradeGenerator
                 let name = "TRADE." + key.capitalize(); // Auto-build tanslation key
                 this.tradeData = { name: game.i18n.localize(name), town: this.settlement.name.capitalize(), merchant};
                 
-                let itemData = { system: foundry.utils.duplicate(game.system.model.Item.cargo) };
+                let itemData = { system: foundry.utils.duplicate(game.model.Item.cargo) };
                 itemData.name = game.i18n.format("TRADE.CargoItemName", { name: this.tradeData.name })
                 itemData.system.cargoType.value = key
                 itemData.system.origin.value = this.tradeData.town

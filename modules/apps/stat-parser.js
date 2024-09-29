@@ -27,7 +27,7 @@ export default class StatBlockParser extends FormApplication {
     }
 
     static async parseStatBlock(statString, type = "npc") {
-        let model = foundry.utils.duplicate(game.system.model.Actor[type]);
+        let model = foundry.utils.duplicate(game.model.Actor[type]);
 
         let blockArray = statString.split("\n");
         let name = blockArray[0].split("—")[0].split(" ").filter(f => !!f);
@@ -302,7 +302,7 @@ export default class StatBlockParser extends FormApplication {
     
                 let trappingItem = await WFRP_Utility.findItem(trapping, game.wfrp4e.config.trappingItems)
                 if (!trappingItem) {
-                    trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.system.model.Item.trapping })
+                    trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.model.Item.trapping })
                     trappingItem.updateSource({"trappingType.value" : "misc"})
                 }
                 trappings.push(trappingItem.toObject())
