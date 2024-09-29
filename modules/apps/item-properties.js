@@ -42,7 +42,7 @@ export default class ItemProperties extends FormApplication {
             case 'trait':
                 return object.system.rollable.value;
             default:
-                return false;
+                return object.system.isWeapon;
         }
     }
 
@@ -53,7 +53,7 @@ export default class ItemProperties extends FormApplication {
             case 'trait':
                 return !object.system.rollable.value;
             default:
-                return false;
+                return object.system.isArmour;
         }
     }
 

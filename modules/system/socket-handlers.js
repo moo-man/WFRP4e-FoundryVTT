@@ -95,12 +95,12 @@ export default function () {
         /**
          * Not used by sockets directly, but is called when a socket handler should be executed by
          * the specific user which owns a document. Usually used to invoke tests from other users
-         * for their assigned Actor. 
-         * 
+         * for their assigned Actor.
+         *
          * @param {Document} document Document on which to test if the user is owner or not
          * @param {String} type Type of socket handler
-         * @param {Object} payload Data for socket handler, should generally include document UUID 
-         * @returns 
+         * @param {Object} payload Data for socket handler, should generally include document UUID
+         * @returns
          */
         executeOnOwner: function (document, type, payload){
             let ownerUser = getActiveDocumentOwner(document);

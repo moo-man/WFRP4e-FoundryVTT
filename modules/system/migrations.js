@@ -398,7 +398,7 @@ export default class Migration {
   static cleanActorData(actorData) {
 
     // Scrub system data
-    const model = game.system.model.Actor[actorData.type];
+    const model = game.model.Actor[actorData.type];
     actorData.data = foundry.utils.filterObject(actorData.data, model);
 
     // Scrub system flags
