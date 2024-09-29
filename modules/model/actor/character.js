@@ -62,7 +62,7 @@ export class CharacterModel extends StandardActorModel {
         await super._onUpdate(data, options, user);
         this._handleExperienceChange(data, options)
 
-        if(!options.skipCorruption && foundry.utils.getProperty(data, "system.status.corruption.value") && game.user.id == user)
+        if(!options.skipCorruption && foundry.utils.getProperty(options.changed, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
         }
@@ -74,7 +74,10 @@ export class CharacterModel extends StandardActorModel {
     }
 
     computeBase() {
-        this.status.corruption.max = 0;
+        if (this.parent.flags.autoCalcCorruption) 
+        {
+          this.status.corruption.max = 0;
+        }
         super.computeBase();
     }
 

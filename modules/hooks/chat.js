@@ -418,8 +418,9 @@ export default function() {
       woundsHealed.setAttribute("draggable", true);
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          type : "wounds",
-          payload : app.system.test.result.woundsHealed
+          type : "custom",
+          custom : "wounds",
+          wounds : app.system.test.result.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })

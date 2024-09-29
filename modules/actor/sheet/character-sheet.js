@@ -449,7 +449,7 @@ export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
       }      
     }
     actorUpdate.items = itemUpdates;
-    await this.actor.update(actorUpdate);
+    await this.actor.update(actorUpdate, {skipExperienceChecks : true});
   }
 
   _onExpLogDelete(ev) {

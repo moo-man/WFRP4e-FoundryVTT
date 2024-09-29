@@ -140,7 +140,12 @@ export default class Advancement
             },
             free: {
               label: game.i18n.localize("Free"),
-              callback: () => { resolve(true) }
+              callback: () => {
+                  let newSpent = actor.details.experience.spent
+                  let log = actor.system.addToExpLog(0, `${name} (${end-start})`, newSpent)
+                  actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
+                  resolve(true) 
+                }
             }
           },
           close : () => {resolve(false)}

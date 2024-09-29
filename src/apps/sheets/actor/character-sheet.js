@@ -14,7 +14,8 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
           addUntrainedSkill : this._onAddUntrainedSkill,
           addUntrainedTalent : this._onAddUntrainedTalent,
           rollIncome : this._onRollIncome,
-          changeCareer : this._onChangeCareer
+          changeCareer : this._onChangeCareer,
+          onRest : this._onRest
         },
         window : {
           resizable : true
@@ -169,6 +170,20 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
       new CareerSelector(this.document).render(true);
     }
 
+    static async _onRest(ev) {
+      let skill = this.actor.itemTags.skill.find(s => s.name == game.i18n.localize("NAME.Endurance"));
+      let options = {rest: true, tb: this.actor.characteristics.t.bonus, skipTargets: true}
+      let test;
+      if (skill)
+      {
+        test = await this.actor.setupSkill(skill, options);
+      }
+      else 
+      {
+        test = await this.actor.setupCharacteristic("t", options);
+      }
+      test.roll();
+    }
 
 
     static async _onRollIncome(ev)

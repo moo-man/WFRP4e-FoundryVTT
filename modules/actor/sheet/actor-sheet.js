@@ -885,7 +885,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
         characteristics[ch].advances = 0
       }
     }
-    return this.actor.update({ "system.characteristics": characteristics })
+    return this.actor.update({ "system.characteristics": characteristics }, {skipExperienceChecks : true})
   }
 
   async _onChangeSkillAdvances(ev) {
@@ -907,7 +907,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
           return
         }
     }
-    itemToEdit.update({ "system.advances.value": Number(ev.target.value) })
+    itemToEdit.update({ "system.advances.value": Number(ev.target.value) }, {skipExperienceChecks : true})
   }
 
   _onSelectAmmo(ev) {
@@ -1681,8 +1681,8 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       this._onDropIntoContainer(ev)
 
     // Dropping an item from chat
-    else if (dragData.type == "postedItem")
-      this.actor.createEmbeddedDocuments("Item", [dragData.payload]);
+    else if (dragData.type == "Item" && dragData.data)
+      this.actor.createEmbeddedDocuments("Item", [dragData.data]);
 
     else if (dragData.type == "generation")
       this._onDropCharGen(dragData)
@@ -1696,8 +1696,8 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     else if (dragData.type == "Income")
       this._onDropMoney(dragData)
 
-    else if (dragData.type == "wounds")
-      this.modifyWounds(`+${dragData.payload}`)
+    else if (dragData.type == "custom" && dragData.custom == "wounds")
+      this.modifyWounds(`+${dragData.wounds}`)
 
     else if (dragData.type == "condition")
       this.actor.addCondition(`${dragData.payload}`)

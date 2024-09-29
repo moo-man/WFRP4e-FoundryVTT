@@ -1405,20 +1405,6 @@ export default class ActorWFRP4e extends WarhammerActor
     return Number.isNumeric(this.flags.equipPoints) ? this.flags.equipPoints : 2
   }
 
-  get defensive() {
-
-    // Add defensive traits and weapons together
-    return this.itemTags["weapon"].reduce((prev, current) => {
-      if (current.isEquipped)
-        prev += current.properties.qualities.defensive ? 1 : 0
-      return prev
-    }, 0) + this.itemTags["trait"].reduce((prev, current) => {
-      if (current.included)
-        prev += current.properties?.qualities?.defensive ? 1 : 0
-      return prev
-    }, 0)
-  }
-
   get currentCareer() {
     return this.system.currentCareer
   }

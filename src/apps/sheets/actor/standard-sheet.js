@@ -96,6 +96,15 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       }
     }
 
+    async _onDropCustom(data, event)
+    {
+      await super._onDropCustom(data, event);
+      if (data.custom == "wounds")
+      {
+        this.actor.modifyWounds(data.wounds)
+      }
+    }
+
   _prepareSkillsContext(context) {
     context.skills = {
       basic: this.actor.itemTypes.skill.filter(i => i.system.advanced.value == "bsc" && i.system.grouped.value == "noSpec").sort(WFRP_Utility.nameSorter),

@@ -2322,7 +2322,7 @@ WFRP4E.PrepareSystemItems = function() {
                     equipTransfer: true
                 },
                 scriptData : [{
-                    label : "Blast",
+                    label : "Defensive",
                     trigger : "dialog",
                     script : "args.fields.slBonus++;",
                     options : {

@@ -23,6 +23,8 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         });
         schema.move = new fields.SchemaField({
             value: new fields.NumberField({ initial: 4 }),
+            walk: new fields.StringField(),
+            run: new fields.StringField(),
         });
         schema.god = new fields.SchemaField({
             value: new fields.StringField({label : game.i18n.localize("Blessed By")})

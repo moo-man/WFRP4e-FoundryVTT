@@ -670,8 +670,8 @@ export default class TestWFRP extends WarhammerTestBase{
       <p>${game.i18n.localize("CHAT.Dissolution")}</p>
       <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.actor.name, number: wpb })}
       <p>${tableText}</p>`,
-        "gmroll", false))
-      this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb })
+        "gmroll", false))  
+      this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb }, {skipCorruption: true}) // Don't keep checking corruption, causes a possible loop of dialogs
     }
     else
       ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))

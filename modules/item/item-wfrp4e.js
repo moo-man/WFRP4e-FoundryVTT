@@ -339,8 +339,8 @@ export default class ItemWfrp4e extends WarhammerItem
       // Setup drag and drop data
       chatOptions["flags.transfer"] = JSON.stringify(
         {
-          type: "postedItem",
-          payload: postedItem,
+          type: "Item",
+          data: postedItem,
         })
       chatOptions["flags.postQuantity"] = chatData.postQuantity;
       chatOptions["flags.recreationData"] = chatData;
