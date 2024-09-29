@@ -103,11 +103,10 @@ export class AttributesStage extends ChargenStage {
 
     this.context.rolledCharacteristics = foundry.utils.duplicate(this.context.characteristics) // Used to restore roll if user goes back a step
 
-    this.context.movement = game.wfrp4e.config.speciesMovement[species],
-      this.context.meta.fate.base = game.wfrp4e.config.speciesFate[species],
-      this.context.meta.resilience.base = game.wfrp4e.config.speciesRes[species],
-      this.context.meta.extra = game.wfrp4e.config.speciesExtra[species];
-
+    this.context.movement = game.wfrp4e.config.subspecies[species]?.[subspecies]?.movement ?? game.wfrp4e.config.speciesMovement[species];
+    this.context.meta.fate.base = game.wfrp4e.config.subspecies[species]?.[subspecies]?.fate ?? game.wfrp4e.config.speciesFate[species];
+    this.context.meta.resilience.base = game.wfrp4e.config.subspecies[species]?.[subspecies]?.resilience ?? game.wfrp4e.config.speciesRes[species];
+    this.context.meta.extra = game.wfrp4e.config.subspecies[species]?.[subspecies]?.extra ?? game.wfrp4e.config.speciesExtra[species];
 
     this.calculateTotals();
 
