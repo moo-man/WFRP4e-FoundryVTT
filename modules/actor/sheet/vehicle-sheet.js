@@ -29,7 +29,7 @@ export default class ActorSheetWFRP4eVehicle extends ActorSheetWFRP4e {
       {
         return ui.notification.error("Cannot use Compendium Actors with Vehicles")
       }
-      this.actor.update({ "system.passengers.list": this.actor.system.passengers.add(fromUuidSync(dragData.uuid)) })
+      this.actor.update(this.actor.system.passengers.add(fromUuidSync(dragData.uuid)))
     }
     else return super._onDrop(event);
   }
@@ -183,12 +183,12 @@ export default class ActorSheetWFRP4eVehicle extends ActorSheetWFRP4e {
     let multiplier = ev.button == 0 ? 1 : -1;
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.actor.system.passengers.count(id,1 * multiplier ) });
+    this.actor.update(this.actor.system.passengers.count(id,1 * multiplier ));
   }
 
   _onPassengerDeleteClick(ev) {
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.actor.system.passengers.remove(id) });
+    this.actor.update(this.actor.system.passengers.remove(id));
   }
 
   _onCargoClick(ev) {

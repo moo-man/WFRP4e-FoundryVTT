@@ -1589,7 +1589,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
 
   async _onVehicleRemove(ev)
   {
-    await this.actor.system.vehicle.update({"system.passengers.list" : this.actor.system.vehicle?.system.passengers.remove(this.actor.id)});
+    await this.actor.system.vehicle.update(this.actor.system.vehicle?.system.passengers.remove(this.actor.id));
     this.render(true);
   }
 
