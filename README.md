@@ -158,6 +158,8 @@ npm run pack
 
 - [Lustria](https://foundryvtt.com/packages/wfrp4e-lustria/) - Far from the shores of the Old World, across the Great Ocean, is the mysterious continent of Lustria. Tales tell of troves of golden treasure and repositories of arcane lore ready for the taking by those bold enough to risk it.
 
+- [Archives of the Empire: Vol 3.](https://foundryvtt.com/packages/wfrp4e-archives3/) - A diverse collection of fascinating articles detailing the activities of merchants, and the folk worship common to many rural corners of the Empire. Several minor faiths are explored in new detail, and forgotten beliefs brought under scrutiny.
+
 
 **Unofficial**
 
