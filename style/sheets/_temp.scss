@@ -1,0 +1,31 @@
+.application .aoe-template,
+.application .condition-chat,
+.application .property-chat,
+.application .chat-roll,
+.application .table-click,
+.application .travel-click,
+.application .symptom-tag,
+.application .item-lookup.styled,
+.application .skill-lookup,
+.application .talent-lookup,
+.application .skill-drag,
+.application .pay-link,
+.application .exp-link,
+.application .credit-link,
+.application .corruption-link,
+.application .fear-link,
+.application .terror-link
+{
+    background: #DDD;
+    padding: 1px 4px;
+    border: 1px solid var(--color-border-dark-tertiary);
+    border-radius: 2px;
+    white-space: nowrap;
+    word-break: break-all;
+    --content-link-background: rgba(0, 0, 0, 0.1);
+    background: var(--content-link-background);
+    i {
+        margin-right: 0.25em;
+        color : var(--color-text-dark-inactive)
+    }
+}

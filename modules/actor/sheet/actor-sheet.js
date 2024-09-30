@@ -586,6 +586,9 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     // Item summaries - displays a customized dropdown description
     html.on('click', '.item-dropdown', this._onItemSummary.bind(this));
 
+    html.on('contextmenu', '.aspect-dropdown', this._onItemSummary.bind(this));
+
+
     // Item Properties - depending on the item property selected, display a dropdown definition, this can probably be consolidated...TODO
     html.on('click', '.melee-property-quality, .melee-property-flaw, .ranged-property-quality, .ranged-property-flaw, .armour-quality, .armour-flaw', this._expandProperty.bind(this));
 

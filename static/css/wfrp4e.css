@@ -5364,7 +5364,7 @@
       margin-left: 0px;
       }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -5382,7 +5382,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header #trait-name {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header #trait-name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -5391,7 +5391,7 @@
       /* background: red; */
       flex-grow: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header .item-controls {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -5404,7 +5404,7 @@
       text-align: center;
     }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list {
     overscroll-behavior-x: unset;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -5421,7 +5421,7 @@
     margin: 0px 0px 0px 0px;
     padding: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item {
     width: 100%;
     text-align: left;
     overflow-x: hidden;
@@ -5438,7 +5438,7 @@
     justify-content: space-between;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -5454,14 +5454,14 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 220px;
         flex: 1;
         /* background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -5469,14 +5469,14 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 4px 0px 4px;
           overflow: hidden;
           width: 100%;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -15035,6 +15035,12 @@ button.capture-position {
 .app a.inline-roll img,
 .talent-drag img {
   margin: -3px 0px;
+}
+
+
+.app a.content-link.broken {
+  background: rgba(255, 0, 0, 0.05);
+  border: 1px dashed red;
 }
 
 .item-lookup i {

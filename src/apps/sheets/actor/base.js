@@ -1,6 +1,7 @@
 import ActorSettings from "../../../../modules/apps/actor-settings";
 import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
 import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
+import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 
 export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 {
@@ -226,6 +227,17 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   _addEventListeners()
   {
     super._addEventListeners();
+    this.element.querySelectorAll('.symptom-tag').forEach(el => el.addEventListener("click", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.condition-chat').forEach(el => el.addEventListener("click", WFRP_Utility.handleConditionClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.property-chat').forEach(el => el.addEventListener("click", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.table-click').forEach(el => el.addEventListener("click", WFRP_Utility.handleTableClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.pay-link').forEach(el => el.addEventListener("click", WFRP_Utility.handlePayClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.credit-link').forEach(el => el.addEventListener("click", WFRP_Utility.handleCreditClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.corruption-link').forEach(el => el.addEventListener("click", WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.fear-link').forEach(el => el.addEventListener("click", WFRP_Utility.handleFearClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.terror-link').forEach(el => el.addEventListener("click", WFRP_Utility.handleTerrorClick.bind(WFRP_Utility)))
+    this.element.querySelectorAll('.exp-link').forEach(el => el.addEventListener("click", WFRP_Utility.handleExpClick.bind(WFRP_Utility)))
+
     this.element.querySelector(".system-effects")?.addEventListener("change", (ev) => {
       let key = ev.target.value;
       this.actor.addSystemEffect(key)
