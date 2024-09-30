@@ -13,7 +13,7 @@
         let personalityQuirk = (await game.wfrp4e.tables.rollTable("personality-quirks", {hideDSN: true})).text;
 
 
-        let templateItem = await game.wfrp4e.utility.findItemId(templateMap[template._id]);
+        let templateItem = await warhammer.utility.findItemId(templateMap[template._id]);
 
         let bio = 
         `
