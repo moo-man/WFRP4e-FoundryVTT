@@ -9,7 +9,7 @@ if (this.item.name.includes("("))
 
 else 
 {
-	group = await ValueDialog.create("Enter Hatred Group", "Hatred Group")
+	group = await ValueDialog.create({text : "Enter Hatred Group", title : "Hatred Group"})
 
 	this.item.updateSource({name : this.item.name + ` (${group})`, "system.tests.value" : this.item.system.tests.value.replace("Group", group)})
 	this.effect.updateSource({name : this.effect.name + ` (${group})`})

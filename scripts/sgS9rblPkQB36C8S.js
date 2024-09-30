@@ -18,7 +18,7 @@ let choice = await ItemDialog.create(index, 1, "Choose a Trade Skill")
 let text;
 if (!choice[0])
 {
-    let custom = await ValueDialog.create("Enter Custom Trade Skill", "Custom Trade");  
+    let custom = await ValueDialog.create({text : "Enter Custom Trade Skill", title : "Custom Trade"});  
     text = custom || ""
 }
 else 

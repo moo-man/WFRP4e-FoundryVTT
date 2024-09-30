@@ -59,3 +59,8 @@ if (type == "poison")
 	await args.actor.addCondition("poisoned");
 }
 
+if (type == "warpfire")
+{
+	await this.actor.corruptionDialog("moderate")
+	this.actor.applyEffect({effectUuids : this.item.effects.getName("Warpfire").uuid})	
+}

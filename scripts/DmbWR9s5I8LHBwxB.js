@@ -1,4 +1,4 @@
-let column = await ValueDialog.create("Select the column to roll on to determine Beast Head", "Select Column", "", ["Undivided", "Khorne", "Nurgle", "Slaanesh", "Tzeentch"]);
+let column = await ValueDialog.create({text : "Select the column to roll on to determine Beast Head", title : "Select Column"}, "", ["Undivided", "Khorne", "Nurgle", "Slaanesh", "Tzeentch"]);
 
 if (column)
 {
