@@ -1,0 +1,1 @@
+await args.actor.addCondition("ablaze");

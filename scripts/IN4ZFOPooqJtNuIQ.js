@@ -1,0 +1,1 @@
+return args.characteristic !== "s" && args.characteristic !== "t" && args.weapon?.system?.attackType !== "melee";

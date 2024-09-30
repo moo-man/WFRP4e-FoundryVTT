@@ -1090,6 +1090,7 @@ WFRP4E.premiumModules = {
     "wfrp4e-owb2" : "Old World Bundle II",
     "wfrp4e-soc" : "Sea of Claws",
     "wfrp4e-lustria" : "Lustria",
+    "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
 }
 
 WFRP4E.trade = { 
