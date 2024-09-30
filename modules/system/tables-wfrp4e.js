@@ -221,6 +221,7 @@ export default class WFRP_Tables {
 
   static async rollToChat(table, options = {}, column = null, rollMode) {
     let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
+    options.returnObject = true;
     let tableResult = await this.formatChatRoll(table, options, column);
     chatOptions.content = tableResult.result;
     chatOptions.type = 0;
@@ -390,7 +391,14 @@ export default class WFRP_Tables {
 
     }
 
-    return result
+    if (options.returnResult)
+    {
+      return result
+    }
+    else 
+    {
+      return result.result;
+    }
 
   }
 

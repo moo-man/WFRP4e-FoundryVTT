@@ -109,7 +109,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         name: "Edit",
         icon: '<i class="fas fa-edit"></i>',
-        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        condition: li => !!li.data("uuid") || !!li.parents("[data-uuid]"),
         callback: async li => {
           let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
           const document = await fromUuid(uuid);
@@ -119,7 +119,23 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         name: "Remove",
         icon: '<i class="fas fa-times"></i>',
-        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        condition: li => {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          if (uuid)
+          {
+            let doc = fromUuidSync(uuid);
+            if (doc?.documentName == "ActiveEffect")
+            {
+              return doc.parent.uuid == this.document.uuid; // If an effect's parent is not this document, don't show the delete option
+            }
+            else if (doc)
+            {
+              return true;
+            }
+            return false;
+          }
+          else return false;
+        },
         callback: async li => 
         {
           let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
@@ -130,12 +146,39 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         name: "Post to Chat",
         icon: '<i class="fas fa-comment"></i>',
-        condition: li => !!li.data("uuid") || li.hasClass("context-menu"),
+        condition: li => {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          if (uuid)
+          {
+            let doc = fromUuidSync(uuid);
+            return doc?.documentName == "Item"; // Can only post Items to chat
+          }
+          else return false;
+        },
         callback: async li => 
         {
           let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
           const document = await fromUuid(uuid);
           document.postItem();
+        }
+      },
+      {
+        name: "Duplicate",
+        icon: '<i class="fa-solid fa-copy"></i>',
+        condition: li => {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          if (uuid)
+          {
+            let doc = fromUuidSync(uuid);
+            return doc?.documentName == "Item" && doc.system.isPhysical; // Can only duplicate physical items
+          }
+          else return false;
+        },
+        callback: async li => 
+        {
+            let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+            const document = await fromUuid(uuid);
+            this.actor.createEmbeddedDocuments("Item", [document.toObject()]);
         }
       },
     ];

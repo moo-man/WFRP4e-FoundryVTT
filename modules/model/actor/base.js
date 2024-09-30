@@ -90,4 +90,19 @@ export class BaseActorModel extends BaseWarhammerActorModel {
             }
         }
     }
+
+    // toEmbed(config, options)
+    // {
+    //     config.caption = false;
+    //     let img = document.createElement("img");
+    //     if (config.token)
+    //     {
+    //         img.src = this.parent.prototypeToken.texture.src;
+    //     }
+    //     else 
+    //     {
+    //         img.src = this.parent.img;
+    //     }
+    //     return img;
+    // }
 }

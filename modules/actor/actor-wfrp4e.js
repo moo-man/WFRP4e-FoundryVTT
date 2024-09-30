@@ -675,7 +675,8 @@ export default class ActorWFRP4e extends WarhammerActor
     }
 
     //@HOUSE
-    if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) {
+    if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) 
+    {
       game.wfrp4e.utility.logHomebrew("mooPenetrating")
       let penetratingIgnored = penetrating.value || 2
       modifiers.ap.details.push(game.i18n.format("BREAKDOWN.PenetratingMoo", {ignored: penetratingIgnored}))
@@ -694,6 +695,14 @@ export default class ActorWFRP4e extends WarhammerActor
       {
         modifiers.ap.shield = this.status.armour.shield
       }
+    }
+
+
+    // Not really a comprehensive fix 
+    if (modifiers.ap.shield && penetrating)
+    {
+        modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Penetrating", {ignored: modifiers.ap.shield, item: "Shield"}))
+        modifiers.ap.shield = 0;
     }
     
     //@HOUSE
@@ -976,37 +985,39 @@ export default class ActorWFRP4e extends WarhammerActor
 
 
   async corruptionDialog(strength) {
-    new Dialog({
+    let test;
+    Dialog.wait({
       title: game.i18n.localize("DIALOG.CorruptionTitle"),
       content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
       buttons: {
         endurance: {
           label: game.i18n.localize("NAME.Endurance"),
-          callback: () => {
+          callback: async () => {
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill) {
-              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true }).then(test => test.roll())
+             test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
             }
             else {
-              this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true }).then(test => test.roll())
+              test = await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
             }
           }
         },
         cool: {
           label: game.i18n.localize("NAME.Cool"),
-          callback: () => {
+          callback: async () => {
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill) {
-              this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true }).then(test => test.roll())
+              test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
             }
             else {
-              this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true }).then(test => test.roll())
+              test = await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
             }
           }
         }
 
       }
     }).render(true)
+    return test;
   }
 
 
@@ -1375,6 +1386,13 @@ export default class ActorWFRP4e extends WarhammerActor
       }
     }
   }
+
+  // async _buildEmbedHTML(config, options={}) {
+  //   if (this.system.toEmbed)
+  //   {
+  //     return this.system.toEmbed(config, options)
+  //   }
+  // }
 
   // @@@@@@@@@@@ COMPUTED GETTERS @@@@@@@@@
   get Species() {

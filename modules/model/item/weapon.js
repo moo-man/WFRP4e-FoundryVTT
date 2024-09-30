@@ -278,7 +278,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             let momentum = this.qualities.value.find(q => q.name == "momentum" && q.value)
             if (momentum?.value && this.parent.actor.status.advantage.value > 0) {
                 let qualityString = momentum.value
-                this._addProperties({ qualities: game.wfrp4e.utility.propertyStringToObject(qualityString, game.wfrp4e.utility.allProperties()), flaws: {} })
+                this._addProperties({ qualities: this.constructor.propertyStringToObject(qualityString, game.wfrp4e.utility.allProperties()), flaws: {} })
                 this.qualities.value.splice(this.qualities.value.findIndex(q => q.name == "momentum"), 1)
             }
         }

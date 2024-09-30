@@ -51,7 +51,7 @@ args.actor.addCondition("stunned")
 ```js
 if (!this.item.system.specification.value)
 {
-    let value = await ValueDialog.create("Value", "Enter Value");
+    let value = await ValueDialog.create({title : "Value", text : "Enter Value"});
     if (value)
     {
      this.item.updateSource({"system.specification.value" : value});

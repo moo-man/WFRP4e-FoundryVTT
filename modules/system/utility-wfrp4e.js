@@ -1,5 +1,6 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
+import PropertiesMixin from "../model/item/components/properties.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
 
@@ -12,39 +13,6 @@ import ChatWFRP from "./chat-wfrp4e.js";
  *
  */
 export default class WFRP_Utility {
-  static propertyStringToArray(propertyString, propertyObject)
-  {
-      let newProperties = []
-      let oldProperties = propertyString.split(",").map(i => i.trim())
-      for (let property of oldProperties) {
-        if (!property)
-          continue
-  
-        let newProperty = {}
-        let splitProperty = property.split(" ")
-        if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
-          newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
-          splitProperty.splice(splitProperty.length - 1, 1)
-        }
-  
-        splitProperty = splitProperty.join(" ")
-  
-        newProperty.name = this.findKey(splitProperty, propertyObject)
-        if (newProperty)
-          newProperties.push(newProperty)
-        else
-          newProperties.push(property)
-      }
-      return newProperties
-  }
-
-  
-  static propertyStringToObject(propertyString, propertyObject)
-  {
-      let array = this.propertyStringToArray(propertyString, propertyObject)
-      return ItemWfrp4e._propertyArrayToObject(array, propertyObject)
-  }
-
   /**
    * Roll characteristics given a species, or take average depending input
    * 

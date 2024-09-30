@@ -62,7 +62,8 @@ export class StandardActorModel extends BaseActorModel {
             allowed = allowed && item.system.category == "standard";
             if (!allowed)
             {
-                ui.notifications.error("ERROR.VehicleTraitsOnStandard");
+                ui.notifications.error("ERROR.VehicleTraitsOnStandard", {localize : true});
+                return false;
             }
         }
         return allowed

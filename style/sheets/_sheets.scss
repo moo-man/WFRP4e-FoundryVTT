@@ -2,6 +2,14 @@
 
 .wfrp4e.sheet.application {
 
+    .positive {
+        color: var(--color-level-success)
+    }
+
+    .negative {
+        color: var(--color-level-error)
+    }
+
     .rollable {
         > * {
             cursor: pointer;
@@ -77,6 +85,7 @@
             background-color: var(--color-cool-4);
             height: 1.5rem;
             line-height: 1.5rem;
+            border: 1px solid var(--color-cool-3);
 
             .list-name {
                 margin: 0px 5px;

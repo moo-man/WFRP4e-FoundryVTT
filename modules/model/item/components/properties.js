@@ -197,6 +197,41 @@ const PropertiesMixin = (cls) => class extends cls
         return properties
     }
 
+      
+    static propertyStringToArray(propertyString, propertyObject)
+    {
+        let newProperties = []
+        let oldProperties = propertyString.toString().split(",").map(i => i.trim())
+        for (let property of oldProperties) {
+          if (!property)
+            continue
+    
+          let newProperty = {}
+          let splitProperty = property.split(" ")
+          if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
+            newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
+            splitProperty.splice(splitProperty.length - 1, 1)
+          }
+    
+          splitProperty = splitProperty.join(" ")
+    
+          newProperty.name = warhammer.utility.findKey(splitProperty, propertyObject)
+          if (newProperty)
+            newProperties.push(newProperty)
+          else
+            newProperties.push(property)
+        }
+        return newProperties
+    }
+  
+    
+    static propertyStringToObject(propertyString, propertyObject)
+    {
+        let array = this.propertyStringToArray(propertyString, propertyObject)
+        return this.propertyArrayToObject(array, propertyObject)
+    }
+  
+
     static _createPropertyEffect(property, document)
     {
         let effectData = foundry.utils.deepClone(game.wfrp4e.config.propertyEffects[property.name]);

@@ -56,12 +56,12 @@ export class SkillModel extends BaseItemModel {
 
     async _preUpdate(data, options, user) {
         await super._preUpdate(data, options, user);
-        if (data.name)
-        {
-            options.oldName = this.parent.name
-        }
-
         let actor = this.parent.actor
+
+        if (actor?.type == "character" && this.grouped.value == "isSpec" && options.changed.name) 
+        {
+            this._handleSkillNameChange(data.name, this.parent.name)
+        }
 
         if (actor?.type == "character" && getProperty(options.changed, "system.advances.value") && !options.skipExperienceChecks)
         {
@@ -79,10 +79,7 @@ export class SkillModel extends BaseItemModel {
     {
         await super._onUpdate(data, options, user);
 
-        if (this.parent.isOwned && this.grouped.value == "isSpec" && options.oldName) 
-        {
-            this._handleSkillNameChange(data.name, options.oldName)
-        }
+
     }
 
     computeOwned()
