@@ -1,6 +1,19 @@
 @import "./actors/index";
 
 .wfrp4e.sheet.application {
+    --tab-color : var(--color-cool-3);
+    --list-header : var(--color-cool-4);
+    --list-header-border : var(--color-cool-3);
+    --list-row-alternate : #3028318f; // cool-3 at half transparency
+    --form-label : transparent;
+    --form-input : var(--color-cool-4);
+    --form-input-border : transparent;
+    --form-group-border : var(--color-cool-3);
+
+    --editor-header : var(--color-cool-3);
+    --editor-header-border : transparent;
+
+    --hover-bg : transparent;
 
     .positive {
         color: var(--color-level-success)
@@ -17,18 +30,19 @@
         &:hover {
             img {
                 box-shadow: 0px 0px 10px var(--color-cool-3) inset;
+                background: var(--hover-bg)
             }
         }
     }
 
     nav.sheet-tabs {
-        border-color: var(--color-cool-3);
+        border-color: var(--tab-color);
         gap: 0px;
         a {
             flex: 1
         }
         .active {
-            background-color: var(--color-cool-3);
+            background-color: var(--tab-color);
             text-shadow: none;
         }
 
@@ -41,16 +55,20 @@
     }
 
     .form-group {
+        select,
         input {
             border-radius: 0px;
+            background: var(--form-input);
+            border-color: var(--form-input-border);
         }
         label {
-            border-right: 1px solid var(--color-cool-3);
+            border-right: 1px solid var(--form-group-border);
             height: var(--input-height);
             line-height: var(--input-height);
             text-align: center;
+            background: var(--form-label)
         }
-        border: 1px solid var(--color-cool-3);
+        border: 1px solid var(--form-group-border);
     }
 
     .editor-section {
@@ -58,7 +76,8 @@
             height: 1.5rem;
             line-height: 1.5rem;
             padding-left: 5px;
-            background: var(--color-cool-3);
+            background: var(--editor-header);
+            border: 1px solid var(--editor-header-border);
         }
         min-height: 100px;
         .editor-content {
@@ -77,15 +96,15 @@
             line-height: 2rem;
             &:nth-child(even)
             {
-                background-color: var(--color-cool-4);
+                background-color: var(--list-row-alternate);
             }
         }
 
         .list-header {
-            background-color: var(--color-cool-4);
+            background-color: var(--list-header);
             height: 1.5rem;
             line-height: 1.5rem;
-            border: 1px solid var(--color-cool-3);
+            border: 1px solid var(--list-header-border);
 
             .list-name {
                 margin: 0px 5px;
@@ -158,6 +177,7 @@
                 width: 100%;
                 padding: 0px;
                 border-radius: 0px;
+                border: none;
         }
 
             >* {

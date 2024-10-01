@@ -1,4 +1,7 @@
 .wfrp4e.actor.sheet {
+
+    --container-lines : var(--color-cool-3);
+
     section.tab[data-tab="trappings"] {
         height: calc(100% - 200px);
     }
@@ -53,10 +56,10 @@
             height: 1.5rem;
 
             &.max {
-                background-color: var(--color-level-error-bg);
+                background-color: var(--color-warm-3);
             }
             &.high {
-                background-color: var(--color-level-warning-bg);
+                background-color: var(--color-warm-2);
             }
             &.partial {
                 background-color: var(--color-light-6);
@@ -76,8 +79,8 @@
                 content: "";
                 width: 1rem;
                 height: 14px;
-                border: 1px solid var(--color-cool-3);
-                border-radius: 0px 3px 3px;
+                border: 1px solid var(--container-lines);
+                border-radius: 0px 3px 0px;
                 border-top: none;
                 border-right: none;
             }
@@ -88,7 +91,7 @@
                 content: "";
                 width: 1rem;
                 height: 2rem;
-                border-right: 1px solid var(--color-cool-3);
+                border-right: 1px solid var(--container-lines);
             }
 
             &:first-child

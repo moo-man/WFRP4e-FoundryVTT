@@ -1,4 +1,8 @@
 .wfrp4e.actor.sheet {
+    --condition-label : transparent;
+    --condition-border : var(--color-cool-3);
+    --condition-control-bg : var(--color-cool-4);  
+
     section.tab[data-tab="effects"] {
         height: calc(100% - 200px);
         &.active {
@@ -11,7 +15,8 @@
             margin-top: 8px;
             margin-right: 5px;
             .condition {
-                border: 1px solid var(--color-cool-3);
+                border: 1px solid var(--condition-border);
+                background: var(--condition-label);
                 margin: 3px;
                 height: 2rem;
                 line-height: 2rem;
@@ -21,7 +26,7 @@
                     padding: 0px 5px;
                 }
                 .controls {
-                  background: var(--color-cool-4);
+                  background: var(--condition-control-bg);
                   text-align: center;
                   font-size: var(--font-size-16);
                   flex: 0 0 2rem;
