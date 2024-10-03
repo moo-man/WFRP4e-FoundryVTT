@@ -50,7 +50,7 @@
     "distance": 2,
     "units": "yd",
     "type": 1,
-    "diagonals": 0
+    "diagonals": 4
   },
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
