@@ -163,6 +163,7 @@
             border : 1px solid var(--attribute-input-border);
         }
 
+        input:disabled,
         input[readonly]
         {
             background-color: var(--attribute-locked-input);
