@@ -2,10 +2,6 @@ import { LocationalItemModel } from "./components/locational";
 let fields = foundry.data.fields;
 
 export class CriticalModel extends LocationalItemModel {
-    // allowedConditions = ["bleeding", "stunned", "blinded", "deafened", "incapacitated", "prone", "stunned", "fatigued"];
-    // allowedEffectApplications = ["document"];
-    // effectApplicationOptions = {documentType : "Actor"};
-
     static defineSchema() {
         let schema = super.defineSchema();
         schema.wounds = new fields.SchemaField({

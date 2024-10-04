@@ -3,9 +3,6 @@ let fields = foundry.data.fields;
 
 export class CorruptionModel extends BaseItemModel 
 {
-    // allowedEffectApplications = ["document"];
-    // effectApplicationOptions = {documentType : "Actor"};
-
     static defineSchema() 
     {
         let schema = super.defineSchema();
