@@ -69,7 +69,7 @@ export default class CrewTest
             return "???"
         }
 
-        let tests = Object.values(this.roles).map(i => game.messages.get(i.messageId)?.getTest()).filter(i => i)
+        let tests = Object.values(this.roles).map(i => game.messages.get(i.messageId)?.system.test).filter(i => i)
 
         let SL = tests.reduce((SL, test) => SL + test.result.crewTestSL, 0);
 

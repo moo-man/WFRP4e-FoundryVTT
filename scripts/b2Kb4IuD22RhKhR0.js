@@ -6,5 +6,5 @@ if (actor)
 }
 else
 {
-    this.script.scriptNotification("No target!", "error")
+    this.script.notification("No target!", "error")
 }

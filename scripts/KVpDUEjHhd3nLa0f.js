@@ -2,5 +2,5 @@ let test = await this.actor.setupCharacteristic("wp", {skipTargets: true, append
 await test.roll();
 if (test.failed)
 {
-    this.script.scriptMessage(await game.wfrp4e.tables.formatChatRoll("enrage-beast"))
+    this.script.message(await game.wfrp4e.tables.formatChatRoll("enrage-beast"))
 }

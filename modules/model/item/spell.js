@@ -1,4 +1,5 @@
-import EffectWfrp4e from "../../system/effect-wfrp4e";
+import Advancement from "../../system/advancement";
+import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
@@ -55,6 +56,25 @@ export class SpellModel extends OvercastItemModel {
         return schema;
     }
 
+    async _preUpdate(data, options, user)
+    {
+      await super._preUpdate(data, options, user)
+      if (foundry.utils.hasProperty(data, "system.cn.SL"))
+      {
+          data.system.cn.SL = Math.clamp(data.system.cn.SL, 0, data.system.cn.value || this.cn.value)
+      }
+    }
+
+    /**
+     * Used to identify an Item as one being a child or instance of SpellModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isSpell() {
+      return true;
+    }
+
     get ingredient() {
         if (this.currentIng.value)
           return this.parent.actor?.items.get(this.currentIng.value)
@@ -62,7 +82,7 @@ export class SpellModel extends OvercastItemModel {
 
 
       get ingredientList() {
-        return this.parent.actor?.getItemTypes("trapping").filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id)
+        return this.parent.actor?.itemTags["trapping"].filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id)
       }
 
       get Target() {
@@ -86,27 +106,26 @@ export class SpellModel extends OvercastItemModel {
     
     
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
 
         if (this.parent.isOwned) {
             let actor = this.parent.actor;
             if (actor.type != "character" && actor.type != "vehicle") {
-                foundry.utils.setProperty(preCreateData, "system.memorized.value", true);
+                this.updateSource({"memorized.value" : true});
             }
 
             if (actor.type == "character" && (this.lore.value == "petty" || this.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))) {
-                WFRP_Utility.memorizeCostDialog(this.parent, actor)
+                Advancement.memorizeCostDialog(this.parent, actor)
             }
         }
-
-        return preCreateData;
     }
 
     computeBase() {
         let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
         if (lore) {
-            this.lore.effect = new EffectWfrp4e(lore, { parent: this.parent });
+            foundry.utils.setProperty(lore, "flags.wfrp4e.path", "system.lore.effect");
+            this.lore.effect = new ActiveEffectWFRP4e(lore, { parent: this.parent });
         }
         this._addSpellDescription();
     }
@@ -128,7 +147,7 @@ export class SpellModel extends OvercastItemModel {
     getSkillToUse(actor) 
     {
         actor = actor || this.parent.actor;
-        let skills = actor?.getItemTypes("skill") || []
+        let skills = actor?.itemTags["skill"] || []
         let skill
         // Use skill override, if not found, use Language (Magick)
         if (this.skill.value)

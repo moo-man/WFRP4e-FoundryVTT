@@ -14,5 +14,5 @@
             // and suffer 1d10 Wounds which bypass armour but not Toughness Bonus.
             let damage = (await new Roll("1d10").roll());
             await damage.toMessage(this.script.getChatData());
-            this.script.scriptMessage(await this.actor.applyBasicDamage(damage.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg: true}))
+            this.script.message(await this.actor.applyBasicDamage(damage.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg: true}))
         }

@@ -1,0 +1,40 @@
+@import "./mixins/index";
+@import "./sheets/sheets";
+@import "./sheets/temp";
+@import "./sheets/light";
+
+
+.wfrp4e.application {
+    a {
+        cursor: pointer
+    }
+
+    img {
+        border: none;
+        object-fit: contain;
+    }
+
+    .inactive:not(.prosemirror) {
+        opacity: 0.5;
+    }
+
+    .disabled {
+        pointer-events: none;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .centered {
+        text-align: center;
+    }
+
+    .align-left {
+        text-align: left;
+    }
+
+    input[type="number"] {
+        text-align: center;
+    }
+}

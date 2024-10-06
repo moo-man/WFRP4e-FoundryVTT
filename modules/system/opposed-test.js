@@ -4,7 +4,19 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 
 export default class OpposedTest {
-  constructor(attackerTest = undefined, defenderTest = undefined, opposeResult = {}) {
+  constructor(attackerTest = undefined, 
+              defenderTest = undefined, 
+              opposeResult = {modifiers: {
+                attacker: {
+                  target: 0,
+                  SL: 0
+                },
+                defender: {
+                  target: 0,
+                  SL: 0
+                },
+                message: [] }
+              }) {
     this.data = {
       attackerTestData : attackerTest?.data,
       defenderTestData : defenderTest?.data,
@@ -64,21 +76,7 @@ export default class OpposedTest {
 *
 *
 */
-  checkPostModifiers() {
-
-    let didModifyAttacker = false;
-
-    let modifiers = {
-      attacker: {
-        target: 0,
-        SL: 0
-      },
-      defender: {
-        target: 0,
-        SL: 0
-      },
-      message: []
-    }
+  checkPostModifiers(modifiers) {
 
     // Things to Check:
     // Weapon Length DONE
@@ -93,13 +91,12 @@ export default class OpposedTest {
       let attackerReach = this.attackerTest.item.reachNum;
       let defenderReach = this.defenderTest.item.reachNum;
       if (defenderReach > attackerReach && !this.attackerTest.result.infighter) {
-        didModifyAttacker = true;
         modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: this.defenderTest.actor.prototypeToken.name, attacker: this.attackerTest.actor.prototypeToken.name }))
         modifiers.attacker.target += -10;
       }
     }
 
-    return foundry.utils.mergeObject(modifiers, { didModifyAttacker });
+    return modifiers;
   }
 
   /**
@@ -124,24 +121,40 @@ export default class OpposedTest {
       let attacker = this.attackerTest.actor
       let defender = this.defenderTest.actor
 
+      let originalModifiers = foundry.utils.deepClone(opposeResult.modifiers)
 
       await Promise.all(attacker.runScripts("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }))
       await Promise.all(attackerTest.item?.runScripts?.("preOpposedAttacker", { attackerTest, defenderTest, opposedTest: this }) ?? [])
       await Promise.all(defender.runScripts("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }))
       await Promise.all(defenderTest.item?.runScripts?.("preOpposedDefender", { attackerTest, defenderTest, opposedTest: this }) ?? [])
 
-
-      opposeResult.modifiers = this.checkPostModifiers(attackerTest, defenderTest);
-
+      this.checkPostModifiers(opposeResult.modifiers);
+      
       // Redo the test with modifiers
-      if (opposeResult.modifiers.didModifyAttacker) {
+      if (opposeResult.modifiers.attacker.target != originalModifiers.attacker.target
+        || opposeResult.modifiers.attacker.SL != originalModifiers.attacker.SL) {
         attackerTest.preData.roll = attackerTest.result.roll
         attackerTest.preData.postOpposedModifiers = opposeResult.modifiers.attacker
         attackerTest.preData.hitloc = attackerTest.result.hitloc?.roll;
+
+        attackerTest.context.breakdown.slBonus += opposeResult.modifiers.attacker.SL;
+        defenderTest.context.breakdown.modifiersBreakdown += "<p>" + opposeResult.modifiers.message.join("<br/>") + "</p>";
+
         await attackerTest.computeResult();
         await attackerTest.renderRollCard();
-      }
+      } 
+      if (opposeResult.modifiers.defender.target != originalModifiers.defender.target
+        || opposeResult.modifiers.defender.SL != originalModifiers.defender.SL) {
+        defenderTest.preData.roll = defenderTest.result.roll
+        defenderTest.preData.postOpposedModifiers = opposeResult.modifiers.defender
+        defenderTest.preData.hitloc = defenderTest.result.hitloc?.roll;
 
+        defenderTest.context.breakdown.slBonus += opposeResult.modifiers.defender.SL;
+        defenderTest.context.breakdown.modifiersBreakdown += "<p>" + opposeResult.modifiers.message.join("<br/>") + "</p>";
+        
+        await defenderTest.computeResult();
+        await defenderTest.renderRollCard();
+      }
       if (defenderTest.context.unopposed)
       {
         await defenderTest.roll();
@@ -196,7 +209,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
       }
       else // Defender won
       {
@@ -222,7 +235,7 @@ export default class OpposedTest {
             }
           }
         }
-        catch (e) { WFRP_Utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
+        catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
 
         opposeResult.winner = "defender"
         opposeResult.differenceSL = defenderSL - attackerSL;
@@ -384,7 +397,7 @@ export default class OpposedTest {
       attackerHitloc.result = this.defender.convertHitLoc(attackerHitloc.result)
       attackerHitloc.description = game.wfrp4e.config.locations[attackerHitloc.result];
 
-      let hitlocToUse
+      let hitlocToUse;
 
       // Remap the hit location roll to the defender's hit location table, note the change if it is different
       let remappedHitLoc = await game.wfrp4e.tables.rollTable(this.defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })

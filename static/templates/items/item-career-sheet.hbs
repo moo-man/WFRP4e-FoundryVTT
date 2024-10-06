@@ -4,6 +4,7 @@
   <nav class="sheet-tabs tabs" data-tab-container="primary">
     <a class="item active" data-tab="description">{{localize "Description"}}</a>
     <a class="item" data-tab="details">{{localize "Details"}}</a>
+    <a class="item" data-tab="effects">{{localize "Effects"}}</a>
   </nav>
   <div class="sheet-tabs edges left"></div>
   <div class="sheet-tabs edges right"></div>
@@ -112,5 +113,6 @@
         </div>
       </div>
     </div>
+    {{> systems/wfrp4e/templates/items/item-effects.hbs}}
   </section>
 </form>

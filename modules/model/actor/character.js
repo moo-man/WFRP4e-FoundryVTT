@@ -2,6 +2,7 @@ import { CharacteristicsModel } from "./components/characteristics";
 import { CharacterStatusModel } from "./components/status";
 import { CharacterDetailsModel } from "./components/details";
 import { StandardActorModel } from "./standard";
+import Advancement from "../../system/advancement";
 let fields = foundry.data.fields;
 
 export class CharacterModel extends StandardActorModel {
@@ -17,26 +18,51 @@ export class CharacterModel extends StandardActorModel {
         return schema;
     }
 
-    preCreateData(data, options) {
-        let preCreateData = super.preCreateData(data, options);
-        foundry.utils.mergeObject(preCreateData, {
-            "prototypeToken.sight": { enabled: true },
-            "prototypeToken.actorLink": true,
-            "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY
-        });
-        return preCreateData;
+    async _preCreate(data, options, user) {
+        await super._preCreate(data, options, user);
+        this.parent.updateSource({
+          "prototypeToken.sight": { enabled: true },
+          "prototypeToken.actorLink": true,
+          "prototypeToken.disposition": CONST.TOKEN_DISPOSITIONS.FRIENDLY
+        })
     }
 
+    async _preUpdate(data, options, user) 
+    {
+      await super._preUpdate(data, options, user);
+      if (!options.skipExperienceChecks)
+      {
+        await this._checkCharacteristicChange(data, options, user);
+      }
+    }
 
-    async preUpdateChecks(data, options) {
-        await super.preUpdateChecks(data, options);
+    async _checkCharacteristicChange(data, options, user)
+    {
+      let charChanges = getProperty(options.changed, "system.characteristics")
+      if (charChanges)
+      {
+        let keys = Object.keys(charChanges);
+        for(let c of keys)
+        {
+          if (charChanges[c].advances)
+          {
+            let resolved = await Advancement.advancementDialog(c, charChanges[c].advances, "characteristic", this.parent)
+            if (!resolved)
+            {
+              charChanges[c].advances = this.characteristics[c].advances;
+              data.system.characteristics[c].advances = this.characteristics[c].advances;
+              this.parent.sheet.render(true); // this doesn't feel right but otherwise the inputted value will still be on the sheet
+            }
+          }
+        }
+      }
+    }
 
+    async _onUpdate(data, options, user) {
+        await super._onUpdate(data, options, user);
         this._handleExperienceChange(data, options)
-    }
 
-    updateChecks(data, options, user) {
-        let update = super.updateChecks(data, options, user);
-        if(!options.skipCorruption && foundry.utils.getProperty(data, "system.status.corruption.value") && game.user.id == user)
+        if(!options.skipCorruption && foundry.utils.getProperty(options.changed, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
         }
@@ -45,20 +71,21 @@ export class CharacterModel extends StandardActorModel {
         {
           this._registerChatAward(options.fromMessage)
         }
-        return update;
-        // this._checkEncumbranceEffects(this.parent);
     }
 
     computeBase() {
-        this.status.corruption.max = 0;
+        if (this.parent.flags.autoCalcCorruption) 
+        {
+          this.status.corruption.max = 0;
+        }
         super.computeBase();
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items, flags);
+    computeDerived() {
+        super.computeDerived();
 
-        this.computeCorruption(items, flags)
-        this.computeCareer(items, flags)
+        this.computeCorruption()
+        this.computeCareer()
 
         this.details.experience.current = this.details.experience.total - this.details.experience.spent;
     }
@@ -77,28 +104,95 @@ export class CharacterModel extends StandardActorModel {
 
     computeCareer()
     {
-        let currentCareer = this.currentCareer
-        if (currentCareer) {
-          let { standing, tier } = this._applyStatusModifier(currentCareer.status)
+        let career = this.currentCareer
+        let actorSkills = this.parent.itemTypes.skill
+        let actorTalents = this.parent.itemTypes.talent
+        if (career) 
+        {
+          let { standing, tier } = this._applyStatusModifier(career.system.status)
           this.details.status.standing = standing
           this.details.status.tier = tier
           this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
-        }
-        else
-          this.details.status.value = ""
-    
-        if (currentCareer) {
-          let availableCharacteristics = currentCareer.characteristics
-          for (let char in this.characteristics) {
+          this.details.career = career
+          career.system.untrainedSkills = [];
+          career.system.untrainedTalents = [];
+
+          
+          let availableCharacteristics = career.system.characteristics
+          for (let char in this.characteristics) 
+          {
             if (availableCharacteristics.includes(char))
-              this.characteristics[char].career = true;
+            {
+                this.characteristics[char].career = true;
+                if (this.characteristics[char].advances >= career.system.level.value * 5) 
+                {
+                  this.characteristics[char].complete = true;
+                }
+              }
+          }
+
+                  
+          // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
+          for (let sk of career.system.skills.concat(career.system.addedSkills)) 
+          {
+            let trainedSkill = actorSkills.find(s => s.name.toLowerCase() == sk.toLowerCase())
+            if (trainedSkill) 
+              trainedSkill.system.addCareerData(career)
+            else 
+              career.system.untrainedSkills.push(sk);
+            
+          }
+
+          // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
+          for (let talent of career.system.talents) 
+          {
+              let trainedTalent = actorTalents.filter(t => t.name == talent)
+              if (trainedTalent.length)
+              {
+                for(let t of trainedTalent)
+                {
+                  t.system.addCareerData(career)
+                }
+              }
+              else 
+              {
+                career.system.untrainedTalents.push(talent);
+              }
           }
         }
+        else
+        {
+          this.details.status.value = ""
+        }
+    
     }
+
+    
 
     get currentCareer() 
     {
-        return this.parent.getItemTypes("career").find(c => c.current.value)
+        return this.parent.itemTags["career"].find(c => c.current.value)
+    }
+    
+    awardExp(amount, reason, message=null) 
+    {
+      let experience = foundry.utils.duplicate(this.details.experience)
+      experience.total += amount
+      experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
+      this.parent.update({ "system.details.experience": experience }, {fromMessage : message});
+      ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
+    }
+
+    addToExpLog(amount, reason, newSpent, newTotal) 
+    {
+      if (!newSpent)
+        newSpent = this.details.experience.spent
+      if (!newTotal)
+        newTotal = this.details.experience.total
+
+      let expLog = foundry.utils.duplicate(this.details.experience.log || [])
+      expLog.push({ amount, reason, spent: newSpent, total: newTotal, type: newSpent ? "spent" : "total" });
+      return expLog
     }
 
     _handleExperienceChange(data) {

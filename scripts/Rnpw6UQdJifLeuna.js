@@ -1,1 +1,1 @@
-this.effect.updateSource({"flags.wfrp4e.applicationData.type" : "crew"})
+this.effect.updateSource({"system.transferData.type" : "crew"})

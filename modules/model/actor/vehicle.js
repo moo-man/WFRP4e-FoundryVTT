@@ -21,10 +21,10 @@ export class VehicleModel extends BaseActorModel {
         return schema;
     }
 
-    preCreateData(data, options) {
+    async _preCreate(data, options, user) {
 
-        let preCreateData = super.preCreateData(data, options);
-
+        await super._preCreate(data, options, user);
+        let preCreateData = {};
         if (!data.prototypeToken)
             foundry.utils.mergeObject(preCreateData,
             {
@@ -35,7 +35,7 @@ export class VehicleModel extends BaseActorModel {
             preCreateData.img = "systems/wfrp4e/tokens/vehicle.png"
         }
 
-        return preCreateData;
+        this.parent.updateSource(preCreateData);
     }
     
     itemIsAllowed(item) {
@@ -53,6 +53,12 @@ export class VehicleModel extends BaseActorModel {
         return allowed
     }
 
+    initialize()
+    {
+        this.collision = 0;
+        this.details.crew.current = 0;
+    }
+
     computeBase()
     {
         super.computeBase();
@@ -68,13 +74,13 @@ export class VehicleModel extends BaseActorModel {
         this.status.mood.compute();
     }
 
-    computeDerived(items, flags) {
-        super.computeDerived(items, flags);
+    computeDerived() {
+        super.computeDerived();
         this.parent.runScripts("prePrepareItems", {actor : this.parent })
         this.characteristics.t.computeValue();
         this.characteristics.t.computeBonus();
-        this.collision = this.characteristics.t.bonus + this.status.wounds.bonus
-        this.computeEncumbrance(items, flags);
+        this.collision += this.characteristics.t.bonus + this.status.wounds.bonus
+        this.computeEncumbrance();
         this.details.computeMove();
         this.parent.runScripts("prepareData", { actor: this.parent })
     }
@@ -101,7 +107,7 @@ export class VehicleModel extends BaseActorModel {
         }
 
         this.status.encumbrance.current = Math.floor(this.status.encumbrance.current * 10) / 10;
-        this.status.encumbrance.mods = this.parent.getItemTypes("vehicleMod").reduce((prev, current) => prev + current.encumbrance.total, 0)
+        this.status.encumbrance.mods = this.parent.itemTags["vehicleMod"].reduce((prev, current) => prev + current.encumbrance.total, 0)
         this.status.encumbrance.over = this.status.encumbrance.mods - this.status.encumbrance.initial
         this.status.encumbrance.over = this.status.encumbrance.over < 0 ? 0 : this.status.encumbrance.over
 
@@ -115,7 +121,12 @@ export class VehicleModel extends BaseActorModel {
 
     get crewEffects() 
     {
-        return this.parent.effects.contents.concat(this.parent.items.contents.reduce((effects, item) => effects.concat(item.effects.contents), [])).filter(e => e.applicationData.type == "crew");
+        return this.parent.effects.contents.concat(this.parent.items.contents.reduce((effects, item) => effects.concat(item.effects.contents), [])).filter(e => e.system.transferData.type == "crew");
+    }
+
+    getOtherEffects() 
+    {
+        return super.getOtherEffects().concat(this.status.morale.getMoraleEffects(this.parent))
     }
 
     static migrateData(data)

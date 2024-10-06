@@ -1,0 +1,1 @@
+return ["witchcraft", "necromancy", "daemonology", "slaanesh", "nurgle", "tzeentch", "undivided"].includes(args.spell?.system.lore.value);

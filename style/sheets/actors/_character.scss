@@ -1,0 +1,33 @@
+.wfrp4e.actor.character.sheet.application {
+
+    section.tab[data-tab="main"] {
+        overflow-y: auto;
+    }
+
+    .attribute-box {
+        &.metacurrencies {
+            flex: 2;
+
+            div:nth-child(-n + 4) {
+                border-bottom: 1px solid var(--attribute-border);
+            }
+
+            .field {
+                background: var(--attribute-input);
+
+                a {
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        }
+
+        &.experience {
+            .label:first-child {
+                border-bottom: 1px solid var(--attribute-border);
+            }
+
+            flex: 3;
+        }
+    }
+}

@@ -3,4 +3,4 @@ msg += `<p>${await this.actor.applyBasicDamage(8, {loc : "roll", suppressMsg: tr
 msg += `<p>${await this.actor.applyBasicDamage(8, {loc : "roll", suppressMsg: true, hideDSN: true})}</p>`
 msg += `<p>${await this.actor.applyBasicDamage(8, {loc : "roll", suppressMsg: true, hideDSN: true})}</p>`
 
-this.script.scriptMessage(msg);
+this.script.message(msg);

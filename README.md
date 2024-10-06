@@ -6,7 +6,7 @@
 
 ![](https://img.shields.io/github/downloads/moo-man/WFRP4e-FoundryVTT/latest/wfrp4e.zip?label=Downloads%20%28Latest%20Version%29)
 
-![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V11-orange)
+![](https://img.shields.io/badge/FoundryVTT%20Compatibility-V12-orange)
 
 This system is intended for use with [Foundry Virtual Tabletop](http://foundryvtt.com/) to play in the grim and perilous world of Warhammer.
 
@@ -28,7 +28,9 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 6.0**, Compatible with V10, which uses a bundler, see **Environment Setup**
 
-**Version 7.0**, Current version, Compatible with V11, and with a vastly improved Active Effect scriping system
+**Version 7.0**, Compatible with V11, and with a vastly improved Active Effect scriping system
+
+**Version 8.0**, Current version, Compatible with V12, implements the Warhammer Library module.
 
 Please feel free to message me on Discord - moo.man
 
@@ -153,6 +155,10 @@ npm run pack
 - [Old World Bundle II](https://foundryvtt.com/packages/wfrp4e-owb2/) - Contains eight more titles previously released as short PDF only options that will help expand your WFRP adventures.
 
 - [Sea of Claws](https://foundryvtt.com/packages/wfrp4e-soc/) - The perfect starting point for a new campaign set on the high seas, detailing the northern coastlines of the Old World and the creatures and characters players may encounter there.
+
+- [Lustria](https://foundryvtt.com/packages/wfrp4e-lustria/) - Far from the shores of the Old World, across the Great Ocean, is the mysterious continent of Lustria. Tales tell of troves of golden treasure and repositories of arcane lore ready for the taking by those bold enough to risk it.
+
+- [Archives of the Empire: Vol 3.](https://foundryvtt.com/packages/wfrp4e-archives3/) - A diverse collection of fascinating articles detailing the activities of merchants, and the folk worship common to many rural corners of the Empire. Several minor faiths are explored in new detail, and forgotten beliefs brought under scrutiny.
 
 
 **Unofficial**

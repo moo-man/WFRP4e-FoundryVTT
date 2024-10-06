@@ -1,8 +1,13 @@
-import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
+import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 
-export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
+/**
+ *
+ * @extends EquippableItemModel
+ * @mixes PropertiesMixin
+ */
+export class TrappingModel extends PropertiesMixin(EquippableItemModel)
 {
     static defineSchema() 
     {
@@ -13,35 +18,40 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
         schema.spellIngredient = new fields.SchemaField({
             value: new fields.StringField()
         })
-        schema.worn = new fields.BooleanField()
         return schema;
     }
 
-    get isEquipped() {
-
-        return this.worn
+    /**
+     * Used to identify an Item as one being a child or instance of TrappingModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isTrapping() {
+      return true;
     }
 
-    async preCreateData(data, options, user)
+    async _preCreate(data, options, user)
     {
-       let preCreateData = await super.preCreateData(data, options, user);
+       await super._preCreate(data, options, user);
 
        if (this.trappingType == "clothingAccessories" && this.parent.isOwned && this.parent.actor.type != "character" && this.parent.actor.type != "vehicle")
        {
-          foundry.utils.setProperty(preCreateData, "system.worn", true); // TODO: migrate this into a unified equipped property
+        this.updateSource({"worn" : true}); // TODO: migrate this into a unified equipped property
        }
-           
-       return preCreateData;
     }
 
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
+    get worn() {
+      console.warn("[DEPRECATION] `container.worn` is deprecated, please use `container.equipped.value` instead");
+      return this.equipped.value;
     }
-
-    toggleEquip()
-    {
-        return this.parent.update({"system.worn" : !this.isEquipped})
+  
+    get weighsLessEquipped() {
+      return true;
+    }
+  
+    get canEquip() {
+      return this.trappingType.value === "clothingAccessories";
     }
 
     async expandData(htmlOptions) {
@@ -72,4 +82,12 @@ export class TrappingModel extends PropertiesMixin(PhysicalItemModel)
         return properties;
       }
 
+    static migrateData(data)
+    {
+      super.migrateData(data);
+
+      if (data.worn) {
+        data.equipped.value = data.worn;
+      }
+    }
 }

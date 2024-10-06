@@ -14,5 +14,5 @@ if (args.test.options.income && !args.test.options.criminal)
     let moneyString = `${moneyEarned}${coin}`
     let transactionString = `${moneyEarned}${term}`
 
-    this.script.scriptMessage(`<a class="money-drag" data-amt="${moneyString}"><strong>Earned an additional ${game.wfrp4e.market.amountToString(game.wfrp4e.market.parseMoneyTransactionString(transactionString))}</strong></a>`, {whisper : ChatMessage.getWhisperRecipients("GM")})
+    this.script.message(`<a class="money-drag" data-amt="${moneyString}"><strong>Earned an additional ${game.wfrp4e.market.amountToString(game.wfrp4e.market.parseMoneyTransactionString(transactionString))}</strong></a>`, {whisper : ChatMessage.getWhisperRecipients("GM")})
 }

@@ -1,0 +1,1 @@
+this.actor.deleteEmbeddedDocuments("ActiveEffect", [this.effect.id]);

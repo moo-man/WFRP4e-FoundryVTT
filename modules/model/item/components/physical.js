@@ -24,21 +24,35 @@ export class PhysicalItemModel extends BaseItemModel
             value: new fields.StringField()
         });
         schema.damageToItem = new fields.SchemaField({
-            value: new fields.NumberField(),
-            shield: new fields.NumberField(),
+            value: new fields.NumberField({min: 0}),
+            shield: new fields.NumberField({min: 0}),
         });
         return schema;
     }
 
-    async preCreateData(data, options, user)
+        /**
+     * Used to identify an Item as one being a child of PhysicalItemModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+        get isPhysical() {
+            return true;
+        }
+
+        get tags() 
+        {
+            return super.tags.add("physical");
+        }
+    
+
+    async _preCreate(data, options, user)
     {
-       let preCreateData = await super.preCreateData(data, options, user);
+       await super._preCreate(data, options, user);
 
        // Previously this checked if item was still owned, not sure if that's necessary 
        // It seems that every case where a new item is created, it should clear the location
-       foundry.utils.setProperty(preCreateData, "system.location.value",  "");
-
-       return preCreateData;
+       this.updateSource({"location.value" :  ""});
     }
 
     computeBase() 
@@ -47,7 +61,6 @@ export class PhysicalItemModel extends BaseItemModel
         super.computeBase();
 
         this.encumbrance.total = this.computeEncumbrance();
-        this.reduceEquippedEncumbrance();
     }
 
     computeEncumbrance() 
@@ -62,14 +75,6 @@ export class PhysicalItemModel extends BaseItemModel
             }
         }
         return enc
-    }
-
-    reduceEquippedEncumbrance()
-    {
-        if (this.isEquipped) 
-        {
-            this.encumbrance.total = Math.max(0, this.encumbrance.total - 1)
-        }
     }
 
 /**

@@ -2,7 +2,7 @@ let test = await this.actor.setupCharacteristic("wp", {skipTargets: true, append
 await test.roll();
 
 
-let opposedResult = test.opposedMessages[0]?.getOppose()?.resultMessage?.getOpposedTest()?.result
+let opposedResult = test.opposedMessages[0]?.system.opposedHandler?.resultMessage?.system.opposedTest?.result
 
 if (opposedResult?.winner == "attacker")
 {
@@ -10,7 +10,7 @@ if (opposedResult?.winner == "attacker")
     if (spells.length)
     {
         let chosen = spells[Math.floor(CONFIG.Dice.randomUniform() * spells.length)]
-        this.script.scriptMessage(`Loses access to <strong>${chosen.name}</strong>`)
+        this.script.message(`Loses access to <strong>${chosen.name}</strong>`)
         chosen.update({name : chosen.name += " (LOST)"})
     }
 }

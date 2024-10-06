@@ -19,7 +19,6 @@ export default function() {
       }
     }
 
-    canvas.tokens.placeables.forEach(t => t.renderAuras());
     canvas.hud.token = new WFRPTokenHUD();
   })
 }

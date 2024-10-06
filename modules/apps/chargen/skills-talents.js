@@ -247,7 +247,7 @@ export class SkillsTalentsStage extends ChargenStage {
       } catch(error) {
         // Ignore not found.
         // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
-        WFRP_Utility.log(`Talent ${i} was not found`, {error, context: this.context});
+        warhammer.utility.log(`Talent ${i} was not found`, {error, context: this.context});
       }
     }));
 
@@ -257,7 +257,7 @@ export class SkillsTalentsStage extends ChargenStage {
       } catch(error) {
         // Ignore not found.
         // This is mainly important because when a user chooses "Additional Random Talent" as a talent, it won't be found
-        WFRP_Utility.log(`Trait ${i} was not found`, {error, context: this.context});
+        warhammer.utility.log(`Trait ${i} was not found`, {error, context: this.context});
       }
     }));
 

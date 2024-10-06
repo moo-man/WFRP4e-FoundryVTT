@@ -185,7 +185,7 @@ export default class WomCastTest extends CastTest {
       // Math.max is for preventing negative SL, this occurs with Dhar overcast rules from, which don't really work well with WoM overcast
       this.data.result.SL = `+${Math.max(0, overcastData.originalSL - (overcastData.total - overcastData.available))}`
       await this.calculateDamage()
-      await this.updateMessageFlags();
+      await this.updateMessageData();
       this.renderRollCard()
     }
   }

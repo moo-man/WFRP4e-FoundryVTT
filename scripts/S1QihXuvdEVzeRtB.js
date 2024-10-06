@@ -37,4 +37,4 @@ this.effect.updateSource({changes})
 
 await this.actor.createEmbeddedDocuments("Item", [item.toObject()], {fromEffect : this.effect.id})
 
-this.script.scriptNotification(message)
+this.script.notification(message)

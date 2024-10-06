@@ -1,0 +1,75 @@
+<div class="sheet-header">
+    <div class="header-row">
+        <div class="header-group flex3">
+            <input type="text" name="name" value="{{actor.name}}">
+            <label>{{localize "Name"}}</label>
+        </div>
+        <div class="header-group">
+            <input type="text" name="system.details.species.value" value="{{system.details.species.value}}">
+            <label>{{localize "Species"}}</label>
+        </div>
+        <div class="header-group">
+            <input type="text" name="system.details.gender.value" value="{{system.details.gender.value}}">
+            <label>{{localize "Gender"}}</label>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center">
+        <img data-action="editImage" src="{{actor.img}}">
+        <div class="header-rows">
+
+            <div class="header-row" data-tooltip="{{localize 'SHEET.CareerToolTip'}}">
+                <div class="header-group">
+                    <input type="text" readonly value="{{system.details.career.class.value}}">
+                    <label>{{localize "Class"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" readonly value="{{system.details.career.careergroup.value}}">
+                    <label>{{localize "Career Group"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" readonly value="{{system.details.career.name}}">
+                    <label>{{localize "Career"}}</label>
+                </div>
+            </div>
+
+            <div class="header-row">
+                <div class="header-group" class="{{system.details.status.modified}}" data-tooltip="{{localize 'SHEET.CareerToolTip'}}"> 
+                    <input class="{{system.details.status.modified}}" type="text" readonly value="{{system.details.status.value}}">
+                    <label><a data-action="stepProperty" data-path="system.details.status.modifier">{{localize "Status"}}</a></label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.age.value" value="{{system.details.age.value}}">
+                    <label>{{localize "Age"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.height.value" value="{{system.details.height.value}}">
+                    <label>{{localize "CharacterHeight"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.weight.value" value="{{system.details.weight.value}}">
+                    <label>{{localize "Weight"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.haircolour.value" value="{{system.details.haircolour.value}}">
+                    <label>{{localize "Hair Colour"}}</label>
+                </div>
+            </div>
+
+            <div class="header-row">
+                <div class="header-group">
+                    <input type="text" name="system.details.eyecolour.value" value="{{system.details.eyecolour.value}}">
+                    <label>{{localize "Eye Colour"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.distinguishingmark.value" value="{{system.details.distinguishingmark.value}}">
+                    <label>{{localize "Distinguishing Mark"}}</label>
+                </div>
+                <div class="header-group">
+                    <input type="text" name="system.details.starsign.value" value="{{system.details.starsign.value}}">
+                    <label>{{localize "Star Sign"}}</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

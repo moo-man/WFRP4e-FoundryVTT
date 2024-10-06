@@ -1,0 +1,73 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="form-group">
+        <label>{{localize "Blessed By"}}</label>
+        <input class="centered" type="text" name="system.details.god.value" value="{{system.details.god.value}}">
+        <label>{{localize "Sin"}}</label>
+        <input type="number" name="system.status.sin.value" value="{{system.status.sin.value}}">
+    </div>
+
+    <div class="sheet-list blessing">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Blessing"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="prayer" data-category="blessing">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.prayer.blessing}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name rollable">
+                            <img src="{{this.img}}" data-action="rollTest" data-type="prayer">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="sheet-list miracle">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Miracle"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="prayer" data-category="miracle">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.prayer.miracle}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name rollable">
+                            <img src="{{this.img}}" data-action="rollTest" data-type="prayer">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                    {{#if this.system.cn.SL}}
+                    <div class="progress-bar">
+                        <div class="fill {{this.system.lore.value}}"  style="width:{{pct this.system.cn.SL this.system.cn.value}}%">
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

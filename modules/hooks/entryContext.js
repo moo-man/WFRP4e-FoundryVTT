@@ -1,4 +1,4 @@
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
+import OpposedHandler from "../system/opposed-handler.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import CastTest from "../system/rolls/cast-test.js";
@@ -58,7 +58,7 @@ export default function () {
  * Add right click option to use fortune point on own rolls
  */
   Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => game.messages.get(li.attr("data-message-id")).getOpposedTest() || li.find(".dice-roll").length > 0;
+    let canApply = li => game.messages.get(li.attr("data-message-id")).system.opposedTest || li.find(".dice-roll").length > 0;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -67,7 +67,7 @@ export default function () {
       //Once per roll (or at least, not on a reroll card)
       //Test must be failed 
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
 
     };
@@ -78,7 +78,7 @@ export default function () {
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL 
     };
     let canApplyDarkDeals = function (li) {
@@ -86,7 +86,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.type == "character"
     };
 
@@ -95,7 +95,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && game.user.isGM
     };
 
@@ -104,7 +104,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return test && test.actor.isOwner
     };
 
@@ -113,7 +113,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return game.user.isGM && test && test.opposedMessages.length >= 2
     };
 
@@ -122,7 +122,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.getOppose()?.resultMessage)
     };
 
@@ -131,7 +131,7 @@ export default function () {
       //Be owner of character
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
-      let test = message.getTest();
+      let test = message.system?.test;
       return (message.isOwner || message.isAuthor) && test && test instanceof CastTest && test.result.critical && game.settings.get("wfrp4e", "useWoMOvercast") && !test.result.totalPower
     };
 
@@ -148,13 +148,13 @@ export default function () {
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
-            let opposedTest = message.getOpposedTest();
+            let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+              .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -169,13 +169,13 @@ export default function () {
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
-            let opposedTest = message.getOpposedTest();
+            let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
-              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+              .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -190,13 +190,13 @@ export default function () {
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
-            let opposedTest = message.getOpposedTest();
+            let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
-              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+              .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -211,13 +211,13 @@ export default function () {
           }
           else {
             let message = game.messages.get(li.attr("data-message-id"))
-            let opposedTest = message.getOpposedTest();
+            let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
             opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
-              .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, message.id));
+              .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
       },
@@ -227,8 +227,8 @@ export default function () {
         condition: canApplyFortuneReroll,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
-          test.actor.useFortuneOnRoll(message, "reroll");
+          let test = message.system.test;
+          test.useFortune("reroll");
         }
       },
       {
@@ -237,7 +237,7 @@ export default function () {
         condition: canGMReroll,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
+          let test = message.system.test;
           test.reroll();
         }
       },
@@ -247,8 +247,8 @@ export default function () {
         condition: canApplyFortuneAddSL,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
-          test.actor.useFortuneOnRoll(message, "addSL");
+          let test = message.system.test;
+          test.useFortune("addSL");
         }
       },
       {
@@ -257,8 +257,8 @@ export default function () {
         condition: canApplyDarkDeals,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
-          test.actor.useDarkDeal(message);
+          let test = message.system.test;
+          test.useDarkDeal();
         }
       },
       {
@@ -267,7 +267,7 @@ export default function () {
         condition: canTarget,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
+          let test = message.system.test;
           let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
           if (canvas.scene) { 
             game.user.updateTokenTargets([]);
@@ -287,11 +287,11 @@ export default function () {
         callback: li => {
 
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
+          let test = message.system.test;
           test.opposedMessages.forEach(message => {
             if (message)
             {
-              let oppose = message.getOppose();
+              let oppose = message.system.opposedHandler;
               oppose.resolveUnopposed();
             }
           })
@@ -303,15 +303,15 @@ export default function () {
         condition: canApplyAllDamage,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
+          let test = message.system.test;
           for (let message of test.opposedMessages) {
             if (message) {
-              let opposedTest = message.getOppose();
+              let opposedTest = message.system.opposedHandler;
               if (!opposedTest.defenderTest.actor.isOwner) {
                 ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
               } else {
-                opposedTest.defender.applyDamage(opposedTest.resultMessage.getOpposedTest(), game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-                  .then(updateMsg => OpposedWFRP.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id));
+                opposedTest.defender.applyDamage(opposedTest.resultMessage.system.opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+                  .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id));
               }
             }
           }
@@ -323,7 +323,7 @@ export default function () {
         condition: canApplyTotalPower,
         callback: li => {
           let message = game.messages.get(li.attr("data-message-id"));
-          let test = message.getTest();
+          let test = message.system.test;
           test.preData.totalPower = true;
           test.roll();
         }

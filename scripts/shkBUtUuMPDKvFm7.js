@@ -6,5 +6,5 @@ await test.roll();
 if (test.failed)
 {
     this.actor.addCondition("prone")
-   this.script.scriptMessage(`<b>${this.actor.prototypeToken.name}</b> falls ${fallen} yards`)
+   this.script.message(`<b>${this.actor.prototypeToken.name}</b> falls ${fallen} yards`)
 }

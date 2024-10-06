@@ -3,5 +3,5 @@ await test.roll();
 if (test.failed && this.actor.type == "character")
 {
     this.actor.update({"system.status.corruption.value" : parseInt(this.actor.status.corruption.value) + 1})
-    this.script.scriptMessage("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
+    this.script.message("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
 }

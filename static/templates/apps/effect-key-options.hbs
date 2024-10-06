@@ -1,7 +1,45 @@
 <select name="{{name}}">
-    {{#select value}}
-    <optgroup label="{{localize 'Characteristics'}}">
+    <option value=""></option>
 
+    {{#select value}}
+    <optgroup label="{{localize 'EFFECT.CharacteristicsModifier'}}">
+        <option value="system.characteristics.ws.modifier">{{localize "CHAR.WS"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.bs.modifier">{{localize "CHAR.BS"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.s.modifier">{{localize "CHAR.S"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.t.modifier">{{localize "CHAR.T"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.i.modifier">{{localize "CHAR.I"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.ag.modifier">{{localize "CHAR.Ag"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.dex.modifier">{{localize "CHAR.Dex"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.int.modifier">{{localize "CHAR.Int"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.wp.modifier">{{localize "CHAR.WP"}} ({{localize "Modifier"}})</option>
+        <option value="system.characteristics.fel.modifier">{{localize "CHAR.Fel"}} ({{localize "Modifier"}})</option>
+    </optgroup>
+    <optgroup label="{{localize 'EFFECT.CharacteristicsInitial'}}">
+        <option value="system.characteristics.ws.initial">{{localize "CHAR.WS"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.bs.initial">{{localize "CHAR.BS"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.s.initial">{{localize "CHAR.S"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.t.initial">{{localize "CHAR.T"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.i.initial">{{localize "CHAR.I"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.ag.initial">{{localize "CHAR.Ag"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.dex.initial">{{localize "CHAR.Dex"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.int.initial">{{localize "CHAR.Int"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.wp.initial">{{localize "CHAR.WP"}} ({{localize "Initial"}})</option>
+        <option value="system.characteristics.fel.initial">{{localize "CHAR.Fel"}} ({{localize "Initial"}})</option>
+    </optgroup>
+    <optgroup label="{{localize 'EFFECT.CalculationBonusModifiers'}}">
+        <option value="system.characteristics.ws.calculationBonusModifier">{{localize "CHAR.WS"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.bs.calculationBonusModifier">{{localize "CHAR.BS"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.s.calculationBonusModifier">{{localize "CHAR.S"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.t.calculationBonusModifier">{{localize "CHAR.T"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.i.calculationBonusModifier">{{localize "CHAR.I"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.ag.calculationBonusModifier">{{localize "CHAR.Ag"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.dex.calculationBonusModifier">{{localize "CHAR.Dex"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.int.calculationBonusModifier">{{localize "CHAR.Int"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.wp.calculationBonusModifier">{{localize "CHAR.WP"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+        <option value="system.characteristics.fel.calculationBonusModifier">{{localize "CHAR.Fel"}} ({{localize "EFFECT.CalculationBonusModifier"}})</option>
+    </optgroup>
+    <optgroup label="{{localize "Other"}}">
+        <option value="system.details.move.value">{{localize "Move"}}</option>
     </optgroup>
     {{/select}}
 </select>

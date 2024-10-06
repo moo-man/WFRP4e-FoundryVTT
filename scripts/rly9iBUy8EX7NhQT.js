@@ -24,4 +24,4 @@ await this.actor.applyEffect({effectData: [effectData]});
 
 const speaker = ChatMessage.getSpeaker({actor: this.actor});
 
-this.script.scriptMessage(`<b>${speaker.alias}</b> started wrapping itself around the <b>${target.name}</b> and will be able to start crushing it after ${turns} turns.`);
+this.script.message(`<b>${speaker.alias}</b> started wrapping itself around the <b>${target.name}</b> and will be able to start crushing it after ${turns} turns.`);

@@ -1,3 +1,4 @@
+import Advancement from "../../system/advancement";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
@@ -28,8 +29,18 @@ export class SkillModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of SkillModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isSkill() {
+        return true;
+    }
+
     get cost() {
-          return WFRP_Utility._calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
+          return Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }
 
     get modified() {
@@ -43,12 +54,32 @@ export class SkillModel extends BaseItemModel {
       }
     
 
-    async preUpdateChecks(data) {
-        await super.preUpdateChecks(data);
+    async _preUpdate(data, options, user) {
+        await super._preUpdate(data, options, user);
+        let actor = this.parent.actor
 
-        if (this.parent.isOwned && this.grouped.value == "isSpec" && data.name) {
-            this._handleSkillNameChange(data.name)
+        if (actor?.type == "character" && this.grouped.value == "isSpec" && options.changed.name) 
+        {
+            this._handleSkillNameChange(data.name, this.parent.name)
         }
+
+        if (actor?.type == "character" && getProperty(options.changed, "system.advances.value") && !options.skipExperienceChecks)
+        {
+            let resolved = await Advancement.advancementDialog(this.parent, data.system.advances.value, "skill", actor)
+    
+            if (!resolved)  
+            {
+                data.system.advances.value = this.advances.value;
+                this.parent.actor.sheet.render(true) // this doesn't feel right but otherwise the inputted value will still be on the sheet
+            }
+        }
+    }
+
+    async _onUpdate(data, options, user)
+    {
+        await super._onUpdate(data, options, user);
+
+
     }
 
     computeOwned()
@@ -58,7 +89,7 @@ export class SkillModel extends BaseItemModel {
     }
 
 
-    _addCareerData(career) {
+    addCareerData(career) {
         if (!career)
           return
           
@@ -71,8 +102,7 @@ export class SkillModel extends BaseItemModel {
       }
 
     // If an owned (grouped) skill's name is changing, change the career data to match
-    _handleSkillNameChange(newName) {
-        let oldName = this.parent.name
+    _handleSkillNameChange(newName, oldName) {
         let currentCareer = this.parent.actor?.currentCareer;
         if (!currentCareer) 
         {
@@ -80,7 +110,7 @@ export class SkillModel extends BaseItemModel {
         }
         else 
         {
-            currentCareer.system.changeSkillName(oldName, newName)
+            currentCareer.system.changeSkillName(newName, oldName)
         }
     }
 

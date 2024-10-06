@@ -25,6 +25,8 @@ export default class CharacteristicDialog extends RollDialog {
 
     static async setup(fields={}, data={}, options={})
     {
+        // let {data, fields} = this._baseDialogData(actor, options);
+
         options.title = options.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[data.characteristic]});
         options.title += options.appendTitle || "";
 
@@ -36,7 +38,7 @@ export default class CharacteristicDialog extends RollDialog {
         data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
         return new Promise(resolve => {
-            let dlg = new this(fields, data, resolve, options)
+            let dlg = new this(data, fields, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -49,9 +51,9 @@ export default class CharacteristicDialog extends RollDialog {
     }
 
     
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.item = this.data.characteristic;
         return data;
     }

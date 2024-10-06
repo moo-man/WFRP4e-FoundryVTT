@@ -1,6 +1,5 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import passengerRender from "../system/passengerRender.js"
-import AreaHelpers from "../system/area-helpers.js";
 
 export default function() {
   // Adds tooltips to conditions in the condition menu
@@ -11,12 +10,6 @@ export default function() {
         condition.title = "Dead"
     }
   })
-
-  Hooks.on("preUpdateToken", (token, data) => 
-  {
-      // AreaHelpers.checkTokenUpdate(token, data, canvas.templates.placeables);
-  });
-
 
 
   Hooks.on("createToken", async (token, data, user) => {
@@ -29,7 +22,7 @@ export default function() {
       {
         let mount = token.actor.mount;
         let mountToken = await mount.getTokenDocument();
-        mountToken.updateSource({ x : token.x, y : token.y, hidden: token.hidden })
+        mountToken.updateSource({ x : token.x, y : token.y, hidden: token.hidden, sort : token.sort - 1 })
 
         // Shift token slightly if same size
         if (mountToken.actor.details.size.value == token.actor.details.size.value)
@@ -53,8 +46,6 @@ export default function() {
         }
       }
 
-      token.object.renderAuras();
-      AreaHelpers.checkAreas(scene);
     }
 
     if (game.user.id == user)
@@ -72,31 +63,21 @@ export default function() {
           if (canvas.tokens.get(token.id).actor.isMounted)
           {
             let mountId = token.getFlag("wfrp4e", "mount")
-            let tokenUpdate = {_id : mountId, x : token.x, y: token.y }
-            if (token.actor.details.size.value == token.actor.mount.details.size.value)
+            let mountToken = canvas.tokens.get(mountId)
+            if (mountToken)
             {
-              tokenUpdate.x += canvas.grid.size / 4
-              tokenUpdate.y += canvas.grid.size / 4
-            }
-            scene.updateEmbeddedDocuments("Token", [tokenUpdate])
 
+              let tokenUpdate = {_id : mountId, x : updateData.x || token.x, y: updateData.y || token.y, sort : token.sort - 1 }
+              if (token.actor.details.size.value == token.actor.mount.details.size.value)
+              {
+                tokenUpdate.x += canvas.grid.size / 4
+                tokenUpdate.y += canvas.grid.size / 4
+              }
+              mountToken.document.update(tokenUpdate)
+            }
           }
         }
-        if (updateData.x || updateData.y)
-        {
-          AreaHelpers.checkAreas(scene)
-        }
       }
-      // Empty resolve for when there's no token animation
-      (token.object._animation || Promise.resolve()).then(() => {
-        token.object.renderAuras();
-      })
-    })
-
-
-    // If deleted token has an aura, need to check areas
-    Hooks.on("deleteToken", async (token, data, user) => {
-      AreaHelpers.checkAreas(token.parent)
     })
 
   Hooks.on('renderTokenHUD', (hud, html) => {
