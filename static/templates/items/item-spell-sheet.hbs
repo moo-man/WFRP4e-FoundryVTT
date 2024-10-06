@@ -54,14 +54,14 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="label-text">{{localize "ITEM.Ritual"}}</label>
-        {{#if system.ritual.value}}
-          <a class="item-checkbox" data-target="system.ritual.value"><i class="far fa-check-circle"></i></a>
-        {{else}}
-          <a class="item-checkbox" data-target="system.ritual.value"><i class="far fa-circle"></i></a>
-        {{/if}}
-      </div>
+        <div class="form-group">
+          <label class="label-text">{{localize "ITEM.Ritual"}}</label>
+          {{#if system.ritual.value}}
+            <a class="item-checkbox" data-target="system.ritual.value"><i class="far fa-check-circle"></i></a>
+          {{else}}
+            <a class="item-checkbox" data-target="system.ritual.value"><i class="far fa-circle"></i></a>
+          {{/if}}
+        </div>
 
 
       {{#if system.ritual.value}}
@@ -77,8 +77,8 @@
           <label class="label-text">{{localize "Lore Effect"}}</label>
           <div class="input-box">
             <input class="input-text" type="text" name="system.lore.effectString"
-                placeholder="{{localize 'ITEM.LoreEffectPlaceholder'}}" value="{{system.lore.effectString}}"
-                data-dtype="{{system.lore.type}}" />
+              placeholder="{{localize 'ITEM.LoreEffectPlaceholder'}}" value="{{system.lore.effectString}}"
+              data-dtype="{{system.lore.type}}" />
           </div>
         </div>
 
@@ -106,7 +106,7 @@
           <label class="label-text">{{localize "Duration"}}</label>
           <div class="input-box">
             <input class="input-text" type="text" name="system.duration.value" value="{{system.duration.value}}"
-                data-dtype="{{system.duration.type}}" />
+              data-dtype="{{system.duration.type}}" />
           </div>
         </div>
 
@@ -124,7 +124,7 @@
             <label class="label-text">{{localize "Target"}}</label>
             <div class="input-box">
               <input class="input-text" type="text" name="system.target.value" value="{{system.target.value}}"
-                  data-dtype="{{system.target.type}}" />
+                data-dtype="{{system.target.type}}" />
             </div>
           </div>
         {{/unless}}
@@ -134,7 +134,7 @@
             <label class="label-text">{{localize "Radius"}}</label>
             <div class="input-box">
               <input class="input-text" type="text" name="system.target.value" value="{{system.target.value}}"
-                  data-dtype="String" />
+                data-dtype="String" />
             </div>
           </div>
         {{/if}}
@@ -149,7 +149,9 @@
         </div>
 
         <div class="form-group">
-          <label class="label-text" title="{{localize 'ExtDurHint'}}">{{localize "Extendable Duration"}}</label>
+          <label class="label-text" title="{{localize 'ExtDurHint'}}">
+            {{localize "Extendable Duration"}}
+          </label>
           {{#if system.duration.extendable}}
             <a class="item-checkbox" data-target="system.duration.extendable"><i class="far fa-check-circle"></i></a>
           {{else}}
@@ -161,11 +163,11 @@
           <label class="label-text">{{localize "Damage"}}</label>
           <div class="input-box">
             <input class="input-text" type="text" name="system.damage.value" value="{{system.damage.value}}"
-                data-dtype="{{system.damage.type}}" />
+              data-dtype="{{system.damage.type}}" />
           </div>
           <div class="input-box">
             <input class="input-text" placeholder="{{localize 'ITEM.DiceRoll'}}" type="text" name="system.damage.dice"
-                value="{{system.damage.dice}}" data-dtype="{{system.damage.type}}" />
+              value="{{system.damage.dice}}" data-dtype="{{system.damage.type}}" />
           </div>
         </div>
 
@@ -183,7 +185,7 @@
             <label class="label-text">{{localize "Label"}}</label>
             <div class="input-box">
               <input class="input-text" data-dtype="String" type="text" name="system.overcast.label"
-                  value="{{system.overcast.label}}" data-dtype="{{system.overcast.label}}" />
+                value="{{system.overcast.label}}" data-dtype="{{system.overcast.label}}" />
             </div>
           </div>
 
@@ -197,17 +199,24 @@
               {{/select}}
             </select>
 
+
             {{#if (eq system.overcast.initial.type "value")}}
+
               <div class="input-box">
                 <input class="input-text" data-dtype="Number" type="text" name="system.overcast.initial.value"
-                    value="{{system.overcast.initial.value}}" />
+                  value="{{system.overcast.initial.value}}" />
               </div>
+
+
             {{else if (eq system.overcast.initial.type "SL")}}
+
               <div class="input-box">
                 <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}" data-dtype="String" type="text"
-                    name="system.overcast.initial.additional" value="{{system.overcast.initial.additional}}" />
+                  name="system.overcast.initial.additional" value="{{system.overcast.initial.additional}}" />
               </div>
+
             {{else if (eq system.overcast.initial.type "characteristic")}}
+
               <select name="system.overcast.initial.characteristic" data-dtype="String">
                 {{#select system.overcast.initial.characteristic}}
                   {{#each (config "characteristics") as |ch char|}}
@@ -215,15 +224,17 @@
                   {{/each}}
                 {{/select}}
               </select>
+
               {{#if system.overcast.initial.bonus}}
                 <a class="item-checkbox" data-target="system.overcast.initial.bonus">{{localize 'Bonus'}}<i
-                      class="far fa-check-circle"></i></a>
+                    class="far fa-check-circle"></i></a>
               {{else}}
                 <a class="item-checkbox" data-target="system.overcast.initial.bonus">{{localize 'Bonus'}}<i
-                      class="far fa-circle"></i></a>
+                    class="far fa-circle"></i></a>
               {{/if}}
             {{/if}}
           </div>
+
 
           <div class="form-group">
             <label class="label-text">{{localize "ITEM.ValuePerOvercast"}}</label>
@@ -235,18 +246,24 @@
               {{/select}}
             </select>
 
+
             {{#if (eq system.overcast.valuePerOvercast.type "value")}}
+
               <div class="input-box">
                 <input class="input-text" data-dtype="Number" type="text" name="system.overcast.valuePerOvercast.value"
-                    value="{{system.overcast.valuePerOvercast.value}}" />
+                  value="{{system.overcast.valuePerOvercast.value}}" />
               </div>
+
             {{else if (eq system.overcast.valuePerOvercast.type "SL")}}
+
               <div class="input-box">
                 <input class="input-text" placeholder="{{localize 'SHEET.Additional'}}" data-dtype="String" type="text"
-                    name="system.overcast.valuePerOvercast.additional"
-                    value="{{system.overcast.valuePerOvercast.additional}}" />
+                  name="system.overcast.valuePerOvercast.additional"
+                  value="{{system.overcast.valuePerOvercast.additional}}" />
               </div>
+
             {{else if (eq system.overcast.valuePerOvercast.type "characteristic")}}
+
               <select name="system.overcast.valuePerOvercast.characteristic" data-dtype="String">
                 {{#select system.overcast.valuePerOvercast.characteristic}}
                   {{#each (config "characteristics") as |ch char|}}
@@ -254,12 +271,13 @@
                   {{/each}}
                 {{/select}}
               </select>
+
               {{#if system.overcast.valuePerOvercast.bonus}}
                 <a class="item-checkbox" data-target="system.overcast.valuePerOvercast.bonus">{{localize 'Bonus'}}<i
-                      class="far fa-check-circle"></i></a>
+                    class="far fa-check-circle"></i></a>
               {{else}}
                 <a class="item-checkbox" data-target="system.overcast.valuePerOvercast.bonus">{{localize 'Bonus'}}<i
-                      class="far fa-circle"></i></a>
+                    class="far fa-circle"></i></a>
               {{/if}}
             {{/if}}
             <div class="form-group">
