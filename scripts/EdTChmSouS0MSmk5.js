@@ -2,9 +2,9 @@ let test = await this.actor.setupCharacteristic("wp", {skipTargets: true, append
 await test.roll();
 if (test.succeeded)
 {
-    this.script.scriptMessage("Can perform an Action or Move (choose one)")
+    this.script.message("Can perform an Action or Move (choose one)")
 }
 else 
 {
-    this.script.scriptMessage("Cannot perform an Action or Move this round")    
+    this.script.message("Cannot perform an Action or Move this round")    
 }

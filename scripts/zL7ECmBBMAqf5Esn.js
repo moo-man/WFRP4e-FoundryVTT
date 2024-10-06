@@ -27,4 +27,4 @@ for (let i = 0; i < roll.total; i++) {
 const items = await this.actor.createEmbeddedDocuments("Item", crits);
 const speaker = ChatMessage.getSpeaker({actor: this.actor});
 const uuids = items.map(i => `@UUID[${i.uuid}]`);
-this.script.scriptMessage(`<p><b>${this.item.name}</b> caused an additional ${anchor.outerHTML} Critical Hits to the Hull!</p><ul><li>${uuids.join('<li>')}</ul>`)
+this.script.message(`<p><b>${this.item.name}</b> caused an additional ${anchor.outerHTML} Critical Hits to the Hull!</p><ul><li>${uuids.join('<li>')}</ul>`)

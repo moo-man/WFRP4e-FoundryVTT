@@ -54,7 +54,7 @@ export default class VehicleCrew extends FormApplication {
             let passengerId = $(ev.currentTarget).parents(".passenger-roles").attr("data-id");
             let roleId = ev.currentTarget.dataset.id;
 
-            await this.object.update({"system.passengers.list" : this.object.system.passengers.removeRole(passengerId, roleId)});
+            await this.object.update(this.object.system.passengers.removeRole(passengerId, roleId));
             this.render(true);
         })
 
@@ -70,7 +70,7 @@ export default class VehicleCrew extends FormApplication {
         let roleId = ev.dataTransfer.getData("text/plain");
         let passengerId = ev.target.dataset.id;
 
-        await this.object.update({"system.passengers.list" : this.object.system.passengers.addRole(passengerId, roleId)});
+        await this.object.update(this.object.system.passengers.addRole(passengerId, roleId));
         this.render(true);
      }
 

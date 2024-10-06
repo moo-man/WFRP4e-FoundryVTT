@@ -71,7 +71,7 @@ for (let trapping of trappings)
     }
 }
 
-let weapons = await game.wfrp4e.utility.findAll("weapon", "Loading Weapons");
+let weapons = await warhammer.utility.findAllItems("weapon", "Loading Weapons");
 
 items = items.concat((await game.wfrp4e.apps.ItemDialog.create([await fromUuid("Compendium.wfrp4e-core.items.Item.1zaqojk0Oq1m8vYv"), await fromUuid("Compendium.wfrp4e-core.items.Item.bBX8MP6QfcyU6Fy3")], 1, "Choose a Weapon")) || [])
 

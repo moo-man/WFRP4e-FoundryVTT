@@ -39,6 +39,15 @@ export class ExtendedTestModel extends BaseItemModel {
     }
 
 
+    /**
+     * Used to identify an Item as one being a child or instance of ExtendedTestModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isExtendedTest() {
+        return true;
+    }
 
     computeOwned() {
         this.SL.pct = 0;

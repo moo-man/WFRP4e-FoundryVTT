@@ -5,7 +5,7 @@ if (this.item.name.includes("(") && !this.item.name.toLowerCase().includes("(any
 }
 else 
 {
-    resistance = await ValueDialog.create("Enter Resistance", "Resistance") 
+    resistance = await ValueDialog.create({text : "Enter Resistance", title : "Resistance"}) 
     
     if (resistance)
     {

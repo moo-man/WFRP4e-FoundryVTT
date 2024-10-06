@@ -81,14 +81,14 @@ export default class WeaponDialog extends AttackDialog {
       }
       
       data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-      data.dualWieldingOption = data.actor.showDualWielding(weapon);
+      data.dualWieldingOption = !weapon.system.offhand.value && data.actor.has(game.i18n.localize("NAME.DualWielder"), "talent") && !data.actor.noOffhand
 
       data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog"), data.skill?.getScripts("dialog") || []);
       data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
 
       return new Promise(resolve => {
-        let dlg = new this(fields, data, resolve, options)
+        let dlg = new this(data, fields, options, resolve)
         if (options.bypass)
         {
             dlg.bypass()
@@ -100,9 +100,10 @@ export default class WeaponDialog extends AttackDialog {
     })
   }
 
-  _constructTestData()
+
+  _getSubmissionData()
   {
-      let data = super._constructTestData();
+      let data = super._getSubmissionData();
       data.item = this.data.weapon.id || this.data.weapon.toObject()
       return data;
   }

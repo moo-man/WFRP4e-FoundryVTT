@@ -1,18 +1,8 @@
 let fields = foundry.data.fields;
 
- export class BaseItemModel extends foundry.abstract.DataModel 
+ export class BaseItemModel extends BaseWarhammerItemModel 
  {
- 
-    //  allowedConditions = [];  // What condition effects can exist on the item
-    //  allowedEffectApplications = Object.keys(game.wfrp4e.config.effectApplications);
-    //  effectApplicationOptions = {};
- 
- 
-     get id () 
-     {
-         return this.parent.id;
-     }
- 
+
      static defineSchema() 
      {
         return {
@@ -24,88 +14,21 @@ let fields = foundry.data.fields;
             }),
         } 
      }
- 
-     allowCreation()
+
+     get tags()
      {
-         if (this.parent.actor)
-         {
-             return this.parent.actor.system.itemIsAllowed(this.parent);
-         }
-         else 
-         {
-             return true;
-         }
+        return new Set().add(this.parent.type);
      }
  
 
-     // *** Creation ***
-     async preCreateData(data, options, user)
+     async _preCreate(data, options, user)
      {
-        let preCreateData = {};
+        await super._preCreate(data, options, user);
+
         if (!data.img || data.img == "icons/svg/item-bag.svg")
-            preCreateData.img = "systems/wfrp4e/icons/blank.png";
-
-        return preCreateData;
-     }
-
-     createChecks(data, options, user)
-     {
-         
-     }
-
-     // *** Updates *** 
-     async preUpdateChecks(data, options, user)
-     {
-
-     }
- 
-     updateChecks(data, options, user)
-     {
-        
-     }
-
-
-     // *** Deletions ***
-     async preDeleteChecks(options, user)
-     {
-
-     }
-
-     deleteChecks(options, user)
-     {
-
-     }
-
-
-
-
- 
-    /**
-      * @abstract
-      */
-     computeBase() 
-     {
-
-     }
- 
-    /**
-      * @abstract
-      */
-     computeDerived() 
-     {
-
-     }
-
-     /**
-      * @abstract
-      */
-     computeOwned()
-     {
-     }
-
-     getOtherEffects()
-     {
-         return [];
+        {
+            this.parent.updateSource({img : "systems/wfrp4e/icons/blank.png"});
+        }
      }
 
     get skillToUse() {
@@ -114,12 +37,6 @@ let fields = foundry.data.fields;
 
     get isMagical() {
         return false;
-    }
-
-    // These effects don't need to be posted to chat via a test to be applied
-    get testIndependentEffects()
-    {
-        return this.parent.targetEffects.concat(this.parent.areaEffects).filter(e => e.testIndependent);
     }
 
   /**
@@ -144,7 +61,7 @@ let fields = foundry.data.fields;
         data.description.value = data.description.value || "";
         data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
         data.manualScripts = this.parent.manualScripts;
-        data.independentEffects = this.testIndependentEffects
+        data.independentEffects = this.parent.testIndependentEffects
         return data;
       }
 
@@ -154,30 +71,5 @@ let fields = foundry.data.fields;
     chatData()
     {
         
-    }
- 
-    //  computeOwnerDerived() 
-    //  {
-         
-    //  }
- 
-    //  computeOwnerBase() 
-    //  {
-
-    //  }
- 
-     /**
-      * 
-      */
-    //  effectIsApplicable(effect)
-    //  {
-    //      return !effect.disabled;
-    //  }
- 
-     // If an item effect is disabled it should still transfer to the actor, so that it's visibly disabled
-     shouldTransferEffect(effect)
-     {
-         return true;
-     }
- 
+    } 
  }

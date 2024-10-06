@@ -637,10 +637,10 @@
     background: rgba(115, 49, 255, 0.2);
 }
 
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar {
+  .app.window-app.roll-dialog ::-webkit-scrollbar {
     width: 14px;
   }
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-thumb {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-thumb {
     outline: none;
     border-radius: 3px;
     background: none;
@@ -650,28 +650,28 @@
     border-image-outset: 0px;
     min-height: 40px;
   }
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-button {
     background: #782e22;
     height: 25px;
     border: none;
   }
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:start:decrement {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-button:start:decrement {
     background: url(../ui/scrollbars/scrollbar-button-vertical-decrement.webp) no-repeat;
     background-position: center;
     box-shadow: none;
     box-shadow: none; 
   } 
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:end:increment {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-button:end:increment {
     background: url(../ui/scrollbars/scrollbar-button-vertical-increment.webp) no-repeat;
     background-position: center;
     box-shadow: none;
     box-shadow: none; 
   }
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:vertical:start:increment,
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-button:vertical:end:decrement {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-button:vertical:start:increment,
+  .app.window-app.roll-dialog ::-webkit-scrollbar-button:vertical:end:decrement {
       display: none;
   }
-  .app.window-app.wfrp4e-dialog ::-webkit-scrollbar-track {
+  .app.window-app.roll-dialog ::-webkit-scrollbar-track {
     background: url(../ui/scrollbars/scrollbar-track.webp) repeat-y;
     background-position: center;
     background-size: 9px 110px;
@@ -760,10 +760,10 @@
     border-radius: 0px !important;
   }
 
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar {
     width: 10px !important;
   }
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-thumb {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-thumb {
     outline: none !important;
     border-radius: 3px !important;
     background: none !important;
@@ -771,28 +771,28 @@
     border-image-width: 5px !important;
     border-image-outset: 0px !important;
   }
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-button {
     background: #782e22 !important;
     height: 23px !important;
     border: none !important;
   }
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:start:decrement {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-button:start:decrement {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-button-vertical-decrement.webp) no-repeat !important;
     box-shadow: none !important;
     height: 16px !important;
     background-position-y: 1px !important;
   } 
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:end:increment {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-button:end:increment {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-button-vertical-increment.webp) no-repeat !important;
     background-position-y: -1px !important;
     box-shadow: none !important; 
     height: 16px !important;
   }
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:vertical:start:increment,
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-button:vertical:end:decrement {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-button:vertical:start:increment,
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-button:vertical:end:decrement {
       display: none !important;
   }
-  .window-app.wfrp4e-dialog .talent-selector ::-webkit-scrollbar-track {
+  .window-app.roll-dialog .talent-selector ::-webkit-scrollbar-track {
     background: url(../ui/scrollbars/sheet-dark-scrollbar-track.webp) repeat-y !important;
     background-position: center !important;
     background-size: 4px 68px !important;
@@ -906,7 +906,7 @@
     position: absolute;
     top: 15px;
     right: -1px;
-    padding: 19px 0px 0px 2px;
+    padding: 10px 0px 0px 15px;
     margin: 3px 0px 0px 0px;
     border: 1px solid black;
     border-image: url(../ui/frames/sidebar-collapsed.webp);
@@ -1082,6 +1082,7 @@
     border: none;
     box-shadow: none;
     background: url(../ui/sidebar-border.webp) repeat;
+    padding-bottom: 20px;
   }
 
   #sidebar-tabs > .item {
@@ -5363,7 +5364,7 @@
       margin-left: 0px;
       }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header {
     width: 100%;
     height: 20px;
     margin: 6px 0px 0px 0px;
@@ -5381,7 +5382,7 @@
     overflow-x: hidden;
     overflow-y: hidden;
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header #trait-name {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header #trait-name {
       position: relative;
       left: 0px;
       height: 18px;
@@ -5390,7 +5391,7 @@
       /* background: red; */
       flex-grow: 1;
     }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-header.trait-header .item-controls {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-header.trait-header .item-controls {
       font-family: "Font Awesome 5 Free";
       font-size: 10px;
       color: var(--actor-label-color);
@@ -5403,7 +5404,7 @@
       text-align: center;
     }
 
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list {
     overscroll-behavior-x: unset;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -5420,7 +5421,7 @@
     margin: 0px 0px 0px 0px;
     padding: 0px;
   }
-  .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item {
+  .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item {
     width: 100%;
     text-align: left;
     overflow-x: hidden;
@@ -5437,7 +5438,7 @@
     justify-content: space-between;
     /* background: var(--debug-background-color-green); */
   }
-    .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content {
+    .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content {
       width: 100%;
       text-align: center;
       overflow-x: hidden;
@@ -5453,14 +5454,14 @@
       justify-content: space-between;
       /* background: var(--debug-background-color-green); */
     }
-      .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .item-name {
+      .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .item-name {
         display: flex;
         flex-direction: row;
         min-width: 220px;
         flex: 1;
         /* background: red; */
       }
-        .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .image {
+        .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .image {
           background-size: 32px;
           background-repeat: no-repeat;
           min-height: 32px;
@@ -5468,14 +5469,14 @@
           min-width: 32px;
           max-width: 32px;
         }
-        .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .name {
+        .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .name {
           text-align: left;
           vertical-align: middle;
           padding: 11px 4px 0px 4px;
           overflow: hidden;
           width: 100%;
         }
-      .app.window-app.sheet.wfrp4e.actor .tab.talents.active .inventory-list.trait-list .item .content .item-controls {
+      .app.window-app.sheet.wfrp4e.actor .tab.active .inventory-list.trait-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
         font-family: "Font Awesome 5 Free";
         font-size: 10px;
@@ -11933,7 +11934,7 @@ border-image-outset: 0px !important;
 /*=============== XIII. ROLL DIALOG =========================*/
 /*************************************************************/
 
-.window-app.wfrp4e-dialog {
+.window-app.roll-dialog {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -11944,12 +11945,12 @@ border-image-outset: 0px !important;
   min-height: 376px;
   box-shadow: 3px 4px 10px #000;
 }
-.window-app.wfrp4e-dialog.wfrp4e-dialog .roll-dialog-tag {
+.window-app.roll-dialog.roll-dialog .roll-dialog-tag {
   visibility: hidden;
   height: 0px;
 }
 
-.window-app.wfrp4e-dialog.wfrp4e-dialog .window-header {
+.window-app.roll-dialog.roll-dialog .window-header {
   flex: 0 0 45px;
   padding: 0px;
   margin: 0px;
@@ -11958,7 +11959,7 @@ border-image-outset: 0px !important;
   background: url(../ui/frames/window-app-header-blank.webp) repeat;
 }
 
-.window-app.wfrp4e-dialog.wfrp4e-dialog .window-content{
+.window-app.roll-dialog.roll-dialog .window-content{
   background-position: -43px -120px;
   display: flex;
   flex-direction: column;
@@ -11980,44 +11981,44 @@ border-image-outset: 0px !important;
   border-image-outset: 8px;
 }
 
-.window-app.wfrp4e-dialog form{
+.window-app.roll-dialog form{
   display:flex;
   flex-direction: column;
   height: 100%;
 }
 
-  .window-app.wfrp4e-dialog.characteristic-roll-dialog .window-content{
+  .window-app.roll-dialog.characteristic-roll-dialog .window-content{
     background: url(../ui/window-app-dialog-backgrounds-characteristic.webp);
   }
 
-.window-app.wfrp4e-dialog.skill-roll-dialog .window-content {
+.window-app.roll-dialog.skill-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-skill.webp);
 }
-.window-app.wfrp4e-dialog.weapon-roll-dialog .window-content {
+.window-app.roll-dialog.weapon-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-weapon.webp);
 }
-.window-app.wfrp4e-dialog.spell-roll-dialog .window-content {
+.window-app.roll-dialog.spell-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-spell.webp);
   background-size: 102%;
   background-position: -5px -10px;
 }
-.window-app.wfrp4e-dialog.channel-roll-dialog .window-content {
+.window-app.roll-dialog.channel-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-channel.webp);
   background-size: 102%;
   background-position: -5px -10px;
 }
-.window-app.wfrp4e-dialog.prayer-roll-dialog .window-content {
+.window-app.roll-dialog.prayer-roll-dialog .window-content {
   background: url(../ui/window-app-dialog-backgrounds-prayer.webp);
 }
 
-.window-app.wfrp4e-dialog .window-content form {
+.window-app.roll-dialog .window-content form {
   padding: 0px;
   margin: 0px;
   box-shadow: none;
   background: none;
 }
 
-.window-app.wfrp4e-dialog .window-content form .dialog-row {
+.window-app.roll-dialog .window-content form .dialog-row {
   display: inline-flex;
   flex: 1;
   flex-direction: row;
@@ -12025,25 +12026,25 @@ border-image-outset: 0px !important;
   width: 100%;
   flex: 1;
 }
-  .window-app.wfrp4e-dialog form .dialog-row .bonus-column {
+  .window-app.roll-dialog form .dialog-row .bonus-column {
     margin-right: 2px;
     width: 30%;
   }
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .bonus-column label{
+    .window-app.roll-dialog .window-content form .dialog-row .bonus-column label{
       min-width: 96px;
     }
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .bonus-column input{
+    .window-app.roll-dialog .window-content form .dialog-row .bonus-column input{
       text-align: center;
     }
 
-  .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers {
+  .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers {
     display: flex;
     flex: 1;
     flex-direction: column;
     margin-left: 2px;
     width: 69%;
   }
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers label {
+    .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers label {
       margin-top: 4px;
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
@@ -12056,7 +12057,7 @@ border-image-outset: 0px !important;
       border-bottom: none;
       background: #080808;
     }
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul {
+    .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers ul {
       list-style: none;
       margin-bottom: 4px;
       margin-top: 0px;
@@ -12071,19 +12072,19 @@ border-image-outset: 0px !important;
       box-shadow: 0px 0px 10px inset black;
       background: url(../ui/frames/parchment-texture.webp);
     }
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li {
+    .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers ul li {
       white-space: pre-wrap;
       overflow: hidden;
       text-overflow: ellipsis;
       padding: 3px;
     }
 
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li.active {
+    .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers ul li.active {
       background: rgba(41, 10, 10, 0.85);
       color: white;
     }
 
-    .window-app.wfrp4e-dialog .window-content form .dialog-row .dialog-modifiers ul li.hidden {
+    .window-app.roll-dialog .window-content form .dialog-row .dialog-modifiers ul li.hidden {
       display: none;
     }
 
@@ -12280,7 +12281,7 @@ border-image-outset: 0px !important;
         background-image: linear-gradient(to right, #820f0f , #82820d);
       }
   
-  .app.window-app.wfrp4e-dialog .window-content form h3 {
+  .app.window-app.roll-dialog .window-content form h3 {
     margin: 3px 0px;
     padding: 4px 3px 1px 3px;
     font-family: var(--actor-input-font-family);
@@ -12292,7 +12293,7 @@ border-image-outset: 0px !important;
     background: #290a0ad9;
     text-align: center;
   }
-  .app.window-app.wfrp4e-dialog .window-content form p {
+  .app.window-app.roll-dialog .window-content form p {
     font-family: var(--actor-input-font-family);
     font-size: var(--actor-input-font-size);
     font-weight: var(--actor-input-font-weight);
@@ -12332,11 +12333,11 @@ border-image-outset: 0px !important;
     color: var(--major-button-color);
   }
 
-  .app.window-app.wfrp4e-dialog .dialog-buttons 
+  .app.window-app.roll-dialog .dialog-buttons 
   {
     flex : 0 0 35px;
   }
-  .app.window-app.wfrp4e-dialog .dialog-buttons button
+  .app.window-app.roll-dialog .dialog-buttons button
   {
   }
   .dialog .dialog-buttons button.default:focus
@@ -12588,7 +12589,7 @@ border-image-outset: 0px !important;
   
 
   /* ================== 5. CREATE ACTOR ENTITY ================ */
-    .app.window-app.wfrp4e-dialog .dialog-content #entity-create .form-group .notes {
+    .app.window-app.roll-dialog .dialog-content #entity-create .form-group .notes {
       font-family: var(--actor-input-font-family);
       font-size: var(--actor-input-font-size);
       font-weight: var(--actor-input-font-weight);
@@ -13844,7 +13845,7 @@ font-style : normal;
 
 
 /* ==================== (A) CAST OR channel ================== */
-.window-app.wfrp4e-dialog.cast-channel  {
+.window-app.roll-dialog.cast-channel  {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -13855,7 +13856,7 @@ font-style : normal;
   height: 157px !important;
   box-shadow: 3px 4px 10px #000;
 }
-.window-app.wfrp4e-dialog.cast-channel .window-header {
+.window-app.roll-dialog.cast-channel .window-header {
   flex: 0 0 45px;
   padding: 0px;
   margin: 0px;
@@ -13863,7 +13864,7 @@ font-style : normal;
   border: none;
   background: url(../ui/frames/window-app-header-blank.webp) repeat;
 } 
-  .window-app.wfrp4e-dialog.cast-channel .window-header .window-title {
+  .window-app.roll-dialog.cast-channel .window-header .window-title {
     position: absolute;
     top: 60px;
     left: 26px;
@@ -13888,7 +13889,7 @@ font-style : normal;
     box-shadow: inset 0px 0px 5px black;
   }
 
-.window-app.wfrp4e-dialog.cast-channel .window-content {
+.window-app.roll-dialog.cast-channel .window-content {
   background: url(../ui/window-app-dialog-backgrounds-characteristic.webp);
   background-position: -43px -120px;
   display: flex;
@@ -13910,7 +13911,7 @@ font-style : normal;
   border-image-width: 10px 13px 13px 13px;
   border-image-outset: 8px;
 }
-.window-app.wfrp4e-dialog.cast-channel .window-content .dialog-content {
+.window-app.roll-dialog.cast-channel .window-content .dialog-content {
   flex: 2;
   line-height: normal;
   /* min-height: 28px;
@@ -13925,7 +13926,7 @@ font-style : normal;
   box-shadow: 0px 0px 10px inset black;
   /* background: #000000e8; */
 }
-  .window-app.wfrp4e-dialog.cast-channel .selection {
+  .window-app.roll-dialog.cast-channel .selection {
     flex: 2;
     line-height: normal;
     border: 1px solid #736953a6;
@@ -13937,14 +13938,14 @@ font-style : normal;
     margin: 0px 0px;
     box-shadow: 0px 0px 10px inset black;
   }
-  .window-app.wfrp4e-dialog.cast-channel .dialog-buttons {
+  .window-app.roll-dialog.cast-channel .dialog-buttons {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 4px 0px 0px 0px;
   }
-  .window-app.wfrp4e-dialog.cast-channel .dialog-buttons button {
+  .window-app.roll-dialog.cast-channel .dialog-buttons button {
     flex: 2;
     line-height: 24px;
     border: 3px double #736953a6;
@@ -14001,11 +14002,11 @@ font-style : normal;
     color:green
   }
 
-  .window-app.wfrp4e-dialog.item-dialog .window-content {
+  .window-app.roll-dialog.item-dialog .window-content {
     overflow: hidden
   }
 
-  .window-app.wfrp4e-dialog.item-dialog .window-content .dialog-content {
+  .window-app.roll-dialog.item-dialog .window-content .dialog-content {
     height: calc(100% - 40px);
     display: flex;
     flex-direction: column;
@@ -14608,8 +14609,8 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
 .message-content .opposed-options > a,
 .chat-button,
 .apply-damage,
-.apply-target-effect,
-.place-area-effect,
+.apply-target,
+.place-area,
 .invoke-effect,
 .trigger-script,
 .condition-script,
@@ -14646,8 +14647,8 @@ nav.tjs-context-menu > ol.tjs-context-menu-items[role="menu"] > li.tjs-context-m
   justify-content: space-evenly;
 }
 
-.place-area-effect,
-.apply-target-effect {
+.place-area,
+.apply-target {
   margin-bottom: 5px
 }
 
@@ -14984,25 +14985,25 @@ button.capture-position {
 }
 
 
-.aoe-template,
-.condition-chat,
-.property-chat,
-.chat-roll,
-.table-click,
-.travel-click,
-.symptom-tag,
-.item-lookup.styled,
-.skill-lookup,
-.talent-lookup,
-.skill-drag,
-.pay-link,
-.exp-link,
-.credit-link,
-.corruption-link,
-.fear-link,
-.terror-link,
-a.content-link,
-a.inline-roll,
+.app .aoe-template,
+.app .condition-chat,
+.app .property-chat,
+.app .chat-roll,
+.app .table-click,
+.app .travel-click,
+.app .symptom-tag,
+.app .item-lookup.styled,
+.app .skill-lookup,
+.app .talent-lookup,
+.app .skill-drag,
+.app .pay-link,
+.app .exp-link,
+.app .credit-link,
+.app .corruption-link,
+.app .fear-link,
+.app .terror-link,
+.app a.content-link,
+.app a.inline-roll,
 .talent-drag {
   border-radius: 2px;
   border: 1px solid #b9935e99;
@@ -15014,26 +15015,32 @@ a.inline-roll,
   color: black;
 }
 
-.aoe-template img,
-.condition-chat img,
-.chat-roll img,
-.table-click img,
-.travel-click img,
-.symptom-tag img,
-.item-lookup.styled img,
-.skill-lookup img,
-.talent-lookup img,
-.skill-drag img,
-.pay-link img,
-.exp-link img,
-.credit-link img,
-.corruption-link img,
-.fear-link img,
-.terror-link img,
-a.content-link img,
-a.inline-roll img,
+.app .aoe-template img,
+.app .condition-chat img,
+.app .chat-roll img,
+.app .table-click img,
+.app .travel-click img,
+.app .symptom-tag img,
+.app .item-lookup.styled img,
+.app .skill-lookup img,
+.app .talent-lookup img,
+.app .skill-drag img,
+.app .pay-link img,
+.app .exp-link img,
+.app .credit-link img,
+.app .corruption-link img,
+.app .fear-link img,
+.app .terror-link img,
+.app a.content-link img,
+.app a.inline-roll img,
 .talent-drag img {
   margin: -3px 0px;
+}
+
+
+.app a.content-link.broken {
+  background: rgba(255, 0, 0, 0.05);
+  border: 1px dashed red;
 }
 
 .item-lookup i {
@@ -15502,8 +15509,8 @@ background : #0a1829d9
     border: none
   }
 
-  .sheet nav.sheet-tabs,
-  .sheet .sheet-tabs {
+  .app.sheet nav.sheet-tabs,
+  .app.sheet .sheet-tabs {
     border: none
   }
 #wfrp4e-browser .name-icon {
@@ -16179,14 +16186,14 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   }
 
 /* DungeonDraft Import STYLING */
-.app.window-app.wfrp4e-dialog .form-group.import {
+.app.window-app.roll-dialog .form-group.import {
   clear: both;
   display: flex;
   flex-direction: row;
   /* flex-wrap: wrap; */
   margin: 4px 0;
 }
-.app.window-app.wfrp4e-dialog .form-group.import .import-options {
+.app.window-app.roll-dialog .form-group.import .import-options {
   font-family: var(--actor-input-font-family);
   font-size: var(--actor-input-font-size);
   font-weight: var(--actor-input-font-weight);
@@ -16198,7 +16205,7 @@ background-image: linear-gradient(to right, #820f0f , #82820d);
   background: #080808;
   width: 120px;
 }
-.app.window-app.wfrp4e-dialog .form-group.import .file-picker {
+.app.window-app.roll-dialog .form-group.import .file-picker {
   padding: 1px 3px;
   margin: 0;
   font-family: var(--actor-input-font-family);
@@ -16266,7 +16273,7 @@ input[name="dd-import.importPath"] {
   border: none
 }
 
-.sheet .sheet-tabs {
+.app.sheet .sheet-tabs {
   border: none
 }
 
@@ -17885,6 +17892,72 @@ blockquote.foundry-note::before {
 .chargen-details table tr th,
 .chargen-details table tr td{
   flex: 1
+}
+
+.app.window-app .chargen-species-preview {
+  display: none;
+  position: absolute;
+  padding: 4px 5px 10px 5px;
+  border: 1px solid #666;
+  background: url(../ui/frames/parchment-texture.webp) repeat;
+}
+
+.app.window-app .chargen-species-preview.active {
+  display: block;
+}
+
+.app.window-app .chargen-species-preview.left {
+  width: 200px;
+  left: -200px;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -2px 2px 12px #000000;
+  border-right: none;
+}
+
+.app.window-app .chargen-species-preview.right {
+  right: -300px;
+  width: 300px;
+  border-radius: 0 8px 8px 0;
+  box-shadow: 2px 2px 12px #000000;
+  border-left: none;
+}
+
+.app.window-app .chargen-species-preview .skills-talents {
+  display: flex;
+  flex-direction: column;
+}
+
+.app.window-app .chargen-species-preview .skills-talents .list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.app.window-app .chargen-species-preview .skills-talents .entry {
+  flex: 1 1 50%;
+  white-space: break-spaces;
+}
+
+.app.window-app .chargen-species-preview .skills-talents .entry.table-link {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.app.window-app .chargen-species-preview .skills-talents hr {
+  width: 100%;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(36deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4738270308123249) 50%, rgba(255,255,255,0) 100%) 1;
+  margin: 14px 0 10px 0;
+}
+
+.app.window-app .chargen-species-preview h2 {
+  font-family: CaslonAntique, serif;
+  font-size: var(--font-size-24);
+  font-weight: bold;
+  font-variant: small-caps;
+}
+.app.window-app .chargen-species-preview h2.center {
+  text-align: center;
 }
 
 li.message.flexcol.whisper:has(div > p.requestmessage) {

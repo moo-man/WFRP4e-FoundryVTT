@@ -14,5 +14,5 @@ if (tokenImg)
 }
 else 
 {
-    this.script.scriptNotification("No Token Image path configured. The image path should be set in the first line of this script.", "error");
+    this.script.notification("No Token Image path configured. The image path should be set in the first line of this script.", "error");
 }

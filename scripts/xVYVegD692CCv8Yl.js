@@ -8,5 +8,5 @@ if (test.failed)
 { 
   let char = this.effect.sourceActor.characteristics;
   let duration = Math.floor((char.wp.initial + char.wp.advances)/10) ;
-  this.script.scriptMessage("<strong>Fatethief</strong> has been applied for " + duration + " days"); 
+  this.script.message("<strong>Fatethief</strong> has been applied for " + duration + " days"); 
 }

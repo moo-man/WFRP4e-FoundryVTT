@@ -6,7 +6,7 @@ if (hasColdBlooded === undefined)
   let data = item.toObject()
   this.actor.createEmbeddedDocuments("Item", [data], {fromEffect: this.effect.id})
   
-  this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained the Cold Blooded Creature Trait and may reverse any failed Willpower based Tests.</p>
+  this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained the Cold Blooded Creature Trait and may reverse any failed Willpower based Tests.</p>
   <p>If they gain a Surprised Condition, this Condition is not lost the first time it should be (which is typically at the end of the Round or if they victim is attacked).</p>`, 
   {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })   
 }

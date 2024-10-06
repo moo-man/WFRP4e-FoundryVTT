@@ -1,7 +1,7 @@
 let test = await this.actor.setupCharacteristic("int", {skipTargets: true, appendTitle :  ` - ${this.effect.name}`})
 await test.roll();
 
-let opposedResult = test.opposedMessages[0]?.getOppose()?.resultMessage?.getOpposedTest()?.result
+let opposedResult = test.opposedMessages[0]?.system.opposedHandler?.resultMessage?.system.opposedTest?.result
 
 if (opposedResult?.winner == "attacker")
 {
@@ -9,7 +9,7 @@ if (opposedResult?.winner == "attacker")
     {
         this.actor.addCondition("unconscious")
         await this.actor.update({"system.status.corruption.value" : parseInt(this.actor.status.corruption.value) + 1})
-        this.script.scriptMessage("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
+        this.script.message("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
     }
     else 
     {

@@ -1,0 +1,41 @@
+<div class="sheet-list">
+  <div class="list-header row-content">
+        <a class="ap-source armour" data-tooltip="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
+        <a class="ap-source shield" data-tooltip="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
+        <span class="ap-source toughness" data-tooltip="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
+        <span class="flex location-label">{{locData.label}}</span>
+        <span class="ap-label small">{{localize "AP"}}</span>
+  </div>
+  <div class="list-content weapon-list">
+    {{#each items.armour}}
+      {{#if this.system.isEquipped}}
+          {{#if (lookup this.system.protects ../loc)}}
+        <div class="list-row" data-uuid="{{this.uuid}}" class="nocontext">
+          <div class="row-content">
+            <div class="list-name">
+              <img src="{{this.img}}">
+              <a class="label">{{this.name}}</a>
+            </div>
+            <a class="small prevent-context" data-action="stepProperty" data-reversed="true" data-path="system.APdamage.{{../loc}}" data-tooltip="{{localize 'SHEET.ArmourCurrent'}}: {{lookup this.system.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup this.system.AP ../loc}} ({{lookup this.system.APdamage ../loc}} {{localize 'Damage'}})" class="ap-value {{#if (lookup this.system.APdamage ../loc)}}item-damaged{{/if}}">{{lookup this.system.currentAP ../loc}}</a>
+          </div>
+          <div class="item-property-row">
+
+            {{#if this.system.Qualities.length}}
+                <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
+                {{{array this.system.Qualities "" action="itemPropertyDropdown" type="qualities"}}}
+            {{/if}}
+
+            {{#if this.system.Flaws.length}}
+                <div class="property-icon">{{localize "SHEET.Flaws"}}</div>
+                {{{array this.system.Flaws "" action="itemPropertyDropdown" type="flaws"}}}
+            {{/if}}
+          </div>
+        <div class="dropdown-content collapsed">
+
+        </div>
+        </div>
+        {{/if}}
+      {{/if}}
+    {{/each}}
+  </div>
+</div>

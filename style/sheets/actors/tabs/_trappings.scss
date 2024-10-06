@@ -1,0 +1,105 @@
+.wfrp4e.actor.sheet {
+
+    --container-lines : var(--color-cool-3);
+
+    section.tab[data-tab="trappings"] {
+        height: calc(100% - 200px);
+    }
+
+    .currency .list-header {
+        a {
+            margin: 0px 3px;
+        }
+    }
+
+    .collapsed-rows 
+    {
+
+        display: flex;
+        height: fit-content;
+        flex-wrap: wrap;
+        .collapsed-icon{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        img {
+            height: 2rem;
+            width: 2rem;
+        }
+    }
+
+    .encumbrance-section {
+        border: 1px solid var(--color-cool-3);
+        position:relative;
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            border-bottom: 1px solid var(--color-cool-3)
+        }
+
+        .counter {
+            display: flex;
+        }
+
+        .status {
+            position: absolute;
+            top: 1.9rem;
+            left: 5px;
+        }
+
+        .bar {
+            background-color: var(--color-cool-3);
+            height: 1.5rem;
+
+            &.max {
+                background-color: var(--color-warm-3);
+            }
+            &.high {
+                background-color: var(--color-warm-2);
+            }
+            &.partial {
+                background-color: var(--color-light-6);
+            }
+        }
+    }
+
+    .container-contents {
+        .collapsed-rows,
+        .list-row
+        {
+            position: relative;
+            &::before {
+                position: absolute;
+                left: -1rem;
+                top: 0rem;
+                content: "";
+                width: 1rem;
+                height: 14px;
+                border: 1px solid var(--container-lines);
+                border-radius: 0px 3px 0px;
+                border-top: none;
+                border-right: none;
+            }
+            &::after {
+                position: absolute;
+                left: -2rem;
+                top: -1.5rem;
+                content: "";
+                width: 1rem;
+                height: 2rem;
+                border-right: 1px solid var(--container-lines);
+            }
+
+            &:first-child
+            {
+                &::after {
+                    content: unset;
+                }
+            }
+        }
+    }
+}

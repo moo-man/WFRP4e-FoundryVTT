@@ -13,19 +13,21 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField()
         });
         schema.biography = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.HTMLField()
         });
         schema.gmnotes = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.HTMLField()
         });
         schema.size = new fields.SchemaField({
             value: new fields.StringField({ initial: "avg" })
         });
         schema.move = new fields.SchemaField({
             value: new fields.NumberField({ initial: 4 }),
+            walk: new fields.StringField(),
+            run: new fields.StringField(),
         });
         schema.god = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({label : game.i18n.localize("Blessed By")})
         });
         schema.status = new fields.SchemaField({
             value: new fields.StringField(),

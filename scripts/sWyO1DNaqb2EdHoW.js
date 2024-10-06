@@ -7,5 +7,5 @@ if (!this.actor.items.getName(game.i18n.localize("NAME.Frenzy"))) // Either fren
   this.actor.createEmbeddedDocuments("Item", [data], {fromEffect: this.effect.id})
 }
 
-this.script.scriptMessage(`<p><strong>By imbibing this potion, ${this.actor.prototypeToken.name}</strong> has becomes subject to Frenzy. This Frenzy lasts [[1d10]] Rounds, and may not be ended sooner.</p>`, 
+this.script.message(`<p><strong>By imbibing this potion, ${this.actor.prototypeToken.name}</strong> has becomes subject to Frenzy. This Frenzy lasts [[1d10]] Rounds, and may not be ended sooner.</p>`, 
   {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })   

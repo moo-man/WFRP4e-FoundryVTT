@@ -9,6 +9,6 @@ if (test.failed && args.actor.type == "character")
     {
         msg +=  `<b>${args.actor.prototypeToken.name}</b> gains a mutation (@Table[expandedmutatephys]{Physical} or @Table[expandedmutatemental]{Mental}) and gains @UUID[Compendium.wfrp4e-core.items.hiU7vhBOVpVI8c7C]{Chaos Magic (Tzeentch)}`
     }
-    this.script.scriptMessage(msg, {whisper : ChatMessage.getWhisperRecipients("GM")})
+    this.script.message(msg, {whisper : ChatMessage.getWhisperRecipients("GM")})
     await this.actor.update({ "system.status.corruption.value": parseInt(args.actor.status.corruption.value) + 1 })
 }

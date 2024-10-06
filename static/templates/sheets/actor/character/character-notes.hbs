@@ -1,0 +1,96 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{#if (isGM)}}
+        <div class="editor-section">
+            <div class="header">{{localize "GM Notes"}}</div>
+            {{formInput fields.details.fields.gmnotes.fields.value value=source.system.details.gmnotes.value enriched=enriched.system.details.gmnotes.value toggled=true}}
+        </div>
+    {{/if}}
+
+    <div class="editor-section">
+        <div class="header">{{localize "Biography"}}</div>
+        {{formInput fields.details.fields.biography.fields.value value=source.system.details.biography.value enriched=enriched.system.details.biography.value toggled=true}}
+    </div>
+
+
+    <div class="form-group">
+        <label>{{localize "Motivation"}}</label>
+        <div class="form-fields">
+            <input name="system.details.motivation.value" type="text" value="{{system.details.motivation.value}}" />
+        </div>
+    </div>
+
+    <fieldset>
+
+        <legend>{{localize "Personal Ambitions"}}</legend>
+        <div class="form-group">
+            <label>{{localize "Short Term"}}</label>
+            <div class="form-fields">
+                <input name="system.details.personal-ambitions.short-term" type="text"
+                    value="{{system.details.personal-ambitions.short-term}}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "Long Term"}}</label>
+            <div class="form-fields">
+                <input name="system.details.personal-ambitions.long-term" type="text"
+                    value="{{system.details.personal-ambitions.long-term}}" />
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
+
+        <legend>{{localize "Party Ambitions"}}</legend>
+
+        <div class="form-group">
+            <label>{{localize "Short Term"}}</label>
+            <div class="form-fields">
+                <input name="system.details.party-ambitions.short-term" type="text"
+                    value="{{system.details.party-ambitions.short-term}}" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "Long Term"}}</label>
+            <div class="form-fields">
+                <input name="system.details.party-ambitions.long-term" type="text"
+                    value="{{system.details.party-ambitions.long-term}}" />
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="experience-log">
+
+    <div class="header centered">{{localize "SHEET.ExperienceLog"}}</div>
+    {{#if experienceLog.length}}
+        <div class="sheet-list exp condensed">
+            <div class="list-header row-content">
+                <div class="flex">{{localize "SHEET.ExpChange"}}</div>
+                <div class="flex">{{localize "Reason"}}</div>
+                <div class="flex">{{localize "SHEET.TotalSpentExp"}}</div>
+                <div class="tiny"></div>
+            </div>
+            <div class="list-content">
+                {{#each experienceLog}}
+                    <div class="list-row">
+                        <div class="row-content">
+                            <div class="flex">
+                                <span {{#if (eq this.type "total" )}} style="visibility: hidden;" {{/if}}>{{this.amount}}</span>
+                                <span class="exp-divisor"> / </span>
+                                <span {{#if (eq this.type "spent" )}} style="visibility: hidden;" {{/if}}>{{this.amount}}</span>
+                            </div>
+                            <div class="flex">{{this.reason}}</div>
+                            <div class="flex">{{this.spent}} / {{this.total}}</div>
+                            {{#if (isGM)}}
+                                <a class="tiny exp-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                            {{/if}}
+                            </div>
+                        </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if }}
+    </div>
+
+</section>

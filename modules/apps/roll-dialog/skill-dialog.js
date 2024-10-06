@@ -39,8 +39,20 @@ export default class SkillDialog extends CharacteristicDialog {
         {
             options.dodge = true;
         }
-        data.characteristic = skill.characteristic.key;
+
         data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
+        data.characteristic = skill.characteristic.key;
+
+        if (skill.id == "unknown" && !data.characteristic)
+        {
+            let compendiumSkill = await game.wfrp4e.utility.findSkill(skill.name);
+            if (compendiumSkill)
+            {
+                data.characteristic = compendiumSkill.characteristic.value;
+            }
+        }
+
+            
 
         if (data.skill.id != "unknown")
         {
@@ -54,7 +66,7 @@ export default class SkillDialog extends CharacteristicDialog {
         data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
 
         return new Promise(resolve => {
-            let dlg = new this(fields, data, resolve, options)
+            let dlg = new this(data, fields, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -73,9 +85,9 @@ export default class SkillDialog extends CharacteristicDialog {
         return context;
     }
 
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.skillName = this.data.skill?.name;
         data.item = this.data.skill?.id;
         data.characteristicToUse = this.data.characteristic;
@@ -96,7 +108,7 @@ export default class SkillDialog extends CharacteristicDialog {
         let wearingMail = false;
         let wearingPlate = false;
 
-        for (let a of this.actor.itemTypes["armour"].filter(i => i.isEquipped)) {
+        for (let a of this.actor.itemTags["armour"].filter(i => i.isEquipped)) {
             // For each armor, apply its specific penalty value, as well as marking down whether
             // it qualifies for armor type penalties (wearingMail/Plate)
 

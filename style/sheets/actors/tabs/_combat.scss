@@ -1,0 +1,167 @@
+.wfrp4e.actor.sheet {
+    --mount-outline: var(--color-cool-3);
+    --attacker-border: var(--color-cool-3);
+    --ap-border : var(--color-cool-3);
+    
+    section.tab[data-tab="combat"] {
+        height: calc(100% - 200px);
+
+        .armour 
+        {
+            .sheet-list {
+                margin: 5px;
+                &:first-of-type {
+                    margin-left: 0px;
+                }
+                &:last-of-type {
+                    margin-right: 0px;
+                }
+
+                .list-header {
+
+                    padding-right: 5px;
+
+                    .location-label {
+                        margin-left: 5px;
+                        text-align: left;
+                    }
+
+                    .ap-source {
+                        background: var(--mount-outline);
+                        flex: 0 0 20px;
+                        border-right: 1px solid var(--ap-border);
+
+                        &.armour {
+                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
+                        }
+
+                        &.shield {
+                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(92,135,185,1) 100%);
+                        }
+
+                        &.toughness {
+                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
+                        }
+                    }
+                }
+            }
+        }
+
+        .mount-section {
+            margin: 10px 0px;
+            border-radius: 15px;
+
+            .mount-drop {
+                height: 100%;
+                width: 100%;
+                border: 3px dashed var(--mount-outline);
+                font-size: var(--font-size-24);
+                line-height: 120px;
+                text-align: center;
+                border-radius: 15px;
+            }
+
+            .mounted {
+                border: 3px solid var(--mount-outline);
+                border-radius: 15px;
+                padding: 0px 0px;
+                .mount-header {
+                    text-align: center;
+                    font-size: var(--font-size-18);
+                    background: var(--mount-outline);
+                    border-radius: 12px 12px 0px 0px;;
+                }
+                .mount-details {
+                    display: flex;
+                    .mount-img {
+                        height: 75px;
+                        width: 75px;
+                        flex: 0 0 75px;
+                        margin: 5px;
+                        display: flex;
+                        justify-content: center;
+                        img {
+                            height: 75px;
+                        }
+                    }
+                    > * {
+                        align-items: center;
+                    }
+                }   
+                .mount-stats {
+                    display: flex;
+                    flex: 1;
+                    > * {
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        margin: 5px;
+                        text-align: center;
+                    }
+                    label {
+                        margin-top: 5px;
+                        padding-top: 5px;
+                        border-top: 1px solid var(--mount-outline);
+                    }
+                }
+                .mount-controls {
+                    align-items: center;
+                    display: flex;
+                    flex-direction: column;
+                    flex: 0 0 30px;
+                    justify-content: center;
+                }
+            }
+        }
+    }
+
+    .weapon-list {
+        .row-content:not(:first-of-type) {
+            height: 1.5rem;
+            line-height: 1.5rem;
+            >* {
+                flex: unset;
+                margin: 0px 5px;
+                &:first-of-type
+                {
+                    margin-left: 0px;
+                }    
+            }
+        }
+    }
+
+    .attacker {
+        margin: 10px 0px;
+        border-radius: 15px;
+        border: 3px solid var(--attacker-border);
+        text-align: center;
+        .header {
+            font-size: var(--font-size-18);
+            background: var(--attacker-border);
+        }
+        .details {
+            display: flex;
+            align-items: center;
+            img {
+                height: 75px;
+                width: 75px;
+            }
+            .test {
+                display: Flex;
+                flex-direction: column;
+                flex: 1;
+                margin: 0px 50px;
+                > * {
+                    &:last-of-type {
+                        margin-top: 5px;
+                        padding-top: 5px;
+                        border-top: 1px solid var(--attacker-border);
+                    }
+                }
+            }
+            a {
+                flex: 0 0 20px;
+            }
+        }
+    }
+}

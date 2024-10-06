@@ -21,7 +21,7 @@ let choice = await Dialog.wait({
     }
 })
 
-let weapons = await game.wfrp4e.utility.findAll("weapon", "Loading Weapons");
+let weapons = await warhammer.utility.findAllItems("weapon", "Loading Weapons");
 let items
 if (choice == "shield") 
 {

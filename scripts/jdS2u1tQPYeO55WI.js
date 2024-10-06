@@ -39,7 +39,7 @@ if (type == "corrosion")
 		}
 		if (msg)
 		{
-			this.script.scriptMessage(msg, {speaker : {alias : args.actor.name}});
+			this.script.message(msg, {speaker : {alias : args.actor.name}});
 		}
 	}
 }
@@ -59,3 +59,8 @@ if (type == "poison")
 	await args.actor.addCondition("poisoned");
 }
 
+if (type == "warpfire")
+{
+	await this.actor.corruptionDialog("moderate")
+	this.actor.applyEffect({effectUuids : this.item.effects.getName("Warpfire").uuid})	
+}

@@ -1,0 +1,241 @@
+.wfrp4e.actor.sheet.application {
+
+    --header-label-line : var(--color-cool-3);
+    --characteristic-input : var(--color-cool-4);
+    --characteristic-total : transparent;
+    --characteristic-border : var(--color-cool-3);
+    --attribute-input : var(--color-cool-4);
+    --attribute-input-border : transparent;
+    --attribute-border : var(--color-cool-3);
+    --attribute-locked-input : transparent;
+    --attribute-locked-border : transparent;
+    --attribute-label : transparent;
+    --attribute-field : transparent;
+    --property-icon : var(--color-cool-3);
+    
+
+    input {
+        &:focus {
+        }
+    }
+
+    section.tab {
+        overflow-y: auto
+    }
+
+    .sheet-header {
+        display: flex;
+        flex-direction: column;
+        img {
+            width: 95px;
+            height: 95px;
+        }
+        .header-row {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+        .header-rows {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .header-group {
+            @include flex;
+            margin: 0 0.5rem;
+            display:flex;
+            flex-direction: column;
+            flex: 1;
+            input {
+                background: none;
+                border: none;
+                line-height: 1.5rem;
+                height: 1.5rem;
+                padding: 0 0.1rem;
+            }
+            label {
+                border-top: 1px solid var(--header-label-line);
+                padding: 0.1rem 0.1rem;
+                text-wrap: nowrap;
+            }
+        }
+    }
+
+    .characteristic-table {
+        margin: 0px;
+        border: none;
+        border-radius: 0px;
+        text-align: center;
+        background:none;
+        table-layout: fixed;
+
+        tr {
+            &:nth-child(even)
+            {
+                background: none;
+            }
+            &:last-child {
+                td { 
+                    border-bottom: none;
+                    &:not(:first-of-type)
+                    {
+                        background-color: var(--characteristic-total);
+                    }
+                }
+            }
+            background: none;
+
+        }
+
+
+        td {
+            border: 1px solid var(--characteristic-border);
+            height: 1.75rem;
+            width: auto;
+            &:first-child {
+                text-align: left;
+                border-left: none;
+                overflow: hidden;
+                text-overflow: clip;
+                width: 200px;
+            }
+            &:last-child {
+                border-right: none;
+            }
+            
+            padding: 0px 0px;
+        }
+        input {
+            border: none;
+            height: 100%;
+            margin: 0px;
+            border-radius: 0px;
+            background: var(--characteristic-input);
+        }
+
+        .table-header {
+            th div {
+                position: relative;
+                .advancement-indicator {
+                    position: absolute;
+                    top: -50%;
+                    left: 80%;
+                    font-size: var(--font-size-14);
+                }
+            }
+        }
+    }
+
+
+    .attribute-box {
+        margin: 5px 5px;
+
+        &:first-child {
+            margin-left: 0px;
+        }
+        &:last-child {
+            margin-right: 0px;
+        }
+
+        flex: 1;
+        border: 1px solid var(--attribute-border);
+        border-right: none;
+        height: 45px;
+
+        display: grid;
+        grid-template-columns: repeat(12, 8.333%);
+        grid-template-rows: repeat(2, 50%);
+
+        > div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input {
+            height: 100%;
+            width: 100%;
+            border-radius: 0px;
+            text-align: center;
+            background-color: var(--attribute-input);
+            border : 1px solid var(--attribute-input-border);
+        }
+
+        input:disabled,
+        input[readonly]
+        {
+            background-color: var(--attribute-locked-input);
+            border : 1px solid var(--attribute-locked-border);
+        }
+
+        .field {
+            border-right: 1px solid var(--attribute-border);
+            width: 100%;
+            background: var(--attribute-field);
+        }
+
+        .label {
+            border-right: 1px solid var(--attribute-border);
+            width: 100%;
+            background: var(--attribute-label);
+        }
+
+        &.movement {
+            flex: 2;
+            div:nth-child(-n + 3) {
+                border-bottom: 1px solid var(--attribute-border);
+            }
+        }
+
+        &.corruption,
+        &.criticals,
+        &.wounds {
+
+            a {
+                margin: 0px 5px;
+                font-size: var(--font-size-12);
+            }
+
+            .label {
+                border-bottom: 1px solid var(--attribute-border);
+            }
+        }
+    }
+
+
+
+    .sheet-list {
+        margin-top: 10px;
+        .item-property-row {
+            height: unset;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+
+            a {
+                margin-left: 3px;
+            }
+
+            .separator {
+                margin-right: 3px;
+            }
+            .property-icon {
+                background: var(--property-icon);
+                border-radius: 50%;
+                font-weight: bold;
+                width: 1.5rem;
+                height: 1.5rem;
+                line-height: 1.5rem;
+                text-align: center;
+                margin: 0px 3px;
+            }
+        }
+    }
+
+    fieldset {
+        border-color: var(--attribute-border);
+        margin: 10px 0px;
+    }
+}

@@ -1,0 +1,54 @@
+.wfrp4e.actor.sheet {
+    section.tab[data-tab="magic"] {
+        height: calc(100% - 220px);
+
+        .progress-bar {
+            height: 0.5rem;
+            border: none;
+            .fill {
+                background-color: var(--color-cool-3);
+                border-radius: 2px;
+
+                &.fire {
+                    background-color: firebrick;
+                }
+
+                &.heavens {
+                    background-color: skyblue;
+                }
+
+                &.metal {
+                    background-color: var(--color-warm-1);
+                }
+
+                &.shadow {
+                    background-color: grey
+                }
+
+                &.life {
+                    background-color: green
+                }
+
+                &.beasts {
+                    background-color: brown;
+                }
+
+                &.light {
+                    background-color: azure;
+                }
+
+                &.death {
+                    background-color: purple;
+                }
+
+                &.necromancy {
+                    background-color: blanchedalmond;
+                }
+
+                &.daemonology {
+                    background-color: darkred;
+                }
+            }
+        }
+    }    
+}

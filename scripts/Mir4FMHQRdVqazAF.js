@@ -9,5 +9,5 @@ if (attackerSize > actorSize)
    {
        msg += `and @Condition[Engaged]`
    }
-   this.script.scriptMessage(msg, {speaker : {alias: args.attacker.prototypeToken.name}})
+   this.script.message(msg, {speaker : {alias: args.attacker.prototypeToken.name}})
 }

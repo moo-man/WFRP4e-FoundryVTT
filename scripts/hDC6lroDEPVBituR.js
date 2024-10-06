@@ -4,9 +4,9 @@ await test.roll();
 if (test.failed)
 {
     this.actor.update({"system.status.corruption.value" : parseInt(this.actor.status.corruption.value) + 1})
-    this.script.scriptMessage("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
+    this.script.message("Gained a Corruption point", {whisper : ChatMessage.getWhisperRecipients("GM")})
     if (test.result.roll % 11 == 0 || test.result.roll == 100)
     {
-        this.script.scriptMessage(`<strong>Fumble</strong>: immediately gain 1 @Table[mutatemental]{Mental Mutation}, and may not take a Short-term Ambition for the next [[1d10]] weeks.`, {whisper : ChatMessage.getWhisperRecipients("GM")})
+        this.script.message(`<strong>Fumble</strong>: immediately gain 1 @Table[mutatemental]{Mental Mutation}, and may not take a Short-term Ambition for the next [[1d10]] weeks.`, {whisper : ChatMessage.getWhisperRecipients("GM")})
     }
 }

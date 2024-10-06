@@ -4,5 +4,5 @@ let msg = `<b>${this.actor.prototypeToken.name}</b> loses 1 Wound.<br>`
     msg += `<b>${this.actor.prototypeToken.name}</b> goes unconscious.<br>`
     await this.actor.addCondition("unconscious")
   }
-  this.script.scriptMessage(msg)
+  this.script.message(msg)
   this.actor.modifyWounds(-1)

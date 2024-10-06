@@ -23,4 +23,4 @@ this.effect.updateSource({"flags.wfrp4e.location" : value})
 
 msg += ` as eyes push out of their ${desc}`
 
-this.script.scriptMessage(msg)
+this.script.message(msg)

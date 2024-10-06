@@ -1,0 +1,24 @@
+.wfrp4e.actor.sheet {
+    --experience-header : var(--color-cool-3);
+    --experience-header-border : transparent;
+    section.tab[data-tab="notes"] {
+        height: calc(100% - 200px);
+        
+        .experience-log {
+            .header {
+                background: var(--experience-header);
+                border: 1px solid var(--experience-header-border);
+                border-bottom: 0px;
+                height: 1.5rem;
+                line-height: 1.5rem;
+                width: 100%;
+                padding-left: 5px;
+            }
+            .sheet-list {
+                margin-top: 0px;
+            }
+        }
+    }
+
+    
+}

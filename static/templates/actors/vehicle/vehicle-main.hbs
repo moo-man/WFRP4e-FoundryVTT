@@ -4,7 +4,7 @@
       <span class="attribute-label">{{localize "VEHICLE.Crew"}}</span>
       <div class="minmax-box">
         <div class="current value">
-          <input type="text" value="{{system.details.crew.current}}" name="system.details.crew.current" readonly>
+          <input type="text" value="{{system.details.crew.current}}" name="system.details.crew.current" disabled>
         </div>
         <div class="divisor">
           /
@@ -21,7 +21,7 @@
         <h4 class="attribute-label">{{localize "Size"}}</h4>
       </div>
       <div class="attribute-value">
-        <input type="text" value="{{configLookup "actorSizes" system.details.size.value}}" readonly />
+        <input type="text" value="{{configLookup "actorSizes" system.details.size.value}}" disabled />
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
         <h4 class="attribute-label">{{localize "VEHICLE.CollisionRating"}}</h4>
       </div>
       <div class="attribute-value">
-        <input type="text" value="{{system.collision}}" readonly />
+        <input type="text" value="{{system.collision}}" disabled />
       </div>
     </div>
   </div>

@@ -1,1 +1,1 @@
-this.script.scriptMessage(await game.wfrp4e.tables.formatChatRoll("giftofthebeast"))
+this.script.message(await game.wfrp4e.tables.formatChatRoll("giftofthebeast"))

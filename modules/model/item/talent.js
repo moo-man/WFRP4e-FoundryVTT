@@ -20,6 +20,16 @@ export class TalentModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of TalentModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isTalent() {
+        return true;
+    }
+
     get Max() {
         switch (this.max.value) // Turn its max value into "numMax", which is an actual numeric value
         {
@@ -49,7 +59,7 @@ export class TalentModel extends BaseItemModel {
 
     get Advances() {
         if (this.parent.isOwned) {
-          let talents = this.parent.actor.getItemTypes("talent")
+          let talents = this.parent.actor.itemTags["talent"]
           return talents.filter(i => i.name == this.parent.name).reduce((prev, current) => prev += current.advances.value, 0)
         }
         else {
@@ -61,7 +71,7 @@ export class TalentModel extends BaseItemModel {
         this.advances.indicator = this.advances.force;
     }
 
-    _addCareerData(career) {
+    addCareerData(career) {
         if (!career)
             return
 

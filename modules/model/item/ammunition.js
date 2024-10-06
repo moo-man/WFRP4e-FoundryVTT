@@ -14,7 +14,8 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
             value: new fields.StringField()
         });
         schema.damage = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField(),
+            dice: new fields.StringField({ initial: "" })
         });
         schema.ammunitionType = new fields.SchemaField({
             value: new fields.StringField()
@@ -24,6 +25,16 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
         });
         return schema;
     }
+
+  /**
+   * Used to identify an Item as one being a child or instance of AmmunitionModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isAmmunition() {
+    return true;
+  }
 
       // Ammunition Expansion Data
   async expandData(htmlOptions) {

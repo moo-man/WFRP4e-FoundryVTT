@@ -4,12 +4,12 @@ roll.toMessage(this.script.getChatData());
 if (fatigued > this.actor.characteristics.wp.bonus)
 {
     this.actor.addCondition("unconscious")
-    this.script.scriptNotification(`Fell Unconscious`)
+    this.script.notification(`Fell Unconscious`)
 }
 else 
 {
     fatigued = Math.max(0, fatigued)
     if (fatigued)
         this.actor.addCondition("fatigued", fatigued)
-    this.script.scriptNotification(`Gained ${fatigued} conditions`)
+    this.script.notification(`Gained ${fatigued} conditions`)
 }

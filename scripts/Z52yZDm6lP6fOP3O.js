@@ -1,6 +1,6 @@
 let ablaze = this.actor.hasCondition("ablaze")
 if (ablaze)
 {
-    this.script.scriptNotification("Immune to Ablaze");
+    this.script.notification("Immune to Ablaze");
     ablaze.delete()
 }

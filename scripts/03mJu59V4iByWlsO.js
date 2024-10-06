@@ -14,7 +14,7 @@ if (hasRegenerate === undefined) {
   })
 }
 
-this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> has 
+this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> has 
     <ul>
       <li>gained 3 Poisoned Conditions that cannot be resisted at first</li>
       <li>recovered ${this.actor.system.characteristics.t.bonus} Wounds</li>

@@ -22,7 +22,7 @@ if (test.succeeded) {
 
 let rating = parseInt(this.effect.name.match(/\d+/)?.[0]);
 if (rating <= 1) {
-  const scriptData = this.effect.flags.wfrp4e.scriptData;
+  const scriptData = this.effect.system.scriptData
   scriptData[2].trigger = '';
-  await this.effect.update({disabled: true, "flags.wfrp4e.scriptData": scriptData});
+  await this.effect.update({disabled: true, "system.scriptData": scriptData});
 }
