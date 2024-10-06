@@ -130,7 +130,7 @@ export class ContainerModel extends EquippableItemModel {
     {
       super.migrateData(data);
       if (data.worn?.value) {
-        data.equipped.value = data.worn.value;
+        data.equipped = {value: data.worn.value};
       }
     }
 }
