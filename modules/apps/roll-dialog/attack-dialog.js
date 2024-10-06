@@ -84,11 +84,9 @@ export default class AttackDialog extends SkillDialog
         let sizeModifier = 0
         // Attacking a larger creature with melee
         if (sizeDiff < 0 && (this.item.attackType == "melee" || target.actor.sizeNum >= 3)) 
-          {
+        {
             sizeModifier += 10;
-            this.fields.modifier += sizeModifier
-            this.options.sizeModifier = sizeModifier
-          this.tooltips.addModifier(10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
+            this.tooltips.addModifier(10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
         }
         // Attacking a larger creature with ranged
         else if (this.item.attackType === "ranged")
