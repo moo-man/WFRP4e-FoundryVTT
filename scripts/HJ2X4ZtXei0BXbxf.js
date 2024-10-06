@@ -4,16 +4,6 @@
         items = items.map(i => i.toObject())
         items.forEach(i => i.system.advances.value = 20)
 
-items.forEach(i => equip(i))
+items.forEach(i => i.system.equipped.value = true;)
 
 this.actor.createEmbeddedDocuments("Item", items);
-
-function equip(item)
-{
-    if (item.type == "armour")
-        item.data.worn.value = true
-    else if (item.type == "weapon")
-        item.data.equipped = true
-    else if (item.type == "trapping" && item.data.trappingType.value == "clothingAccessories")
-        item.data.worn = true
-}

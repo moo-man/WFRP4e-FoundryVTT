@@ -75,7 +75,7 @@ for (let trapping of trappings)
     {
         trappingItem = trappingItem.toObject()
 
-        equip(trappingItem)
+        trappingItem.system.equipped.value = true;
 
         items.push(trappingItem);
     }
@@ -96,7 +96,7 @@ let filters = [
     }
 ]
 
-items = items.concat(await game.wfrp4e.apps.ItemDialog.createFromFilters(filters, 1, "Choose an appropriate Polearm or Two-Handed Weapon"))
+items = items.concat(await ItemDialog.createFromFilters(filters, 1, "Choose an appropriate Polearm or Two-Handed Weapon"))
 
 let ride = await Dialog.confirm({title : "Skill", content : "Add Chaos Steed and +20 Ride (Horse)?"})
 
@@ -113,13 +113,3 @@ updateObj.name = updateObj.name += " " + this.effect.name
 await this.actor.update(updateObj)
 console.log(">>>>>>><", items)
 this.actor.createEmbeddedDocuments("Item", items);
-
-function equip(item)
-{
-    if (item.type == "armour")
-        item.system.worn.value = true
-    else if (item.type == "weapon")
-        item.system.equipped = true
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
-        item.system.worn = true
-}
