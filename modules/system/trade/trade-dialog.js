@@ -32,7 +32,7 @@ export default class TradeDialog extends Dialog {
                 settlementData.season = season;
                 settlementData.produces = dlg.find('[name="produces"]').val().split(",").map(i=> {
                   i = i.trim();
-                  return game.wfrp4e.utility.findKey(i.split("(")[0].trim(), game.wfrp4e.trade.tradeData[tradeType].cargoTypes)
+                  return warhammer.utility.findKey(i.split("(")[0].trim(), game.wfrp4e.trade.tradeData[tradeType].cargoTypes)
                 }).filter(i => !!i);
 
                 settlementData.surplus = this.encodeSurplusDemand(dlg.find('[name="surplus"]').val())
@@ -183,7 +183,7 @@ export default class TradeDialog extends Dialog {
         }
         else 
         {
-          key = game.wfrp4e.utility.findKey(string.split("+")[0].trim(), game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes)
+          key = warhammer.utility.findKey(string.split("+")[0].trim(), game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes)
         }
 
         encoded.push(`${key} +${value}`)

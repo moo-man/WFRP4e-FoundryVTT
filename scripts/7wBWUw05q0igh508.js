@@ -6,7 +6,7 @@ if (hasPainless === undefined)
   let data = item.toObject()
   this.actor.createEmbeddedDocuments("Item", [data], {fromEffect: this.effect.id})
   
-  this.script.scriptMessage(
+  this.script.message(
   `<p><strong>${this.actor.prototypeToken.name}</strong> has gained the Painless Creature Trait. This
     effect lasts for one hour, after which it dissipates and the full effect
     of all the imbiber's wounds come crashing down at once.</p>

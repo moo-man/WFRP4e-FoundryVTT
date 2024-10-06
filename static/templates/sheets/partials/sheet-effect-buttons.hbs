@@ -1,0 +1,7 @@
+{{#if document.sheetButtons.length}}
+<div class="sheet-effect-buttons">
+    {{#each document.sheetButtons}}
+        <button data-action="triggerScript" data-path="{{this.path}}" data-type="{{this.type}}" data-uuid="{{this.uuid}}" {{#if (eq this.type "manualScript")}}data-index="{{this.index}}"{{/if}} type="button">{{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}{{this.label}}</button>
+    {{/each}}
+</div>
+{{/if}}

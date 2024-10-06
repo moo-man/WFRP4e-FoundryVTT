@@ -6,6 +6,6 @@ if (test.failed)
     let sourceActor = this.effect.sourceActor;
     if (sourceActor)
     {
-        this.script.scriptMessage(await this.actor.applyBasicDamage(sourceActor.system.characteristics.wp.bonus, {suppressMsg : true, damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL}))
+        this.script.message(await this.actor.applyBasicDamage(sourceActor.system.characteristics.wp.bonus, {suppressMsg : true, damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL}))
     }
 }

@@ -51,7 +51,7 @@ args.actor.addCondition("stunned")
 ```js
 if (!this.item.system.specification.value)
 {
-    let value = await ValueDialog.create("Value", "Enter Value");
+    let value = await ValueDialog.create({title : "Value", text : "Enter Value"});
     if (value)
     {
      this.item.updateSource({"system.specification.value" : value});
@@ -84,7 +84,7 @@ let caster = this.effect.sourceActor;
 
 this.actor.modifyWounds(caster.system.characteristics.wp.bonus);
 
-this.script.scriptMessage(`Healed ${caster.system.characteristics.wp.bonus} Wounds`);
+this.script.message(`Healed ${caster.system.characteristics.wp.bonus} Wounds`);
 ```
 
 **Notes**: Remember that `this.actor` is the Actor the effect is running on, `this.effect.sourceActor` is a getter for the Actor the effect came from.

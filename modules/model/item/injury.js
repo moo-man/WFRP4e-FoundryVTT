@@ -3,10 +3,6 @@ let fields = foundry.data.fields;
 
 export class InjuryModel extends LocationalItemModel 
 {
-    // allowedConditions = ["bleeding", "stunned", "blinded", "deafened", "incapacitated", "prone", "stunned"];
-    // allowedEffectApplications = ["document"];
-    // effectApplicationOptions = {documentType : "Actor"};
-
     static defineSchema() 
     {
         let schema = super.defineSchema();
@@ -19,6 +15,16 @@ export class InjuryModel extends LocationalItemModel
             permanent : new fields.BooleanField(),
         });
         return schema;
+    }
+
+    /**
+     * Used to identify an Item as one being a child or instance of InjuryModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isInjury() {
+        return true;
     }
 
     chatData() {

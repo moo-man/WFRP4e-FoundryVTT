@@ -37,6 +37,37 @@ export class DiseaseModel extends BaseItemModel {
     return schema;
   }
 
+  async _onUpdate(data, options, user)
+  {
+    await super._onUpdate(data, options,user)
+    if (data.system?.active && user == game.user.id)
+    {
+      this.start("duration");
+    }
+  }
+
+  async _onCreate(data, options, user)
+  {
+    await super._onCreate(data, options,user)
+    if (this.parent.isOwned && user == game.user.id)
+    {
+      if (!this.duration.active)
+      {
+        this.start("incubation");
+      }
+    }
+  }
+
+  /**
+   * Used to identify an Item as one being a child or instance of DiseaseModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isDisease() {
+    return true;
+  }
+
   async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
@@ -68,8 +99,197 @@ export class DiseaseModel extends BaseItemModel {
     return this.diagnosed || game.user.isGM
   }
 
+  async updateSymptoms(text)
+  {
+      // Alright get ready for some shit
+
+      // Get all symptoms user inputted
+      let symptomText = text.split(",").map(i => i.trim());
+  
+      // Extract just the name (with no severity)
+      let symtomNames = symptomText.map(s => {
+        if (s.includes("("))
+          return s.substring(0, s.indexOf("(") - 1)
+        else return s
+      })
+  
+      // take those names and lookup the associated symptom key
+      let symptomKeys = symtomNames.map(s => warhammer.utility.findKey(s, game.wfrp4e.config.symptoms))
+  
+      // Map those symptom keys into effects, renaming the effects to the user input
+      let symptomEffects = symptomKeys.map((s, i) => {
+        if (game.wfrp4e.config.symptomEffects[s])
+        {
+          let effect = foundry.utils.duplicate(game.wfrp4e.config.symptomEffects[s])
+          effect.name = symptomText[i];
+          return effect
+  
+        }
+      }).filter(i => !!i)
+  
+      // Remove all previous symptoms from the item
+      let effects = this.parent.effects.map(i => i.toObject()).filter(e => foundry.utils.getProperty(e, "flags.wfrp4e.symptom"))
+  
+      // Delete previous symptoms
+      await this.parent.deleteEmbeddedDocuments("ActiveEffect", effects.map(i => i._id))
+  
+      // Add symptoms from input
+      await this.parent.createEmbeddedDocuments("ActiveEffect", symptomEffects)
+  
+      return this.parent.update({ "system.symptoms.value": text })
+  }
+
+  async start(type, update=false)
+  {
+    if (!type)
+    {
+      throw new Error("Must provide incubation or duration as type")
+    }
+
+    let roll
+    try 
+    {
+      roll = await new Roll(this[type].value, this.parent).roll();
+      let update = {[`system.${type}.value`] : roll.total};
+      if (type == "duration")
+      {
+        update["system.duration.active"] = true;
+      }
+      await this.parent.update(update);
+    } 
+    catch (e) 
+    {
+      ChatMessage.create(this.getMessageData(game.i18n.localize("CHAT.DiseaseRollError")));
+    }
+
+    let messageData = this.getMessageData()
+
+    messageData.speaker.alias += " " + type;
+
+    roll.toMessage(messageData, {rollMode : "gmroll"})
+  }
+
+  increment()
+  {
+    if (this.duration.active)
+    {
+      return this.parent.update({"system.duration.value" : Number(this.duration.value) + 1})
+    }
+    else 
+    {
+      return this.parent.update({"system.incubation.value" : Number(this.incubation.value) + 1})
+    }
+  }
+
+  decrement()
+  {
+    let update = {}
+    if (this.duration.active)
+    {
+      if (isNaN(this.duration.value))
+      {
+        return this.start("duration");
+      }
+      let duration = Number(this.duration.value) - 1;
+      if (duration == 0)
+      {
+        return this.finishDuration();
+      }
+      else 
+      {
+        update = {"system.duration.value" : duration}
+      }
+    }
+    else
+    {
+      if (isNaN(this.incubation.value))
+      {
+        return this.start("incubation");
+      }
+      let incubation = Number(this.incubation.value) - 1;
+      if (incubation == 0)
+      {
+        update = {"system.incubation.value" : incubation};
+        this.start("duration");
+      }
+      else 
+      {
+        update = {"system.incubation.value" : incubation};
+      }
+    }
+    return this.parent.update(update);
+  }
+
+  async finishDuration() {
+    let disease = this.parent;
+    let msg = game.i18n.format("CHAT.DiseaseFinish", { disease: disease.name });
+    let removeDisease = true;
+    const symptoms = disease.system.symptoms.value.toLowerCase();
+
+    if (symptoms.includes(game.i18n.localize("NAME.Lingering").toLowerCase())) 
+    {
+      let lingering = disease.effects.find(e => e.name.includes(game.i18n.localize("WFRP4E.Symptom.Lingering")));
+      if (lingering) 
+      {
+        let difficultyname = lingering.specifier;
+        let difficulty = warhammer.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
+	  
+        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
+        await test.roll();
+
+        if (test.failed) 
+        {
+          let negSL = Math.abs(test.result.SL);
+          let lingeringDisease;
+
+          if (negSL <= 1) 
+          {
+            let roll = (await new Roll("1d10").roll()).total;
+            msg += "<br>" + game.i18n.format("CHAT.LingeringExtended", { roll });
+            removeDisease = false;
+            disease.system.duration.value = roll;
+          } 
+          else if (negSL <= 5) 
+          {
+            msg += "<br>" + game.i18n.localize("CHAT.LingeringFestering");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.kKccDTGzWzSXCBOb");
+          } 
+          else if (negSL >= 6) 
+          {
+            msg += "<br>" + game.i18n.localize("CHAT.LingeringRot");
+            lingeringDisease = await fromUuid("Compendium.wfrp4e-core.items.M8XyRs9DN12XsFTQ");
+          }
+
+          if (lingeringDisease) 
+          {
+            lingeringDisease = lingeringDisease.toObject();
+            lingeringDisease.system.incubation.value = 0;
+            lingeringDisease.system.duration.active = true;
+
+            await Item.create(lingeringDisease, {parent : disease.actor});
+          }
+        }
+      }
+    }
+
+    ChatMessage.create(foundry.utils.mergeObject(this.getMessageData(msg), {whisper : ChatMessage.getWhisperRecipients("GM")}));
+
+    if (removeDisease) 
+    {
+      await disease.delete();
+    }
+
+    return disease;
+  }
+
+  // Effects from this disease should transfer if it is not a symptom, or if it is, only if the disease is active
   shouldTransferEffect(effect)
   {
-    return this.duration.active === true;
+    return !effect.getFlag("wfrp4e", "symptom") || this.duration.active === true;
+  }
+
+  getMessageData(content="")
+  {
+    return {content, speaker : {alias: this.parent.name}, flavor : this.parent.actor.name};
   }
 }

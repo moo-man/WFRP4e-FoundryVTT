@@ -4,7 +4,7 @@ let fields = foundry.data.fields;
 /**
  * Abstract class that interfaces with the Actor class
  */
-export class BaseActorModel extends foundry.abstract.DataModel {
+export class BaseActorModel extends BaseWarhammerActorModel {
 
     static preventItemTypes = [];
 
@@ -13,9 +13,11 @@ export class BaseActorModel extends foundry.abstract.DataModel {
         return schema;
     }
 
-    preCreateData(data, options) {
+    async _preCreate(data, options, user) 
+    {
+        await super._preCreate(data, options, user);
+        
         let preCreateData = {};
-
         let defaultToken = game.settings.get("core", "defaultToken");
 
         // Set wounds, advantage, and display name visibility
@@ -37,56 +39,21 @@ export class BaseActorModel extends foundry.abstract.DataModel {
             preCreateData.img = "systems/wfrp4e/tokens/unknown.png"
         }
 
-        return preCreateData;
+        this.parent.updateSource(preCreateData);
     }
 
-    allowCreation() {
-        return true;
-    }
-
-    initialize() {
-
-    }
-
-    async preUpdateChecks(data) {
-        return data;
-    }
-
-    updateChecks() {
-        this.checkSize();
-        return {};
-    }
-
-    
-     // *** Deletions ***
-     async preDeleteChecks()
-     {
-
-     }
-
-     async deleteChecks()
-     {
-
-     }
-
-    createChecks() { }
-
-    itemIsAllowed(item) {
-        if (this.constructor.preventItemTypes.includes(item.type)) {
-            ui.notifications.error(game.i18n.localize("Error.ItemsNotAllowed"), { type: item.type });
-            return false;
-        }
-        else {
-            return true;
+    async _onUpdate(data, options, user) {
+        super._onUpdate();
+        if (game.user.id == user)
+        {
+            await this.checkSize();
         }
     }
+
+    initialize() {}
 
     computeBase() {
         this.initialize();
-    }
-
-    computeDerived(items, flags) {
-        // Abstract
     }
 
     computeItems()
@@ -98,22 +65,44 @@ export class BaseActorModel extends foundry.abstract.DataModel {
         return {}
     }
 
+    getInitialItems()
+    {
+      return [];
+    }
+
     // Resize tokens based on size property
     checkSize() {
         let actor = this.parent
-        if (game.user.id != WFRP_Utility.getActiveDocumentOwner(actor)?.id) {
+        if (game.user.id != getActiveDocumentOwner(actor)?.id) {
             return
         }
         if (actor.flags.autoCalcSize && game.canvas.ready) {
             let tokenData = this.tokenSize();
-            if (actor.isToken) {
+            if (actor.isToken) 
+            {
                 return actor.token.update(tokenData)
             }
-            else if (canvas) {
+            else if (canvas) 
+            {
                 return actor.update({ prototypeToken: tokenData }).then(() => {
                     actor.getActiveTokens().forEach(t => t.document.update(tokenData));
                 })
             }
         }
     }
+
+    // toEmbed(config, options)
+    // {
+    //     config.caption = false;
+    //     let img = document.createElement("img");
+    //     if (config.token)
+    //     {
+    //         img.src = this.parent.prototypeToken.texture.src;
+    //     }
+    //     else 
+    //     {
+    //         img.src = this.parent.img;
+    //     }
+    //     return img;
+    // }
 }

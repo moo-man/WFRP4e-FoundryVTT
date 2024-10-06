@@ -18,9 +18,19 @@ export class CargoModel extends PhysicalItemModel
         schema.quality = new fields.SchemaField({
             value: new fields.StringField({initial : "average"})
         });
-        schema.tradeType = new fields.StringField({})
+        schema.tradeType = new fields.StringField({initial : "river"})
         return schema;
     }
+
+  /**
+   * Used to identify an Item as one being a child or instance of CargoModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isCargo() {
+    return true;
+  }
 
     computeBase()
     {

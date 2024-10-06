@@ -1,0 +1,93 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="sheet-list petty">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "SHEET.PettySpell"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="spell" data-category="petty">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.spell.petty}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name rollable">
+                            <img src="{{this.img}}" data-action="rollTest" data-type="spell">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="sheet-list talent">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "SHEET.LoreSpell"}}</div>
+            <div class="flex" data-tooltip="{{localize 'WFRP4E.TrappingType.Ingredients'}}" class="ingredients">{{localize "WFRP4E.TrappingType.Ingredients"}}</div>
+            <div class="tiny" data-tooltip="{{localize 'SHEET.CN'}}">{{localize "CN"}}</div>
+            <div class="tiny" data-tooltip="{{localize 'SHEET.SL'}}">{{localize "SL"}}</div>
+            <div class="tiny" data-tooltip="{{localize 'Memorized'}}">M</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="spell">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.spell.lore}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name rollable">
+                            <img src="{{this.img}}" data-action="rollTest" data-type="spell">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+
+                        <div class="flex">
+                            <select data-action="editProperty" data-uuid="{{this.uuid}}" data-path="system.currentIng.value">
+                            {{#select this.system.currentIng.value}}
+                            <option value="">{{localize "None"}}</option>
+                            {{#each this.system.ingredientList as |ingredient|}}
+                            <option value="{{ingredient.id}}">{{ingredient.name}} ({{ingredient.quantity.value}})</option>
+                            {{/each}}
+                            {{/select}}
+                            </select>
+                        </div>
+
+                        <div class="tiny">{{this.system.cn.value}}</div>
+
+                        <a class="tiny prevent-context" data-action="stepProperty" data-path="system.cn.SL">{{this.system.cn.SL}}</a>
+
+                        {{#if this.system.memorized.value}}
+                        <a class="tiny" data-action="toggleProperty" data-path="system.memorized.value"><i class="far fa-check-circle"></i></a>
+                        {{else}}
+                        <a class="tiny" data-action="toggleProperty" data-path="system.memorized.value"><i class="far fa-circle"></i></a>
+                        {{/if}}
+
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                    {{#if this.system.cn.SL}}
+                    <div class="progress-bar">
+                        <div class="fill {{this.system.lore.value}}"  style="width:{{pct this.system.cn.SL this.system.cn.value}}%">
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{> aspectsV2 aspectGroup=items.aspect.magic}}
+</section>

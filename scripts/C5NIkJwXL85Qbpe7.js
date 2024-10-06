@@ -1,0 +1,1 @@
+args.weaponProperties.impale = true;

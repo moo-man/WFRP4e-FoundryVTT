@@ -1,18 +1,14 @@
-import ItemDialog from "../../../../apps/item-dialog";
 import WFRP_Utility from "../../../../system/utility-wfrp4e";
 
 let fields = foundry.data.fields;
 
-export class VehiclePassengersModel extends foundry.abstract.DataModel {
-    static defineSchema() {
-        let schema = {};
-        schema.list = new fields.ArrayField(new fields.SchemaField({
-            id : new fields.StringField(),
-            count : new fields.NumberField({min : 0}),
-            roleIds : new fields.ArrayField(new fields.DocumentIdField())
-        }));
-        return schema;
-    }
+export class VehiclePassengersModel extends ListModel {
+
+    static listSchema = new fields.SchemaField({
+        id : new fields.StringField(),
+        count : new fields.NumberField({min : 0}),
+        roleIds : new fields.ArrayField(new fields.DocumentIdField())
+    })
 
     compute(roles)
     {
@@ -22,7 +18,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
             {
                 passenger.actor = actor,
                 passenger.linked = actor.prototypeToken.actorLink,
-                passenger.img = WFRP_Utility.replacePopoutPath(actor.prototypeToken.texture.src),
+                passenger.img = warhammer.utility.replacePopoutPath(actor.prototypeToken.texture.src),
                 passenger.roles = passenger.roleIds.map(id => roles.find(r => r.id == id)).filter(i => i);
             }
             else 
@@ -77,12 +73,12 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
 
     add(actor)
     {
-        return this.list.concat({id : actor.id, count : 1});
+        return {[this.schema.fields.list.fieldPath] : this.list.concat({id : actor.id, count : 1})};
     }
 
     remove(id)
     {
-        return this.list.filter(i => i.id != id);
+        return {[this.schema.fields.list.fieldPath] : this.list.filter(i => i.id != id)};
     }
 
     edit(id, data)
@@ -91,9 +87,9 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         let passenger = list.find(i => i.id == id);
         if (passenger)
         {
-            mergeData(passenger, data);
+            foundry.utils.mergeObject(passenger, data);
         }
-        return list;
+        return {[this.schema.fields.list.fieldPath] : list};
     }
 
     count(id, value=1)
@@ -101,7 +97,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         let list = foundry.utils.deepClone(this.list);
         let passenger = list.find(i => i.id == id);
         passenger.count += value;
-        return list
+        return {[this.schema.fields.list.fieldPath] : list}
     }
 
     addRole(id, role)
@@ -117,7 +113,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         {
             passenger.roleIds.push(role);
         }
-        return list
+        return {[this.schema.fields.list.fieldPath] : list}
     }
 
     removeRole(id, role)
@@ -130,7 +126,7 @@ export class VehiclePassengersModel extends foundry.abstract.DataModel {
         let list = foundry.utils.deepClone(this.list);
         let passenger = list.find(i => i.id == id);
         passenger.roleIds = passenger.roleIds.filter(i => i != role)
-        return list
+        return {[this.schema.fields.list.fieldPath] : list}
     }
 
 }

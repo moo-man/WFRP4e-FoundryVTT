@@ -5,7 +5,7 @@ if (this.actor.Species.toLowerCase() != "skaven") {
       {
         let toughnessLost = Math.ceil(CONFIG.Dice.randomUniform() * 10)
         this.actor.update({ "system.characteristics.t.initial": this.actor.characteristics.t.initial - toughnessLost })
-        this.script.scriptMessage(`<b>${this.actor.prototypeToken.name}</b> lost ${toughnessLost} Toughness`)
+        this.script.message(`<b>${this.actor.prototypeToken.name}</b> lost ${toughnessLost} Toughness`)
       }
     })
   }

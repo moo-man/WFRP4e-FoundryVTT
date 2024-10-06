@@ -6,5 +6,5 @@ if (test.succeeded)
    
 let damage = this.effect.sourceItem.system.computeSpellDamage(baseDamage, true) + parseInt(this.effect.sourceTest.result.SL);
 
-this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {suppressMsg : true}))
+this.script.message(await this.actor.applyBasicDamage(damage, {suppressMsg : true}))
 this.actor.addCondition("ablaze")

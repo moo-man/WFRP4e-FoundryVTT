@@ -6,5 +6,5 @@ if(args.opposedTest.result.winner == "defender")
     {
           msg = `Attack hits with an SL of ${roll - 6}.`
     }
-    this.script.scriptMessage(msg, {blind: true,  whisper : ChatMessage.getWhisperRecipients("GM")})
+    this.script.message(msg, {blind: true,  whisper : ChatMessage.getWhisperRecipients("GM")})
 }

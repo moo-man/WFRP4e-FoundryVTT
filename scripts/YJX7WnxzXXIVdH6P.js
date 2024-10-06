@@ -1,4 +1,4 @@
-let lore = await ValueDialog.create("Choose Lore", "Lore", "", {"fire" : "Fire", "death" : "Death", "metal" : "Metal", "shadow" : "Shadow"});
+let lore = await ValueDialog.create({text : "Choose Lore", title:  "Lore"}, "", {"fire" : "Fire", "death" : "Death", "metal" : "Metal", "shadow" : "Shadow"});
 
 let filters = [
     {

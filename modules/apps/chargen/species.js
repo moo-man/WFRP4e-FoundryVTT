@@ -1,4 +1,5 @@
 import { ChargenStage } from "./stage";
+import WFRP_Utility from "../../system/utility-wfrp4e.js";
 
 export class SpeciesStage extends ChargenStage {
 
@@ -47,7 +48,7 @@ export class SpeciesStage extends ChargenStage {
 
     for (let result of speciesTable.results)
     {
-      let speciesKey = game.wfrp4e.utility.findKey(result.text, game.wfrp4e.config.species)
+      let speciesKey = warhammer.utility.findKey(result.text, game.wfrp4e.config.species)
       if (speciesKey)
       {
         data.species[speciesKey] = result.text
@@ -64,10 +65,47 @@ export class SpeciesStage extends ChargenStage {
       data.speciesDisplay += ` (${game.wfrp4e.config.subspecies[this.context.species][this.context.subspecies]?.name})`;
     }
 
-    data.extraSpecies = game.wfrp4e.config.extraSpecies.reduce((extra, species) => {
-      extra[species] = game.wfrp4e.config.species[species];
-      return extra;
-    }, {})
+    if (this.context.species) {
+      data.preview = {
+        characteristics: game.wfrp4e.config.subspecies[this.context.species]?.[this.context.subspecies]?.characteristics ?? game.wfrp4e.config.speciesCharacteristics[this.context.species],
+        movement: game.wfrp4e.config.subspecies[this.context.species]?.[this.context.subspecies]?.movement ?? game.wfrp4e.config.speciesMovement[this.context.species],
+        fate: game.wfrp4e.config.subspecies[this.context.species]?.[this.context.subspecies]?.fate ?? game.wfrp4e.config.speciesFate[this.context.species],
+        resilience: game.wfrp4e.config.subspecies[this.context.species]?.[this.context.subspecies]?.resilience ?? game.wfrp4e.config.speciesRes[this.context.species],
+        extra: game.wfrp4e.config.subspecies[this.context.species]?.[this.context.subspecies]?.extra ?? game.wfrp4e.config.speciesExtra[this.context.species],
+        ...WFRP_Utility.speciesSkillsTalents(this.context.species, this.context.subspecies)
+      }
+
+      for (let i in data.preview.talents) {
+        if (Number.isNumeric(data.preview.talents[i])) {
+          data.preview.randomTalents.talents = Number(data.preview.talents[i]);
+        }
+      }
+
+      const or = game.i18n.localize("SkillsOr");
+      data.preview.talents = data.preview.talents.filter(t => !Number.isNumeric(t)).map(t => t.replace(', ', ` <em>${or}</em> `));
+      data.preview.skills = data.preview.skills.map(t => t.replace(', ', ' <em>or</em> '));
+
+      let talents = [];
+
+      for (let [key, value] of Object.entries(data.preview.randomTalents)) {
+        let table = game.wfrp4e.tables.findTable(key);
+
+        talents.push({
+          name: table.name,
+          count: Number(value)
+        });
+      }
+
+      data.preview.randomTalents = talents;
+    }
+
+    if (game.wfrp4e.config.extraSpecies.length)
+    {
+      data.extraSpecies = game.wfrp4e.config.extraSpecies.reduce((extra, species) => {
+        extra[species] = game.wfrp4e.config.species[species];
+        return extra;
+      }, {})
+    }
 
     return data;
   }
@@ -102,7 +140,7 @@ export class SpeciesStage extends ChargenStage {
     this.context.roll = await game.wfrp4e.tables.rollTable("species");
     this.context.choose = false;
     this.updateMessage("Rolled", {rolled : this.context.roll.result})
-    this.setSpecies(this.context.roll.species);
+    this.setSpecies(findKey(this.context.roll.result, game.wfrp4e.config.species));
   }
 
   // Set chosen species, but don't unset "roll" (prevents users from rolling again after they've rolled once)
@@ -132,9 +170,6 @@ export class SpeciesStage extends ChargenStage {
     this.context.species = species;
     if (subspecies) {
       this.context.subspecies = subspecies;
-    }
-    else if (Object.keys(game.wfrp4e.config.subspecies[species] || {})?.length == 1) {
-      this.context.subspecies = Object.keys(game.wfrp4e.config.subspecies[species])[0];
     }
     else {
       this.context.subspecies = "";

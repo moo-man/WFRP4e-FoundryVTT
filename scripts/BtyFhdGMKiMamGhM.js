@@ -12,4 +12,4 @@ else
    damage = damage + 10
    this.actor.addCondition("entangled", 3)
 }
-this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {loc : "roll", suppressMsg: true}))
+this.script.message(await this.actor.applyBasicDamage(damage, {loc : "roll", suppressMsg: true}))

@@ -1,5 +1,3 @@
-
-import ItemDialog from "../apps/item-dialog.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
@@ -223,21 +221,24 @@ export default class WFRP_Tables {
 
   static async rollToChat(table, options = {}, column = null, rollMode) {
     let chatOptions = game.wfrp4e.utility.chatDataSetup("", rollMode, true)
-    chatOptions.content = await this.formatChatRoll(table, options, column);
+    options.returnObject = true;
+    let tableResult = await this.formatChatRoll(table, options, column);
+    chatOptions.content = tableResult.result;
     chatOptions.type = 0;
     if (chatOptions.content)
       ChatMessage.create(chatOptions);
     ui.sidebar.activateTab("chat")
+    return tableResult;
   }
 
   static findTable(key, column) {
-    WFRP_Utility.log(`Finding Table key: ${key} column: ${column}`)
+    warhammer.utility.log(`Finding Table key: ${key} column: ${column}`)
     let tables = game.tables.filter(i => i.getFlag("wfrp4e", "key") == key)
     let table 
 
     // Look at table settings first
     let tableSettings = game.settings.get("wfrp4e", "tableSettings");
-    WFRP_Utility.log(`Table Settings: `, undefined, tableSettings)
+    warhammer.utility.log(`Table Settings: `, undefined, tableSettings)
 
     // If tableSettings has comma separated ids, return them as columns
     let id = tableSettings[`${key}${column ? "-"+column : ""}`]?.split(",");
@@ -255,13 +256,13 @@ export default class WFRP_Tables {
 
     if (table)
     {
-      WFRP_Utility.log("Found Table with settings")
+      warhammer.utility.log("Found Table with settings")
     }
 
     if (!table)
     {
 
-      WFRP_Utility.log("Table not found with settings, finding first table that matches")
+      warhammer.utility.log("Table not found with settings, finding first table that matches")
 
       // If more than one table with that key, and column is specified, return that column
       if (tables.length > 1 && column)
@@ -281,7 +282,7 @@ export default class WFRP_Tables {
         }}
 
       }
-    WFRP_Utility.log("Find Table returns", undefined, table)
+    warhammer.utility.log("Find Table returns", undefined, table)
     return table;
 
   }
@@ -384,13 +385,20 @@ export default class WFRP_Tables {
         if (item && item.documentName == "Item")
         {
           item.postItem("inf", {"flags.wfrp4e.sourceMessageId" : options.messageId});
-          return null
+          return {}
         }
       }
 
     }
 
-    return result.result
+    if (options.returnResult)
+    {
+      return result
+    }
+    else 
+    {
+      return result.result;
+    }
 
   }
 

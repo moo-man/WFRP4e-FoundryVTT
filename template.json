@@ -1197,5 +1197,13 @@
         "value" : ""
       }
     }
+  },
+  "ChatMessage" : {
+    "types" : [
+      "base",
+      "test",
+      "handler",
+      "opposed"
+    ]
   }
 }

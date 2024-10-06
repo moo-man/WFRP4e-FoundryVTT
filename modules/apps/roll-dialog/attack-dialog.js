@@ -31,36 +31,12 @@ export default class AttackDialog extends SkillDialog
         }
         
         let properties = this.item.properties;
-
-        if (properties.qualities.accurate) 
-        {
-            this.fields.modifier += 10;
-            this.tooltips.addModifier(10, game.i18n.localize("PROPERTY.Accurate"))
-        }
-
-        if (properties.qualities.precise) 
-        {
-            this.fields.successBonus += 1;
-            this.tooltips.addSuccessBonus(1, game.i18n.localize("PROPERTY.Precise"))
-
-        }
-        if (properties.flaws.imprecise) 
-        {
-            this.fields.slBonus -= 1;
-            this.tooltips.addSLBonus(-1, game.i18n.localize("PROPERTY.Imprecise"))
-        }
     }
 
     _computeDefending(attacker) 
     {
         super._computeDefending(attacker);
         let properties = this.item.properties;
-
-        if (this.actor.defensive) 
-        {
-            this.fields.slBonus += this.actor.defensive;
-            this.tooltips.addSLBonus(this.actor.defensive, game.i18n.localize("PROPERTY.Defensive"));
-        }
 
         //if attacker is fast, and the defender is either 1. using a melee trait to defend, or 2. using a weapon without fast
         if (attacker.test.item.properties?.qualities.fast && this.item.attackType == "melee" && !properties?.qualities.fast) 
@@ -181,7 +157,7 @@ export default class AttackDialog extends SkillDialog
         }
     }
 
-    async _onInputChanged(ev) 
+    async _onFieldChange(ev) 
     {
       if (ev.currentTarget.name == "charging")
       {
@@ -204,6 +180,6 @@ export default class AttackDialog extends SkillDialog
           this.flags.charging = ev.currentTarget.checked;
         }
       }
-        super._onInputChanged(ev)
+        super._onFieldChange(ev)
     }
 }

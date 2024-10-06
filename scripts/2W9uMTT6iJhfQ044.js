@@ -5,7 +5,7 @@ let existingSkill = this.actor.itemTypes.skill.find(i => i.name == skill);
 if (!currentCareer) return
 
 
-let inCurrentCareer = currentCareer.system.skills.includes(skill);
+let inCurrentCareer = currentCareer.system.skills.concat(currentCareer.system.addedSkills).includes(skill);
 let craftsmanAdded = this.actor.getFlag("wfrp4e", "craftsmanAdded") || {};
 if (existingSkill && inCurrentCareer && !craftsmanAdded[existingSkill.name])
 {
@@ -14,6 +14,6 @@ if (existingSkill && inCurrentCareer && !craftsmanAdded[existingSkill.name])
 else 
 {
 	craftsmanAdded[skill] = true;
-	currentCareer.system.skills.push(skill);
+	currentCareer.system.addedSkills.push(skill);
 	foundry.utils.setProperty(this.actor, "flags.wfrp4e.craftsmanAdded", craftsmanAdded)
 }

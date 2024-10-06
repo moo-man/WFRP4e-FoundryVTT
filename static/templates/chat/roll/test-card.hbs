@@ -115,11 +115,11 @@
 
 
         {{#each test.targetEffects as |effect e|}}
-        <a class="apply-target-effect" data-uuid={{effect.uuid}} {{#if effect.flags.wfrp4e.blackpowder}}data-path="system.weaponGroup.effect"{{/if}}{{#if effect.flags.wfrp4e.lore}}data-path="system.lore.effect"{{/if}}><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
+        <a class="apply-target" data-uuid={{effect.uuid}} data-path="{{effect.flags.wfrp4e.path}}"><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
         {{/each}}
 
         
         {{#each test.areaEffects as |effect e|}}
-        <a class="place-area-effect" data-uuid={{effect.uuid}}><i class="fa-solid fa-ruler-combined"></i> {{localize "CHAT.Place"}} {{effect.name}}</a>
+        <a class="place-area" data-uuid={{effect.uuid}}><i class="fa-solid fa-ruler-combined"></i> {{localize "CHAT.Place"}} {{effect.name}}</a>
         {{/each}}
 

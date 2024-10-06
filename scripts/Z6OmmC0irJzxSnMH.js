@@ -37,7 +37,7 @@ else
 }
 
 await this.actor.update({ "system.status.wounds": wounds })
-this.script.scriptMessage(message, { whisper: ChatMessage.getWhisperRecipients("GM") })
+this.script.message(message, { whisper: ChatMessage.getWhisperRecipients("GM") })
 
 if (this.actor.Species?.toLowerCase() != "ogre")
 {

@@ -1,4 +1,4 @@
-import EffectWfrp4e from "../../../../system/effect-wfrp4e";
+import ActiveEffectWFRP4e from "../../../../system/effect-wfrp4e";
 import { CumulativeVehicleModifiers } from "./accumulated";
 let fields = foundry.data.fields;
 
@@ -23,15 +23,15 @@ export class MoraleModel extends CumulativeVehicleModifiers {
         {
             if (this.value >= 101)
             {
-                return [game.wfrp4e.config.vehicleSystemEffects["master-captain"]].filter(i => i).map(i => new EffectWfrp4e(i, {parent: actor}))
+                return [game.wfrp4e.config.vehicleSystemEffects["master-captain"]].filter(i => i).map(i => new ActiveEffectWFRP4e(i, {parent: actor}))
             }
             else if (this.value >= 76)
             {
-                return [game.wfrp4e.config.vehicleSystemEffects["fine-crew"]].filter(i => i).map(i => new EffectWfrp4e(i, {parent: actor}))
+                return [game.wfrp4e.config.vehicleSystemEffects["fine-crew"]].filter(i => i).map(i => new ActiveEffectWFRP4e(i, {parent: actor}))
             }
             else if (this.value <= 50)
             {
-                return [game.wfrp4e.config.vehicleSystemEffects["knaves"]].filter(i => i).map(i => new EffectWfrp4e(i, {parent: actor}))
+                return [game.wfrp4e.config.vehicleSystemEffects["knaves"]].filter(i => i).map(i => new ActiveEffectWFRP4e(i, {parent: actor}))
             }
         }
                     

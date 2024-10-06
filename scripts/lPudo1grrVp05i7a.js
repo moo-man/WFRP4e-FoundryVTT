@@ -6,6 +6,6 @@ let damage = this.actor.system.characteristics.s.bonus + 6
            if(test.failed)
            {
                await this.actor.addCondition("stunned")
-               this.script.scriptMessage(await this.actor.applyBasicDamage(damage, {loc, damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg: true}))
+               this.script.message(await this.actor.applyBasicDamage(damage, {loc, damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg: true}))
            }
     })

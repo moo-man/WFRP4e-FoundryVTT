@@ -1,7 +1,7 @@
 let target = await game.wfrp4e.tables.rollTable("fixations")
 if (target)
 {
-    this.script.scriptNotification(target.result);
+    this.script.notification(target.result);
     let hatred = this.actor.items.find(i => i.getFlag("wfrp4e", "fromEffect") == this.effect.id)
     if (hatred)
     {

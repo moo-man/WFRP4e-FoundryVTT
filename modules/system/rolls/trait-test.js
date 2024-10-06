@@ -24,11 +24,11 @@ export default class TraitTest extends AttackTest {
       let skill = this.item.system.getSkillToUse(this.actor);
 
       if (skill)
-        this.result.target += skill.advances.value
+        this.result.target = skill.total.value
     }
     catch
     {
-      this.result.target += skill.advances.value
+      this.result.target == skill.total.value
     }
 
     super.computeTargetNumber();

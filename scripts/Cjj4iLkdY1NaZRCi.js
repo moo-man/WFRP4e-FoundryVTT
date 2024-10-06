@@ -21,6 +21,6 @@ if ((args.opposedTest.attackerTest.item && args.opposedTest.attackerTest.item.is
 
     if (choice)
     {
-        this.script.scriptMessage(await args.attacker.applyBasicDamage(this.actor.system.characteristics.wp.bonus, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true}));
+        this.script.message(await args.attacker.applyBasicDamage(this.actor.system.characteristics.wp.bonus, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true}));
     }
 }

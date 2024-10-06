@@ -11,7 +11,7 @@ if (this.item.system.tests.value.includes("(Social Group)"))
     }
     else
     {
-        let value = await ValueDialog.create("Enter Etiquette Group", this.effect.name);
+        let value = await ValueDialog.create({text : "Enter Etiquette Group", title : this.effect.name});
         if (value)
         {
             name = `${name.split("(")[0].trim()} (${value})`

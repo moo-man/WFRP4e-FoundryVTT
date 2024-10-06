@@ -49,10 +49,20 @@
       <a class="remove-trapping" data-index="{{index}}"><i class="fa-solid fa-times"></i></a>
       {{/each}}
     </div>
+  <p class="centered">{{localize "CHARGEN.Trappings.DragDrop"}}</p>
+
+
+  {{#unless context.income.item}}
+    <a class='chargen-button' style="width: 200px; margin:0px auto" data-button='onRollIncome'>{{localize "CHARGEN.Trappings.RollIncome"}}</a>
+    {{else}}
+    <div style="display: flex; align-items: center; justify-content: center">
+    <img width="40" height="40" src="{{context.income.item.img}}">
+    <p>{{context.income.item.name}} ({{context.income.item.system.quantity.value}})</p>
+    </div>
+  {{/unless}}
 
 
   </div>
-  <p class="centered">{{localize "CHARGEN.Trappings.DragDrop"}}</p>
 
   <div class="controls">
     <button type="submit">{{localize "Submit"}}</button>

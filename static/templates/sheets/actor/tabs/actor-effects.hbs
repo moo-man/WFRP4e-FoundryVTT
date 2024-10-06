@@ -1,0 +1,284 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="condition-section">
+        {{#each effects.conditions}}
+            <div class="condition" data-key="{{this.key}}">
+                <a>{{localize this.name}}</a>
+                <div class="controls">
+                    {{#if this.isNumberedCondition}}
+                        <a data-action="clickCondition">{{this.conditionValue}}</a>
+                    {{else}}
+                        {{#if this.existing}}
+                            <a data-action="clickCondition"><i class="far fa-check-circle"></i></a>
+                        {{else}}
+                            <a data-action="clickCondition"><i class="far fa-circle"></i></a>
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="effect-lists">
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "SHEET.TemporaryEffects"}}</div>
+                <div class="flex">{{localize "SHEET.Source"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createEffect" data-category="temporary">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each effects.temporary}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
+                        </div>
+                        {{> sheetButtons document=this}}
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{> aspectsV2 aspectGroup=items.aspect.combat}}
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Injury"}}</div>
+                <div>{{localize "Location"}}</div>
+                <div>{{localize "Duration"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createItem" data-type="injury">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.injury}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div>{{this.system.location.value}}</div>
+
+                            {{#if this.sytsem.duration.permanent}}
+                                <div>
+                                    {{localize "Permanent"}}
+                                </div>
+                            {{else}}
+                                <a data-action="rollProperty" data-path="system.duration">
+                                    {{this.system.duration.value}} {{localize "days"}}
+                                </a>
+                            {{/if}}
+
+                            <div class="list-controls"></div>
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Criticals"}}</div>
+                <div>{{localize "Location"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createItem" data-type="critical">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.critical}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div>{{this.system.location.value}}</div>
+
+                            <div class="list-controls"></div>
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Psychology"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createItem" data-type="psychology">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.psychology}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div class="list-controls"></div>
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Corruption&Mutation"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createItem" data-type="mutation">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.mutation}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                            </div>
+
+                            <div class="list-controls"></div>
+                        </div>
+                        {{> sheetButtons document=this}}
+                        <div class="dropdown-content collapsed">
+
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Disease"}}</div>
+                <div>{{localize "Incubation"}}</div>
+                <div>{{localize "Duration"}}</div>
+                {{#if (isGM)}}
+                    <div>{{localize "Diagnosed"}}</div>
+                {{/if}}
+                <div class="list-controls">
+                    <a class="list-control" data-action="createItem" data-type="disease">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each items.disease}}
+                    {{#if this.system.show}}
+                        <div class="list-row" data-uuid="{{this.uuid}}">
+                            <div class="row-content">
+                                <div class="list-name">
+                                    <img src="{{this.img}}">
+                                    <a class="label">{{this.name}}</a>
+                                </div>
+
+                                {{#if (isGM)}}
+                                    <a data-action="rollProperty"
+                                        data-type="system.incubation">{{this.system.incubation.value}}</a>
+                                    <a data-action="rollProperty"
+                                        data-type="system.duration">{{this.system.duration.value}}
+                                        {{this.system.duration.unit}}</a>
+                                    {{#if this.system.diagnosed}}
+                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i
+                                                class="far fa-check-circle"></i></a>
+                                    {{else}}
+                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i
+                                                class="far fa-circle"></i></a>
+                                    {{/if}}
+
+                                {{else}}
+                                    <a>???</a>
+                                    <a>???</a>
+                                {{/if}}
+
+                                <div class="list-controls"></div>
+                            </div>
+                            {{> sheetButtons document=this}}
+                            <div class="dropdown-content collapsed">
+
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "SHEET.PassiveEffects"}}</div>
+                <div class="flex">{{localize "SHEET.Source"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="createEffect" data-category="passive">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each effects.passive}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
+                        </div>
+                        {{> sheetButtons document=this}}
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "SHEET.DisabledEffects"}}</div>
+                <div class="flex">{{localize "SHEET.Source"}}</div>
+            </div>
+            <div class="list-content">
+                {{#each effects.disabled}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content inactive">
+                            {{> systems/wfrp4e/templates/partials/list-effect.hbs effect=this}}
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>{{localize "EFFECT.SystemEffects"}}</label>
+            <div class="form-fields">
+                <select class="system-effects">
+                    <option>{{localize "EFFECT.SelectEffect"}}</option>
+                    {{#each effects.system as |effect e|}}
+                        <option value="{{e}}" data-source="{{effect.obj}}">{{effect.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+    </div>
+
+</section>

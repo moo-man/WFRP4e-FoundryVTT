@@ -4,4 +4,4 @@ for (let effect of holed) {
   await effect.update({name: effect.name.replace(/\d+/, rating => parseInt(rating) * 2)});
 }
 
-this.script.scriptNotification(`Holed Ratings of ${this.actor.name} have been doubled.`);
+this.script.notification(`Holed Ratings of ${this.actor.name} have been doubled.`);

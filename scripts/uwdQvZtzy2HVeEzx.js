@@ -8,7 +8,7 @@ if (args.totalWoundLoss > 0)
         await test.roll();
         if (test.failed)
         {
-            this.script.scriptMessage("<strong>" + args.actor.name + "</strong> takes a @Table[critbody]{Critical Hit} to the torse", {whisper: ChatMessage.getWhisperRecipients("GM")}) 
+            this.script.message("<strong>" + args.actor.name + "</strong> takes a @Table[critbody]{Critical Hit} to the torse", {whisper: ChatMessage.getWhisperRecipients("GM")}) 
         }
     })
 }
