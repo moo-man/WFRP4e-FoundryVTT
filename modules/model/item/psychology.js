@@ -10,6 +10,16 @@ export class PsychologyModel extends BaseItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of PsychologyModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isPsychology() {
+        return true;
+    }
+
     chatData() {
         return [];
       }

@@ -31,15 +31,15 @@ export default class ChannellingDialog extends SkillDialog {
 
         if (spell.system.wind && spell.system.wind.value) 
         {
-            data.skill = data.actor.itemTypes["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
+            data.skill = data.actor.itemTags["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
         }
         else if (spell.system.lore.value == "witchcraft")
         {
-            data.skill = data.actor.itemTypes["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
+            data.skill = data.actor.itemTags["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
         }
         else 
         {
-            data.skill = data.actor.itemTypes["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
+            data.skill = data.actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
         }
         data.characteristic = data.skill?.system.characteristic.key || "wp";
 
@@ -48,7 +48,7 @@ export default class ChannellingDialog extends SkillDialog {
 
 
         return new Promise(resolve => {
-            let dlg = new this(fields, data, resolve, options)
+            let dlg = new this(data, fields, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -60,9 +60,9 @@ export default class ChannellingDialog extends SkillDialog {
         })
     }
 
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.item = this.data.spell.id
         return data;
     }

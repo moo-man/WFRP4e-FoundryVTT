@@ -1,0 +1,2 @@
+const value = this.effect.sourceActor.system.characteristics.wp.bonus;
+this.script.message(await args.actor.applyBasicDamage(value, {damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg: true}));

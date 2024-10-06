@@ -32,6 +32,16 @@ export class OvercastItemModel extends BaseItemModel {
       return schema;
   }
 
+  /**
+   * Used to identify an Item as one being a child of OvercastItemModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get hasOvercast() {
+    return true;
+  }
+
   get isMagical() {
     return true;
   }

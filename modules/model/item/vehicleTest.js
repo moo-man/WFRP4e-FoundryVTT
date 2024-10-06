@@ -14,6 +14,16 @@ export class VehicleTestModel extends BaseItemModel {
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleTestModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isVehicleTest() {
+        return true;
+    }
+
     roll()
     {
         let crewTest = new CrewTest(this.parent);

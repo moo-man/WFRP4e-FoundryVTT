@@ -1,0 +1,1 @@
+game.wfrp4e.utility.postCorruptionTest("major", this.script.getChatData());

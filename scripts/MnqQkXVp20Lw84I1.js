@@ -2,5 +2,5 @@ let test = await this.actor.setupCharacteristic("t", {skipTargets: true, appendT
 await test.roll();
 if (test.failed)
 {
-    this.script.scriptMessage(await this.actor.applyBasicDamage(3, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true}))
+    this.script.message(await this.actor.applyBasicDamage(3, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true}))
 }

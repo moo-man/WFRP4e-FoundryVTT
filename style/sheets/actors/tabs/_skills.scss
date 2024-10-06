@@ -1,0 +1,64 @@
+.wfrp4e.actor.sheet {
+    --advances-border : var(--color-cool-3);
+
+    section.tab[data-tab="skills"] {
+        height: calc(100% - 220px);
+        overflow-y: unset;
+    }
+
+    .skill-lists {
+        display: flex;
+        width: 100%;
+        height: calc(100% - 30px);
+        margin-bottom: 5px;
+
+        .sheet-list {
+            flex: 1;
+            margin: 0px 5px;
+
+            .list-header {
+                .list-controls {
+                    flex : 0 0 0.6rem;
+                }
+            }
+
+            .row-content > *{
+                text-overflow: unset;
+            }
+
+            .list-controls {
+                    flex: 0 0 1rem;
+            }
+
+            input {
+                border-radius: 0px;
+                background: transparent;
+                border: none;
+                &:hover {
+                    border: 1px solid var(--advances-border);
+                }
+                &:focus {
+                    border: 1px solid var(--advances-border);
+                }
+            }
+            .list-content {
+                overflow-y: auto;
+                height: 100%;
+                scrollbar-gutter: stable;
+            }
+            &:first-of-type {
+                margin-left: 0px;
+            }
+            &:last-of-type {
+                margin-right: 0px;
+            }
+            
+        }
+    }
+    
+    .extended-tests {
+        .list-header a {
+            margin: 0px 5px;
+        }
+    }
+}

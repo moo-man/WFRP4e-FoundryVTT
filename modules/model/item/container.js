@@ -1,12 +1,14 @@
 import { PhysicalItemModel } from "./components/physical";
+import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 
-export class ContainerModel extends PhysicalItemModel {
+/**
+ *
+ * @extends EquippableItemModel
+ */
+export class ContainerModel extends EquippableItemModel {
     static defineSchema() {
         let schema = super.defineSchema();
-        schema.worn = new fields.SchemaField({
-            value: new fields.BooleanField()
-        });
         schema.wearable = new fields.SchemaField({
             value: new fields.BooleanField()
         });
@@ -20,37 +22,51 @@ export class ContainerModel extends PhysicalItemModel {
         return schema;
     }
 
-    get isEquipped() {
-      return this.worn.value
+  /**
+   * Used to identify an Item as one being a child or instance of ContainerModel
+   *
+   * @final
+   * @returns {boolean}
+   */
+  get isContainer() {
+    return true;
+  }
+
+    get worn() {
+      console.warn("[DEPRECATION] `container.worn` is deprecated, please use `container.equipped` instead");
+      return this.equipped;
     }
 
-    async preUpdateChecks(data, options, user) {
-      await super.preUpdateChecks(data);
+    get weighsLessEquipped() {
+      return true;
+    }
+
+    async _preUpdate(data, options, user) {
+      await super._preUpdate(data, options, user);
       if (getProperty(data, "system.location.value") == this.parent.id)
       {
         delete foundry.utils.setProperty(data, "system.location.value", null)
       }
   }
 
-    updateChecks(data, options, user)
+    async _onUpdate(data, options, user)
     {
-        let update = super.updateChecks(data, options, user) || {};
+        await super._onUpdate(data, options, user);
 
-        if (data.system?.location?.value) {
-            let allContainers = this.parent.actor?.getItemTypes("container")
+        if (data.system?.location?.value) 
+        {
+            let allContainers = this.parent.actor?.itemTags["container"]
             if (this.formsLoop(this.parent, allContainers))
             {
               ui.notifications.error("Loop formed - Resetting Container Location")
-              update["system.location.value"] = "";
+              this.parent.update({"system.location.value" : ""});
             }
-          }
-
-          return update
+        }
     }
 
 
-    async preDeleteChecks() {
-        await super.preDeleteChecks()
+    async _preDelete(options, user) {
+        await super._preDelete(options, user)
 
         // When deleting a container, remove the flag that determines whether it's collapsed in the sheet
         if (this.parent.actor) 
@@ -64,11 +80,6 @@ export class ContainerModel extends PhysicalItemModel {
 
             await this.parent.actor.update({items, [`flags.wfrp4e.sheetCollapsed.-=${this.parent.id}`]: null })
         }
-    }
-
-    toggleEquip()
-    {
-        return this.parent.update({"system.worn.value" : !this.isEquipped})
     }
 
 
@@ -102,11 +113,6 @@ export class ContainerModel extends PhysicalItemModel {
       return enc;
     }
 
-    shouldTransferEffect(effect)
-    {
-        return super.shouldTransferEffect(effect) && (!effect.applicationData.equipTransfer || this.isEquipped)
-    }
-
 
     chatData() {
       let properties = [
@@ -120,4 +126,11 @@ export class ContainerModel extends PhysicalItemModel {
       return properties;
     }
 
+    static migrateData(data)
+    {
+      super.migrateData(data);
+      if (data.worn?.value) {
+        data.equipped.value = data.worn.value;
+      }
+    }
 }

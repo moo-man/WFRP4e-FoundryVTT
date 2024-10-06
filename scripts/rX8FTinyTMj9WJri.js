@@ -20,7 +20,7 @@ this.actor.flags.holed.total = totalHoled;
 
 if (totalHoled >= toughness) {
   const speaker = ChatMessage.getSpeaker({actor: this.actor});
-  this.script.scriptMessage(`
+  this.script.message(`
         <p><b>${speaker.alias}</b> sank due to having <em>Holed (${totalHoled})</em> rating equal to, or exceeding its <em>Toughness (${toughness })</em></p>
         <p>
           <em>Holed</em> due to Critical Damage: ${currentHoled}<br/>

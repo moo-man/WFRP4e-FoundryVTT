@@ -1,0 +1,35 @@
+{{#each aspectGroup}}
+
+    <div class="sheet-list aspect">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize @key}}</div>
+            <div class="list-controls"></div>
+        </div>
+        <div class="list-content">
+            {{#each this as |item i|}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        {{#if this.system.usable}}
+                        <div class="list-name rollable">
+                            <img src="{{this.img}}" data-action="useAspect">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                        {{else}}
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                        {{/if}}
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{/each}}

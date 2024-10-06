@@ -42,7 +42,7 @@ export default class ItemProperties extends FormApplication {
             case 'trait':
                 return object.system.rollable.value;
             default:
-                return false;
+                return object.system.isWeapon;
         }
     }
 
@@ -53,7 +53,7 @@ export default class ItemProperties extends FormApplication {
             case 'trait':
                 return !object.system.rollable.value;
             default:
-                return false;
+                return object.system.isArmour;
         }
     }
 
@@ -132,7 +132,7 @@ export default class ItemProperties extends FormApplication {
             if (first) first.active = true;
         }
 
-        WFRP_Utility.log("Updating Qualities/Flaws", false, formData, qualities, flaws)
+        warhammer.utility.log("Updating Qualities/Flaws", false, formData, qualities, flaws)
         this.object.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
     }
 

@@ -44,7 +44,7 @@ export default class Migration {
     // Migrate World Items
     for (let i of game.items.contents) {
       try {
-        let updateData = Migration.migrateItemData(i.toObject());
+        let updateData = Migration.migrateItemData(i);
         if (!foundry.utils.isEmpty(updateData)) {
           console.log(`Migrating Item document ${i.name}`);
           await i.update(updateData, { enforceTypes: false });
@@ -297,6 +297,16 @@ export default class Migration {
         console.log(deleteActorEffects);
       }
     }
+
+
+    let effectModels = []
+    for (let effect of actor.effects)
+    {
+      effectModels.push(this.migrateEffectData(effect))
+    }
+    effectModels = effectModels.filter(e => !foundry.utils.isEmpty(e));
+
+    await actor.updateEmbeddedDocuments("ActiveEffect", effectModels);
   }
 
   static migrateJournalData(journal)
@@ -388,7 +398,7 @@ export default class Migration {
   static cleanActorData(actorData) {
 
     // Scrub system data
-    const model = game.system.model.Actor[actorData.type];
+    const model = game.model.Actor[actorData.type];
     actorData.data = foundry.utils.filterObject(actorData.data, model);
 
     // Scrub system flags
@@ -441,12 +451,12 @@ export default class Migration {
       if (typeof item.system.qualities.value == "string")
       {
         let allQualities = WFRP_Utility.qualityList();
-        updateData["system.qualities.value"] = item.system.qualities.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allQualities), value : Number(i.split(" ")[1]) }}).filter(i => i.name)
+        updateData["system.qualities.value"] = item.system.qualities.value.split(",").map(i => i.trim()).map(i => {return {name : warhammer.utility.findKey(i.split(" ")[0], allQualities), value : Number(i.split(" ")[1]) }}).filter(i => i.name)
       }
       if (typeof item.system.flaws.value == "string")
       {
         let allFlaws = WFRP_Utility.flawList();
-        updateData["system.flaws.value"] = item.system.flaws.value.split(",").map(i => i.trim()).map(i => {return {name : WFRP_Utility.findKey(i.split(" ")[0], allFlaws), value : Number(i.split(" ")[1])}}).filter(i => i.name)
+        updateData["system.flaws.value"] = item.system.flaws.value.split(",").map(i => i.trim()).map(i => {return {name : warhammer.utility.findKey(i.split(" ")[0], allFlaws), value : Number(i.split(" ")[1])}}).filter(i => i.name)
       }
       return updateData;
     }
@@ -527,10 +537,10 @@ export default class Migration {
 
   static removeLoreEffects(docData)
   {
-    let loreEffects = (docData.effects || []).filter(i => i.flags.wfrp4e?.lore)
+    let loreEffects = (docData.effects || []).filter(i => i.flags?.wfrp4e?.lore)
     if (loreEffects.length)
     {
-      WFRP_Utility.log("Removing lore effects for " + docData.name, true, loreEffects);
+      warhammer.utility.log("Removing lore effects for " + docData.name, true, loreEffects);
       // return document.deleteEmbeddedDocuments("ActiveEffect", loreEffects.map(i => i.id));
     }
     return docData.effects?.filter(e => !loreEffects.find(le => le._id == e._id)) || [];
@@ -545,11 +555,11 @@ export default class Migration {
    * @return {object}      The updateData to apply
    */
   static migrateEffectData(effect) {
-    let updateData = {};
-    Migration._migrateEffectScript(effect, updateData)
+    let updateData = Migration._migrateEffectFlags(effect)
     if (!foundry.utils.isEmpty(updateData))
-      // console.log("Migration data for " + effect.name, updateData)
-    return updateData;
+    {
+      return updateData;
+    }
   };
 
   /* -------------------------------------------- */
@@ -595,30 +605,85 @@ export default class Migration {
   /*  Low level migration utilities
   /* -------------------------------------------- */
 
+  
+static _migrateEffectFlags(effect)
+{
+    let applicationData = foundry.utils.getProperty(effect, "flags.wfrp4e.applicationData") || {};
+    let scriptData = foundry.utils.getProperty(effect, "flags.wfrp4e.scriptData") || [];
+    let conditionValue = foundry.utils.getProperty(effect, "flags.wfrp4e.value");
+    let update = {};
+    if (Number.isNumeric(conditionValue))
+    {
+      foundry.utils.setProperty(update, "system.condition.value", conditionValue);
+    }
+    if (isEmpty(applicationData) && scriptData.length == 0)
+    {
+      return update;
+    }
+
+    let selfOnly = false;
+    if (effect.item &&
+    effect.item.range && 
+    effect.item.range.value.toLowerCase() == game.i18n.localize("You").toLowerCase() && 
+    effect.item.target && 
+    effect.item.target.value.toLowerCase() == game.i18n.localize("You").toLowerCase())
+    {
+      selfOnly = true;
+    }
+
+    let system = {
+        transferData: {
+            type : applicationData.type,
+            documentType : applicationData.documentType,
+            avoidTest : applicationData.avoidTest,
+            testIndependent : applicationData.testIndependent,
+            preApplyScript : applicationData.preApplyScript,
+            equipTransfer : applicationData.equipTransfer,
+            enableConditionScript : applicationData.enableConditionScript,
+            filter : applicationData.filter,
+            prompt : applicationData.prompt,
+            selfOnly,
+            area: {
+              radius : applicationData.radius,
+              templateData : applicationData.templateData,
+  
+              duration : applicationData.areaType,
+              keep : applicationData.keep,
+  
+              aura: {
+                  render : applicationData.renderAura,
+                  transferred : applicationData.targetedAura,
+              }
+          },
+        },
+        scriptData: effect.system.scriptData.length ? effect.system.scriptData : scriptData,
+        zone: {},
+        sourceData: {
+            item : effect.flags?.wfrp4e?.sourceItem,
+            test : effect.flags?.wfrp4e?.sourceTest,
+            area : effect.flags?.wfrp4e?.fromArea,
+        }
+    }
+
+    system.scriptData.forEach(script => {
+      if (typeof script == "string")
+      {
+        script = {script : script};
+      }
+      if (!script.options)
+      {
+        script.options = {};
+      }
+      script.options = foundry.utils.mergeObject(foundry.utils.mergeObject(script.options, script.options.dialog || {}), script.options.immediate || {})
+    })
+    return {"flags.wfrp4e.-=applicationData" : null,  "flags.wfrp4e.-=scriptData" : null, system};
+}
+
   static _loreEffectIds(document)
   {
     return document.effects.filter(e => e.flags.wfrp4e?.lore).map(i => i.id)
   }
 
-  static _migrateEffectScript(effect, updateData) {
-    let script = effect.flags?.wfrp4e?.script
-
-    if (!script)
-      return updateData
-
-
-    script = script.replaceAll("actor.data.token", "actor.prototypeToken")
-    script = script.replaceAll("actor.data", "actor")
-    script = script.replaceAll("effect.label", "effect.name")
-    script = this._migrateV10Links(script);
-
-
-    if (script != effect.flags.wfrp4e.script)
-      updateData["flags.wfrp4e.script"] = script
-
-    return updateData
-  }
-  
   static _migrateV10Links(html)
   {
     try 

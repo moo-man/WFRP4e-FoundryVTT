@@ -1,13 +1,13 @@
 import VehicleCrew from "../../apps/vehicle-crew.js";
 import VehicleCumulativeModifiersConfig from "../../apps/vehicle-modifiers.js";
 import VehicleMoveConfig from "../../apps/vehicle-move.js";
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Vehicle Sheets.
  *
  */
-export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eVehicle extends ActorSheetWFRP4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
     foundry.utils.mergeObject(options,
@@ -29,7 +29,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
       {
         return ui.notification.error("Cannot use Compendium Actors with Vehicles")
       }
-      this.actor.update({ "system.passengers.list": this.actor.system.passengers.add(fromUuidSync(dragData.uuid)) })
+      this.actor.update(this.actor.system.passengers.add(fromUuidSync(dragData.uuid)))
     }
     else return super._onDrop(event);
   }
@@ -175,7 +175,7 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
 
     let actor = await this.actor.system.passengers.choose();
 
-    let test = await actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.getItemTypes("ammunition") });
+    let test = await actor.setupWeapon(weapon, { vehicle: vehicleSpeaker, ammo: this.actor.itemTags["ammunition"] });
     test.roll();
   }
 
@@ -183,12 +183,12 @@ export default class ActorSheetWfrp4eVehicle extends ActorSheetWfrp4e {
     let multiplier = ev.button == 0 ? 1 : -1;
     multiplier = ev.ctrlKey ? multiplier * 10 : multiplier;
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.actor.system.passengers.count(id,1 * multiplier ) });
+    this.actor.update(this.actor.system.passengers.count(id,1 * multiplier ));
   }
 
   _onPassengerDeleteClick(ev) {
     let id = this._getId(ev);
-    this.actor.update({ "system.passengers.list": this.actor.system.passengers.remove(id) });
+    this.actor.update(this.actor.system.passengers.remove(id));
   }
 
   _onCargoClick(ev) {

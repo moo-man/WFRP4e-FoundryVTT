@@ -1,1 +1,1 @@
-args.prefillModifiers.modifier -= 10 * foundry.utils.getProperty(this.effect, 'flags.wfrp4e.value')
+args.prefillModifiers.modifier -= 10 * thish.effect.system.condition.value

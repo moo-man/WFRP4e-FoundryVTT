@@ -13,7 +13,7 @@
         let personalityQuirk = (await game.wfrp4e.tables.rollTable("personality-quirks", {hideDSN: true})).text;
 
 
-        let templateItem = await game.wfrp4e.utility.findItemId(templateMap[template._id]);
+        let templateItem = await warhammer.utility.findItemId(templateMap[template._id]);
 
         let bio = 
         `
@@ -23,7 +23,7 @@
         <p><strong>Personality Quirk</strong>: ${personalityQuirk}</p>
         `
         
-        this.script.scriptMessage(bio, {whisper : ChatMessage.getWhisperRecipients("GM")})
+        this.script.message(bio, {whisper : ChatMessage.getWhisperRecipients("GM")})
 
         await this.actor.update({"system.details.gmnotes.value" : bio})
 

@@ -22,6 +22,15 @@ export class MutationModel extends BaseItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of MutationModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isMutation() {
+      return true;
+    }
 
     async expandData(htmlOptions) {
         let data = await super.expandData(htmlOptions);

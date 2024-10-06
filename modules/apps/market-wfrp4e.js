@@ -5,7 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * WIP
  * This class contains functions and helpers related to the market and Pay system
  */
-export default class MarketWfrp4e {
+export default class MarketWFRP4e {
   /**
    * Roll a test for the availability and the stock quantity of an item based on the rulebook
    * Takes as a parameter an object with localized settlement type, localized rarity and a modifier for the roll
@@ -117,6 +117,42 @@ export default class MarketWfrp4e {
 
     return money;
   }
+  
+  static convertMoney(money, type)
+  {
+
+    money = money.map(m => m.toObject());
+  
+    if (type == "gc")
+    {
+      let currentGC = money.find(i => i.name == game.i18n.localize("NAME.GC"))
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+
+      if (currentGC && currentSS && currentGC.system.quantity.value )
+      {
+        currentGC.system.quantity.value -= 1;
+        currentSS.system.quantity.value += 20
+        return [currentGC, currentSS];
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+    
+    if (type == "ss")
+    {
+      let currentSS = money.find(i => i.name == game.i18n.localize("NAME.SS"))
+      let currentBP = money.find(i => i.name == game.i18n.localize("NAME.BP"))
+
+      if (currentBP && currentSS  && currentSS.system.quantity.value)
+      {
+        currentSS.system.quantity.value -= 1;
+        currentBP.system.quantity.value += 12
+        return [currentBP, currentSS];
+      }
+      else
+        return ui.notifications.error(game.i18n.localize("ErrorMoneyConvert"))
+    }
+  }
 
   /**
    * Execute a /credit amount and add the money to the player inventory
@@ -125,7 +161,7 @@ export default class MarketWfrp4e {
    */
   static creditCommand(amount, actor, options = {}) {
     //First we parse the amount
-    let moneyItemInventory = actor.getItemTypes("money").map(i => i.toObject());
+    let moneyItemInventory = actor.itemTags["money"].map(i => i.toObject());
     let moneyToSend = this.parseMoneyTransactionString(amount);
     let msg = `<h3><b>${game.i18n.localize("MARKET.CreditCommand")}</b></h3>`;
     let errorOccured = false;
@@ -190,7 +226,7 @@ export default class MarketWfrp4e {
    */
   static payCommand(command, actor, options = {}) {
     //First we parse the command
-    let moneyItemInventory = actor.getItemTypes("money").map(i => i.toObject())
+    let moneyItemInventory = actor.itemTags["money"].map(i => i.toObject())
     let moneyToPay = this.parseMoneyTransactionString(command);
     let msg = `<h3><b>${game.i18n.localize("MARKET.PayCommand")}</b></h3>`;
     let errorOccured = false;
@@ -532,5 +568,96 @@ export default class MarketWfrp4e {
         ChatMessage.create(chatData);
       })
     }
+  }
+
+
+
+
+  static async rollIncome(career, {standing, tier}={}) {
+    standing = standing || career.system.status.standing
+    tier = tier || career.system.status.tier
+
+    let dieAmount = game.wfrp4e.config.earningValues[tier] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+    dieAmount = parseInt(dieAmount) * standing;     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+    let earned;
+    if (tier != "g") // Don't roll for gold, just use standing value
+    {
+      dieAmount = dieAmount + "d10";
+      earned = (await new Roll(dieAmount).roll()).total;
+    }
+    else
+      earned = dieAmount;
+
+      let item;
+      if (tier == "g")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.GC"), "money")
+      }
+      else if (tier == "s")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.SS"), "money")
+      }
+      else if (tier == "b")
+      {
+        item = await game.wfrp4e.utility.find(game.i18n.localize("NAME.BP"), "money")
+      }
+
+      item = item?.toObject();
+
+      if (item)
+      {
+        item.system.quantity.value = earned;
+      }
+
+      return {earned, type : tier, item}
+  }
+
+
+  static addMoneyTo(actor, moneyString) {
+    // Money string is in the format of <amt><type>, so 12b, 5g, 1.5g
+    let type = moneyString.slice(-1);
+    let amt;
+    // Failure means divide by two, so mark whether we should add half a gold or half a silver, just round pennies
+    let halfS = false, halfG = false
+    if (type === "b")
+      amt = Math.round(moneyString.slice(0, -1));
+    else if (type === "s") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfS = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    else if (type === "g") {
+      if (moneyString.slice(0, -1).includes("."))
+        halfG = true;
+      amt = Math.floor(moneyString.slice(0, -1))
+    }
+    let money = actor.itemTags["money"].map(m => m.toObject());
+
+    let moneyItem;
+    switch (type) {
+      case 'b':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.BP"));
+        break;
+      case 's':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.SS"));
+        break;
+      case 'g':
+        moneyItem = money.find(i => i.name === game.i18n.localize("NAME.GC"));
+        break;
+    }
+
+    // If 0, means they failed the roll by -6 or more, delete all money
+    if (!amt && !halfG && !halfS)
+      money.forEach(m => m.system.quantity.value = 0);
+    else // Otherwise, add amount to designated type
+      moneyItem.system.quantity.value += amt;
+
+    // add halves
+    if (halfS)
+      money.find(i => i.name === game.i18n.localize("NAME.BP")).system.quantity.value += 6;
+    if (halfG)
+      money.find(i => i.name === game.i18n.localize("NAME.SS")).system.quantity.value += 10;
+
+    return money;
   }
 }

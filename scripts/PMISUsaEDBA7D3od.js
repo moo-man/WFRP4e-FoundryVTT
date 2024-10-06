@@ -9,7 +9,7 @@ if (hasMagicResistance === undefined) {
     traitItem.system.specification.value = 2
     this.actor.createEmbeddedDocuments("Item", [traitItem], {fromEffect: this.effect.id})
   })
-  this.script.scriptMessage(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained the Magic Resistance Trait. This effect lasts for one hour.</p>`, {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })   
+  this.script.message(`<p><strong>${this.actor.prototypeToken.name}</strong> has gained the Magic Resistance Trait. This effect lasts for one hour.</p>`, {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })   
 }
 
 if (hasMagicResistance) {
@@ -28,6 +28,6 @@ if (hasMagicResistance) {
       <p>If they are still alive at the end of 10 rounds, the effect ends and all Poisoned Conditions gained from ${this.effect.name} are removed.</p>`
       this.actor.addCondition("poisoned", 1)
     }
-    this.script.scriptMessage(msg, {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })
+    this.script.message(msg, {whisper: ChatMessage.getWhisperRecipients("GM"), blind: true })
   })
 }

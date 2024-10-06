@@ -1,15 +1,11 @@
-import CombatHelpers from "../system/combat.js"
+import CombatHelpersWFRP from "../system/combat.js"
 import WFRP_Utility from "../system/utility-wfrp4e.js"
 
 export default function() {
-  Hooks.on("updateCombat", CombatHelpers.updateCombat);
-  Hooks.on("updateCombat", CombatHelpers.updateCombatStart);
-  Hooks.on("preUpdateCombat", CombatHelpers.preUpdateCombat);
-  Hooks.on("deleteCombat", CombatHelpers.endCombat);
 
 
   Hooks.on("preCreateCombatant", (combatant, data) => {
-    combatant.updateSource({img : WFRP_Utility.replacePopoutPath(combatant.token.texture.src)})
+    combatant.updateSource({img : warhammer.utility.replacePopoutPath(combatant.token.texture.src)})
   })
 
   Hooks.on("createCombatant", combatant => {
@@ -65,7 +61,7 @@ export default function() {
   }
 
   Hooks.on("renderCombatTracker", (app, html, options) => {
-    WFRP_Utility.replacePopoutTokens(app.element); // Combat tracker shows tokens, replace popout versions with normal
+    warhammer.utility.replacePopoutTokens(app.element); // Combat tracker shows tokens, replace popout versions with normal
 
     if (game.settings.get("wfrp4e", "useGroupAdvantage"))
     {

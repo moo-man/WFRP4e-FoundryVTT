@@ -1,0 +1,88 @@
+<div class="chargen-species-preview left {{#if preview}}active{{/if}}">
+    <h2 class="center">{{localize "Characteristics"}}</h2>
+    <table>
+        <tr>
+            <th>{{localize "CHAR.WS"}}</th>
+            <td>{{preview.characteristics.ws}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.BS"}}</th>
+            <td>{{preview.characteristics.bs}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.S"}}</th>
+            <td>{{preview.characteristics.s}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.T"}}</th>
+            <td>{{preview.characteristics.t}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.I"}}</th>
+            <td>{{preview.characteristics.i}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.Ag"}}</th>
+            <td>{{preview.characteristics.ag}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.Dex"}}</th>
+            <td>{{preview.characteristics.dex}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.Int"}}</th>
+            <td>{{preview.characteristics.int}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.WP"}}</th>
+            <td>{{preview.characteristics.wp}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "CHAR.Fel"}}</th>
+            <td>{{preview.characteristics.fel}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "Fate"}}</th>
+            <td>{{preview.fate}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "Resilience"}}</th>
+            <td>{{preview.resilience}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "Extra"}}</th>
+            <td>{{preview.extra}}</td>
+        </tr>
+        <tr>
+            <th>{{localize "Movement"}}</th>
+            <td>{{preview.movement}}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="chargen-species-preview right {{#if preview}}active{{/if}}">
+    <div class="skills-talents">
+        <div class="skills">
+            <h2>{{localize "Skills"}}</h2>
+            <div class="list">
+                {{#each preview.skills as |skill s|}}
+                    <div class="entry">{{{skill}}}</div>
+                {{/each}}
+            </div>
+        </div>
+        <hr/>
+        <div class="talents">
+            <h2>{{localize "Talents"}}</h2>
+            <div class="list">
+                {{#each preview.talents as |talent t|}}
+                    <div class="entry">{{{talent}}}</div>
+                {{/each}}
+                {{#each preview.randomTalents as |talent t|}}
+                    {{#if talent.count}}
+                        <div class="entry table-link" data-tooltip="{{talent.name}}">{{localize "CHARGEN.Species.RandomTalents" num=talent.count}}</div>
+                    {{/if}}
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</div>

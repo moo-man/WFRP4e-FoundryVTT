@@ -1,3 +1,4 @@
+import Advancement from "../../system/advancement";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
@@ -34,6 +35,16 @@ export class PrayerModel extends OvercastItemModel
         return schema;
     }
 
+    /**
+     * Used to identify an Item as one being a child or instance of PrayerModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isPrayer() {
+      return true;
+    }
+
     get Target() {
         return this.computeSpellPrayerFormula("target", this.target.aoe)
       }
@@ -62,18 +73,17 @@ export class PrayerModel extends OvercastItemModel
       }
   
 
-    async preCreateData(data, options, user) {
-        let preCreateData = await super.preCreateData(data, options, user);
+    async _preCreate(data, options, user) 
+    {
+      await super._preCreate(data, options, user);
 
         if (this.parent.isOwned) 
         {
             let actor = this.parent.actor;
             if (actor.type == "character" && this.type.value == "miracle") {
-                WFRP_Utility.miracleGainedDialog(this.parent, actor)
+                Advancement.miracleGainedDialog(this.parent, actor)
             }
         }
-
-        return preCreateData;
     }
 
     computeOwned()
@@ -84,7 +94,7 @@ export class PrayerModel extends OvercastItemModel
 
     getSkillToUse(actor) {
       actor = actor || this.parent.actor;
-      let skills = actor?.getItemTypes("skill") || []
+      let skills = actor?.itemTags["skill"] || []
       let skill = skills.find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase())
       return skill;
     }

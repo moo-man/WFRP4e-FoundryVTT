@@ -1,11 +1,11 @@
-import MarketWfrp4e from "../apps/market-wfrp4e.js";
+import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
-import OpposedWFRP from "../system/opposed-wfrp4e.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
+import OpposedHandler from "../system/opposed-handler.js";
 
 
 export default function() {
@@ -23,7 +23,7 @@ export default function() {
 
   
   Hooks.on("createChatMessage", (msg) => {
-    let test = msg.getTest();
+    let test = msg.system.test;
     if (test)
     {
       test.postTestGM(msg)
@@ -201,7 +201,7 @@ export default function() {
       }
 
       // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
-      MarketWfrp4e.testForAvailability({ settlement, rarity, modifier });
+      MarketWFRP4e.testForAvailability({ settlement, rarity, modifier });
       return false;
     }
     // Pay commands
@@ -212,7 +212,7 @@ export default function() {
       //If the user isnt a GM, he pays a price
       if (!game.user.isGM) {
         let actor = WFRP_Utility.getSpeaker(msg.speaker);
-        let money = MarketWfrp4e.payCommand(amount, actor);
+        let money = MarketWFRP4e.payCommand(amount, actor);
         if (money)
           actor.updateEmbeddedDocuments("Item", money);
       } else {
@@ -223,13 +223,13 @@ export default function() {
             if (actor.hasPlayerOwner && p ) { 
                 playerOrActor = p.name // In this case, replace the actor by the player name for chat card, as usual
               } else {
-                MarketWfrp4e.directPayCommand(amount,actor); // No player/Not active -> substract money
+                MarketWFRP4e.directPayCommand(amount,actor); // No player/Not active -> substract money
                 return false;
               }
           }
         }
         // Default choice, display chat card
-        MarketWfrp4e.generatePayCard(amount, playerOrActor);
+        MarketWFRP4e.generatePayCard(amount, playerOrActor);
       }
       return false;
     }
@@ -241,7 +241,7 @@ export default function() {
 
       // If hes a gm, it generate a "Credit" card for all the player.
       if (game.user.isGM) {
-        MarketWfrp4e.processCredit(amount, playerOrActorOrCommand);
+        MarketWFRP4e.processCredit(amount, playerOrActorOrCommand);
       } else {
         //If the user isnt a GM, he can't use the command (for now)
         message = `<p>${game.i18n.localize("MARKET.CreditCommandNotAllowed")}</p>`;
@@ -321,7 +321,6 @@ export default function() {
 
   Hooks.on("renderChatMessage", async (app, html) => {
 
-    WFRP_Utility.addLinkSources(html)
     // Hide test data from players (35 vs 50) so they don't know the enemy stats
     if (game.settings.get("wfrp4e", "hideTestData") && !game.user.isGM && html.find(".chat-card").attr("data-hide") === "true") {
       html.find(".hide-option").remove();
@@ -338,7 +337,7 @@ export default function() {
         html.find(".damage-breakdown").remove();
         html.find(".hide-spellcn").remove();
       }
-      if (!app.getOppose()?.defender?.isOwner)
+      if (!app.system.opposedHandler?.defender?.isOwner)
       {
         html.find(".opposed-options").remove();
       }
@@ -387,7 +386,7 @@ export default function() {
 
           if (newQuantity == 0) {
             game.socket.emit("system.wfrp4e", {
-              type: "deleteMsg",
+              type: "deleteMessage",
               payload: {
                 "id": app.id
               }
@@ -419,8 +418,9 @@ export default function() {
       woundsHealed.setAttribute("draggable", true);
       woundsHealed.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          type : "wounds",
-          payload : app.flags.testData.result.woundsHealed
+          type : "custom",
+          custom : "wounds",
+          wounds : app.system.test.result.woundsHealed
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
@@ -442,18 +442,18 @@ export default function() {
       amount.setAttribute("draggable", true)
       amount.addEventListener('dragstart', ev => {
         let dataTransfer = {
-          type : "money",
-          payload: $(amount).attr("data-amt")
+          type : "Income",
+          amount: $(amount).attr("data-amt")
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
     })
 
-    WFRP_Utility.replacePopoutTokens(html);
+    warhammer.utility.replacePopoutTokens(html);
 
     // if (app.getFlag("wfrp4e", "roleTests"))
     // {
-    //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.getTest()).filter(i => i);
+    //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.system.test).filter(i => i);
     //   let SL = tests.reduce((sl, test) => sl + test.result.crewTestSL, 0); 
     //   let slCounter = html.find(".sl-total")[0]
     //   slCounter.innerText = slCounter.innerText.replace("%SL%", SL);
@@ -471,12 +471,12 @@ export default function() {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
       await target.actor.clearOpposed();
     }
-    if (manual && !message.flags.opposeResult && OpposedWFRP.attackerMessage) {
-      await OpposedWFRP.attackerMessage.update(
+    if (manual && !message.flags.opposeResult && OpposedHandler.attackerMessage) {
+      await OpposedHandler.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      await OpposedWFRP.attacker.clearOpposed();
+      await OpposedHandler.attacker.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })

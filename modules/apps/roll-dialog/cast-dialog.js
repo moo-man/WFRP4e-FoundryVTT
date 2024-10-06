@@ -44,7 +44,7 @@ export default class CastDialog extends SkillDialog {
 
 
         return new Promise(resolve => {
-            let dlg = new this(fields, data, resolve, options)
+            let dlg = new this(data, fields, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -56,9 +56,9 @@ export default class CastDialog extends SkillDialog {
         })
     }
 
-    _constructTestData()
+    _getSubmissionData()
     {
-        let data = super._constructTestData();
+        let data = super._getSubmissionData();
         data.item = this.data.spell.id
         return data;
     }

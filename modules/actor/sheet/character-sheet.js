@@ -1,14 +1,15 @@
+import Advancement from "../../system/advancement.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import ActorSheetWfrp4e from "./actor-sheet.js";
+import ActorSheetWFRP4e from "./actor-sheet.js";
 
 /**
  * Provides the specific interaction handlers for Character Sheets.
  *
- * ActorSheetWfrp4eCharacter are assigned to character type actors, and the specific interactions
+ * ActorSheetWFRP4eCharacter are assigned to character type actors, and the specific interactions
  * character type actors need are defined here, specifically for careers and spending exp.
  * 
  */
-export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
+export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
   static get defaultOptions() {
     const options = super.defaultOptions;
     foundry.utils.mergeObject(options,
@@ -20,6 +21,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     return options;
   }
 
+  advancementSemaphore = new Semaphore();
 
   /**
    * Get the correct HTML template path to use for rendering this particular sheet
@@ -35,7 +37,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
    * Provides the data to the template when rendering the actor sheet
    * 
    * This is called when rendering the sheet, where it calls the base actor class
-   * to organize, process, and prepare all actor data for display. See ActorWfrp4e.prepare()
+   * to organize, process, and prepare all actor data for display. See ActorWFRP4e.prepare()
    * 
    * @returns {Object} sheetData    Data given to the template when rendering
    */
@@ -61,7 +63,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
     // For each career, find the current one, and set the details accordingly (top of the character sheet)
     // Additionally, set available characteristics, skills, and talents to advance (advancement indicator)
-    for (let career of sheetData.actor.getItemTypes("career")) {
+    for (let career of sheetData.actor.itemTags["career"]) {
       if (career.current.value) {
         sheetData.career.hasCurrentCareer = true; // Used to remove indicators if no current career
 
@@ -85,10 +87,10 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         }
 
         // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
-        for (let sk of career.skills) {
-          let trainedSkill = sheetData.actor.getItemTypes("skill").find(s => s.name.toLowerCase() == sk.toLowerCase())
+        for (let sk of career.skills.concat(career.system.addedSkills)) {
+          let trainedSkill = sheetData.actor.itemTags["skill"].find(s => s.name.toLowerCase() == sk.toLowerCase())
           if (trainedSkill) 
-            trainedSkill.system._addCareerData(career)
+            trainedSkill.system.addCareerData(career)
           else 
             sheetData.career.untrainedSkills.push(sk);
           
@@ -96,9 +98,9 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
         // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
         for (let talent of career.talents) {
-          let trainedTalent = sheetData.actor.getItemTypes("talent").find(t => t.name == talent)
+          let trainedTalent = sheetData.actor.itemTags["talent"].find(t => t.name == talent)
           if (trainedTalent) 
-            trainedTalent.system._addCareerData(career)
+            trainedTalent.system.addCareerData(career)
           else 
             sheetData.career.untrainedTalents.push(talent);
           
@@ -170,13 +172,13 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
     super.activateListeners(html);
 
     // Career toggle click (current or complete)
-    html.find('.career-toggle').click(this._onToggleCareer.bind(this))
-    html.find(".add-career").click(ev => {new game.wfrp4e.apps.CareerSelector(this.actor).render(true)})
-    html.find(".untrained-skill").mousedown(this._onUntrainedSkillClick.bind(this))
-    html.find(".untrained-talent").mousedown(this._onUntrainedTalentClick.bind(this))
-    html.find('.advancement-indicator').mousedown(this._onAdvancementClick.bind(this))
-    html.find('.exp-delete').click(this._onExpLogDelete.bind(this))
-    html.find("#input-status").mousedown(this._onStatusClick.bind(this))
+    html.find('.career-toggle').click(this._onToggleCareer.bind(this));
+    html.find(".add-career").click(ev => {new game.wfrp4e.apps.CareerSelector(this.actor).render(true)});
+    html.find(".untrained-skill").mousedown(this._onUntrainedSkillClick.bind(this));
+    html.find(".untrained-talent").mousedown(this._onUntrainedTalentClick.bind(this));
+    html.find('.advancement-indicator').mousedown((ev) => this.advancementSemaphore.add(this._onAdvancementClick.bind(this), ev));
+    html.find('.exp-delete').click(this._onExpLogDelete.bind(this));
+    html.find("#input-status").mousedown(this._onStatusClick.bind(this));
 
   }
 
@@ -187,7 +189,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
     // Only one career can be current - make all careers not current before changing selected one
     if (type == "current" && item.current.value == false) { 
-      let updateCareers = this.actor.getItemTypes("career").map(i => i.toObject())
+      let updateCareers = this.actor.itemTags["career"].map(i => i.toObject())
       updateCareers.map(x => x.system.current.value = false)
       await this.actor.updateEmbeddedDocuments("Item", updateCareers)
     }
@@ -258,7 +260,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
                   try {
-                    WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
+                    Advancement.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
                     this.actor.createEmbeddedDocuments("Item", [talent.toObject()]);
                     let expLog = foundry.utils.duplicate(this.actor.details.experience.log || []) 
                     expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
@@ -300,7 +302,10 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
   async _onAdvancementClick(ev) {
     let data = this.actor.toObject().system;
     let type = $(ev.target).attr("data-target");
-
+    ev.target.style.pointerEvents = "none"
+    // Defer updating to the very end (except for talents) to prevent rerendering early, which allows fast clicking to cause errors in calculation
+    let itemUpdates = [];
+    let actorUpdate = {};
     // Skills
     if (type == "skill") {
       let itemId = this._getId(ev);
@@ -308,30 +313,30 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = WFRP_Utility._calculateAdvCost(item.advances.value, type, item.advances.costModifier)
+        let cost = Advancement.calculateAdvCost(item.system.advances.value, type, item.system.advances.costModifier)
         try {
-          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
+          Advancement.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
-          await item.update({"system.advances.value" : item.advances.value + 1})
+          itemUpdates.push({_id : itemId, "system.advances.value" : item.system.advances.value + 1})
 
-          let expLog = this.actor._addToExpLog(cost, item.name, data.details.experience.spent)
+          let expLog = this.actor.system.addToExpLog(cost, item.name, data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: item.name}))
-          await this.actor.update({ "system.details.experience.spent": data.details.experience.spent, "system.details.experience.log" : expLog });
+          actorUpdate = { "system.details.experience.spent": data.details.experience.spent, "system.details.experience.log" : expLog };
         } catch(error) {
           ui.notifications.error(error);
         }
       }
       else if (ev.button = 2) {
         // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
-        if (item.advances.value == 0)
-          return;
-        let cost = WFRP_Utility._calculateAdvCost(item.advances.value - 1, type, item.advances.costModifier)
+        if (item.system.advances.value == 0)
+            return this.render(true); // Rerender to allow clicking again
+        let cost = Advancement.calculateAdvCost(item.system.advances.value - 1, type, item.system.advances.costModifier)
         data.details.experience.spent = Number(data.details.experience.spent) - cost;
-        await item.update({"system.advances.value" : item.advances.value - 1})
+        itemUpdates.push({_id : itemId, "system.advances.value" : item.system.advances.value - 1})
 
-        let expLog = this.actor._addToExpLog(-1 * cost, item.name, data.details.experience.spent)
+        let expLog = this.actor.system.addToExpLog(-1 * cost, item.name, data.details.experience.spent)
         ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
-        await this.actor.update({ "system.details.experience.spent": data.details.experience.spent, "system.details.experience.log" : expLog });
+        actorUpdate = { "system.details.experience.spent": data.details.experience.spent, "system.details.experience.log" : expLog };
       }
     }
     // Talents
@@ -340,11 +345,11 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
         // All career talents are stored in flags, retrieve the one clicked - use to calculate exp
         let itemId = this._getId(ev);
         let item = this.actor.items.get(itemId)
-        let advances = item.Advances
+        let advances = item.system.Advances
         let spent = 0;
         let cost = (advances + 1) * 100
         try {
-          WFRP_Utility.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
+          Advancement.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), item.name);
           if (advances < item.Max || item.Max == "-") {
             spent = this.actor.details.experience.spent + cost
           }
@@ -353,7 +358,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
           await this.actor.createEmbeddedDocuments("Item", [item.toObject()])
           
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : item.name}))
-          let expLog = this.actor._addToExpLog(cost, item.name, spent)
+          let expLog = this.actor.system.addToExpLog(cost, item.name, spent)
           await this.actor.update({"system.details.experience.spent": spent, "system.details.experience.log" : expLog})
         }  catch(error) {
           ui.notifications.error(error);
@@ -363,7 +368,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       else if (ev.button == 2) {
         let itemId = this._getId(ev);
         let item = this.actor.items.get(itemId)
-        let advances = item.Advances
+        let advances = item.system.Advances
         let spent = 0;
         let cost = (advances) * 100
         spent = this.actor.details.experience.spent - cost
@@ -379,7 +384,7 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
                   this.actor.deleteEmbeddedDocuments("Item", [itemId])
-                  let expLog = this.actor._addToExpLog(-1 * cost, item.name, spent)
+                  let expLog = this.actor.system.addToExpLog(-1 * cost, item.name, spent)
                   ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : item.name}))
                   this.actor.update({"system.details.experience.spent": spent, "system.details.experience.log" : expLog})
                 }
@@ -411,17 +416,17 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
 
       if (ev.button == 0) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = WFRP_Utility._calculateAdvCost(currentChar.advances, "characteristic");
+        let cost = Advancement.calculateAdvCost(currentChar.advances, "characteristic");
         try {
-          WFRP_Utility.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
+          Advancement.checkValidAdvancement(data.details.experience.total, data.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
           data.characteristics[characteristic].advances++;
           data.details.experience.spent = Number(data.details.experience.spent) + cost;
 
-          let expLog = this.actor._addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
+          let expLog = this.actor.system.addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
           ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
           data.details.experience.log = expLog
 
-          await this.actor.update({"system.characteristics": data.characteristics,"system.details.experience": data.details.experience});
+          actorUpdate ={"system.characteristics": data.characteristics,"system.details.experience": data.details.experience};
         } catch(error) {
           ui.notifications.error(error);
         }
@@ -429,20 +434,22 @@ export default class ActorSheetWfrp4eCharacter extends ActorSheetWfrp4e {
       else if (ev.button == 2) {
         // Calculate the advancement cost based on advances -1, add that amount back into exp
         if (currentChar.advances == 0)
-          return
-        let cost = WFRP_Utility._calculateAdvCost(currentChar.advances - 1, "characteristic");
+          return this.render(true); // Rerender to allow clicking again
+        let cost = Advancement.calculateAdvCost(currentChar.advances - 1, "characteristic");
 
         data.characteristics[characteristic].advances--;
         data.details.experience.spent = Number(data.details.experience.spent) - cost;
 
-        let expLog = this.actor._addToExpLog(-1 * cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
+        let expLog = this.actor.system.addToExpLog(-1 * cost, game.wfrp4e.config.characteristics[characteristic], data.details.experience.spent)
         ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
         data.details.experience.log = expLog
 
 
-        await this.actor.update({"system.characteristics": data.characteristics, "system.details.experience": data.details.experience});
-      }
+        actorUpdate = {"system.characteristics": data.characteristics, "system.details.experience": data.details.experience};
+      }      
     }
+    actorUpdate.items = itemUpdates;
+    await this.actor.update(actorUpdate, {skipExperienceChecks : true});
   }
 
   _onExpLogDelete(ev) {

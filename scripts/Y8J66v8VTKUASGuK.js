@@ -1,6 +1,6 @@
 if (!this.actor.effects.find(e => e.isCondition))
 {
-	return this.script.scriptNotification("No Conditions on this Actor")
+	return this.script.notification("No Conditions on this Actor")
 }
 
 let choice = await ItemDialog.create(this.actor.effects.filter(i => i.isCondition), 1, "Choose a Condition")

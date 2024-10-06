@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "wfrp4e.js",
-  "type" : "module",
+  "type": "module",
   "scripts": {
     "build": "node scriptPacker.js&& cross-env NODE_ENV=development rollup --config rollup.config.mjs --watch",
     "release": "node scriptPacker.js&& cross-env NODE_ENV=production rollup --config rollup.config.mjs&& cross-env NODE_ENV=production node dbpacker.js",
@@ -26,9 +26,12 @@
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
     "path": "^0.12.7",
-    "rollup": "^4.13.0",
+    "rollup": "^4.22.5",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-copy-watch": "^0.0.1",
-    "rollup-plugin-jscc": "^2.0.0"
+    "rollup-plugin-jscc": "^2.0.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "sass": "^1.77.4",
+    "scss": "^0.2.4"
   }
 }

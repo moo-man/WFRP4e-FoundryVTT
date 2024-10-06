@@ -128,7 +128,7 @@ export default class WeaponTest extends AttackTest {
         await this.actor.addSystemEffect("dualwielder")
 
       if (this.succeeded) {
-        let offhandWeapon = this.actor.getItemTypes("weapon").find(w => w.offhand.value);
+        let offhandWeapon = this.actor.itemTags["weapon"].find(w => w.offhand.value);
         if (this.result.roll % 11 == 0 || this.result.roll == 100)
           delete offHandData.roll
         else {

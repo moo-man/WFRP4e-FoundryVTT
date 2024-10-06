@@ -5,7 +5,7 @@ let key = match[1];
 let roll = new Roll("5d10");
 let value = undefined;
 
-await this.script.scriptMessage(result.text, {flavor: result.title});
+await this.script.message(result.text, {flavor: result.title});
 
 switch (key) {
   case 'Stromfels Triumphant!':

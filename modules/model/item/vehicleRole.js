@@ -1,4 +1,3 @@
-import ItemDialog from "../../apps/item-dialog";
 import { BaseItemModel } from "./components/base";
 
 let fields = foundry.data.fields;
@@ -8,6 +7,16 @@ export class VehicleRoleModel extends BaseItemModel {
         let schema = super.defineSchema();
         schema.test = new fields.StringField();
         return schema;
+    }
+
+    /**
+     * Used to identify an Item as one being a child or instance of VehicleRoleModel
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get isVehicleRole() {
+        return true;
     }
 
     isVitalFor(test) {

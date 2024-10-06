@@ -32,4 +32,4 @@ for(let i = 0; i < roll.total; i++)
     }
 }
 this.actor.createEmbeddedDocuments("Item", mutations.concat([etiquette, animosity]), {fromEffect : this.effect.id})
-this.script.scriptMessage(msg);
+this.script.message(msg);

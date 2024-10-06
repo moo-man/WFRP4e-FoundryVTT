@@ -15,7 +15,7 @@ if (location)
 
     if (dropped.length)
     {
-        this.script.scriptNotification(`Dropped ${dropped.map(i => i.name).join(", ")}!`)
+        this.script.notification(`Dropped ${dropped.map(i => i.name).join(", ")}!`)
         for(let weapon of dropped)
         {
             await weapon.system.toggleEquip();

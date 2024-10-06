@@ -1,6 +1,6 @@
 let fields = foundry.data.fields;
 
-export default PropertiesMixin = (cls) => class extends cls 
+const PropertiesMixin = (cls) => class extends cls
 {
     static defineSchema() {
         let schema = super.defineSchema();
@@ -11,6 +11,21 @@ export default PropertiesMixin = (cls) => class extends cls
             value: new fields.ArrayField(new fields.ObjectField({}))
         });
         return schema;
+    }
+
+    /**
+     * Used to identify an Item as one being a child of PropertiesMixin
+     *
+     * @final
+     * @returns {boolean}
+     */
+    get hasProperties() {
+        return true;
+    }
+
+    get tags() 
+    {
+        return super.tags.add("properties");
     }
 
     //#region getters
@@ -34,16 +49,18 @@ export default PropertiesMixin = (cls) => class extends cls
             return this._properties;
         }
 
-        else return {
-            qualities: this.constructor._propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList()),
-            flaws: this.constructor._propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList()),
+        this._properties = {
+            qualities: this.constructor.propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList(), this.parent),
+            flaws: this.constructor.propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
         }
+
+        return this._properties;
     }
 
     get originalProperties() {
         let properties = {
-            qualities: this.constructor._propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList()),
-            flaws: this.constructor._propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList()),
+            qualities: this.constructor.propertyArrayToObject(this._source.qualities.value, game.wfrp4e.utility.qualityList(),  this.parent),
+            flaws: this.constructor.propertyArrayToObject(this._source.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
             unusedQualities: {}
         }
         return properties;
@@ -94,6 +111,12 @@ export default PropertiesMixin = (cls) => class extends cls
 
     //#endregion
 
+    getOtherEffects()
+    {
+        return super.getOtherEffects().concat(Object.values(foundry.utils.mergeObject(foundry.utils.deepClone(this.properties.qualities), this.properties.flaws)).map(p => p.effect).filter(i => i) || []);
+    }
+
+
     computeBase() {
         this._properties = null;
         super.computeBase();
@@ -135,9 +158,10 @@ export default PropertiesMixin = (cls) => class extends cls
             else
                 flaws.push({ name: f, value: properties.flaws[f].value })
         }
+        this._properties = null;
     }
 
-    static _propertyArrayToObject(array, propertyObject) {
+    static propertyArrayToObject(array, propertyObject, document) {
 
         let properties = {}
 
@@ -150,7 +174,8 @@ export default PropertiesMixin = (cls) => class extends cls
                         display: propertyObject[p.name],
                         value: p.value,
                         group: p.group,
-                        active: p.active
+                        active: p.active,
+                        effect: this._createPropertyEffect(p, document)
                     }
                     if (p.value)
                         properties[p.name].display += " " + (Number.isNumeric(p.value) ? p.value : `(${p.value})`)
@@ -172,4 +197,52 @@ export default PropertiesMixin = (cls) => class extends cls
 
         return properties
     }
+
+      
+    static propertyStringToArray(propertyString, propertyObject)
+    {
+        let newProperties = []
+        let oldProperties = propertyString.toString().split(",").map(i => i.trim())
+        for (let property of oldProperties) {
+          if (!property)
+            continue
+    
+          let newProperty = {}
+          let splitProperty = property.split(" ")
+          if (Number.isNumeric(splitProperty[splitProperty.length - 1])) {
+            newProperty.value = parseInt(splitProperty[splitProperty.length - 1])
+            splitProperty.splice(splitProperty.length - 1, 1)
+          }
+    
+          splitProperty = splitProperty.join(" ")
+    
+          newProperty.name = warhammer.utility.findKey(splitProperty, propertyObject)
+          if (newProperty)
+            newProperties.push(newProperty)
+          else
+            newProperties.push(property)
+        }
+        return newProperties
+    }
+  
+    
+    static propertyStringToObject(propertyString, propertyObject)
+    {
+        let array = this.propertyStringToArray(propertyString, propertyObject)
+        return this.propertyArrayToObject(array, propertyObject)
+    }
+  
+
+    static _createPropertyEffect(property, document)
+    {
+        let effectData = foundry.utils.deepClone(game.wfrp4e.config.propertyEffects[property.name]);
+        if (effectData)
+        {
+            let type = game.wfrp4e.config.weaponQualities[property.name] ? "qualities" : "flaws"
+            setProperty(effectData, "flags.wfrp4e", {value : property.value, path : `system.properties.${type}.${property.name}.effect`});
+            return new CONFIG.ActiveEffect.documentClass(effectData, {parent : document});
+        }
+    }
 }
+
+export default PropertiesMixin;

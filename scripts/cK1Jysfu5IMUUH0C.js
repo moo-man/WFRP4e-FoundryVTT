@@ -4,7 +4,7 @@ if (!args.ward)
 	if (args.wardRoll >= args.ward && args.ward > 3)
     {
         let newWard = Math.max(3, args.ward - 1)
-        this.script.scriptMessage("<strong>Ward</strong> improved to " + newWard)
+        this.script.message("<strong>Ward</strong> improved to " + newWard)
         this.effect.setFlag("wfrp4e", "ward", newWard)
     }
 

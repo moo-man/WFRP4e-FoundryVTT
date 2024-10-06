@@ -5,7 +5,7 @@
     <br>
     <b>{{combatant.name}}: </b>
         {{#each combatant.conditions as |condition c|}}
-        <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition.label}} {{#if condition.flags.wfrp4e.value}} {{condition.flags.wfrp4e.value}} {{/if}}</a>,
+        <a class='condition-chat'><i class='fas fa-user-injured'></i> {{condition.label}} {{#if condition.system.condition.value}} {{condition.system.condition.value}} {{/if}}</a>,
         {{/each}}
     {{/if}}
     {{/each}}

@@ -25,7 +25,8 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
         });
 
         schema.corruption = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0, min : 0 })
+            value: new fields.NumberField({ initial: 0, min : 0 }),
+            max : new fields.NumberField({initial : 0})
         });
 
         schema.encumbrance = new fields.SchemaField({
@@ -159,17 +160,27 @@ export class CharacterStatusModel extends StandardStatusModel {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.fortune = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.fate = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.resilience = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         schema.resolve = new fields.SchemaField({
-            value: new fields.NumberField({ initial: 0 }),
+            value: new fields.NumberField({ initial: 0, min: 0}),
         });
         return schema;
+    }
+
+    increment(type)
+    {
+        return {[`system.${this.schema.fieldPath}.${type}.value`] : this[type].value + 1}
+    }
+
+    decrement(type)
+    {
+        return {[`system.${this.schema.fieldPath}.${type}.value`] : this[type].value - 1}
     }
 }

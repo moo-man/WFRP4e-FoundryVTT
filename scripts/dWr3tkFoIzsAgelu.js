@@ -7,5 +7,5 @@ if (injury && this.effect.sourceTest.result.outcome == "success") {
  let newDays = Math.max(days - roll.total, 1)
  this.actor.updateEmbeddedDocuments("Item", [{_id: injury.id, 'system.duration.value': newDays} ])
  let message = "Injury reduces to "+newDays+" (-" + roll.total + ") instead of "+days
- this.script.scriptMessage(message)
+ this.script.message(message)
 }

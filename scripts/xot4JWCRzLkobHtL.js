@@ -1,0 +1,1 @@
+args.actor.removeCondition("broken", 1);

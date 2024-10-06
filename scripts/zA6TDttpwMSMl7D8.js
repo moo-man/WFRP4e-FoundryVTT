@@ -5,7 +5,7 @@ this.actor.setupSkill(game.i18n.localize("NAME.ConsumeAlcohol"), {skipTargets: t
   // as a result of whatever potential futures they glimpse, 
   // they can spend a Fortune Point within the next hour to reverse the dice of any failed Test.
   if (test.succeeded) {
-    this.script.scriptMessage(`As a result of whatever potential futures they glimpse, <strong>${this.actor.prototypeToken.name}</strong> can spend a Fortune Point within the next hour to reverse the dice of any failed Test.`, 
+    this.script.message(`As a result of whatever potential futures they glimpse, <strong>${this.actor.prototypeToken.name}</strong> can spend a Fortune Point within the next hour to reverse the dice of any failed Test.`, 
     {
       whisper: ChatMessage.getWhisperRecipients("GM"), 
       blind: true 

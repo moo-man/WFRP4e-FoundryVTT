@@ -1,4 +1,4 @@
-this.script.scriptNotification(`Healed ${this.actor.characteristics.t.bonus * 2} Wounds`)
+this.script.notification(`Healed ${this.actor.characteristics.t.bonus * 2} Wounds`)
 await this.actor.modifyWounds(this.actor.characteristics.t.bonus * 2)
 
 let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {skipTargets: true, appendTitle :  ` - Side Effects`,fields : {difficulty : "difficult"}})
