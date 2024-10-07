@@ -983,7 +983,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
 
   async corruptionDialog(strength) {
-    const test =  await Dialog.wait({
+    const test = await Dialog.wait({
       title: game.i18n.localize("DIALOG.CorruptionTitle"),
       content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
       buttons: {
