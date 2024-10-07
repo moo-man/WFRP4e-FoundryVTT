@@ -993,8 +993,8 @@ export default class ActorWFRP4e extends WarhammerActor
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
             if (skill)
               return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
-            else
-              return await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
+
+            return await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
           }
         },
         cool: {
@@ -1003,8 +1003,8 @@ export default class ActorWFRP4e extends WarhammerActor
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
             if (skill)
               return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
-            else
-              return await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
+
+            return await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
           }
         }
       }
