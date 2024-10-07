@@ -769,7 +769,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
     }
     catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
-    let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, modifiers, ward, wardRoll, attacker, extraMessages, abort }
+    let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
     await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
@@ -983,8 +983,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
 
   async corruptionDialog(strength) {
-    let test;
-    Dialog.wait({
+    const test =  await Dialog.wait({
       title: game.i18n.localize("DIALOG.CorruptionTitle"),
       content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
       buttons: {
@@ -992,29 +991,27 @@ export default class ActorWFRP4e extends WarhammerActor
           label: game.i18n.localize("NAME.Endurance"),
           callback: async () => {
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
-            if (skill) {
-             test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
-            }
-            else {
-              test = await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
-            }
+            if (skill)
+              return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
+            else
+              return await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
           }
         },
         cool: {
           label: game.i18n.localize("NAME.Cool"),
           callback: async () => {
             let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
-            if (skill) {
-              test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
-            }
-            else {
-              test = await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
-            }
+            if (skill)
+              return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
+            else
+              return await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
           }
         }
-
       }
-    }).render(true)
+    });
+
+    await test.roll();
+
     return test;
   }
 
