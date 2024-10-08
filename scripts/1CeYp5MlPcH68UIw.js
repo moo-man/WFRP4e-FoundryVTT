@@ -86,5 +86,4 @@ for (let trapping of trappings)
 updateObj.name = updateObj.name += " " + this.effect.name
 
 await this.actor.update(updateObj)
-console.log(">>>>>>><", items)
 this.actor.createEmbeddedDocuments("Item", items);

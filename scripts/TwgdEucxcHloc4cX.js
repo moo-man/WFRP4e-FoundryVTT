@@ -112,8 +112,12 @@ for (let c of choice)
         let item = await game.wfrp4e.utility.find(c.name, c.type)
         if (item)
         {
+            let equip = item.system.tags.has("equippable");
             item = item.toObject()
-            item.system.equipped.value = true;
+            if (equip)
+            {
+                item.system.equipped.value = true;
+            }
             items.push(foundry.utils.mergeObject(item, (c.diff || {})))
         }
         else
