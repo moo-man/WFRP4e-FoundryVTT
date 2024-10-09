@@ -1434,6 +1434,8 @@
     "SHEET.Target" : "Target",
     "SHEET.ToggleEffect" : "Toggle Effect",
     "SHEET.Additional" : "Additional",
+    "SHEET.OtherCost": "Other Cost",
+    "SHEET.OtherCostPlaceholder": "formula or number"
     "SHEET.ApplyEffect" : "Apply {effect}",
     "SHEET.InvokeEffect" : "Invoke {effect}",
     "SHEET.ExpChange" : "Spent / Total Change",
