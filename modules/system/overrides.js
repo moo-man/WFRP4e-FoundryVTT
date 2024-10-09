@@ -41,14 +41,14 @@ export default function () {
      
            // Draw actor effects first
            for ( let f of actorEffects ) {
-             if ( !f.icon ) continue;
+             if ( !f.img ) continue;
              const tint = Color.from(f.tint ?? null);
              if ( f.getFlag("core", "overlay") ) {
                if ( overlay ) promises.push(this._drawEffect(overlay.src, overlay.tint));
-               overlay = {src: f.icon, tint};
+               overlay = {src: f.img, tint};
                continue;
              }
-             promises.push(this._drawEffect(f.icon, tint,  f.system.condition.value));
+             promises.push(this._drawEffect(f.img, tint,  f.system.condition.value));
            }
      
            // Next draw token effects
