@@ -1,4 +1,6 @@
 .wfrp4e.actor.sheet {
+
+    &.npc section.tab[data-tab="main"],
     section.tab[data-tab="skills"] {
         height: calc(100% - 220px);
         overflow-y: unset;

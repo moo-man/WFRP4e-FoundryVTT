@@ -68,7 +68,22 @@ export class CareerModel extends BaseItemModel
             });
             // Reset all other careers to not be current (only one can be current)
             actor.update({items : careerUpdates});
+        }
+        if (this.parent.isOwned && this.parent.actor.type == "npc" && foundry.utils.getProperty(options.changed, "system.complete.value"))
+        {
+            this._promptCareerAdvance()
+        }
+    }
 
+
+    async _promptCareerAdvance()
+    {
+        let advance = await Dialog.confirm({ content: game.i18n.localize("CAREERAdvHint"), title: game.i18n.localize("CAREERAdv")})
+
+        if (advance)
+        {
+            await this.parent.actor.system.advance(this.parent)
+            await this.parent.actor.update({ "system.details.status.value": game.wfrp4e.config.statusTiers[this.status.tier] + " " + this.status.standing })
         }
     }
 
