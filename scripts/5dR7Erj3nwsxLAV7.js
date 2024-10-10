@@ -59,7 +59,7 @@ for (let trapping of trappings)
     {
         trappingItem = trappingItem.toObject()
 
-        equip(trappingItem)
+        trappingItem.system.equipped.value = true;
 
         items.push(trappingItem);
     }
@@ -73,13 +73,3 @@ updateObj.name = updateObj.name += " " + this.effect.name
 
 await this.actor.update(updateObj)
 this.actor.createEmbeddedDocuments("Item", items);
-
-function equip(item)
-{
-    if (item.type == "armour")
-        item.system.worn.value = true
-    else if (item.type == "weapon")
-        item.system.equipped = true
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
-        item.system.worn = true
-}

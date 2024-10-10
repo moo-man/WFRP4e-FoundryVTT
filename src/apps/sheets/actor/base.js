@@ -49,6 +49,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       convertCurrency : this._onConvertCurrency,
       consolidateCurrency : this._onConsolidateCurrency,
       collapseSection : this._onCollapseSection,
+      containerSort : this._onContainerSort,
       createItem : this._onCreateItem,
       configureActor : this._onConfigureActor,
       useAspect : this._onUseAspect
@@ -624,6 +625,40 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[section]
   
       this.actor.setFlag("wfrp4e", `sheetCollapsed.${section}`, !collapsed);
+    }
+    
+    static async _onContainerSort(ev)
+    {
+      let direction = this._getParent(ev.target, "a").dataset.direction
+
+      let container = await this._getDocumentAsync(ev);
+
+      // All Containers on the same level as the sorted container
+      let containers = this.actor.itemTags.container.sort((a, b) => a.sort - b.sort).filter(i => i.system.location.value == container.system.location.value);
+
+      // Index of the sorted container
+      let index = containers.findIndex(i => i.id == container.id);
+
+      if ((index == 0 && direction == "up") || (index == containers.length - 1 && direction == "down"))
+        {
+          return;
+        }
+
+        // Index of the target container
+        let targetIndex = direction == "up" ? index - 1 : index + 1;
+        let target = containers[targetIndex];
+
+        // Remove sorted container
+        containers = containers.filter(i => i.id != container.id);
+
+      let sorted = SortingHelpers.performIntegerSort(container, {target, siblings: containers});
+      this.actor.updateEmbeddedDocuments("Item", sorted.map(s => 
+      {
+          return foundry.utils.mergeObject({
+              _id : s.target.id,
+          }, s.update);
+      }));
+  
     }
 
     //#endregion
