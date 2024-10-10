@@ -94,7 +94,7 @@ export default class WFRP_Utility {
     }
     else 
     {
-      return foundry.utils.mergeObject(duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
+      return foundry.utils.mergeObject(foundry.utils.duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
     }
 
   }

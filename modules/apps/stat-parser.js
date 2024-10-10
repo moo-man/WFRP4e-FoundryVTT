@@ -338,7 +338,7 @@ export default class StatBlockParser extends FormApplication {
             {
                 let split = change.key.split(".")
                 let target = split.slice(1).join(".")
-                foundry.utils.setProperty(model, target, (getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
+                foundry.utils.setProperty(model, target, (foundry.utils.getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
             }
         })
 

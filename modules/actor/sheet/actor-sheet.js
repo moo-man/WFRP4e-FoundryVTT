@@ -933,7 +933,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   _onSkillSwitch(ev) {
-    this.actor.setFlag("wfrp4e", "showExtendedTests", !getProperty(this.actor, "flags.wfrp4e.showExtendedTests"))
+    this.actor.setFlag("wfrp4e", "showExtendedTests", !foundry.utils.getProperty(this.actor, "flags.wfrp4e.showExtendedTests"))
     this.render(true)
   }
 
@@ -1007,7 +1007,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     // Damage traits first
     for (let armourTrait of armourTraits) {
       // If APDamage flag doesn't exist
-      if (armourTrait && !getProperty(armourTrait, "flags.wfrp4e.APdamage")) foundry.utils.setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
+      if (armourTrait && !foundry.utils.getProperty(armourTrait, "flags.wfrp4e.APdamage")) foundry.utils.setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
       if (armourTrait) {
         if (ev.button == 0) {
           if (armourTrait.flags.wfrp4e.APdamage[location] != 0) {
@@ -1455,7 +1455,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (existing?.manualScripts.length) {
+      if (existing?.manualScripts?.length) {
         let button = $(`<br><br>
           ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${s.index}">${s.Label}</a>`)}
         `)
