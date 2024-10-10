@@ -159,11 +159,6 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     {
         super.computeBase();
     }
-
-    computeOwnerDerived(actor) 
-    {
-
-    }
       
     getSkillToUse(actor) {
         actor = actor || this.parent.actor;

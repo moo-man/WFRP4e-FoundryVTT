@@ -18,7 +18,7 @@ export class CargoModel extends PhysicalItemModel
         schema.quality = new fields.SchemaField({
             value: new fields.StringField({initial : "average"})
         });
-        schema.tradeType = new fields.StringField({})
+        schema.tradeType = new fields.StringField({initial : "river"})
         return schema;
     }
 

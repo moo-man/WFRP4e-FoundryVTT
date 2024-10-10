@@ -1,9 +1,16 @@
 .wfrp4e.actor.sheet {
+    --mount-outline: var(--color-cool-3);
+    --attacker-border: var(--color-cool-3);
+    --ap-border : var(--color-cool-3);
+    
     section.tab[data-tab="combat"] {
         height: calc(100% - 200px);
 
         .armour 
         {
+            .flexrow {
+                align-items: flex-start;
+            }
             .sheet-list {
                 margin: 5px;
                 &:first-of-type {
@@ -23,9 +30,9 @@
                     }
 
                     .ap-source {
-                        background: var(--color-cool-3);
+                        background: var(--mount-outline);
                         flex: 0 0 20px;
-                        border-right: 1px solid var(--color-cool-4);
+                        border-right: 1px solid var(--ap-border);
 
                         &.armour {
                             background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
@@ -50,21 +57,22 @@
             .mount-drop {
                 height: 100%;
                 width: 100%;
-                border: 3px dashed var(--color-cool-3);
+                border: 3px dashed var(--mount-outline);
                 font-size: var(--font-size-24);
-                line-height: 150px;
+                line-height: 120px;
                 text-align: center;
                 border-radius: 15px;
             }
 
             .mounted {
-                border: 3px solid var(--color-cool-3);
+                border: 3px solid var(--mount-outline);
                 border-radius: 15px;
                 padding: 0px 0px;
                 .mount-header {
                     text-align: center;
                     font-size: var(--font-size-18);
-                    background: var(--color-cool-3);
+                    background: var(--mount-outline);
+                    border-radius: 12px 12px 0px 0px;;
                 }
                 .mount-details {
                     display: flex;
@@ -92,13 +100,11 @@
                         flex-direction: column;
                         margin: 5px;
                         text-align: center;
-                        color: var(--color-light-3);
                     }
                     label {
-                        color: white;
                         margin-top: 5px;
                         padding-top: 5px;
-                        border-top: 1px solid var(--color-cool-3);
+                        border-top: 1px solid var(--mount-outline);
                     }
                 }
                 .mount-controls {
@@ -130,11 +136,11 @@
     .attacker {
         margin: 10px 0px;
         border-radius: 15px;
-        border: 3px solid var(--color-cool-3);
+        border: 3px solid var(--attacker-border);
         text-align: center;
         .header {
             font-size: var(--font-size-18);
-            background: var(--color-cool-3);
+            background: var(--attacker-border);
         }
         .details {
             display: flex;
@@ -152,7 +158,7 @@
                     &:last-of-type {
                         margin-top: 5px;
                         padding-top: 5px;
-                        border-top: 1px solid var(--color-cool-3);
+                        border-top: 1px solid var(--attacker-border);
                     }
                 }
             }

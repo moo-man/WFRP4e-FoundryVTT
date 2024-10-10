@@ -126,7 +126,7 @@ export class VehicleModel extends BaseActorModel {
 
     getOtherEffects() 
     {
-        return super.getOtherEffects().concat(this.status.morale.getMoraleEffects(this))
+        return super.getOtherEffects().concat(this.status.morale.getMoraleEffects(this.parent))
     }
 
     static migrateData(data)

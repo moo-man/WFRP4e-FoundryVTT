@@ -5,6 +5,9 @@ parent: Scripts
 nav_order: 16
 grand_parent: Active Effects
 ---
+
+This trigger runs after the armour (AP) objcet has been initialized (as shown below).
+
 ## Key
 
 `preAPCalc`
@@ -57,3 +60,4 @@ args.AP = {
 
 ## Examples
 
+There are no scripts that currently use this trigger. Generally modifications to AP is used in [Armour Calculation](./APCalc.md)

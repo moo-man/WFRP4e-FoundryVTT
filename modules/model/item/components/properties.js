@@ -158,6 +158,7 @@ const PropertiesMixin = (cls) => class extends cls
             else
                 flaws.push({ name: f, value: properties.flaws[f].value })
         }
+        this._properties = null;
     }
 
     static propertyArrayToObject(array, propertyObject, document) {

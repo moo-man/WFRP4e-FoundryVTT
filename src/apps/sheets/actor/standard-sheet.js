@@ -298,7 +298,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
       cont.system.carrying = itemsInside.filter(i => i.type != "container").sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
-      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort);; // cont.system.packsInside -> containers the container is carrying
+      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort); // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
@@ -316,7 +316,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   
   _filterItemCategory(category, itemsInContainers) {
     itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.system.location?.value))
-    category.items = category.items.filter(i => !i.system.location?.value)
+    category.items = category.items.filter(i => !i.system.location?.value).sort((a, b) => a.sort - b.sort);
     category.show = category.items.length > 0
     return itemsInContainers
   }

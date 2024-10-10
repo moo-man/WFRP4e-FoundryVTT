@@ -1,4 +1,5 @@
 .wfrp4e.actor.sheet {
+    --advances-border : var(--color-cool-3);
 
     &.npc section.tab[data-tab="main"],
     section.tab[data-tab="skills"] {
@@ -32,6 +33,14 @@
 
             input {
                 border-radius: 0px;
+                background: transparent;
+                border: none;
+                &:hover {
+                    border: 1px solid var(--advances-border);
+                }
+                &:focus {
+                    border: 1px solid var(--advances-border);
+                }
             }
             .list-content {
                 overflow-y: auto;

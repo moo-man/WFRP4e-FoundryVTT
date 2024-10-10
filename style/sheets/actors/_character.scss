@@ -9,11 +9,11 @@
             flex: 2;
 
             div:nth-child(-n + 4) {
-                border-bottom: 1px solid var(--color-cool-3);
+                border-bottom: 1px solid var(--attribute-border);
             }
 
             .field {
-                background: var(--color-cool-4);
+                background: var(--attribute-input);
 
                 a {
                     width: 100%;
@@ -24,7 +24,7 @@
 
         &.experience {
             .label:first-child {
-                border-bottom: 1px solid var(--color-cool-3);
+                border-bottom: 1px solid var(--attribute-border);
             }
 
             flex: 3;

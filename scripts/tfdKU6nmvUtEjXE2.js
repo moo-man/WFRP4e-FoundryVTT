@@ -33,16 +33,6 @@ else if (choice == "twohanded")
 }
 items = items.map(i => i.toObject())
 
-items.forEach(i => equip(i))
+items.forEach(i => i.system.equipped.value)
 
 this.actor.createEmbeddedDocuments("Item", items);
-
-function equip(item)
-{
-    if (item.type == "armour")
-        item.system.worn.value = true
-    else if (item.type == "weapon")
-        item.system.equipped = true
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
-        item.system.worn = true
-}

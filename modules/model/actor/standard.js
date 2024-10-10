@@ -280,19 +280,26 @@ export class StandardActorModel extends BaseActorModel {
 
     checkWounds(force=false) {
         if (this.parent.flags.autoCalcWounds || force) {
-            let wounds = this.computeWounds()
+            let newMaxWounds = this.computeWounds()
+            let updateCurrentWounds = this.status.wounds.value == this.status.wounds.max;
 
-            if (this.status.wounds.max != wounds) // If change detected, reassign max and current wounds
-            {
+            if (this.status.wounds.max != newMaxWounds) // If change detected, reassign max and current wounds only if current == max
+             {
                 if (this.parent.compendium || !game.actors || !this.parent.inCollection) // Initial setup, don't send update
                 {
-                  this.status.wounds.max = wounds;
-                  this.status.wounds.value = wounds;
+                  this.status.wounds.max = newMaxWounds;
+                  if (updateCurrentWounds)
+                  {
+                    this.status.wounds.value = newMaxWounds;
+                  }   
                 }
                 else
                 {
-                    if (game.user.id == getActiveDocumentOwner(this.parent)?.id) {
-                        this.parent.update({ "system.status.wounds.max": wounds, "system.status.wounds.value": wounds })
+                    if (game.user.id == getActiveDocumentOwner(this.parent)?.id) 
+                    {
+                        this.parent.update({ 
+                            "system.status.wounds.max": newMaxWounds, 
+                            "system.status.wounds.value": updateCurrentWounds ? newMaxWounds : this.status.wounds.value }) // Only update current if unwounded
                     }
                 }
             }
