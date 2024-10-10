@@ -7,8 +7,9 @@ export default class ChannelTest extends TestWFRP {
     if (!data)
       return
 
-    this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.data.preData.malignantInfluence = data.malignantInfluence
+    this.data.preData.malignantInfluence = data.malignantInfluence;
+    this.data.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    this.data.preData.ingredientMode = data.ingredientMode ?? "none";
     this.data.preData.skill = data.skill?.id;
     this.data.context.channelUntilSuccess = data.channelUntilSuccess
 
@@ -112,7 +113,7 @@ export default class ChannelTest extends TestWFRP {
 
     miscastCounter += this._checkInfluences() || 0
     this._handleMiscasts(miscastCounter)
-    this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
+    this.result.tooltips.miscast = "<ul style='text-align: left'>" + this.result.tooltips.miscast.map(t => `<li>${t}</li>`).join("") + "</ul>";
   }
 
   _checkInfluences()
@@ -138,7 +139,7 @@ export default class ChannelTest extends TestWFRP {
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        if (this.preData.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
@@ -169,7 +170,7 @@ export default class ChannelTest extends TestWFRP {
       }
 
     //@HOUSE
-    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
+    if(this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       SL = Number(SL) * 2
     }
