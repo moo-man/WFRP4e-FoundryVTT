@@ -2,6 +2,7 @@
 
     --header-label-line : var(--color-cool-3);
     --characteristic-input : var(--color-cool-4);
+    --characteristic-header : transparent;
     --characteristic-total : transparent;
     --characteristic-border : var(--color-cool-3);
     --attribute-input : var(--color-cool-4);
@@ -70,17 +71,21 @@
         grid-template-columns: repeat(10, 10%);
         grid-template-rows: repeat(2, 50%);
         text-align: center;
-        border: 1px solid var(--color-cool-3);
+        border: 1px solid var(--characteristic-border);
         border-right: 0px;
         > * {
-            border-right: 1px solid var(--color-cool-3);            
+            border-right: 1px solid var(--characteristic-border);            
 
         }
         .header {
+            background-color: var(--characteristic-header)
+
         }
         input {
             border-radius: 0px;
             height: 100%;
+            border: none;
+            background-color: var(--characteristic-input)
         }
 
     }
@@ -228,8 +233,8 @@
 
     .randomization {
         .field {
-            border-top: 1px solid var(--color-cool-3);
-            background: var(--color-cool-4);
+            border-top: 1px solid var(--attribute-border);
+            background: var(--attribute-input);
             display: flex;
             justify-content: space-evenly;
         }
