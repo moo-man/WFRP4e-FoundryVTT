@@ -33,6 +33,8 @@ export class CharacterModel extends StandardActorModel {
       if (!options.skipExperienceChecks)
       {
         await this._checkCharacteristicChange(data, options, user);
+        await this._handleExperienceChange(data, options)
+
       }
     }
 
@@ -60,12 +62,12 @@ export class CharacterModel extends StandardActorModel {
 
     async _onUpdate(data, options, user) {
         await super._onUpdate(data, options, user);
-        this._handleExperienceChange(data, options)
 
         if(!options.skipCorruption && foundry.utils.getProperty(options.changed, "system.status.corruption.value") && game.user.id == user)
         {
           this.checkCorruption();
         }
+        
         // If XP received from message award, add
         if (options.fromMessage && game.user.isUniqueGM)
         {
@@ -195,9 +197,9 @@ export class CharacterModel extends StandardActorModel {
       return expLog
     }
 
-    _handleExperienceChange(data) {
-        if (foundry.utils.hasProperty(data, "system.details.experience") && !foundry.utils.hasProperty(data, "system.details.experience.log")) {
-            let actorData = this.parent.toObject() // duplicate so we have old data during callback
+    async _handleExperienceChange(data, options, changed) {
+        if (foundry.utils.hasProperty(options.changed, "system.details.experience") && !foundry.utils.hasProperty(options.changed, "system.details.experience.log")) {
+          await new Promise(resolve => {
             new Dialog({
                 content: `<p>${game.i18n.localize("ExpChangeHint")}</p><div class="form-group"><input name="reason" type="text" /></div>`,
                 title: game.i18n.localize("ExpChange"),
@@ -209,25 +211,27 @@ export class CharacterModel extends StandardActorModel {
                 },
                 default: "confirm",
                 close: dlg => {
-                    let expLog = actorData.system.details.experience.log || []
+                    let expLog = this.details.experience.log || []
                     let newEntry = { reason: dlg.find('[name="reason"]').val() }
                     if (foundry.utils.hasProperty(data, "system.details.experience.spent")) {
-                        newEntry.amount = data.system.details.experience.spent - actorData.system.details.experience.spent
+                        newEntry.amount = data.system.details.experience.spent - this.details.experience.spent
                         newEntry.spent = data.system.details.experience.spent
-                        newEntry.total = actorData.system.details.experience.total
+                        newEntry.total = this.details.experience.total
                         newEntry.type = "spent"
                     }
                     if (foundry.utils.hasProperty(data, "system.details.experience.total")) {
-                        newEntry.amount = data.system.details.experience.total - actorData.system.details.experience.total
-                        newEntry.spent = actorData.system.details.experience.spent
+                        newEntry.amount = data.system.details.experience.total - this.details.experience.total
+                        newEntry.spent = this.details.experience.spent
                         newEntry.total = data.system.details.experience.total
                         newEntry.type = "total"
                     }
 
-                    expLog.push(newEntry)
-                    this.parent.update({ "system.details.experience.log": expLog })
+                    expLog.push(newEntry);
+                    foundry.utils.setProperty(data, "system.details.experience.log", expLog);
+                    resolve();
                 }
             }).render(true)
+          })
         }
     }
 

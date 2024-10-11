@@ -52,6 +52,10 @@
                 {{/if}} --}}
 
             <div class="small">{{this.system.encumbrance.total}}</div>
+            <div class="small">
+                    <a data-action="containerSort" data-direction="up"><i class="fa-solid fa-arrow-up"></i></a>
+                    <a data-action="containerSort" data-direction="down"><i class="fa-solid fa-arrow-down"></i></a>
+            </div>
             <div class="list-controls">
                     <a data-action="removeFromContainer" data-tooltip="{{localize 'SHEET.RemoveItem'}}"><i class="fa-solid fa-arrow-up-from-bracket"></i></a>
                     {{#if this.system.collapsed}}
