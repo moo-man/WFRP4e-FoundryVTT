@@ -10,13 +10,15 @@
   </label>
 </div>
 
-{{#if unofficialGrimoire}}
+{{#if (settings "unofficialgrimoire")}}
   <div class="form-group">
     <label title="{{localize 'DIALOG.UseIngredientTooltip'}}">{{localize "DIALOG.UseIngredient"}}</label>
-    <select name="ingredientTypeSelected">
-      <option value="none">{{localize "IngredientNone"}}</option>
-      <option value="power">{{localize "IngredientPower"}}</option>
-      <option value="control">{{localize "IngredientControl"}}</option>
+    <select name="ingredientMode">
+      {{#select fields.ingredientMode}}
+        <option value="none">{{localize "IngredientNone"}}</option>
+        <option value="power">{{localize "IngredientPower"}}</option>
+        <option value="control">{{localize "IngredientControl"}}</option>
+      {{/select}}
     </select>
   </div>
 {{/if}}

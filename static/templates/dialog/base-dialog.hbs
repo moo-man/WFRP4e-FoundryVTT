@@ -27,7 +27,7 @@
       <label>{{localize "DIALOG.DialogModifiers"}}</label>
       <ul class="modifier-list">
         {{#each data.scripts}}
-            <li class="modifier {{#if this.isActive}}active {{else if this.isHidden}}hidden{{/if}}" data-tooltip="{{this.effect.name}} {{#if this.options.targeter}}(Target){{/if}}" data-tooltip-direction="RIGHT" data-index="{{@key}}" >&#8226; <a>{{this.Label}}</a></li>
+            <li class="modifier {{#if this.isActive}}active {{else if this.isHidden}}hidden{{/if}}" data-tooltip="{{this.effect.name}} {{#if this.options.targeter}}({{localize 'Target'}}){{/if}}" data-tooltip-direction="RIGHT" data-index="{{@key}}" >&#8226; <a>{{this.Label}}</a></li>
         {{/each}}
       </ul>
     </div>
@@ -56,8 +56,8 @@
         {{#each data.hitLocationTable as |loc key|}}
           <option value="{{key}}">{{loc}}</option>
         {{/each}}
-      </select>
     {{/select}}
+    </select>
   </div>
   {{/if}}
 

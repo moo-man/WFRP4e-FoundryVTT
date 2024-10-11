@@ -13,6 +13,13 @@ export default class CastDialog extends SkillDialog {
         return options;
     }
 
+    constructor(fields, data, resolve, options) {
+        super(fields, data, resolve, options);
+
+        this.initialFields.overchannelling = this.fields.overchannelling ?? 0;
+        this.fields.overchannelling = this.fields.overchannelling ?? 0;
+    }
+
     get item()
     {
       return this.data.spell
@@ -67,6 +74,18 @@ export default class CastDialog extends SkillDialog {
         {
             return super._computeAdvantage();
         }
+    }
+
+    async getData() 
+    {
+        let context = await super.getData();
+        if (this.userEntry.overchannelling) {
+            let overchannelling = parseInt(this.userEntry.overchannelling) ?? 0;
+            this.userEntry.overchannelling = overchannelling;
+            this.fields.overchannelling = overchannelling;
+            context.fields.overchannelling = overchannelling;
+        }
+        return context;
     }
 
     // Backwards compatibility for effects
