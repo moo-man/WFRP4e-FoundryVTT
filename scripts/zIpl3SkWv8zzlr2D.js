@@ -9,7 +9,7 @@ let filters = [
     }
 ]
 
-let petty = (await game.wfrp4e.apps.ItemDialog.createFromFilters(filters, 4, "Choose 4 Petty Spells")).map(i => i.toObject());
+let petty = (await ItemDialog.createFromFilters(filters, 4, "Choose 4 Petty Spells")).map(i => i.toObject());
 
 
 filters = [
@@ -23,7 +23,7 @@ filters = [
     }
 ]
 
-let arcane = (await game.wfrp4e.apps.ItemDialog.createFromFilters(filters, 8, "Choose 8 Arcane Spells & Lore of Death")).map(i => i.toObject());
+let arcane = (await ItemDialog.createFromFilters(filters, 8, "Choose 8 Arcane Spells & Lore of Death")).map(i => i.toObject());
 
 filters = [
     {
@@ -41,7 +41,7 @@ filters = [
     }
 ]
 
-let necromancy = (await game.wfrp4e.apps.ItemDialog.createFromFilters(filters, 3, "Choose 3 from the Lore of Necromancy")).map(i => i.toObject());
+let necromancy = (await ItemDialog.createFromFilters(filters, 3, "Choose 3 from the Lore of Necromancy")).map(i => i.toObject());
 
 let items = [...necromancy, ...petty, ...arcane]
 

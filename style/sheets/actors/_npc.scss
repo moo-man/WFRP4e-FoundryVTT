@@ -1,0 +1,20 @@
+.wfrp4e.actor.npc.sheet.application {
+
+    &.npc section.tab[data-tab="main"] {
+        height: calc(100% - 200px);
+        overflow-y: unset;
+    }
+
+
+    .sheet-header {
+        img {
+            margin-right: 5px;
+        }
+        .header-rows {
+            .header-row {
+                margin: 3px 0px;
+            }
+        }
+    }
+
+}

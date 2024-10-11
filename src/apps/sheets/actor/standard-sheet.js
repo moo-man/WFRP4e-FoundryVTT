@@ -1,3 +1,4 @@
+import Advancement from "../../../../modules/system/advancement";
 import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 import BaseWFRP4eActorSheet from "./base";
 
@@ -15,7 +16,8 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       useStomp : this._onStompClick,
       removeMount : this._removeMount,
       dismount : this._dismount,
-      showMount : this._showMount
+      showMount : this._showMount,
+      randomize: this._randomize,
     },
   }
 
@@ -298,7 +300,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
       cont.system.carrying = itemsInside.filter(i => i.type != "container").sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
-      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort);; // cont.system.packsInside -> containers the container is carrying
+      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort); // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
@@ -316,12 +318,73 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   
   _filterItemCategory(category, itemsInContainers) {
     itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.system.location?.value))
-    category.items = category.items.filter(i => !i.system.location?.value)
+    category.items = category.items.filter(i => !i.system.location?.value).sort((a, b) => a.sort - b.sort);
     category.show = category.items.length > 0
     return itemsInContainers
   }
   //#endregion
 
+  _addEventListeners()
+  {    
+    super._addEventListeners();
+    this.element.querySelector("[data-action='editCharacteristic']")?.addEventListener("change", this.constructor._onEditCharacteristic.bind(this));
+    this.element.querySelector("[data-action='editSpecies']")?.addEventListener("change", this.constructor._onEditSpecies.bind(this));
+  }
+
+  static _onEditCharacteristic(ev)
+  {
+    let characteristic = ev.target.dataset.characteristic;
+    let value = Number(ev.target.value);
+    let characteristics = foundry.utils.deepClone(this.actor.system.characteristics);
+    if (!(value == characteristics[characteristic].initial + characteristics[characteristic].advances)) 
+    {
+      characteristics[characteristic].initial = value;
+      characteristics[characteristic].advances = 0
+    }
+    return this.actor.update({ "system.characteristics": characteristics })
+  }
+
+  
+  static async _onEditSpecies(ev) {
+    let split = ev.target.value.split("(")
+    let species = split[0].trim()
+    let subspecies
+    if (split.length > 1) 
+    {
+        subspecies = split[1].split(")")[0].trim()
+    }
+
+    let speciesKey = warhammer.utility.findKey(species, game.wfrp4e.config.species) || species
+    let subspeciesKey = ""
+    if (subspecies) 
+    {
+        for (let sub in game.wfrp4e.config.subspecies[speciesKey]) {
+            if (game.wfrp4e.config.subspecies[speciesKey][sub].name == subspecies) subspeciesKey = sub
+        }
+        if (!subspeciesKey) {
+            subspeciesKey = subspecies
+        }
+    }
+    let update = { "system.details.species.value": speciesKey, "system.details.species.subspecies": subspeciesKey }
+    try 
+    {
+        let initialValues = await WFRP_Utility.speciesCharacteristics(speciesKey, true, subspeciesKey);
+        let characteristics = this.actor.toObject().system.characteristics;
+        for (let c in characteristics) {
+            characteristics[c].initial = initialValues[c].value
+        }
+
+        if (await Dialog.confirm({ content: game.i18n.localize("SpecChar"), title: game.i18n.localize("Species Characteristics") })) {
+            mergeObject(update, {system: { characteristics, "details.move.value" : WFRP_Utility.speciesMovement(speciesKey) || 4 }})
+        }
+    } 
+    catch(e) 
+    { 
+        warhammer.utility.log("Error applying species stats: " + e.stack)
+    }
+    await this.actor.update(update);
+
+}
 
   static _onUnarmedClick(ev) {
     ev.preventDefault();
@@ -364,6 +427,28 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
   static _onContextMenushowMount(ev) {
     this.actor.mount.sheet.render(true)
+  }
+
+  static _randomize(ev)
+  {
+    let advancement = new Advancement(this.actor);
+
+    try {
+      switch (ev.target.dataset.type) {
+        case "characteristics":
+          advancement.advanceSpeciesCharacteristics()
+          return
+        case "skills": 
+          advancement.advanceSpeciesSkills()
+          return
+        case "talents":
+          advancement.advanceSpeciesTalents()
+          return
+      }
+    }
+    catch (error) {
+      warhammer.utility.log("Could not randomize: " + error, true)
+    }
   }
 
 }

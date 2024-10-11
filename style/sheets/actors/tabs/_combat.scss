@@ -8,6 +8,9 @@
 
         .armour 
         {
+            .flexrow {
+                align-items: flex-start;
+            }
             .sheet-list {
                 margin: 5px;
                 &:first-of-type {

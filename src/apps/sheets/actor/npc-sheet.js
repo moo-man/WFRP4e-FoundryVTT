@@ -1,13 +1,12 @@
-import CareerSelector from "../../../../modules/apps/career-selector";
-import Advancement from "../../../../modules/system/advancement";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
+import WFRP_Audio from "../../../../modules/system/audio-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["npc"],
         actions: {
+          getIncome: this._getIncome
         },
         window : {
           resizable : true
@@ -15,8 +14,9 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
       }
 
       static PARTS = {
-        header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/actor/character/characteristic-header.hbs', classes: ["sheet-header"] },
-        main: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-skills.hbs' },
+        header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/actor/characteristic-header.hbs', classes: ["sheet-header"] },
+        tabs: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/actor-tabs.hbs' },
+        main: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-skills.hbs', classes: ["skills"] },
         careers: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/npc/npc-careers.hbs' },
         talents: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-talents.hbs' },
         combat: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-combat.hbs' },
@@ -80,40 +80,33 @@ export default class CharacterWFRP4eSheet extends StandardWFRP4eActorSheet
         let context = await super._prepareContext(options);
         return context;
       }
+
+      _prepareMainContext(context) {
+        return super._prepareSkillsContext(context);
+      }
     
-
-    static async _onRollIncome(ev)
-    {
-      let career = this._getDocument(ev)
-      let skills = career.system.incomeSkill.map(i => career.system.skills[i]).map(i => this.actor.itemTypes.skill.find(sk => sk.name == i)).filter(i => i);
-      let skill;
-      if (skills.length == 0)
-      {
-        ui.notifications.error("SHEET.SkillMissingWarning", {localize: true});
-        return;
+    static async _getIncome(event) {
+      let status = this.actor.system.details.status.value.split(" ");
+      let tier = warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)[0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
+      let standing = Number(status[1]);     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
+      let {earned} = await game.wfrp4e.market.rollIncome(null, {standing, tier});
+  
+      let paystring
+      switch (tier) {
+        case "b":
+          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
+          break;
+        case "s":
+          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.SS").toLowerCase()}.`
+          break;
+        case "g":
+          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.GC").toLowerCase()}.`
+          break;
       }
-
-      if (skills.length == 1)
-      {
-        skill = skills[0];
-      }
-      else 
-      {
-        skill = (await ItemDialog.create(skill, 1, {title : "Choose Skill"}))[0];
-      }
-
-      if (!skill)
-      {
-        skill = skills[0];
-      }
-
-      let options = {
-        title: `${skill.name} - ${game.i18n.localize("Income")}`, 
-        income: this.actor.details.status, 
-        career: career.toObject()
-      };
-
-      this.actor.setupSkill(skill, options).then(test => test.roll())
+      let money = game.wfrp4e.market.creditCommand(paystring, this.actor, { suppressMessage: true })
+      WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
+      this.actor.updateEmbeddedDocuments("Item", money);
     }
+  
 
 }
