@@ -5,7 +5,7 @@
             <label>{{localize "Name"}}</label>
         </div>
         <div class="header-group">
-            <input type="text" name="system.details.species.value" value="{{system.details.species.value}}">
+            <input type="text" data-action="editSpecies" value="{{actor.Species}}">
             <label>{{localize "Species"}}</label>
         </div>
         <div class="header-group">
@@ -65,12 +65,12 @@
         <div class="characteristic-grid">
                 {{#each system.characteristics}}
                     <div class="header" data-tooltip="{{configLookup " characteristics" @key}}" data-tooltip-direction="UP">
-                            <a>{{localize (configLookup "characteristicsAbbrev" @key)}}</a>
+                            <a data-action="rollTest" data-type="characteristic" data-characteristic="{{@key}}">{{localize (configLookup "characteristicsAbbrev" @key)}}</a>
                     </div>
                 {{/each}}
                 {{#each system.characteristics}}
                     <div class="value">
-                        <input type="number" name="system.characteristics.{{@key}}.initial" value="{{this.value}}">
+                        <input type="number" data-characteristic="{{@key}}" data-action="editCharacteristic" value="{{this.value}}">
                     </div>
                 {{/each}}
         </div>
@@ -101,7 +101,7 @@
                 </div>
                 <div class="attribute-box randomization">
                     <div class="label" style="grid-column: 1 / span 12"><label class="centered">Randomization</label></div>
-                    <div class="field" style="grid-column: 1 / span 12"><a>C</a><a>S</a><a>T</a></div>
+                    <div class="field" style="grid-column: 1 / span 12"><a data-action="randomize" data-type="characteristics">C</a><a data-action="randomize" data-type="skills">S</a><a data-action="randomize" data-type="talents">T</a></div>
                 </div>
             </div>
         </div>
