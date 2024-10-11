@@ -77,6 +77,8 @@ import  OpposedHandler from "./modules/system/opposed-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
 import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
 import { GenericAspectModel } from "./modules/model/item/generic.js";
+import ActorSheetWFRP4eNPCV2 from "./src/apps/sheets/actor/npc-sheet.js";
+import ActorSheetWFRP4eCreatureV2 from "./src/apps/sheets/actor/creature-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -94,7 +96,9 @@ Hooks.once("init", function () {
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacter, { types: ["character"], makeDefault: true });
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"] });
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPC, { types: ["npc"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPCV2, { types: ["npc"]});
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreature, { types: ["creature"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"]});
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"], makeDefault: true });
   
   Items.unregisterSheet("core", ItemSheet);
