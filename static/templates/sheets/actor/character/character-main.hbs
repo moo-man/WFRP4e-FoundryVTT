@@ -76,22 +76,22 @@
             <div class="field" style="grid-column: 1 / span 4"><input type="text" name="system.details.move.value" value="{{system.details.move.value}}"></div>
             <div class="field" style="grid-column: 5 / span 4"><input type="text" {{#if actor.flags.autoCalcWalk}}readonly value="{{system.details.move.walk}} {{localize "yds"}}" {{else}}name="system.details.move.walk" value="{{system.details.move.walk}}"{{/if}}></div>
             <div class="field" style="grid-column: 9 / span 4"><input type="text" {{#if actor.flags.autoCalcRun}}readonly value="{{system.details.move.run}} {{localize "yds"}}" {{else}}name="system.details.move.run" value="{{system.details.move.run}}"{{/if}}></div>
-            <div class="label" style="grid-column: 1 / span 4"><label class="centered">Move</label></div>
-            <div class="label" style="grid-column: 5 / span 4"><label class="centered">Walk</label></div>
-            <div class="label" style="grid-column: 9 / span 4"><label class="centered">Run</label></div>
+            <div class="label" style="grid-column: 1 / span 4"><label class="centered">{{localize "Move"}}</label></div>
+            <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
+            <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
         </div>
         <div class="attribute-box metacurrencies">
-            <div class="label" style="grid-column: 1 / span 4"><label>Fortune</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.fortune.value">{{system.status.fortune.value}}</a></div>
-            <div class="label" style="grid-column: 7 / span 4"><label>Resolve</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.fate.value">{{system.status.fate.value}}</a></div>
-            <div class="label" style="grid-column: 1 / span 4"><label>Fate</label></div>
-            <div class="field" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.resolve.value">{{system.status.resolve.value}}</a></div>
-            <div class="label" style="grid-column: 7 / span 4"><label>Resilience</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.resilience.value">{{system.status.resilience.value}}</a></div>
+            <div class="label" style="grid-column: 1 / span 4"><label>{{localize "Fortune"}}</label></div>
+            <div class="field interact" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.fortune.value">{{system.status.fortune.value}}</a></div>
+            <div class="label" style="grid-column: 7 / span 4"><label>{{localize "Resolve"}}</label></div>
+            <div class="field interact" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.resolve.value">{{system.status.resolve.value}}</a></div>
+            <div class="label" style="grid-column: 1 / span 4"><label>{{localize "Fate"}}</label></div>
+            <div class="field interact" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.fate.value">{{system.status.fate.value}}</a></div>
+            <div class="label" style="grid-column: 7 / span 4"><label>{{localize "Resilience"}}</label></div>
+            <div class="field interact" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.resilience.value">{{system.status.resilience.value}}</a></div>
         </div>
         <div class="attribute-box wounds">
-            <div class="label" style="grid-column: 1 / span 12"><label class="centered">Wounds</label> <a data-action="onRest" data-tooltip="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a></div>
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label> <a data-action="onRest" data-tooltip="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div>
             <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcWounds}}readonly{{else}}name="system.status.wounds.max"{{/if}} value="{{system.status.wounds.max}}"></div>
         </div>
@@ -99,34 +99,31 @@
     </div>
     <div class="attribute-row flexrow">
         <div class="attribute-box criticals">
-            <div class="label" style="grid-column: 1 / span 12"><label class="centered">Critical Wounds</label></div>
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Critical Wounds"}}</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" readonly value="{{nonTrivialCriticals.length}}"></div>
             <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcCritW}}disabled{{/if}} name="system.status.criticalWounds.max" value="{{system.status.criticalWounds.max}}"></div>
         </div>
         <div class="attribute-box corruption">
-            <div class="label" style="grid-column: 1 / span 12"><label class="centered">Corruption</label></div>
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Corruption"}}</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.corruption.value" value="{{system.status.corruption.value}}"></div>
             <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcCorruption}}disabled{{/if}} name="system.status.corruption.max" value="{{system.status.corruption.max}}"></div>
         </div>
         <div class="attribute-box experience">
-            <div class="label" style="grid-column: 1 / span 12"><label class="centered">Experience</label></div>
-            <div class="label" style="grid-column: 1 / span 2"><label class="centered">Current</label></div>
-            <div class="field" style="grid-column: 3 / span 2"><input type="number" readonly
-                    value="{{system.details.experience.current}}" readonly></div>
-            <div class="label" style="grid-column: 5 / span 2"><label class="centered">Spent</label></div>
-            <div class="field" style="grid-column: 7 / span 2"><input type="number"
-                    value="{{system.details.experience.spent}}" name="system.details.experience.spent"></div>
-            <div class="label" style="grid-column: 9 / span 2"><label class="centered">Total</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><input type="number"
-                    value="{{system.details.experience.total}}" name="system.details.experience.total"></div>
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Experience"}}</label></div>
+            <div class="label" style="grid-column: 1 / span 2"><label class="centered">{{localize "Current"}}</label></div>
+            <div class="field" style="grid-column: 3 / span 2"><input type="number" readonly value="{{system.details.experience.current}}" readonly></div>
+            <div class="label" style="grid-column: 5 / span 2"><label class="centered">{{localize "Spent"}}</label></div>
+            <div class="field" style="grid-column: 7 / span 2"><input type="number" value="{{system.details.experience.spent}}" name="system.details.experience.spent"></div>
+            <div class="label" style="grid-column: 9 / span 2"><label class="centered">{{localize "Total"}}</label></div>
+            <div class="field" style="grid-column: 11 / span 2"><input type="number" value="{{system.details.experience.total}}" name="system.details.experience.total"></div>
         </div>
     </div>
 
     <div class="sheet-list careers">
         <div class="list-header row-content">
-            <div class="list-name">Careers</div>
-            <div>Current</div>
-            <div>Complete</div>
+            <div class="list-name">{{localize "Careers"}}</div>
+            <div>{{localize "Current"}}</div>
+            <div>{{localize "Complete"}}</div>
             <div class="list-controls">
                 <a data-action="changeCareer" class="item-control">   
                     <i class="fas fa-plus"></i>
@@ -142,7 +139,7 @@
                             <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
                         </div>
                         {{#if this.system.current.value}}
-                        <div class="small"><a data-tooltip="Roll Income" data-tooltip-direction="LEFT" data-action="rollIncome"><i class="fa-solid fa-coins"></i></a></div>
+                        <div class="small"><a data-tooltip="{{localize "Sheet.RollIncome"}}" data-tooltip-direction="LEFT" data-action="rollIncome"><i class="fa-solid fa-coins"></i></a></div>
                         {{/if}}
                         <div>
                             {{#if this.system.current.value}}
