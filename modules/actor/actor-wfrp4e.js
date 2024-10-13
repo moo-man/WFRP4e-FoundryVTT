@@ -1131,7 +1131,8 @@ export default class ActorWFRP4e extends WarhammerActor
     else if (existing) 
     {
       existing._displayScrollingStatus(true)
-      return existing.update({"system.condition.value" : existing.conditionValue + value})
+      mergeData["system.condition.value"] = existing.conditionValue + value;
+      return existing.update(mergeData);
     }
     else if (!existing) {
       if (game.combat && (effect.id == "blinded" || effect.id == "deafened"))
