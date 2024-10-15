@@ -78,6 +78,7 @@ import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet
 import { GenericAspectModel } from "./modules/model/item/generic.js";
 import ActorSheetWFRP4eNPCV2 from "./src/apps/sheets/actor/npc-sheet.js";
 import ActorSheetWFRP4eCreatureV2 from "./src/apps/sheets/actor/creature-sheet.js";
+import BaseWFRP4eItemSheet from "./src/apps/sheets/item/base.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -101,7 +102,7 @@ Hooks.once("init", function () {
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"], makeDefault: true });
   
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
+  Items.registerSheet("wfrp4e", BaseWFRP4eItemSheet, { makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})

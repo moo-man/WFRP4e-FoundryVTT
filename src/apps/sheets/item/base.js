@@ -1,97 +1,46 @@
-import ActorSettings from "../../../../modules/apps/actor-settings";
-import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
-import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
-
-export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
+export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 {
 
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
-    window : {
-      controls : [
-        {
-          icon : 'fa-solid fa-gear',
-          label : "Actor Settings",
-          action : "configureActor"
-        },
-        {
-          action: "configurePrototypeToken",
-          icon: "fa-solid fa-user-circle",
-          label: "TOKEN.TitlePrototype",
-          ownership: "OWNER"
-        },
-        {
-          action: "showPortraitArtwork",
-          icon: "fa-solid fa-image",
-          label: "SIDEBAR.CharArt",
-          ownership: "OWNER"
-        },
-        {
-          action: "showTokenArtwork",
-          icon: "fa-solid fa-image",
-          label: "SIDEBAR.TokenArt",
-          ownership: "OWNER"
-        }
-      ]
-    },
     actions : {
-      rollTest : this._onRollTest,
-      toggleSummary : this._toggleSummary,
-      toggleSummaryAlt : {buttons: [2], handler : this._toggleSummary}, // TODO secondary actions
-      toggleExtendedTests : this._toggleExtendedTests,
-      removeAttacker : this._onRemoveAttacker,
-      itemPropertyDropdown : this._onItemPropertyDropdown,
-      combatDropdown : this._onCombatDropdown,
-      clickCondition : {buttons : [0, 2], handler : this._onClickCondition},
-      removeFromContainer : this._onRemoveItemFromContainer,
-      convertCurrency : this._onConvertCurrency,
-      consolidateCurrency : this._onConsolidateCurrency,
-      collapseSection : this._onCollapseSection,
-      containerSort : this._onContainerSort,
-      createItem : this._onCreateItem,
-      configureActor : this._onConfigureActor,
-      useAspect : this._onUseAspect
+
     },
-    defaultTab : "main"
+    defaultTab : "description"
   }
 
-  _prepareTabs(options) {
-    let tabs = super._prepareTabs(options);
-
-    if (!this.actor.hasSpells) {
-      delete tabs.magic;
-    }
-
-    if (!this.actor.hasPrayers) {
-      delete tabs.religion;
-    }
-
-    return tabs;
-  }
-
-  async _prepareContext(options)
+   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
-    let aspects = {
-      talents : {}, 
-      effects : {}, 
-      combat : {},
-      magic: {}
-    }
-    this.actor.itemTags.aspect?.forEach(item => {
-        if (aspects[item.system.placement][item.system.pluralLabel])
-        {
-          aspects[item.system.placement][item.system.pluralLabel].push(item);
-        }
-        else 
-        {
-          aspects[item.system.placement][item.system.pluralLabel] = [item];
-        }
-    })
-    context.items.aspect = aspects
     return context;
   }
+
+  static TABS = {
+    description: {
+      id: "description",
+      group: "primary",
+      label: "Description",
+    },
+    details: {
+      id: "details",
+      group: "primary",
+      label: "Details",
+    },
+    effects: {
+      id: "effects",
+      group: "primary",
+      label: "Effects",
+    }
+  }
+
+  static PARTS = {
+    header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/item/item-header.hbs', classes: ["sheet-header"] },
+    tabs: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/item-tabs.hbs' },
+    description: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-description.hbs' },
+    details: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-details.hbs' },
+    effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-effects.hbs' },
+  }
+
 
   _getContetMenuOptions()
   { 
@@ -116,13 +65,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             let doc = fromUuidSync(uuid);
             if (doc?.documentName == "ActiveEffect")
             {
-              return doc.parent.uuid == this.document.uuid; // If an effect's parent is not this document, don't show the delete option
-            }
-            else if (doc)
-            {
               return true;
             }
-            return false;
           }
           else return false;
         },
@@ -134,25 +78,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
-        name: "Post to Chat",
-        icon: '<i class="fas fa-comment"></i>',
-        condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
-          if (uuid)
-          {
-            let doc = fromUuidSync(uuid);
-            return doc?.documentName == "Item"; // Can only post Items to chat
-          }
-          else return false;
-        },
-        callback: async li => 
-        {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
-          const document = await fromUuid(uuid);
-          document.postItem();
-        }
-      },
-      {
         name: "Duplicate",
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => {
@@ -160,7 +85,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           if (uuid)
           {
             let doc = fromUuidSync(uuid);
-            return doc?.documentName == "Item" && doc.system.isPhysical; // Can only duplicate physical items
+            return doc?.documentName == "ActiveEffect"
           }
           else return false;
         },
@@ -168,7 +93,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         {
             let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
             const document = await fromUuid(uuid);
-            this.actor.createEmbeddedDocuments("Item", [document.toObject()]);
+            this.actor.createEmbeddedDocuments("ActiveEffect", [document.toObject()]);
         }
       },
     ];
@@ -206,15 +131,15 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   //#region Effects
 
-  _prepareEffectsContext(context) {
-    super._prepareEffectsContext(context);
+//   _prepareEffectsContext(context) {
+//     super._prepareEffectsContext(context);
     
-    context.effects.passive = this._consolidateEffects(context.effects.passive)
-    context.effects.temporary = this._consolidateEffects(context.effects.temporary)
-    context.effects.disabled = this._consolidateEffects(context.effects.disabled)
-    context.effects.system = game.wfrp4e.utility.getSystemEffects(this.actor.type == "vehicle");
+//     context.effects.passive = this._consolidateEffects(context.effects.passive)
+//     context.effects.temporary = this._consolidateEffects(context.effects.temporary)
+//     context.effects.disabled = this._consolidateEffects(context.effects.disabled)
+//     context.effects.system = game.wfrp4e.utility.getSystemEffects(this.actor.type == "vehicle");
 
-  }
+//   }
 
 
   _getConditionData(context) {
@@ -298,9 +223,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   async _handleEnrichment() {
     let enrichment = {}
-    enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
-    enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
-
     return expandObject(enrichment)
   }
 
