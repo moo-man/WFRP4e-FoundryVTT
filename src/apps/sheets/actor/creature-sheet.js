@@ -81,13 +81,16 @@ export default class ActorSheetWFRP4eCreatureV2 extends StandardWFRP4eActorSheet
         context.includedTraits = this.actor.itemTags.trait.filter(i => i.included).sort((a, b) => a.name > b.name ? 1 : -1);
     
         
-        context.manualScripts = this.actor.items.contents
-        .filter(i => i.included)
-        .reduce((scripts, item) => 
-          scripts.concat(item.manualScripts
-            .filter(script => !scripts
-              .find(s => s.label == script.label))), [])  // Reduce all the scripts into a single array, but ignore duplicates (same label) perhaps a kludge fix for multiple talents on creatures (Combat Aware)
-      } 
+        context.overviewButtons = this.actor.items.contents.reduce((buttons, item) => {
+          let add = [];
+          console.log(buttons)
+          if (item.included)
+          {
+            add = item.sheetButtons.filter(i => !buttons.find(b => i.label == b.label))
+          }
+          return buttons.concat(add);
+        }, []);
+      }
 
       static async _onOverviewDropdown(ev) {
         let item = await this._getDocumentAsync(ev);
