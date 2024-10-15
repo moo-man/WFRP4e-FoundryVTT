@@ -39,7 +39,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       rollTest : this._onRollTest,
       toggleSummary : this._toggleSummary,
       toggleSummaryAlt : {buttons: [2], handler : this._toggleSummary}, // TODO secondary actions
-      openContextMenu : this._onContextMenu,
       toggleExtendedTests : this._toggleExtendedTests,
       removeAttacker : this._onRemoveAttacker,
       itemPropertyDropdown : this._onItemPropertyDropdown,
@@ -100,7 +99,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       // return  
       return [
         WarhammerContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), 
-        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})
+        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"}),
+        WarhammerContextMenu.create(this, this.element, ".context-menu-alt", this._getListContextOptions())
       ];
   }
 
@@ -469,10 +469,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
     }
 
-    static async _onContextMenu(ev)
-    {
-    }
-
     static async _toggleExtendedTests(ev)
     {
       let parent = this._getParent(ev.target, ".tab")
@@ -512,9 +508,9 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
     }
 
-    async _toggleDropdown(ev, content)
+    async _toggleDropdown(ev, content, parentSelector=".list-row")
     {
-      let dropdownElement = this._getParent(ev.target, ".list-row").querySelector(".dropdown-content");
+      let dropdownElement = this._getParent(ev.target, parentSelector).querySelector(".dropdown-content");
       if (dropdownElement.classList.contains("collapsed"))
       {
         dropdownElement.innerHTML = content;

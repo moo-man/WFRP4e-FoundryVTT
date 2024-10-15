@@ -1,12 +1,12 @@
 import WFRP_Audio from "../../../../modules/system/audio-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eCreatureV2 extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
-        classes: ["npc"],
+        classes: ["creature"],
         actions: {
-          getIncome: this._getIncome
+          overviewDropdown : this._onOverviewDropdown,
         },
         window : {
           resizable : true
@@ -16,15 +16,14 @@ export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
       static PARTS = {
         header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/actor/characteristic-header.hbs', classes: ["sheet-header"] },
         tabs: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/actor-tabs.hbs' },
-        main: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-skills.hbs', classes: ["skills"] },
-        careers: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/npc/npc-careers.hbs' },
-        talents: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-talents.hbs' },
+        main: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/creature/creature-main.hbs'},
+        skills: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-skills.hbs' },
         combat: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-combat.hbs' },
         effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-effects.hbs' },
         magic: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-magic.hbs' },
         religion: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-religion.hbs' },
         trappings: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/tabs/actor-inventory.hbs' },
-        notes: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/npc/npc-notes.hbs' },
+        notes: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/creature/creature-notes.hbs' },
       }
 
       static TABS = {
@@ -33,15 +32,10 @@ export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
           group: "primary",
           label: "Main",
         },
-        careers: {
-          id: "careers",
+        skills: {
+          id: "skills",
           group: "primary",
-          label: "Careers",
-        },
-        talents: {
-          id: "talents",
-          group: "primary",
-          label: "Talents",
+          label: "Skills",
         },
         combat: {
           id: "combat",
@@ -81,30 +75,24 @@ export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
         return context;
       }
 
-      _prepareMainContext(context) {
-        return super._prepareSkillsContext(context);
-      }
+    _prepareMainContext(context) {
     
-    static async _getIncome(event) {
-      let status = this.actor.system.details.status.value.split(" ");
-      let tier = warhammer.utility.findKey(status[0], game.wfrp4e.config.statusTiers)[0] // b, s, or g maps to 2d10, 1d10, or 1 respectively (takes the first letter)
-      let standing = Number(status[1]);     // Multilpy that first letter by your standing (Brass 4 = 8d10 pennies)
-      let {earned} = await game.wfrp4e.market.rollIncome(null, {standing, tier});
+        context.trained = this.actor.itemTags.skill.filter(i => i.advances.value > 0).sort((a, b) => a.name > b.name ? 1 : -1);
+        context.includedTraits = this.actor.itemTags.trait.filter(i => i.included).sort((a, b) => a.name > b.name ? 1 : -1);
+    
+        
+        context.manualScripts = this.actor.items.contents
+        .filter(i => i.included)
+        .reduce((scripts, item) => 
+          scripts.concat(item.manualScripts
+            .filter(script => !scripts
+              .find(s => s.label == script.label))), [])  // Reduce all the scripts into a single array, but ignore duplicates (same label) perhaps a kludge fix for multiple talents on creatures (Combat Aware)
+      } 
+
+      static async _onOverviewDropdown(ev) {
+        let item = await this._getDocumentAsync(ev);
+        let description = item.system.description.value;
   
-      let paystring
-      switch (tier) {
-        case "b":
-          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.BP").toLowerCase()}.`
-          break;
-        case "s":
-          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.SS").toLowerCase()}.`
-          break;
-        case "g":
-          paystring = `${earned}${game.i18n.localize("MARKET.Abbrev.GC").toLowerCase()}.`
-          break;
+        this._toggleDropdown(ev, description, ".overview-content")
       }
-      let money = game.wfrp4e.market.creditCommand(paystring, this.actor, { suppressMessage: true })
-      WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-      this.actor.updateEmbeddedDocuments("Item", money);
-    }
 }

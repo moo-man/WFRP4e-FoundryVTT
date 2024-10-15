@@ -1,0 +1,79 @@
+<div class="sheet-list">
+    <div class="list-header row-content">
+        <div class="list-name">{{localize "SHEET.MeleeWeaponHeader"}}
+            <a class="list-button" data-action="useUnarmed" data-tooltip="{{localize 'SHEET.Unarmed'}}">
+                <i class="fa fa-fist-raised"></i>
+            </a>
+            <a class="list-button" data-action="useDodge" data-tooltip="{{localize 'SHEET.Dodge'}}">
+                <i class="fas fa-reply"></i>
+            </a>
+            <a class="list-button" data-action="useImprovised" data-tooltip="{{localize 'SHEET.Improvised'}}">
+                <i class="fas fa-question"></i>
+            </a>
+        </div>
+        <div>{{localize "Group"}}</div>
+        <div>{{localize "Damage"}}</div>
+        <div>{{localize "Reach"}}</div>
+
+    </div>
+    <div class="list-content weapon-list">
+        {{#each weapons}}
+            {{#if (and this.system.isMelee this.system.isEquipped)}}
+                <div class="list-row nocontext" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name rollable" data-action="rollTest" data-type="weapon">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
+                        <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value"
+                            class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}"
+                            data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
+                        <a data-action="combatDropdown" data-property="reach">{{this.Reach}}</a>
+                    </div>
+                    <div class="item-property-row">
+
+                        {{#if this.twohanded.value}}
+                            <div>{{localize "ITEM.TwoHanded"}}</div>
+                        {{else if this.offhand.value}}
+                            <a data-action="toggleProperty" data-path="system.offhand.value"><i
+                                    class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                        {{else if ../actor.noOffhand}}
+                            <a data-action="toggleProperty" data-path="system.offhand.value"><i
+                                    class="far fa-circle"></i> {{localize "SHEET.Offhand"}}</a>
+                        {{/if}}
+                        {{#if this.system.properties.special}}
+                            <a data-action="combatDropdown" data-property="special">{{localize "Special"}}</a>
+                        {{/if}}
+
+
+                        {{#if this.system.Qualities.length}}
+                            <div class="property-icon">{{localize "SHEET.Qualities"}}</div>
+                            {{{array this.system.Qualities "" action="itemPropertyDropdown" type="qualities"}}}
+                        {{/if}}
+
+                        {{#if this.system.UnusedQualities.length}}
+                            <div class="property-icon inactive">{{localize "SHEET.Qualities"}}</div>
+                            {{{array this.system.UnusedQualities "inactive" action="itemPropertyDropdown" type="qualities"}}}
+                        {{/if}}
+
+                        {{#if this.system.InactiveQualities.length}}
+                            <div class="property-icon">{{localize "SHEET.Or"}}</div>
+                            {{{array this.system.InactiveQualities "" action="itemPropertyDropdown" type="qualities"}}}
+                        {{/if}}
+
+                        {{#if this.system.Flaws.length}}
+                            <div class="property-icon">{{localize "SHEET.Flaws"}}</div>
+                            {{{array this.system.Flaws "" action="itemPropertyDropdown" type="flaws"}}}
+                        {{/if}}
+
+                    </div>
+                    {{> sheetButtons document=this}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+                {{/if}}
+        {{/each}}
+    </div>
+</div>
