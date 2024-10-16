@@ -90,7 +90,7 @@ export default class ActorWFRP4e extends WarhammerActor
   {
       super._onUpdateDescendantDocuments(...args);
       // If an owned item (trait specifically) is disabled, check auras
-      if (args[1] == "items" && args[3].some(update => (hasProperty(update, "system.disabled"))))
+      if (args[1] == "items" && args[3].some(update => (foundry.utils.hasProperty(update, "system.disabled"))))
       {
           TokenHelpers.updateAuras(this.getActiveTokens()[0]?.document);
       }
@@ -1153,7 +1153,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
       if (effect.system.condition.numbered)
       {
-        setProperty(effect, "flags.core.overlay", false); // Don't let numeric conditions be overlay
+        foundry.utils.setProperty(effect, "flags.core.overlay", false); // Don't let numeric conditions be overlay
       }
 
       delete effect.id

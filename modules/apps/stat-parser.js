@@ -337,9 +337,9 @@ export default class StatBlockParser extends FormApplication {
             for(let c of e.changes)
             {
                 let systemPath = c.key.replace("system.", "");
-                if (hasProperty(model, systemPath))
+                if (foundry.utils.hasProperty(model, systemPath))
                 {
-                    setProperty(model, systemPath, -1 * Number(c.value) + getProperty(model, systemPath));
+                    foundry.utils.setProperty(model, systemPath, -1 * Number(c.value) + foundry.utils.getProperty(model, systemPath));
                 }
             }
         })

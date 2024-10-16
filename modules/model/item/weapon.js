@@ -446,7 +446,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
    * @return {Number} Numeric formula evaluation
    */
     computeWeaponFormula(type, mount) {
-        let formula = this[type].value || 0
+        let formula = this[type].value || "0"
         let actorToUse = this.parent.actor
         try {
             formula = formula.toLowerCase();
@@ -467,8 +467,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
             return (0, eval)(formula);
         }
-        catch
+        catch (e)
         {
+            console.error(`computeWeaponFormula from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
             return formula
         }
     }

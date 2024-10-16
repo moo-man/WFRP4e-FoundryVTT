@@ -325,7 +325,7 @@ export class StandardActorModel extends BaseActorModel {
     _handleWoundsUpdate(data, options) {
         // Prevent wounds from exceeding max
         if (foundry.utils.hasProperty(data, "system.status.wounds.value")) {
-            if (data.system.status.wounds.value > (getProperty(data, "system.status.wounds.max") || this.status.wounds.max)) {
+            if (data.system.status.wounds.value > (foundry.utils.getProperty(data, "system.status.wounds.max") || this.status.wounds.max)) {
                 data.system.status.wounds.value = this.status.wounds.max;
             }
 
