@@ -74,8 +74,7 @@ for (let c of choice)
         if (item)
         {
             item = item.toObject()
-            equip(item);
-                items.push(mergeObject(item, (c.diff || {})))
+            items.push(foundry.utils.mergeObject(item, (c.diff || {})))
         }
         else
             ui.notifications.warn(`Could not find ${talent}`, {permanent : true})
@@ -84,13 +83,3 @@ for (let c of choice)
 }
 await this.actor.update(updateObj)
 this.actor.createEmbeddedDocuments("Item", items);
-
-function equip(item)
-{
-    if (item.type == "armour")
-        item.system.worn.value = true
-    else if (item.type == "weapon")
-        item.system.equipped = true
-    else if (item.type == "trapping" && item.system.trappingType.value == "clothingAccessories")
-        item.system.worn = true
-}

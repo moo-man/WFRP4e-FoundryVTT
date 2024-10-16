@@ -6,7 +6,7 @@ nav_order: 18
 grand_parent: Active Effects
 ---
 
-This trigger runs when an Actor applies damage (via opposed test) to another Actor. The arguments provided allow us to modify how this is handled. 
+This trigger runs when an Actor applies damage (via opposed test) to another Actor. The arguments provided allow us to modify how this is handled. This is very similar to [Pre-Take Damage](./preTakeDamage.md), but this trigger runs on the Actor doing damage.
 
 ## Key
 

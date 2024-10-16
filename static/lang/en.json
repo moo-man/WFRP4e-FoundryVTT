@@ -220,6 +220,7 @@
     "SHEET.Collapse" : "Collapse",
     "SHEET.TemporaryEffectHint" : "These Active Effects come from the owning Actor. To interact with it, do so through the Actor's sheet",
     "SHEET.ExperienceLog" : "Experience Log",
+    "Sheet.RollIncome" : "Roll Income",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
@@ -275,6 +276,7 @@
     "SHEET.RemoveAttacker": "Remove Attacker",
     "SHEET.CannotDeleteItemEffect" : "This effect is from an Item on this Actor. Delete the Item itself or the effect from the Item's sheet.",
     "SHEET.CannotDeleteCrewEffect" : "This effect is from a Vehicle this Actor is on, and must be deleted from that Vehicle.",
+    "SHEET.Attacker" : "Attacker",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -1449,6 +1451,7 @@
     "SHEET.Improvised": "Improvised",
     "SHEET.Stomp": "Stomp",
     "SHEET.GenerateName" : "Generate Name",
+    "SHEET.Randomize" : "Randomize",
 
     "DISEASE.IncubationFinished" : "{disease} incubation finished. ",
 

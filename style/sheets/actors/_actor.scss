@@ -2,6 +2,7 @@
 
     --header-label-line : var(--color-cool-3);
     --characteristic-input : var(--color-cool-4);
+    --characteristic-header : transparent;
     --characteristic-total : transparent;
     --characteristic-border : var(--color-cool-3);
     --attribute-input : var(--color-cool-4);
@@ -61,6 +62,32 @@
                 text-wrap: nowrap;
             }
         }
+    }
+
+    .characteristic-grid {
+        display: grid;
+        height: 3rem;
+        line-height: 1.5rem;
+        grid-template-columns: repeat(10, 10%);
+        grid-template-rows: repeat(2, 50%);
+        text-align: center;
+        border: 1px solid var(--characteristic-border);
+        border-right: 0px;
+        > * {
+            border-right: 1px solid var(--characteristic-border);            
+
+        }
+        .header {
+            background-color: var(--characteristic-header)
+
+        }
+        input {
+            border-radius: 0px;
+            height: 100%;
+            border: none;
+            background-color: var(--characteristic-input)
+        }
+
     }
 
     .characteristic-table {
@@ -176,6 +203,15 @@
             background: var(--attribute-field);
         }
 
+        .interact {
+            &.bottom {
+                border-top: 1px solid var(--attribute-border);
+            }
+            background: var(--attribute-input);
+            display: flex;
+            justify-content: space-evenly;
+        }
+
         .label {
             border-right: 1px solid var(--attribute-border);
             width: 100%;
@@ -203,8 +239,6 @@
             }
         }
     }
-
-
 
     .sheet-list {
         margin-top: 10px;
@@ -237,5 +271,26 @@
     fieldset {
         border-color: var(--attribute-border);
         margin: 10px 0px;
+    }
+    .armour-section 
+    {
+        .ap-source {
+            text-align: center;
+            background: var(--mount-outline);
+            flex: 0 0 20px;
+            border-right: 1px solid var(--ap-border);
+
+            &.armour {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
+            }
+
+            &.shield {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(92,135,185,1) 100%);
+            }
+
+            &.toughness {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
+            }
+        }
     }
 }

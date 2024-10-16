@@ -1,7 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="encumbrance-section">
         <div class="header">
-            <label>{{localize "SHEET.Encumbrance"}} <a class="sort-items" data-tooltip=""="{{localize 'SHEET.SortItems'}}" data-type="trapping,weapon,armour,ammunition,container"><i class="fas fa-sort-alpha-down"></i></a></label>
+            <label>{{localize "SHEET.Encumbrance"}} <a class="sort-items" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="trapping,weapon,armour,ammunition,container"><i class="fas fa-sort-alpha-down"></i></a></label>
             <div class="counter">
                 <div class="value">
                     {{system.status.encumbrance.current}}
@@ -158,6 +158,7 @@
                 <div>{{localize "Count Enc."}}</div>
                 <div>{{localize "Worn"}}</div>
                 <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+                <div class="small">{{localize "Sort"}}</div>
 
                 <div class="list-controls">
                         <a class="list-control" data-action="createItem" data-type="container"><i class="fas fa-plus"></i></a>
@@ -189,6 +190,11 @@
                             <a class="inactive disabled"><i class="far fa-circle"></i></a>
                             {{/if}}
                             <div class="small">{{this.system.encumbrance.total}}</div>
+                            <div class="small">
+                                <a data-action="containerSort" data-direction="up"><i class="fa-solid fa-arrow-up"></i></a>
+                                <a data-action="containerSort" data-direction="down"><i class="fa-solid fa-arrow-down"></i></a>
+                            </div>
+
                             <div class="list-controls">
                                 {{#if this.system.collapsed}}
                                     <a class="list-control" data-action="collapseSection" data-section="{{this.id}}" data-tooltip="{{localize 'SHEET.Expand'}}"><i class="fa-solid fa-chevron-down"></i></a>

@@ -319,7 +319,7 @@ export default class ChatWFRP {
   }
 
   // Click on botton related to the market/pay system
-  static _onMarketButtonClicked(event) {
+  static async _onMarketButtonClicked(event) {
     event.preventDefault();
     let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
     // data-button tells us what button was clicked
@@ -332,14 +332,14 @@ export default class ChatWFRP {
           let actor = game.user.character;
           let itemData
           if (msg.flags.transfer)
-            itemData = JSON.parse(msg.flags.transfer).payload
+            itemData = JSON.parse(msg.flags.transfer).data
           if (actor) {
             let money = MarketWFRP4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-              actor.updateEmbeddedDocuments("Item", money);
+              await actor.updateEmbeddedDocuments("Item", money);
               if (itemData) {
-                actor.createEmbeddedDocuments("Item", [itemData])
+                await actor.createEmbeddedDocuments("Item", [itemData])
                 ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: itemData.name, actor: actor.name }))
               }
             }
@@ -358,7 +358,7 @@ export default class ChatWFRP {
             let money = MarketWFRP4e.creditCommand(dataExchange, actor);
             if (money) {
               WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
-              actor.updateEmbeddedDocuments("Item", money);
+              await actor.updateEmbeddedDocuments("Item", money);
               let instances = msg.getFlag("wfrp4e", "instances") - 1;
               let messageUpdate = {};
 

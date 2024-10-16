@@ -1,0 +1,125 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    
+    <div class="armour-section">
+        {{> creatureArmour loc="head" locData=(lookup system.status.armour "head")}}
+        {{> creatureArmour loc="body" locData=(lookup system.status.armour "body")}}
+        {{> creatureArmour loc="lArm" locData=(lookup system.status.armour "lArm")}}
+        {{> creatureArmour loc="rArm" locData=(lookup system.status.armour "rArm")}}
+        {{> creatureArmour loc="lLeg" locData=(lookup system.status.armour "lLeg")}}
+        {{> creatureArmour loc="rLeg" locData=(lookup system.status.armour "rLeg")}}
+    </div>
+    
+    <div class="creature-overview">
+        <div class="sheet-list">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "Creature Overview"}}
+                    <a class="list-button" data-action="useStomp" data-tooltip="{{localize 'SHEET.Stomp'}}"><i
+                            class="fa fa-paw"></i></a>
+                    <a class="list-button" data-action="useUnarmed" data-tooltip="{{localize 'SHEET.Unarmed'}}"><i
+                            class="fa fa-fist-raised"></i></a>
+                    <a class="list-button" data-action="useDodge" data-tooltip="{{localize 'SHEET.Dodge'}}"><i
+                            class="fas fa-reply"></i></a>
+                    <a class="list-button" data-action="useImprovised" data-tooltip="{{localize 'SHEET.Improvised'}}"><i
+                            class="fas fa-question"></i></a>
+                </div>
+            </div>
+            <div class="overview-content">
+                {{#if trained.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Trained Skills"}}:</label>
+                        {{#each this.trained}}
+                            <a data-action="rollTest" data-type="skill" data-uuid="{{this.uuid}}">{{this.name}} {{this.system.total.value}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if items.talent.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Talents"}}:</label>
+                        {{#each items.talent}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-click="right" data-uuid="{{this.uuid}}">{{this.name}} </a>
+                            <a class="talents advances">{{this.Advances}}</a>
+                            ,
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if includedTraits.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Traits"}}:</label>
+                        {{#each includedTraits}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.system.DisplayName}}</a>
+                            {{#if this.system.rollable.value}}
+                            <a data-action="rollTest" data-type="trait" data-uuid="{{this.uuid}}"><i class="fa-regular fa-dice-d10"></i></a>
+                            {{else}},
+                            {{/if}}
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if items.mutation.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Corruption&Mutation"}}:</label>
+                        {{#each items.mutations}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if items.psychology.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Psychology"}}:</label>
+                        {{#each items.psychology}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+
+                {{#if items.critical.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Criticals"}}:</label>
+                        {{#each items.critical}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if items.injury.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Injuries"}}:</label>
+                        {{#each items.injury}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                {{#if items.disease.length}}
+                    <div class="overview-list">
+                        <label class="list-label">{{localize "Diseases"}}:</label>
+                        {{#each items.disease}}
+                            <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
+                        {{/each}}
+                    </div>
+                {{/if}}
+
+                <div class="dropdown-content collapsed">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{#if overviewButtons.length}}
+    <div class="sheet-effect-buttons">
+        {{#each overviewButtons}}
+            <button data-action="triggerScript" data-path="{{this.path}}" data-type="{{this.type}}" data-uuid="{{this.uuid}}" {{#if (eq this.type "manualScript")}}data-index="{{this.index}}"{{/if}} type="button">{{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}{{this.label}}</button>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{> meleeWeapons weapons=items.weapon}}
+
+    {{> rangedWeapons weapons=items.weapon}}
+
+</section>

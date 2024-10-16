@@ -1,0 +1,66 @@
+<div class="sheet-header">
+    <div class="header-row">
+        <div class="header-group flex3">
+            <input type="text" name="name" value="{{actor.name}}">
+            <label>{{localize "Name"}}</label>
+        </div>
+        <div class="header-group">
+            <input type="text" data-action="editSpecies" value="{{actor.Species}}">
+            <label>{{localize "Species"}}</label>
+        </div>
+        <div class="header-group">
+            <input type="text" name="system.details.gender.value" value="{{system.details.gender.value}}">
+            <label>{{localize "Gender"}}</label>
+            </div>
+    </div>
+    <div style="display: flex; align-items: center">
+        <img data-action="editImage" src="{{actor.img}}">
+        <div class="header-rows">
+
+        <div class="header-row">
+
+        <div class="characteristic-grid">
+                {{#each system.characteristics}}
+                    <div class="header" data-tooltip="{{configLookup " characteristics" @key}}" data-tooltip-direction="UP">
+                            <a data-action="rollTest" data-type="characteristic" data-characteristic="{{@key}}">{{localize (configLookup "characteristicsAbbrev" @key)}}</a>
+                    </div>
+                {{/each}}
+                {{#each system.characteristics}}
+                    <div class="value">
+                        <input type="number" data-characteristic="{{@key}}" data-action="editCharacteristic" value="{{this.value}}">
+                    </div>
+                {{/each}}
+        </div>
+
+        </div>
+        <div class="header-row">
+            <div class="attribute-row flexrow">
+                <div class="attribute-box movement">
+                    <div class="field" style="grid-column: 1 / span 4"><input type="text"
+                            name="system.details.move.value" value="{{system.details.move.value}}"></div>
+                    <div class="field" style="grid-column: 5 / span 4"><input type="text" {{#if
+                            actor.flags.autoCalcWalk}}readonly value="{{system.details.move.walk}} {{localize " yds"}}"
+                            {{else}}name="system.details.move.walk" value="{{system.details.move.walk}}" {{/if}}></div>
+                    <div class="field" style="grid-column: 9 / span 4"><input type="text" {{#if
+                            actor.flags.autoCalcRun}}readonly value="{{system.details.move.run}} {{localize " yds"}}"
+                            {{else}}name="system.details.move.run" value="{{system.details.move.run}}" {{/if}}></div>
+                    <div class="label" style="grid-column: 1 / span 4"><label class="centered">{{localize "Move"}}</label></div>
+                    <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
+                    <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
+                </div>
+                <div class="attribute-box wounds">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 6">
+                    <input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div> 
+                    <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcWounds}}readonly{{else}}name="system.status.wounds.max" {{/if}} value="{{system.status.wounds.max}}"></div>
+                </div>
+                <div class="attribute-box randomization">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "SHEET.Randomize"}}</label></div>
+                    <div class="field interact bottom" style="grid-column: 1 / span 12"><a data-action="randomize" data-type="characteristics">C</a><a data-action="randomize" data-type="skills">S</a><a data-action="randomize" data-type="talents">T</a></div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </div>
+</div>

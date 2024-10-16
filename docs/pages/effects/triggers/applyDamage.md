@@ -8,6 +8,9 @@ grand_parent: Active Effects
 
 This trigger runs when an Actor applies damage (via opposed test) to another Actor, specifically after all the modifiers and reductions are applied, but before the Actor is updated and the result is displayed in chat, letting us modify values right before they are applied. 
 
+This is very similar to [Take Damage](./takeDamage.md), but this trigger runs on the Actor doing damage.
+
+
 ## Key
 
 `applyDamage`

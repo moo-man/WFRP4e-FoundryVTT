@@ -8,6 +8,9 @@
 
         .armour 
         {
+            .flexrow {
+                align-items: flex-start;
+            }
             .sheet-list {
                 margin: 5px;
                 &:first-of-type {
@@ -19,29 +22,9 @@
 
                 .list-header {
 
-                    padding-right: 5px;
-
                     .location-label {
                         margin-left: 5px;
                         text-align: left;
-                    }
-
-                    .ap-source {
-                        background: var(--mount-outline);
-                        flex: 0 0 20px;
-                        border-right: 1px solid var(--ap-border);
-
-                        &.armour {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
-                        }
-
-                        &.shield {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(92,135,185,1) 100%);
-                        }
-
-                        &.toughness {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
-                        }
                     }
                 }
             }

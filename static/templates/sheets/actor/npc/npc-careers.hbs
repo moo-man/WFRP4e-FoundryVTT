@@ -1,80 +1,38 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
-    <div class="sheet-list traits">
-        <div class="list-header row-content">
-            <div class="list-name">{{localize "Traits"}}</div>
-            <div class="list-controls">
-                <a class="list-control" data-action="createItem" data-type="trait">
-                    <i class="fas fa-plus"></i>
-                </a>
-            </div>
-        </div>
-        <div class="list-content">
-            {{#each items.trait}}
-                <div class="list-row" data-uuid="{{this.uuid}}">
-                    <div class="row-content">
-                        <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
-                            <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest" data-type="trait"{{/if}}>
-                            <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
-                        </div>
-                        <div class="list-controls">
-                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
-                        </div>
-                    </div>
-                    {{> sheetButtons document=this}}
-                    <div class="dropdown-content collapsed">
-
-                    </div>
-                </div>
-            {{/each}}
+    <div class="form-group">
+        <label><a data-action="getIncome" data-tooltip="Receive Income">{{localize "Status"}} <i class="fas fa-coins"></i></a></label>
+        <div class="form-fields">
+            <input name="system.details.status.value" type="text" value="{{system.details.status.value}}">
         </div>
     </div>
-    <div class="sheet-list talent">
+    <div class="sheet-list careers">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "Talents"}}</div>
-            <div class="flex large">{{localize "Tests"}}</div>
-            <div>{{localize "Times Taken"}}</div>
-            <div class="list-controls">
-                <a class="list-control" data-action="createItem" data-type="talent">
-                    <i class="fas fa-plus"></i>
-                </a>
-            </div>
+            <div class="list-name">{{localize "Careers"}}</div>
+            <div>{{localize "Complete"}}</div>
+            <div class="list-controls"></div>
         </div>
         <div class="list-content">
-            {{#each items.talent}}
+            {{#each items.career}}
                 <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="{{this.img}}">
                             <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
                         </div>
-                        <div class="flex large">{{this.tests.value}}</div>
-            
-                            <div>
-                                {{#if this.system.advances.indicator}}
-                                <a style="visibility: hidden;">+</a>
-                                {{/if}}
-                                {{this.Advances}} / {{this.Max}}    
-                                {{#if this.system.advances.indicator}}
-                                <a class="advancement-indicator" data-action="advanceTalent" data-tooltip="{{this.system.cost}} XP" data-type="talent">+</a>
-                                {{/if}}
-                            </div>
-                            <div class="list-controls">
-                                <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
-                            </div>
+                        <div>
+                            {{#if this.system.complete.value}}
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.complete.value"><i class="far fa-check-circle"></i></a>
+                            {{else}}
+                                <a data-action="toggleProperty" data-uuid="{{this.uuid}}" data-path="system.complete.value"><i class="far fa-circle"></i></a>
+                            {{/if}}
+                        </div>
+                    <div class="list-controls">
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                    </div>
                     </div>
                     {{> sheetButtons document=this}}
                     <div class="dropdown-content collapsed">
 
-                    </div>
-                </div>
-            {{/each}}
-              {{#each system.details.career.system.untrainedTalents}}
-                <div class="list-row inactive">
-                    <div class="row-content">
-                        <div class="list-name">
-                            <img src="systems/wfrp4e/icons/blank.png">
-                            <a class="label"  data-action="addUntrainedTalent">{{this}}</a>
-                        </div>
                     </div>
                 </div>
             {{/each}}

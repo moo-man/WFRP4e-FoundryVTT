@@ -1,0 +1,54 @@
+.wfrp4e.actor.creature.sheet.application {
+    --overview-outline: var(--color-cool-3);
+    --overview-label: var(--color-cool-3);
+    .sheet-header {
+        img {
+            margin-right: 5px;
+        }
+        .header-rows {
+            .header-row {
+                margin: 3px 0px;
+            }
+        }
+    }
+
+    .creature-overview
+    {
+        .overview-content {
+            border: 1px solid var(--overview-outline);
+            border-top: 0px;
+            padding: 5px;
+        }
+
+        .overview-list {
+            &:first-of-type {
+                margin-top: 0px;
+            }
+            &:last-of-type
+            {
+                margin-bottom: 0px;
+            }
+            margin: 5px 0px;
+            line-height: 1.2rem;
+        }
+
+        .list-label {
+            font-weight: bold;
+        }
+    }
+
+    .tab[data-tab='main'] .armour-section {
+        display: flex;
+        .field {
+            height: 1.5rem;
+            display: flex;
+            > * {
+                height: 100%;
+                line-height: 1.5rem;
+                flex: 1
+            }
+            border-bottom: 1px solid var(--attribute-border);
+        }
+    }
+
+}
