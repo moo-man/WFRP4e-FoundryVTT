@@ -51,7 +51,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       containerSort : this._onContainerSort,
       createItem : this._onCreateItem,
       configureActor : this._onConfigureActor,
-      useAspect : this._onUseAspect
+      useAspect : this._onUseAspect,
+      toggleQuality : this._onToggleQuality
     },
     defaultTab : "main"
   }
@@ -382,6 +383,28 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         document.system.use();
       }
+    }
+
+    static async _onToggleQuality(ev)
+    {
+      let document = await this._getDocumentAsync(ev);
+      let index = this._getIndex(ev);
+
+      let inactive = Object.values(document.system.properties.inactiveQualities);
+  
+      // Find clicked quality
+      let toggled = inactive[index];
+  
+      // Find currently active
+      let qualities = foundry.utils.deepClone(document.system.qualities.value);
+  
+      // Disable all qualities of clicked group
+      qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
+  
+      // Enabled clicked quality
+      qualities.find(i => i.name == toggled.key).active = true;
+  
+      document.update({"system.qualities.value" : qualities})
     }
 
     static async _onRollTest(ev)
