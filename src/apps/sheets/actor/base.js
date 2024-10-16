@@ -91,6 +91,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
     })
     context.items.aspect = aspects
+    context.showExtendedTests = this.showExtendedTests;
     return context;
   }
 
@@ -494,8 +495,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
     static async _toggleExtendedTests(ev)
     {
-      let parent = this._getParent(ev.target, ".tab")
-      Array.from(parent.querySelectorAll(".extended-tests, .skill-lists, .extended-toggle")).forEach(el => el.classList.toggle("hidden"))
+      this.showExtendedTests = !this.showExtendedTests;
+      this.render(true);
     }
 
     static _onRemoveAttacker(ev) {

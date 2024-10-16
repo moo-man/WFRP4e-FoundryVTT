@@ -1,6 +1,6 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
 
-    <div class="sheet-list extended-tests condensed hidden">
+    <div class="sheet-list extended-tests condensed {{#unless showExtendedTests}}hidden{{/unless}}">
         <div class="list-header row-content">
             <div class="list-name">{{localize "Extended Test"}} <a data-action="toggleExtendedTests" class="list-control"><i class="fa-solid fa-reply"></i></a></div>
             <div class="large flex">{{localize "ITEM.Progress"}}</div>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="skill-lists">
+    <div class="skill-lists {{#if showExtendedTests}}hidden{{/if}}">
         <div class="sheet-list condensed">
             <div class="list-header row-content">
                 <div class="list-name">{{localize "Basic Skills"}}</div>
@@ -129,7 +129,7 @@
         </div>
     </div>
     
-    <div class="sheet-list extended-toggle">
+    <div class="sheet-list extended-toggle {{#if showExtendedTests}}hidden{{/if}}">
         <div class="list-header row-content">
             <a class="list-name" data-action="toggleExtendedTests">{{items.extendedTest.length}} {{localize "Extended Tests"}}</a>
         </div>
