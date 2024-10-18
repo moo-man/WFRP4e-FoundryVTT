@@ -1,7 +1,4 @@
-import WFRP_Audio from "./audio-wfrp4e.js";
 import WomCastTest from "./rolls/wom-cast-test.js";
-import WFRP_Utility from "./utility-wfrp4e.js";
-
 
 export default class OpposedTest {
   constructor(attackerTest = undefined, 
@@ -249,7 +246,7 @@ export default class OpposedTest {
       }
 
       Hooks.call("wfrp4e:opposedTestResult", this, attackerTest, defenderTest)
-      WFRP_Audio.PlayContextAudio(soundContext)
+      game.wfrp4e.audio.PlayContextAudio(soundContext)
       return opposeResult
     }
     catch (err) {

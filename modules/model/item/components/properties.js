@@ -239,7 +239,7 @@ const PropertiesMixin = (cls) => class extends cls
         if (effectData)
         {
             let type = game.wfrp4e.config.weaponQualities[property.name] ? "qualities" : "flaws"
-            setProperty(effectData, "flags.wfrp4e", {value : property.value, path : `system.properties.${type}.${property.name}.effect`});
+            foundry.utils.setProperty(effectData, "flags.wfrp4e", {value : property.value, path : `system.properties.${type}.${property.name}.effect`});
             return new CONFIG.ActiveEffect.documentClass(effectData, {parent : document});
         }
     }

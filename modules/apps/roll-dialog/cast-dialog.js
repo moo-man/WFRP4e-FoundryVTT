@@ -1,4 +1,3 @@
-import CastTest from "../../system/rolls/cast-test";
 import SkillDialog from "./skill-dialog";
 
 export default class CastDialog extends SkillDialog {

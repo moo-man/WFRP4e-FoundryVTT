@@ -5,7 +5,6 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 import ChatWFRP from "../system/chat-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
-import OpposedHandler from "../system/opposed-handler.js";
 
 
 export default function() {
@@ -471,12 +470,12 @@ export default function() {
       let target = canvas.tokens.get(message.flags.unopposeData.targetSpeaker.token)
       await target.actor.clearOpposed();
     }
-    if (manual && !message.flags.opposeResult && OpposedHandler.attackerMessage) {
-      await OpposedHandler.attackerMessage.update(
+    if (manual && !message.flags.opposeResult && game.wfrp4e.opposedHandler.attackerMessage) {
+      await game.wfrp4e.opposedHandler.attackerMessage.update(
         {
           "flags.data.isOpposedTest": false
         });
-      await OpposedHandler.attacker.clearOpposed();
+      await game.wfrp4e.opposedHandler.attacker.clearOpposed();
     }
     ui.notifications.notify(game.i18n.localize("ROLL.CancelOppose"))
   })

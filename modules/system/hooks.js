@@ -3,7 +3,7 @@ import settings from "../hooks/settings.js"
 import i18n from "../hooks/i18n.js"
 import init from "../hooks/init.js"
 import ready from "../hooks/ready.js"
-import canvas from "../hooks/canvas.js"
+import canvasHook from "../hooks/canvas.js"
 import chat from "../hooks/chat.js"
 import combat from "../hooks/combat.js"
 import hotbarDrop from "../hooks/hotbarDrop.js"
@@ -16,7 +16,7 @@ import token from "../hooks/token.js"
 export default function registerHooks() {
     init()
     ready()
-    canvas()
+    canvasHook()
     chat()
     combat()
     controlButtons()

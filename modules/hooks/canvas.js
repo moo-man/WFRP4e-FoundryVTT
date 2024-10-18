@@ -1,7 +1,6 @@
-import passengerRender from "../system/passengerRender.js"
 import WFRPTokenHUD from "../apps/tokenHUD.js";
 
-export default function() {
+function canvasHook() {
 
   Hooks.on("canvasReady", (canvas) => {
 
@@ -22,3 +21,5 @@ export default function() {
     canvas.hud.token = new WFRPTokenHUD();
   })
 }
+
+export default canvasHook;

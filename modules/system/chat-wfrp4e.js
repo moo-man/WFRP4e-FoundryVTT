@@ -5,13 +5,7 @@
  * Another noteworthy function is renderRollCard, which is used to display the roll results of all tests. Lastly, this object
  * is where chat listeners are defined, which add interactivity to chat, usually in the form of button clickss.
  */
-
-import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
-import WFRP_Audio from "./audio-wfrp4e.js";
-import WFRP_Utility from "./utility-wfrp4e.js";
-
-import OpposedHandler from "./opposed-handler.js";
 import TradeManager from "./trade/trade-manager.js";
 
 
@@ -59,41 +53,41 @@ export default class ChatWFRP {
 
     // Lookp function uses specialized skill and talent lookup functions that improve searches based on specializations
     html.on("click", ".talent-lookup", async ev => {
-      WFRP_Utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
+      game.wfrp4e.utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
     })
 
     html.on("click", ".skill-lookup", async ev => {
-      WFRP_Utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
+      game.wfrp4e.utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
     })
 
     // If draggable skill/talent, right click to open sheet
     html.on("mousedown", ".talent-drag", async ev => {
       if (ev.button == 2)
-        WFRP_Utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
+        game.wfrp4e.utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
     })
     html.on("mousedown", ".skill-drag", async ev => {
       if (ev.button == 2)
-        WFRP_Utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
+        game.wfrp4e.utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
     })
 
 
 
-    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
-    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
-    html.on("click", ".property-chat", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
-    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
-    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
-    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
-    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
-    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
-    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
-    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
+    html.on("click", ".symptom-tag", game.wfrp4e.utility.handleSymptomClick.bind(game.wfrp4e.utility))
+    html.on("click", ".condition-chat", game.wfrp4e.utility.handleConditionClick.bind(game.wfrp4e.utility))
+    html.on("click", ".property-chat", game.wfrp4e.utility.handlePropertyClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.table-click', game.wfrp4e.utility.handleTableClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.pay-link', game.wfrp4e.utility.handlePayClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.credit-link', game.wfrp4e.utility.handleCreditClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.corruption-link', game.wfrp4e.utility.handleCorruptionClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.fear-link', game.wfrp4e.utility.handleFearClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.terror-link', game.wfrp4e.utility.handleTerrorClick.bind(game.wfrp4e.utility))
+    html.on('mousedown', '.exp-link', game.wfrp4e.utility.handleExpClick.bind(game.wfrp4e.utility))
     html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick.bind(TravelDistanceWfrp4e))
     html.on('click', '.trade-cargo-click', TradeManager.manageTrade.bind(TradeManager));
     html.on('click', '.trade-buy-click', TradeManager.buyCargo.bind(TradeManager));
 
     html.on('change', '.card-edit', this._onCardEdit.bind(this))
-    html.on('click', '.opposed-toggle', OpposedHandler.opposedClicked.bind(OpposedHandler))
+    html.on('click', '.opposed-toggle', game.wfrp4e.opposedHandler.opposedClicked.bind(game.wfrp4e.opposedHandler))
     html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
     html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
     html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
@@ -128,7 +122,7 @@ export default class ChatWFRP {
 
     // Post an item property (quality/flaw) description when clicked
     html.on("click", '.item-property', event => {
-      WFRP_Utility.postProperty(event.target.text);
+      game.wfrp4e.utility.postProperty(event.target.text);
     });
 
 
@@ -149,7 +143,7 @@ export default class ChatWFRP {
       return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
     opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-      .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
+      .then(updateMsg => game.wfrp4e.opposedHandler.updateOpposedMessage(updateMsg, message.id));
   }
 
   static async _onApplyHackClick(ev)
@@ -325,7 +319,7 @@ export default class ChatWFRP {
     // data-button tells us what button was clicked
     switch ($(event.currentTarget).attr("data-button")) {
       case "rollAvailability":
-        MarketWFRP4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
+        game.wfrp4e.market.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
         break;
       case "payItem":
         if (!game.user.isGM) {
@@ -334,9 +328,9 @@ export default class ChatWFRP {
           if (msg.flags.transfer)
             itemData = JSON.parse(msg.flags.transfer).data
           if (actor) {
-            let money = MarketWFRP4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
+            let money = game.wfrp4e.market.payCommand($(event.currentTarget).attr("data-pay"), actor);
             if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
+              game.wfrp4e.audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
               await actor.updateEmbeddedDocuments("Item", money);
               if (itemData) {
                 await actor.createEmbeddedDocuments("Item", [itemData])
@@ -355,9 +349,9 @@ export default class ChatWFRP {
           let actor = game.user.character;
           if (actor) {
             let dataExchange = $(event.currentTarget).attr("data-amount");
-            let money = MarketWFRP4e.creditCommand(dataExchange, actor);
+            let money = game.wfrp4e.market.creditCommand(dataExchange, actor);
             if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
+              game.wfrp4e.audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
               await actor.updateEmbeddedDocuments("Item", money);
               let instances = msg.getFlag("wfrp4e", "instances") - 1;
               let messageUpdate = {};
@@ -388,7 +382,7 @@ export default class ChatWFRP {
           rarity: $(event.currentTarget).attr("data-rarity").toLowerCase(),
           modifier: 0
         };
-        MarketWFRP4e.testForAvailability(options);
+        game.wfrp4e.market.testForAvailability(options);
         break;
     }
   }
@@ -405,15 +399,15 @@ export default class ChatWFRP {
     else
       originalPayString = msg.getFlag("wfrp4e", "originalPrice")
 
-    let originalAmount = MarketWFRP4e.parseMoneyTransactionString(originalPayString)
-    let currentAmount = MarketWFRP4e.parseMoneyTransactionString(payString)
+    let originalAmount = game.wfrp4e.market.parseMoneyTransactionString(originalPayString)
+    let currentAmount = game.wfrp4e.market.parseMoneyTransactionString(payString)
 
     let originalBPAmount = originalAmount.gc * 240 + originalAmount.ss * 12 + originalAmount.bp
     let bpAmount = currentAmount.gc * 240 + currentAmount.ss * 12 + currentAmount.bp
     bpAmount += Math.round((originalBPAmount * .1)) * multiplier
 
-    let newAmount = MarketWFRP4e.makeSomeChange(bpAmount, 0)
-    let newPayString = MarketWFRP4e.amountToString(newAmount)
+    let newAmount = game.wfrp4e.market.makeSomeChange(bpAmount, 0)
+    let newPayString = game.wfrp4e.market.amountToString(newAmount)
     html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
     let newContent = html.find(".message-content").html()
     newContent = newContent.replace(`${currentAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${currentAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${currentAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`, `${newAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${newAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${newAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`)

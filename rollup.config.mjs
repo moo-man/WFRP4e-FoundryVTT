@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 import getSystemPath from "./foundry-path.mjs";
 import copy from 'rollup-plugin-copy-watch';
 import postcss from "rollup-plugin-postcss"
@@ -11,10 +10,11 @@ let systemPath = getSystemPath(manifest.id)
 
 console.log("Bundling to " + systemPath)
 export default {
-    input: [`${manifest.id}.js`, `./style/${manifest.id}.scss`],
+    input: [`${manifest.id}.js`],
     output: {
-        dir : systemPath
-        // file : path.join(systemPath, `${manifest.id}.js`)
+        dir : systemPath,
+        format: 'esm',
+        sourcemap: true
     },
     watch : {
         clearScreen: true
@@ -34,8 +34,11 @@ export default {
         }),
         postcss({
             extract : `${manifest.id}.css`,
-            plugins: []
-          })
+            modules: false, // Set to true if you use CSS modules
+            use: {
+              sass: true,  // Enable SCSS processing
+            }
+        })
     ],
     onwarn(warning, warn) {
         // suppress eval warnings

@@ -1,6 +1,3 @@
-import WFRP_Utility from "../utility-wfrp4e.js";
-import OpposedHandler from "../opposed-handler.js";
-import WFRP_Audio from "../audio-wfrp4e.js";
 import CrewTest from "../crew-test.js"
 
 export default class TestWFRP extends WarhammerTestBase{
@@ -482,7 +479,7 @@ export default class TestWFRP extends WarhammerTestBase{
   {
     
     try {
-      let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(this))
+      let contextAudio = await game.wfrp4e.audio.MatchContextAudio(game.wfrp4e.audio.FindContext(this))
       chatOptions.sound = contextAudio.file || chatOptions.sound
     }
     catch
@@ -532,7 +529,7 @@ export default class TestWFRP extends WarhammerTestBase{
       }
       else { // actor is attacking - new test
         // For each target, create opposed test messages, save those message IDs in this test.
-        for (let token of this.context.targets.map(t => WFRP_Utility.getToken(t))) {
+        for (let token of this.context.targets.map(t => game.wfrp4e.utility.getToken(t))) {
           await this.createOpposedMessage(token)
         }
       }
@@ -585,7 +582,7 @@ export default class TestWFRP extends WarhammerTestBase{
       result.incomeResult = game.i18n.localize("INCOME.Failure")
       earned = 0;
     }
-    // let contextAudio = await WFRP_Audio.MatchContextAudio(WFRP_Audio.FindContext(test))
+    // let contextAudio = await game.wfrp4e.audio.MatchContextAudio(game.wfrp4e.audio.FindContext(test))
     // cardOptions.sound = contextAudio.file || cardOptions.sound
     result.earned = earned + tier;
   }
@@ -648,9 +645,9 @@ export default class TestWFRP extends WarhammerTestBase{
     if (newCorruption < 0) newCorruption = 0
 
     if (!this.context.reroll && !this.context.fortuneUsedAddSL)
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.actor.name, number: corruption }), "gmroll", false))
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.CorruptionFail", { name: this.actor.name, number: corruption }), "gmroll", false))
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.actor.name, number: corruption }), "gmroll", false))
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(game.i18n.format("CHAT.CorruptionReroll", { name: this.actor.name, number: corruption }), "gmroll", false))
 
     await this.actor.update({ "system.status.corruption.value": newCorruption })
   }
@@ -661,7 +658,7 @@ export default class TestWFRP extends WarhammerTestBase{
     {
       let wpb = this.actor.system.characteristics.wp.bonus;
       let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
-      ChatMessage.create(WFRP_Utility.chatDataSetup(`
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(`
       <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
       <p>${game.i18n.localize("CHAT.Dissolution")}</p>
       <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.actor.name, number: wpb })}
@@ -670,7 +667,7 @@ export default class TestWFRP extends WarhammerTestBase{
       this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb }, {skipCorruption: true}) // Don't keep checking corruption, causes a possible loop of dialogs
     }
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(game.i18n.localize("CHAT.MutateSuccess"), "gmroll", false))
 
   }
   
@@ -707,7 +704,7 @@ export default class TestWFRP extends WarhammerTestBase{
         if (getProperty(itemData, "flags.wfrp4e.reloading")) {
           let actor
           if (getProperty(itemData, "flags.wfrp4e.vehicle"))
-            actor = WFRP_Utility.getSpeaker(getProperty(itemData, "flags.wfrp4e.vehicle"))
+            actor = game.wfrp4e.utility.getSpeaker(getProperty(itemData, "flags.wfrp4e.vehicle"))
 
           actor = actor ? actor : this.actor
           let weapon = actor.items.get(getProperty(itemData, "flags.wfrp4e.reloading"))
@@ -864,7 +861,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
 
   async createOpposedMessage(token) {
-    let oppose = new OpposedHandler();
+    let oppose = new game.wfrp4e.opposedHandler();
     await oppose.setAttacker(this.message);
     let opposeMessageId = await oppose.startOppose(token);
     if (opposeMessageId) {
@@ -1159,7 +1156,7 @@ export default class TestWFRP extends WarhammerTestBase{
           html += `${game.i18n.format("FORTUNE.UsageAddSLText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
   
         html += `<b>${game.i18n.localize("FORTUNE.PointsRemaining")} </b>${this.actor.system.status.fortune.value - 1}`;
-        ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+        ChatMessage.create(game.wfrp4e.utility.chatDataSetup(html));
   
   
         if (type == "reroll") {
@@ -1188,7 +1185,7 @@ export default class TestWFRP extends WarhammerTestBase{
     let corruption = Math.trunc(this.actor.system.status.corruption.value) + 1;
     html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.actor.system.status.corruption.max}`;
 
-    ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+    ChatMessage.create(game.wfrp4e.utility.chatDataSetup(html));
     this.actor.update({ "system.status.corruption.value": corruption });
 
     this.reroll()
@@ -1246,8 +1243,8 @@ export default class TestWFRP extends WarhammerTestBase{
   get result() { return this.data.result }
   get preData() { return this.data.preData }
   get context() { return this.data.context }
-  get actor() { return WFRP_Utility.getSpeaker(this.context.speaker) }
-  get token() { return WFRP_Utility.getToken(this.context.speaker) }
+  get actor() { return game.wfrp4e.utility.getSpeaker(this.context.speaker) }
+  get token() { return game.wfrp4e.utility.getToken(this.context.speaker) }
 
   get item() {
     if (typeof this.data.preData.item == "string")
@@ -1257,7 +1254,7 @@ export default class TestWFRP extends WarhammerTestBase{
   }
 
   get targets() {
-    return this.context.targets.map(i => WFRP_Utility.getSpeaker(i))
+    return this.context.targets.map(i => game.wfrp4e.utility.getSpeaker(i))
   }
 
   get targetTokens() {
