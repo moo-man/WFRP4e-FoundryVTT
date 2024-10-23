@@ -59,7 +59,7 @@
 
                         {{#if this.system.InactiveQualities.length}}
                             <div class="property-icon">{{localize "SHEET.Or"}}</div>
-                            {{{array this.system.InactiveQualities "" action="itemPropertyDropdown" type="qualities"}}}
+                            {{{array this.system.InactiveQualities "inactive" action="toggleQuality" type="qualities"}}}
                         {{/if}}
 
                         {{#if this.system.Flaws.length}}

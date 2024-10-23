@@ -39,17 +39,17 @@
                             {{#if this.system.loading}}
                                 {{#if this.system.loaded.value}}
                                     {{#if this.system.repeater}}
-                                        <a data-target="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
+                                        <a data-action="toggleProperty" data-path="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
                                             {{localize "Loaded"}}</a>
                                     {{else}}
-                                        <a data-target="system.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
+                                        <a data-action="toggleProperty" data-path="system.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
                                     {{/if}}
                                 {{else}}
                                     {{#if this.system.repeater}}
-                                        <a data-target="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
+                                        <a data-action="toggleProperty" data-path="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
                                             {{localize "Loaded"}}</a>
                                     {{else}}
-                                        <a data-target="system.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
+                                        <a data-action="toggleProperty" data-path="system.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
                                     {{/if}}
                                 {{/if}}
                             {{/if}}
@@ -75,7 +75,7 @@
 
                             {{#if this.system.InactiveQualities.length}}
                                     <div class="property-icon">{{localize "SHEET.Or"}}</div>
-                                    {{{array this.system.InactiveQualities "" action="itemPropertyDropdown" type="qualities"}}}
+                                    {{{array this.system.InactiveQualities "inactive" action="toggleQuality" type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.Flaws.length}}

@@ -59,9 +59,9 @@ export class SpellModel extends OvercastItemModel {
     async _preUpdate(data, options, user)
     {
       await super._preUpdate(data, options, user)
-      if (foundry.utils.hasProperty(data, "system.cn.SL"))
+      if (foundry.utils.hasProperty(options.changed, "system.cn.SL"))
       {
-          data.system.cn.SL = Math.clamp(data.system.cn.SL, 0, data.system.cn.value || this.cn.value)
+          data.system.cn.SL = Math.max(data.system.cn.SL, 0);
       }
     }
 

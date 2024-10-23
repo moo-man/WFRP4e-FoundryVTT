@@ -378,6 +378,11 @@ export default class CharGenWfrp4e extends FormApplication {
         this.actor.items = [];
         let document = await Actor.create(this.actor, {skipItems : true});
         await document.createEmbeddedDocuments("Item", actorItems)
+        for(let i of document.items.contents)
+        {
+          // Run onCreate scripts
+          await i._onCreate(i._source, {}, game.user.id);
+        }
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }
@@ -393,6 +398,11 @@ export default class CharGenWfrp4e extends FormApplication {
         let id = await SocketHandlers.executeOnUserAndWait("GM", "createActor", payload);
         let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
+          for(let i of actor.items.contents)
+          {
+            // Run onCreate scripts
+            await i._onCreate(i._source, {}, game.user.id);
+          }
           actor.sheet.render(true)
           localStorage.removeItem("wfrp4e-chargen")
         }
