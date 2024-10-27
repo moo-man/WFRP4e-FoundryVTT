@@ -234,7 +234,7 @@ export class DiseaseModel extends BaseItemModel {
         let difficultyname = lingering.specifier;
         let difficulty = warhammer.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
 	  
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
+        let test = await this.parent.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
         await test.roll();
 
         if (test.failed) 
