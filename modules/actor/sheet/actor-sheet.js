@@ -1146,26 +1146,15 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   async _onInjuryDurationClick(ev) {
-    let itemId = this._getId(ev);
-    let injury = this.actor.items.get(itemId).toObject()
-    if (!isNaN(injury.system.duration.value)) {
-      if (ev.button == 0)
-        return this.actor.decrementInjury(injury)
-      else injury.system.duration.value++
-      return this.actor.updateEmbeddedDocuments("Item", [injury])
+    const injury = this._getDocument(ev);
+
+    if (ev.button === 0)
+    {
+      injury.system.decrement();
     }
-    else {
-      try {
-        let roll = await new Roll(injury.system.duration.value, this.actor).roll();
-        roll.toMessage({speaker : {alias : this.actor.name}, flavor : injury.name})
-        injury.system.duration.value = roll.total;
-        injury.system.duration.active = true;
-        return this.actor.updateEmbeddedDocuments("Item", [injury])
-      }
-      catch
-      {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseInjury"))
-      }
+    else
+    {
+      injury.system.increment();
     }
   }
 
