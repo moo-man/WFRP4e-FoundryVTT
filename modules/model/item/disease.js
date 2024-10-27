@@ -169,31 +169,31 @@ export class DiseaseModel extends BaseItemModel {
     roll.toMessage(messageData, {rollMode : "gmroll"})
   }
 
-  increment()
+  async increment()
   {
     if (this.duration.active)
     {
-      return this.parent.update({"system.duration.value" : Number(this.duration.value) + 1})
+      return await this.parent.update({"system.duration.value" : Number(this.duration.value) + 1})
     }
     else 
     {
-      return this.parent.update({"system.incubation.value" : Number(this.incubation.value) + 1})
+      return await this.parent.update({"system.incubation.value" : Number(this.incubation.value) + 1})
     }
   }
 
-  decrement()
+  async decrement()
   {
     let update = {}
     if (this.duration.active)
     {
       if (isNaN(this.duration.value))
       {
-        return this.start("duration");
+        return await this.start("duration");
       }
       let duration = Number(this.duration.value) - 1;
       if (duration == 0)
       {
-        return this.finishDuration();
+        return await this.finishDuration();
       }
       else 
       {
@@ -204,20 +204,20 @@ export class DiseaseModel extends BaseItemModel {
     {
       if (isNaN(this.incubation.value))
       {
-        return this.start("incubation");
+        return await this.start("incubation");
       }
       let incubation = Number(this.incubation.value) - 1;
       if (incubation == 0)
       {
         update = {"system.incubation.value" : incubation};
-        this.start("duration");
+        await this.start("duration");
       }
       else 
       {
         update = {"system.incubation.value" : incubation};
       }
     }
-    return this.parent.update(update);
+    return await this.parent.update(update);
   }
 
   async finishDuration() {
