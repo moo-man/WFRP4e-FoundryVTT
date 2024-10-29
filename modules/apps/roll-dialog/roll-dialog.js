@@ -1,9 +1,28 @@
-import { DialogTooltips } from "./tooltips";
-
 export default class RollDialog extends WarhammerRollDialog {
 
-    // tooltipConfig = {modifier : "", slBonus : game.i18n.localize("DIALOG.SLBonus"), successBonus : game.i18n.localize("DIALOG.SuccessBonus"), difficulty : ""};
-    static tooltipClass = DialogTooltips;
+    static tooltipConfig = {
+        modifier : {
+            label : "Modifier",
+            type : 1,
+            path : "fields.modifier",
+            hideLabel : true
+        },
+        slBonus : {
+            label : "DIALOG.SLBonus",
+            type : 1,
+            path : "fields.slBonus"
+        },
+        successBonus : {
+            label : "DIALOG.SuccessBonus",
+            type : 1,
+            path : "fields.successBonus"
+        },
+        difficulty : {
+            label : "Difficulty",
+            type : 0,
+            path : "fields.difficulty"
+        }
+    }
 
     testClass = null;
 
@@ -65,8 +84,9 @@ export default class RollDialog extends WarhammerRollDialog {
         {
             throw new Error("Only subclasses of RollDialog can be submitted")
         }
+        this.data.context = {};
         let data = super._getSubmissionData();
-        data.breakdown = this.createBreakdown();
+        data.breakdown = data.context.breakdown;
         if (!this.options.skipTargets)
         {
             data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
