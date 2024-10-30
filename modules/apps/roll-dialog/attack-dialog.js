@@ -19,14 +19,14 @@ export default class AttackDialog extends SkillDialog
         if (!["roll", "none"].includes(this.fields.hitLocation))
         {
             this.fields.modifier -= 20;
-            this.tooltips.addModifier(-20, game.i18n.localize('ROLL.CalledShot'))
+            this.tooltips.add("modifier", -20, game.i18n.localize('ROLL.CalledShot'))
         }
         if (game.settings.get("wfrp4e", "useGroupAdvantage"))
         {
           if (this.userEntry.charging)
           {
             this.fields.modifier += 10;
-            this.tooltips.addModifier(10, game.i18n.localize('Charging'))
+            this.tooltips.add("modifier", 10, game.i18n.localize('Charging'))
           }
         }
         
@@ -42,19 +42,19 @@ export default class AttackDialog extends SkillDialog
         if (attacker.test.item.properties?.qualities.fast && this.item.attackType == "melee" && !properties?.qualities.fast) 
         {
             this.fields.modifier += -10
-            this.tooltips.addModifier(-10, game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
+            this.tooltips.add("modifier", -10, game.i18n.localize('CHAT.TestModifiers.FastWeapon'))
         }
 
         if (properties.flaws.unbalanced)
         {
             this.fields.slBonus -= 1;
-            this.tooltips.addSLBonus(-1, game.i18n.localize("PROPERTY.Unbalanced"))
+            this.tooltips.add("slBonus", -1, game.i18n.localize("PROPERTY.Unbalanced"))
         }
 
         if(attacker.test.item.properties?.qualities?.wrap)
         {
             this.fields.slBonus -= 1
-            this.tooltips.addSLBonus(-1, game.i18n.localize('CHAT.TestModifiers.WrapDefend'));
+            this.tooltips.add("slBonus", -1, game.i18n.localize('CHAT.TestModifiers.WrapDefend'));
         }
 
         //Size Differences
@@ -65,7 +65,7 @@ export default class AttackDialog extends SkillDialog
             if (this.item.attackType == "melee") {
                 let slBonus = (-2 * sizeDiff);
                 this.fields.slBonus += slBonus
-                this.tooltips.addSLBonus(slBonus, game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
+                this.tooltips.add("slBonus", slBonus, game.i18n.localize('CHAT.TestModifiers.DefendingLarger'))
             }
         }
     }
@@ -75,7 +75,7 @@ export default class AttackDialog extends SkillDialog
         if (this.item.attackType == "ranged" && target.actor.statuses.has("engaged"))
         {
             this.fields.modifier -= 20;
-            this.tooltips.addModifier(-20, game.i18n.localize("EFFECT.ShootingAtEngagedTarget"));
+            this.tooltips.add("modifier", -20, game.i18n.localize("EFFECT.ShootingAtEngagedTarget"));
             this.options.engagedModifier = -20;
         }
 
@@ -86,7 +86,7 @@ export default class AttackDialog extends SkillDialog
         if (sizeDiff < 0 && (this.item.attackType == "melee" || target.actor.sizeNum <= 3)) 
         {
           sizeModifier += 10;
-          this.tooltips.addModifier(10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
+          this.tooltips.add("modifier", 10, game.i18n.localize('CHAT.TestModifiers.AttackingLarger'));
         }
         // Attacking a larger creature with ranged
         else if (this.item.attackType === "ranged")
@@ -107,7 +107,7 @@ export default class AttackDialog extends SkillDialog
           if (sizeModifier) 
           {
             const text = (game.i18n.format('CHAT.TestModifiers.ShootingSizeModifier', { size: game.wfrp4e.config.actorSizes[target.actor.details.size.value] }))
-            this.tooltips.addModifier(sizeModifier, text)
+            this.tooltips.add("modifier", sizeModifier, text)
           }
         }
         
@@ -130,7 +130,7 @@ export default class AttackDialog extends SkillDialog
             if (mountSizeDiff >= 1) 
             {
                 this.fields.modifier += 20;
-                this.tooltips.addModifier(20, game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger'));
+                this.tooltips.add("modifier", 20, game.i18n.localize('CHAT.TestModifiers.AttackerMountLarger'));
             }
         }
         // Attacking a creature on a larger mount
@@ -146,11 +146,11 @@ export default class AttackDialog extends SkillDialog
                 if ((this.item.reachNum || 0) >= 5) 
                 {
                     // TODO this tooltip won't show up because 0 value
-                    this.tooltips.addModifier(0, `${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
+                    this.tooltips.add("modifier", 0, `${game.i18n.localize('CHAT.TestModifiers.IgnoreDefenderMountLarger')}`);
                 }
                 else 
                 {
-                    this.tooltips.addModifier(-10, game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'));
+                    this.tooltips.add("modifier", -10, game.i18n.localize('CHAT.TestModifiers.DefenderMountLarger'));
                     this.fields.modifier -= 10;
                 }
             }
