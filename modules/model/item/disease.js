@@ -146,27 +146,26 @@ export class DiseaseModel extends BaseItemModel {
       throw new Error("Must provide incubation or duration as type")
     }
 
-    let roll
-    try 
+    try
     {
-      roll = await new Roll(this[type].value, this.parent).roll();
+      let roll = await new Roll(this[type].value, this.parent).roll();
       let update = {[`system.${type}.value`] : roll.total};
       if (type == "duration")
       {
         update["system.duration.active"] = true;
       }
       await this.parent.update(update);
+
+      let messageData = this.getMessageData()
+
+      messageData.speaker.alias += " " + type;
+
+      roll.toMessage(messageData, {rollMode : "gmroll"})
     } 
     catch (e) 
     {
       ChatMessage.create(this.getMessageData(game.i18n.localize("CHAT.DiseaseRollError")));
     }
-
-    let messageData = this.getMessageData()
-
-    messageData.speaker.alias += " " + type;
-
-    roll.toMessage(messageData, {rollMode : "gmroll"})
   }
 
   async increment()
