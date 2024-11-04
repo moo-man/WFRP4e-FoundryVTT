@@ -18,6 +18,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       dismount : this._dismount,
       showMount : this._showMount,
       randomize: this._randomize,
+      stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
     },
   }
 
@@ -448,6 +449,21 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
     catch (error) {
       warhammer.utility.log("Could not randomize: " + error, true)
+    }
+  }
+
+  static async _onStepAilment(ev)
+  {
+    ev.stopPropagation();
+    ev.preventDefault();
+    let document = (await this._getDocument(ev)) || this.document;
+
+    if (!document) return;
+
+    if (ev.button === 0) {
+      document.system.decrement();
+    } else {
+      document.system.increment();
     }
   }
 
