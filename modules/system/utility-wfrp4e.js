@@ -2,6 +2,7 @@ import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import ItemWfrp4e from "../item/item-wfrp4e.js";
 import PropertiesMixin from "../model/item/components/properties.js";
 import ChatWFRP from "./chat-wfrp4e.js";
+import WFRP_Audio from "./audio-wfrp4e.js";
 
 
 /**
@@ -692,6 +693,8 @@ export default class WFRP_Utility {
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
       MarketWFRP4e.generatePayCard(payString);
+    else
+      MarketWFRP4e.handlePlayerPayment({payString});
   }
 
   static handleCreditClick(event) {
