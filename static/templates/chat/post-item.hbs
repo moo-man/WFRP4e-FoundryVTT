@@ -18,8 +18,8 @@
     </span>
 
     <span class="chat-card-button-area">
-        <a class='chat-card-button market-button' data-button='rollAvailability' data-rarity="{{system.availability.value}}">{{localize "MARKET.RollForAvailability"}}</a>
-        <a class='chat-card-button market-button' data-button='payItem' data-pay="{{system.price.gc}}{{localize 'MARKET.Abbrev.GC'}}{{system.price.ss}}{{localize 'MARKET.Abbrev.SS'}}{{system.price.bp}}{{localize 'MARKET.Abbrev.BP'}}">{{localize "MARKET.PayForItem"}}</a>
+        <a class='chat-card-button market-button' data-button='rollAvailability' data-rarity="{{system.availability.value}}" data-name="{{name}}">{{localize "MARKET.RollForAvailability"}}</a>
+        <a class='chat-card-button market-button' data-button='payItem' data-pay="{{system.price.gc}}{{localize 'MARKET.Abbrev.GC'}}{{system.price.ss}}{{localize 'MARKET.Abbrev.SS'}}{{system.price.bp}}{{localize 'MARKET.Abbrev.BP'}},{{name}}">{{localize "MARKET.PayForItem"}}</a>
     </span>
     {{/if}}
 
