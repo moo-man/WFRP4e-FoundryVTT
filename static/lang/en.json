@@ -752,6 +752,8 @@
     "DIALOG.ActorSelection" : "Select an Actor",
     "DIALOG.ShowTable" : "Table Visibility",
     "DIALOG.ShowTableHint": "Show table to players in sidebar and /table menu",
+    "DIALOG.LinkCareer" : "Link Career",
+    "DIALOG.LinkCareerContent" : "Link {new} with {old}? This will add the skills from {old} into {new}, preserving any specialisation choices made in the previous career.",
     "Show" : "Show",
     "Hide" : "Hide",
     "ExpChange" : "Experience Change",
