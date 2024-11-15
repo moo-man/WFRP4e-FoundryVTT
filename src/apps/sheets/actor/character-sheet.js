@@ -94,7 +94,7 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
         try {
           if (await Dialog.confirm({ title: game.i18n.localize("SHEET.AddSkillTitle"), content: `<p>${game.i18n.localize("SHEET.AddSkillPrompt")}</p>`}))
           {
-            this.actor.createEmbeddedDocuments("Item", [skill]);
+            this.actor.createEmbeddedDocuments("Item", [skill], {career : true});
           }
         }
         catch

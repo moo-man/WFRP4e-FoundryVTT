@@ -88,7 +88,7 @@ export class CareerModel extends BaseItemModel
     }
 
 
-     changeSkillName(newName, oldName) {
+    async changeSkillName(newName, oldName, skipPrompt) {
         let careerSkills = foundry.utils.duplicate(this.skills)
 
         // If career has the skill, change the name
@@ -102,26 +102,13 @@ export class CareerModel extends BaseItemModel
         }
 
         // Ask the user to confirm the change
-        new Dialog({
-            title: game.i18n.localize("SHEET.CareerSkill"),
-            content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
-            buttons: {
-                yes: {
-                    label: game.i18n.localize("Yes"),
-                    callback: async dlg => {
-                        ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
-                        this.parent.update({ "system.skills": careerSkills })
-                    }
-                },
-                no: {
-                    label: game.i18n.localize("No"),
-                    callback: async dlg => {
-                        return;
-                    }
-                },
-            },
-            default: 'yes'
-        }).render(true);
+        let changeCareer = skipPrompt || Dialog.confirm({title: game.i18n.localize("SHEET.CareerSkill"), content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`})
+
+        if (changeCareer)
+        {
+            ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
+            this.parent.update({ "system.skills": careerSkills })
+        }
     }
 
     // Career should only be applied if career is active
