@@ -1042,6 +1042,8 @@
     "MARKET.d": "d",
     "MARKET.CreditCommandNotAllowed" : "Only GMs are allowed to use this command.",
     "MARKET.PaidBy" : "Paid by:",
+    "MARKET.PaidFor": "<b>Purchased product:</b> {product}",
+    "MARKET.For": "for",
     "MARKET.ReceivedBy" : "Received by:",
     "MARKET.MoneyTransactionWrongCommand" : "Wrong syntax. Please format your command like in the following examples:",
     "MARKET.PayCommandExample" : "/pay 3gc2bp<br>/pay 450bp<br>/pay 2ss12bp4gc<br>/pay 1gc John<br>/pay 12ss Kastor Lieberung",

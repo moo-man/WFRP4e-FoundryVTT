@@ -692,6 +692,8 @@ export default class WFRP_Utility {
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
       MarketWFRP4e.generatePayCard(payString);
+    else
+      MarketWFRP4e.handlePlayerPayment({payString});
   }
 
   static handleCreditClick(event) {
