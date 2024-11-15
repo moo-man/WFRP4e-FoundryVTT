@@ -1290,6 +1290,27 @@ export default class ActorWFRP4e extends WarhammerActor
     return (await this.update({ "flags.-=oppose": null }));
   }
 
+  async toEmbed(config, options={})
+  {
+    let html = "";
+    let image = this.img;
+    if (config.token)
+    {
+        image = this.prototypeToken.texture.src;
+    }
+    html += `<div class="journal-image centered" ><img src="${image}" width="200" height="200"></div>`
+    html += `<p style="text-align:center">@UUID[${this.uuid}]{${config.label || this.name}}</p>`
+    if (config.description)
+    {
+        if (game.user.isGM)
+        {
+            html += this.system.details.gmnotes.value || ""
+        }
+        html += this.system.details.biography.value || ""
+    }
+    return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true}))[0];
+  }
+
   get itemTags() {
     if (!this._itemTags) 
     {
