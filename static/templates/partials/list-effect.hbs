@@ -1,6 +1,10 @@
 <div class="list-name">
     <img src="{{effect.img}}">
-    <a class="label" data-action="editEmbedded" data-uuid="{{effect.uuid}}">{{effect.name}}</a>
+    {{#if effect.isCondition}}
+        <a class="label" data-action="toggleSummary">{{effect.name}}</a>
+    {{else}}
+        <a class="label" data-action="editEmbedded" data-uuid="{{effect.uuid}}">{{effect.name}}</a>
+    {{/if}}
 </div>
 
 <div class="flex">

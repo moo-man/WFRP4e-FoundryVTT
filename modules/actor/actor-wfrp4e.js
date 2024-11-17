@@ -1139,6 +1139,7 @@ export default class ActorWFRP4e extends WarhammerActor
         foundry.utils.setProperty(effect, "flags.wfrp4e.roundReceived", game.combat.round);
       }
       effect.name = game.i18n.localize(effect.name);
+      effect.description = game.i18n.localize(effect.description);
 
       if (effect.system.condition.numbered)
         effect.system.condition.value = value;
@@ -1322,7 +1323,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
       this._itemTags = tags.toObject().reduce((obj, tag) => 
       {
-        obj[tag] = items.filter(i => i.system.tags.has(tag))
+        obj[tag] = items.filter(i => i.system.tags.has(tag)).sort((a, b) => a.sort - b.sort);
         return obj;
       }, {})
     }

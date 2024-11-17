@@ -1,26 +1,29 @@
 export default class RollDialog extends WarhammerRollDialog {
 
-    static tooltipConfig = {
-        modifier : {
-            label : "Modifier",
-            type : 1,
-            path : "fields.modifier",
-            hideLabel : true
-        },
-        slBonus : {
-            label : "DIALOG.SLBonus",
-            type : 1,
-            path : "fields.slBonus"
-        },
-        successBonus : {
-            label : "DIALOG.SuccessBonus",
-            type : 1,
-            path : "fields.successBonus"
-        },
-        difficulty : {
-            label : "Difficulty",
-            type : 0,
-            path : "fields.difficulty"
+    get tooltipConfig() 
+    {
+        return {
+            modifier: {
+                label: "Modifier",
+                type: 1,
+                path: "fields.modifier",
+                hideLabel: true
+            },
+            slBonus: {
+                label: "DIALOG.SLBonus",
+                type: 1,
+                path: "fields.slBonus"
+            },
+            successBonus: {
+                label: "DIALOG.SuccessBonus",
+                type: 1,
+                path: "fields.successBonus"
+            },
+            difficulty: {
+                label: "Difficulty",
+                type: 0,
+                path: "fields.difficulty"
+            }
         }
     }
 
