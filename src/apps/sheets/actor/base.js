@@ -96,17 +96,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     return context;
   }
 
-
-  _setupContextMenus()
-  {
-      // return  
-      return [
-        WarhammerContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), 
-        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"}),
-        WarhammerContextMenu.create(this, this.element, ".context-menu-alt", this._getListContextOptions())
-      ];
-  }
-
   _getListContextOptions()
   { 
     return [
@@ -352,27 +341,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   
 
   //#region Action Handlers
-  static async _onCreateEffect(ev)
-    {
-        let type = ev.target.dataset.category;
-        let effectData = { name: localize("WH.NewEffect"), img: "icons/svg/aura.svg" };
-        if (type == "temporary")
-        {
-            effectData["duration.rounds"] = 1;
-        }
-        else if (type == "disabled")
-        {
-            effectData.disabled = true;
-        }
-
-        // If Item effect, use item name for effect name
-        if (this.object.documentName == "Item")
-        {
-            effectData.name = this.object.name;
-            effectData.img = this.object.img;
-        }
-        this.object.createEmbeddedDocuments("ActiveEffect", [effectData]).then(effects => effects[0].sheet.render(true));
-    }
 
     static async _onCreateItem(ev) 
     {
