@@ -455,7 +455,7 @@ export default function() {
 
     game.settings.register("wfrp4e", "mooCritModifiers", {
       name: "SETTINGS.MooCritModifiers",
-      hint: "SETTINGS.MooCritMOdifiersHint",
+      hint: "SETTINGS.MooCritModifiersHint",
       scope: "world",
       config: false,
       homebrew: true,

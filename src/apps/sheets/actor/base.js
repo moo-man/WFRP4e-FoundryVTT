@@ -74,6 +74,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
+    context.items = foundry.utils.deepClone(this.actor.itemTags);
     let aspects = {
       talents : {}, 
       effects : {}, 
@@ -173,6 +174,29 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             this.actor.createEmbeddedDocuments("Item", [document.toObject()]);
         }
       },
+      {
+        name: "Split",
+        icon: '<i class="fa-solid fa-split"></i>',
+        condition: li => {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          if (uuid)
+          {
+            let doc = fromUuidSync(uuid);
+            return doc?.documentName == "Item" && doc.system.isPhysical; // Can only split physical items
+          }
+          else return false;
+        },
+        callback: async li => 
+        {
+            let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+            if (uuid)
+            {
+              let doc = fromUuidSync(uuid);
+              let amt = await ValueDialog.create({title : game.i18n.localize("SHEET.SplitTitle"), text : game.i18n.localize("SHEET.SplitPrompt")})
+              doc.system.split(amt);
+            }
+        }
+      }
     ];
   }
 
@@ -317,27 +341,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   
 
   //#region Action Handlers
-  static async _onCreateEffect(ev)
-    {
-        let type = ev.target.dataset.category;
-        let effectData = { name: localize("WH.NewEffect"), img: "icons/svg/aura.svg" };
-        if (type == "temporary")
-        {
-            effectData["duration.rounds"] = 1;
-        }
-        else if (type == "disabled")
-        {
-            effectData.disabled = true;
-        }
-
-        // If Item effect, use item name for effect name
-        if (this.object.documentName == "Item")
-        {
-            effectData.name = this.object.name;
-            effectData.img = this.object.img;
-        }
-        this.object.createEmbeddedDocuments("ActiveEffect", [effectData]).then(effects => effects[0].sheet.render(true));
-    }
 
     static async _onCreateItem(ev) 
     {
@@ -513,10 +516,10 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
     static async _toggleSummary(ev)
     {
-      let item = await this._getDocumentAsync(ev);
-      if (item)
+      let document = await this._getDocumentAsync(ev);
+      if (document)
       {
-        let expandData = await item.system.expandData({secrets: this.actor.isOwner});
+        let expandData = await document.system.expandData({secrets: this.actor.isOwner});
         this._toggleDropdown(ev, expandData.description.value);
       }
     }

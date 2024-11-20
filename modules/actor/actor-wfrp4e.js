@@ -1139,6 +1139,7 @@ export default class ActorWFRP4e extends WarhammerActor
         foundry.utils.setProperty(effect, "flags.wfrp4e.roundReceived", game.combat.round);
       }
       effect.name = game.i18n.localize(effect.name);
+      effect.description = game.i18n.localize(effect.description);
 
       if (effect.system.condition.numbered)
         effect.system.condition.value = value;
@@ -1290,6 +1291,27 @@ export default class ActorWFRP4e extends WarhammerActor
     return (await this.update({ "flags.-=oppose": null }));
   }
 
+  async toEmbed(config, options={})
+  {
+    let html = "";
+    let image = this.img;
+    if (config.token)
+    {
+        image = this.prototypeToken.texture.src;
+    }
+    html += `<div class="journal-image centered" ><img src="${image}" width="200" height="200"></div>`
+    html += `<p style="text-align:center">@UUID[${this.uuid}]{${config.label || this.name}}</p>`
+    if (config.description)
+    {
+        if (game.user.isGM)
+        {
+            html += this.system.details.gmnotes.value || ""
+        }
+        html += this.system.details.biography.value || ""
+    }
+    return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true}))[0];
+  }
+
   get itemTags() {
     if (!this._itemTags) 
     {
@@ -1301,7 +1323,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
       this._itemTags = tags.toObject().reduce((obj, tag) => 
       {
-        obj[tag] = items.filter(i => i.system.tags.has(tag))
+        obj[tag] = items.filter(i => i.system.tags.has(tag)).sort((a, b) => a.sort - b.sort);
         return obj;
       }, {})
     }

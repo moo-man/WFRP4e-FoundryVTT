@@ -1,7 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="sheet-list traits">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "Traits"}}</div>
+            <div class="list-name">{{localize "Traits"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="trait"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="list-controls">
                 <a class="list-control" data-action="createItem" data-type="trait">
                     <i class="fas fa-plus"></i>
@@ -35,7 +35,7 @@
     </div>
     <div class="sheet-list talent">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "Talents"}}</div>
+            <div class="list-name">{{localize "Talents"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="talent"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="flex large">{{localize "Tests"}}</div>
             <div>{{localize "Times Taken"}}</div>
             <div class="list-controls">
@@ -74,11 +74,11 @@
                 </div>
             {{/each}}
               {{#each system.details.career.system.untrainedTalents}}
-                <div class="list-row inactive">
+                <div class="list-row inactive nocontext">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="systems/wfrp4e/icons/blank.png">
-                            <a class="label"  data-action="addUntrainedTalent">{{this}}</a>
+                            <a class="label" data-action="clickUntrainedTalent">{{this}}</a>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import WFRP_Audio from "../../../../modules/system/audio-wfrp4e";
+import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
 export default class ActorSheetWFRP4eCreatureV2 extends StandardWFRP4eActorSheet
@@ -77,8 +78,8 @@ export default class ActorSheetWFRP4eCreatureV2 extends StandardWFRP4eActorSheet
 
     _prepareMainContext(context) {
     
-        context.trained = this.actor.itemTags.skill.filter(i => i.advances.value > 0).sort((a, b) => a.name > b.name ? 1 : -1);
-        context.includedTraits = this.actor.itemTags.trait.filter(i => i.included).sort((a, b) => a.name > b.name ? 1 : -1);
+        context.trained = this.actor.itemTags.skill.filter(i => i.advances.value > 0).sort(WFRP_Utility.nameSorter);
+        context.includedTraits = this.actor.itemTags.trait.filter(i => i.included).sort(WFRP_Utility.nameSorter);
     
         
         context.overviewButtons = this.actor.items.contents.reduce((buttons, item) => {

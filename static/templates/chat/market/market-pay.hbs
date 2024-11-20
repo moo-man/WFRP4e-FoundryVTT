@@ -1,6 +1,6 @@
 <div>
     <h3><b>{{localize "MARKET.PayRequest"}}</b></h3>
-    {{QtGC}} {{localize "MARKET.Abbrev.GC"}}, {{QtSS}} {{localize "MARKET.Abbrev.SS"}}, {{QtBP}} {{localize "MARKET.Abbrev.BP"}}
+    {{QtGC}} {{localize "MARKET.Abbrev.GC"}}, {{QtSS}} {{localize "MARKET.Abbrev.SS"}}, {{QtBP}} {{localize "MARKET.Abbrev.BP"}} {{#if product}}{{localize "MARKET.For"}} {{product}}{{/if}}
 </div>
 <span class="chat-card-button-area">
     <a class='chat-card-button market-button' data-button='payItem' data-pay="{{payRequest}}">{{localize "MARKET.PayForItem"}}</a>

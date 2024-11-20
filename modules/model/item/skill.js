@@ -75,6 +75,38 @@ export class SkillModel extends BaseItemModel {
         }
     }
 
+    async _preCreate(data, options, user)
+    {
+        if (this.parent.isEmbedded)
+        {
+            // If skill has (any) or (), ask for a specialisation
+            if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || this.grouped.value && !this.parent.specifier)
+            {
+                let skills = await warhammer.utility.findAllItems("skill", "Loading Skills", true);
+                let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);
+
+                // if specialisations are found, prompt it, if not, skip to value dialog
+                let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : "Skill Specialisation", text : "Select specialisation, if no selection is made, enter one manually."}) : []
+                let newName = ""
+                if (choice[0])
+                {
+                    newName = choice[0].name;
+                }
+                else 
+                {
+                    newName = this.parent.baseName + ` (${await ValueDialog.create({text: "Enter Skill Specialisation", title : "Skill Specialisation"})})`;
+
+                }
+
+                if (newName)
+                {
+                    this._handleSkillNameChange(newName, this.parent.name, options.career)
+                    this.parent.updateSource({name : newName})
+                }
+            }
+        }
+    }
+
     async _onUpdate(data, options, user)
     {
         await super._onUpdate(data, options, user);
@@ -102,7 +134,7 @@ export class SkillModel extends BaseItemModel {
       }
 
     // If an owned (grouped) skill's name is changing, change the career data to match
-    _handleSkillNameChange(newName, oldName) {
+    _handleSkillNameChange(newName, oldName, skipPrompt=false) {
         let currentCareer = this.parent.actor?.currentCareer;
         if (!currentCareer) 
         {
@@ -110,7 +142,7 @@ export class SkillModel extends BaseItemModel {
         }
         else 
         {
-            currentCareer.system.changeSkillName(newName, oldName)
+            currentCareer.system.changeSkillName(newName, oldName, skipPrompt)
         }
     }
 

@@ -123,6 +123,7 @@ export default class TestWFRP extends WarhammerTestBase{
   async reroll() {
     this.context.previousResult = this.result
     this.context.reroll = true;
+    this.context.previousMessage = this.message.id;
     delete this.result.roll;
     delete this.result.hitloc
     delete this.preData.hitloc

@@ -98,7 +98,7 @@ let filters = [
     }
 ]
 
-let petty = (await ItemDialog.createFromFilters(filters, 3, "Choose 3 Petty Spells")).map(i => i.toObject());
+let petty = (await ItemDialog.createFromFilters(filters, 3, {text: "Choose 3 Petty Spells"})).map(i => i.toObject());
 
 
 filters = [
@@ -112,7 +112,7 @@ filters = [
     }
 ]
 
-let arcane = (await ItemDialog.createFromFilters(filters, 2, "Choose 2 Arcane Spells")).map(i => i.toObject());
+let arcane = (await ItemDialog.createFromFilters(filters, 2, {text : "Choose 2 Arcane Spells"})).map(i => i.toObject());
 
 filters = [
     {
@@ -130,7 +130,7 @@ filters = [
     }
 ]
 
-let necromancy = (await ItemDialog.createFromFilters(filters, 1, "Choose 1 Necromancy Spell")).map(i => i.toObject());
+let necromancy = (await ItemDialog.createFromFilters(filters, 1, {text : "Choose 1 Necromancy Spell"})).map(i => i.toObject());
 
 arcane.forEach(i => {
     i.img = "modules/wfrp4e-core/icons/spells/necromancy.png";
