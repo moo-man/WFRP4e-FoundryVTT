@@ -39,7 +39,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       rollTest : this._onRollTest,
       toggleSummary : this._toggleSummary,
       toggleSummaryAlt : {buttons: [2], handler : this._toggleSummary}, // TODO secondary actions
-      openContextMenu : this._onContextMenu,
       toggleExtendedTests : this._toggleExtendedTests,
       removeAttacker : this._onRemoveAttacker,
       itemPropertyDropdown : this._onItemPropertyDropdown,
@@ -52,7 +51,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       containerSort : this._onContainerSort,
       createItem : this._onCreateItem,
       configureActor : this._onConfigureActor,
-      useAspect : this._onUseAspect
+      useAspect : this._onUseAspect,
+      toggleQuality : this._onToggleQuality
     },
     defaultTab : "main"
   }
@@ -74,6 +74,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
+    context.items = foundry.utils.deepClone(this.actor.itemTags);
     let aspects = {
       talents : {}, 
       effects : {}, 
@@ -91,6 +92,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
     })
     context.items.aspect = aspects
+    context.showExtendedTests = this.showExtendedTests;
     return context;
   }
 
@@ -100,7 +102,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       // return  
       return [
         WarhammerContextMenu.create(this, this.element, ".list-row:not(.nocontext)", this._getListContextOptions()), 
-        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"})
+        WarhammerContextMenu.create(this, this.element, ".context-menu", this._getListContextOptions(), {eventName : "click"}),
+        WarhammerContextMenu.create(this, this.element, ".context-menu-alt", this._getListContextOptions())
       ];
   }
 
@@ -182,6 +185,29 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             this.actor.createEmbeddedDocuments("Item", [document.toObject()]);
         }
       },
+      {
+        name: "Split",
+        icon: '<i class="fa-solid fa-split"></i>',
+        condition: li => {
+          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          if (uuid)
+          {
+            let doc = fromUuidSync(uuid);
+            return doc?.documentName == "Item" && doc.system.isPhysical; // Can only split physical items
+          }
+          else return false;
+        },
+        callback: async li => 
+        {
+            let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+            if (uuid)
+            {
+              let doc = fromUuidSync(uuid);
+              let amt = await ValueDialog.create({title : game.i18n.localize("SHEET.SplitTitle"), text : game.i18n.localize("SHEET.SplitPrompt")})
+              doc.system.split(amt);
+            }
+        }
+      }
     ];
   }
 
@@ -384,6 +410,28 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
     }
 
+    static async _onToggleQuality(ev)
+    {
+      let document = await this._getDocumentAsync(ev);
+      let index = this._getIndex(ev);
+
+      let inactive = Object.values(document.system.properties.inactiveQualities);
+  
+      // Find clicked quality
+      let toggled = inactive[index];
+  
+      // Find currently active
+      let qualities = foundry.utils.deepClone(document.system.qualities.value);
+  
+      // Disable all qualities of clicked group
+      qualities.filter(i => i.group == toggled.group).forEach(i => i.active = false)
+  
+      // Enabled clicked quality
+      qualities.find(i => i.name == toggled.key).active = true;
+  
+      document.update({"system.qualities.value" : qualities})
+    }
+
     static async _onRollTest(ev)
     {
       let test;
@@ -469,14 +517,10 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
     }
 
-    static async _onContextMenu(ev)
-    {
-    }
-
     static async _toggleExtendedTests(ev)
     {
-      let parent = this._getParent(ev.target, ".tab")
-      Array.from(parent.querySelectorAll(".extended-tests, .skill-lists, .extended-toggle")).forEach(el => el.classList.toggle("hidden"))
+      this.showExtendedTests = !this.showExtendedTests;
+      this.render(true);
     }
 
     static _onRemoveAttacker(ev) {
@@ -504,17 +548,17 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
     static async _toggleSummary(ev)
     {
-      let item = await this._getDocumentAsync(ev);
-      if (item)
+      let document = await this._getDocumentAsync(ev);
+      if (document)
       {
-        let expandData = await item.system.expandData({secrets: this.actor.isOwner});
+        let expandData = await document.system.expandData({secrets: this.actor.isOwner});
         this._toggleDropdown(ev, expandData.description.value);
       }
     }
 
-    async _toggleDropdown(ev, content)
+    async _toggleDropdown(ev, content, parentSelector=".list-row")
     {
-      let dropdownElement = this._getParent(ev.target, ".list-row").querySelector(".dropdown-content");
+      let dropdownElement = this._getParent(ev.target, parentSelector).querySelector(".dropdown-content");
       if (dropdownElement.classList.contains("collapsed"))
       {
         dropdownElement.innerHTML = content;

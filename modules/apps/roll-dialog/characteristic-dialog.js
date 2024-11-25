@@ -64,7 +64,7 @@ export default class CharacteristicDialog extends RollDialog {
 
         if (this.options.dodge && this.actor.isMounted) {
             this.fields.modifier -= 20
-            this.tooltips.addModifier(-20, game.i18n.localize("EFFECT.DodgeMount"));
+            this.tooltips.add("modifier", -20, game.i18n.localize("EFFECT.DodgeMount"));
         }
     }
 
@@ -75,7 +75,7 @@ export default class CharacteristicDialog extends RollDialog {
             if (!game.settings.get("wfrp4e", "mooQualities") || this.options.dodge) 
             {
                 this.fields.slBonus += 1
-                this.tooltips.addSLBonus(1, game.i18n.localize('CHAT.TestModifiers.SlowDefend'));
+                this.tooltips.add("slBonus", 1, game.i18n.localize('CHAT.TestModifiers.SlowDefend'));
             }
         }
 

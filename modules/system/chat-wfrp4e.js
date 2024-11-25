@@ -325,27 +325,12 @@ export default class ChatWFRP {
     // data-button tells us what button was clicked
     switch ($(event.currentTarget).attr("data-button")) {
       case "rollAvailability":
-        MarketWFRP4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"));
+        MarketWFRP4e.generateSettlementChoice($(event.currentTarget).attr("data-rarity"), $(event.currentTarget).attr("data-name"));
         break;
       case "payItem":
         if (!game.user.isGM) {
-          let actor = game.user.character;
-          let itemData
-          if (msg.flags.transfer)
-            itemData = JSON.parse(msg.flags.transfer).data
-          if (actor) {
-            let money = MarketWFRP4e.payCommand($(event.currentTarget).attr("data-pay"), actor);
-            if (money) {
-              WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-              await actor.updateEmbeddedDocuments("Item", money);
-              if (itemData) {
-                await actor.createEmbeddedDocuments("Item", [itemData])
-                ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: itemData.name, actor: actor.name }))
-              }
-            }
-          } else {
-            ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
-          }
+          let payString = $(event.currentTarget).attr("data-pay");
+          MarketWFRP4e.handlePlayerPayment({msg, payString})
         } else {
           ui.notifications.notify(game.i18n.localize("MARKET.NotifyUserMustBePlayer"));
         }
@@ -384,6 +369,7 @@ export default class ChatWFRP {
         break;
       case "rollAvailabilityTest":
         let options = {
+          name: $(event.currentTarget).attr("data-name"),
           settlement: $(event.currentTarget).attr("data-settlement").toLowerCase(),
           rarity: $(event.currentTarget).attr("data-rarity").toLowerCase(),
           modifier: 0

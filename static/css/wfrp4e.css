@@ -13975,7 +13975,7 @@ font-style : normal;
     color: white;
   }
 
-  .window-content .dialog-content > * {
+  .app .window-content .dialog-content > * {
     color: white;
   }
 

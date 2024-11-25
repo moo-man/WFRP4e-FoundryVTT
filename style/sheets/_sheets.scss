@@ -84,6 +84,17 @@
         }
     }
 
+    
+    .sheet-effect-buttons {
+        margin: 3px 0px;
+        height: 1rem;
+        display: flex;
+        button {
+            flex : 0 0 content;
+            font-size: var(--font-size-12);
+        } 
+    }
+
     .sheet-list {
         display: flex;
         flex-direction: column;
@@ -244,16 +255,6 @@
                 background-color: var(--color-warm-3);
             }
         }
-        
-
-        .sheet-effect-buttons {
-            margin: 3px 0px;
-            height: 1rem;
-            display: flex;
-            button {
-                flex : 0 0 content;
-                font-size: var(--font-size-12);
-            } 
-        }
+    
     }
 }

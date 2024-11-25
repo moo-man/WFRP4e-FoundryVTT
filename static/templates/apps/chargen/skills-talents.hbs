@@ -9,7 +9,7 @@
     <div class="species-skills flexrow">
       <div class="drag-area" data-advance="0">
         <div class="flexrow">
-          {{#each (lookup speciesSkillAllocation 0) as |skill index|}}
+          {{#each speciesSkillAllocation.[0] as |skill index|}}
           <a class="drag-skill item-lookup" data-type="skill">
             {{skill}}
           </a>

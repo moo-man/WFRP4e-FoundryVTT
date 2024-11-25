@@ -203,6 +203,15 @@
             background: var(--attribute-field);
         }
 
+        .interact {
+            &.bottom {
+                border-top: 1px solid var(--attribute-border);
+            }
+            background: var(--attribute-input);
+            display: flex;
+            justify-content: space-evenly;
+        }
+
         .label {
             border-right: 1px solid var(--attribute-border);
             width: 100%;
@@ -230,16 +239,6 @@
             }
         }
     }
-
-    .randomization {
-        .field {
-            border-top: 1px solid var(--attribute-border);
-            background: var(--attribute-input);
-            display: flex;
-            justify-content: space-evenly;
-        }
-    }
-
 
     .sheet-list {
         margin-top: 10px;
@@ -272,5 +271,26 @@
     fieldset {
         border-color: var(--attribute-border);
         margin: 10px 0px;
+    }
+    .armour-section 
+    {
+        .ap-source {
+            text-align: center;
+            background: var(--mount-outline);
+            flex: 0 0 20px;
+            border-right: 1px solid var(--ap-border);
+
+            &.armour {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
+            }
+
+            &.shield {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(92,135,185,1) 100%);
+            }
+
+            &.toughness {
+                background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
+            }
+        }
     }
 }

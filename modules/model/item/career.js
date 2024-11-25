@@ -31,6 +31,7 @@ export class CareerModel extends BaseItemModel
         schema.talents = new fields.ArrayField(new fields.StringField());
         schema.trappings = new fields.ArrayField(new fields.StringField());
         schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
+        schema.previousCareer = new fields.EmbeddedDataField(DocumentReferenceModel)
         return schema;
     }
       /**
@@ -73,6 +74,11 @@ export class CareerModel extends BaseItemModel
         {
             this._promptCareerAdvance()
         }
+
+        if (this.parent.isOwned && this.parent.actor.type == "character" && foundry.utils.getProperty(options.changed, "system.current.value"))
+        {
+            this.handleCareerLinking()
+        }
     }
 
 
@@ -88,7 +94,7 @@ export class CareerModel extends BaseItemModel
     }
 
 
-     changeSkillName(newName, oldName) {
+    async changeSkillName(newName, oldName, skipPrompt) {
         let careerSkills = foundry.utils.duplicate(this.skills)
 
         // If career has the skill, change the name
@@ -102,26 +108,47 @@ export class CareerModel extends BaseItemModel
         }
 
         // Ask the user to confirm the change
-        new Dialog({
-            title: game.i18n.localize("SHEET.CareerSkill"),
-            content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`,
-            buttons: {
-                yes: {
-                    label: game.i18n.localize("Yes"),
-                    callback: async dlg => {
-                        ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
-                        this.parent.update({ "system.skills": careerSkills })
-                    }
-                },
-                no: {
-                    label: game.i18n.localize("No"),
-                    callback: async dlg => {
-                        return;
-                    }
-                },
-            },
-            default: 'yes'
-        }).render(true);
+        let changeCareer = skipPrompt || await Dialog.confirm({title: game.i18n.localize("SHEET.CareerSkill"), content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`})
+
+        if (changeCareer)
+        {
+            ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
+            this.parent.update({ "system.skills": careerSkills })
+        }
+    }
+
+    async handleCareerLinking()
+    {
+        if (this.level.value == 1 || this.previousCareer.document)
+        {
+            return;
+        }
+        else 
+        {
+            let actor = this.parent.actor;
+            let previousCareers = actor.itemTypes.career.filter(i => i.system.careergroup.value == this.careergroup.value && i.id != this.parent.id).sort((a, b) => b.system.level.value - a.system.level.value);
+            let previous = previousCareers[0];
+
+            if (!previous)
+            {
+                return;
+            }
+
+            if (await Dialog.confirm({title : game.i18n.localize("DIALOG.LinkCareer"), content : `<p>${game.i18n.format("DIALOG.LinkCareerContent", {new : this.parent.name, old : previous.name})}</p>`}))
+            {
+                let collectedSkills = previous.system.skills.concat(this.skills.slice(previous.system.skills.length));
+
+                this.parent.update({system : {previousCareer : {name : previous.name, id : previous.id}, skills : collectedSkills}})
+            }
+        }
+    }
+
+    _addModelProperties()
+    {
+        if (this.parent.actor)
+        {
+            this.previousCareer.relative = this.parent.actor.items;
+        }
     }
 
     // Career should only be applied if career is active
