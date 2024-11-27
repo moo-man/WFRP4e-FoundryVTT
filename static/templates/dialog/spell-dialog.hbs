@@ -1,6 +1,6 @@
 <div class="form-group">
   <label title="{{localize 'DIALOG.MalignantInfTT'}}">{{localize "DIALOG.MalignantInf"}}
-    <input type="checkbox" name="malignantInfluence" data-dtype="Boolean" {{checked fields.malignantInfluence}} />
+    <input type="checkbox" name="malignantInfluence" {{checked fields.malignantInfluence}} />
   </label>
 </div>
 
@@ -18,12 +18,12 @@
 
   <div class="form-group">
     <label>{{localize "Overchannelling"}}</label>
-    <input class="input-text" type="text" name="overchannelling" value="{{fields.overchannelling}}" data-dtype="Number" title="{{localize 'DIALOG.OverchannellingTooltip'}}" />
+    <input class="input-text" type="text" name="overchannelling" value="{{fields.overchannelling}}" title="{{localize 'DIALOG.OverchannellingTooltip'}}" />
   </div>
   {{#if false}}
     <div class="form-group">
-      <label title="{{localize 'DIALOG.Quickcasting'}}">{{localize "DIALOG.Quickcasting"}}
-        <input title="{{localize 'DIALOG.QuickcastingTooltip'}}" type="checkbox" name="quickcasting" data-dtype="Boolean" {{checked fields.quickcasting}} />
+      <label>{{localize "DIALOG.Quickcasting"}}
+        <input title="{{localize 'DIALOG.QuickcastingTooltip'}}" type="checkbox" name="quickcasting" {{checked fields.quickcasting}} />
       </label>
     </div>
   {{/if}}
