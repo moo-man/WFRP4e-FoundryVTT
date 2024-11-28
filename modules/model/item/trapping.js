@@ -87,7 +87,7 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
       super.migrateData(data);
 
       if (data.worn) {
-        data.equipped.value = data.worn;
+        data.equipped = {value: data.worn};
       }
     }
 }
