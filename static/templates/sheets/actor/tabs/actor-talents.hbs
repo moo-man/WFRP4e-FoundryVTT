@@ -1,7 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="sheet-list traits">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "Traits"}}</div>
+            <div class="list-name">{{localize "Traits"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="trait"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="list-controls">
                 <a class="list-control" data-action="createItem" data-type="trait">
                     <i class="fas fa-plus"></i>
@@ -10,13 +10,18 @@
         </div>
         <div class="list-content">
             {{#each items.trait}}
-                <div class="list-row" data-uuid="{{this.uuid}}">
+                <div class="list-row {{#if this.system.disabled}}inactive{{/if}}" data-uuid="{{this.uuid}}">
                     <div class="row-content">
                         <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
                             <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest" data-type="trait"{{/if}}>
                             <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
                         </div>
                         <div class="list-controls">
+                            {{#if this.system.disabled}}
+                                <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i class="fa-regular fa-circle"></i></a>
+                            {{else}}
+                                <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i class="fa-regular fa-circle-check"></i></a>
+                            {{/if}}
                             <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
                         </div>
                     </div>
@@ -30,7 +35,7 @@
     </div>
     <div class="sheet-list talent">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "Talents"}}</div>
+            <div class="list-name">{{localize "Talents"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="talent"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="flex large">{{localize "Tests"}}</div>
             <div>{{localize "Times Taken"}}</div>
             <div class="list-controls">
@@ -69,11 +74,11 @@
                 </div>
             {{/each}}
               {{#each system.details.career.system.untrainedTalents}}
-                <div class="list-row inactive">
+                <div class="list-row inactive nocontext">
                     <div class="row-content">
                         <div class="list-name">
                             <img src="systems/wfrp4e/icons/blank.png">
-                            <a class="label"  data-action="addUntrainedTalent">{{this}}</a>
+                            <a class="label" data-action="clickUntrainedTalent">{{this}}</a>
                         </div>
                     </div>
                 </div>

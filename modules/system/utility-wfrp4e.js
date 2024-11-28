@@ -94,7 +94,7 @@ export default class WFRP_Utility {
     }
     else 
     {
-      return foundry.utils.mergeObject(duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
+      return foundry.utils.mergeObject(foundry.utils.duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
     }
 
   }
@@ -692,6 +692,8 @@ export default class WFRP_Utility {
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
       MarketWFRP4e.generatePayCard(payString);
+    else
+      MarketWFRP4e.handlePlayerPayment({payString});
   }
 
   static handleCreditClick(event) {

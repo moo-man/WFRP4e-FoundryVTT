@@ -389,7 +389,7 @@ export default class ItemWfrp4e extends WarhammerItem
     {
       let applicableEffects = Array.from(this.actor.allApplicableEffects());
       
-      return applicableEffects.find(i => i.id == this.getFlag("wfrp4e", "fromEffect"));
+      return applicableEffects.find(i => i.id && i.id == this.getFlag("wfrp4e", "fromEffect"));
     }
   }
 

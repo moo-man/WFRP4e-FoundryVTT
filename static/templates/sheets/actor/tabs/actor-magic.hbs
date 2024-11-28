@@ -1,7 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="sheet-list petty">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "SHEET.PettySpell"}}</div>
+            <div class="list-name">{{localize "SHEET.PettySpell"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="spell"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="list-controls">
                 <a class="list-control" data-action="createItem" data-type="spell" data-category="petty">
                     <i class="fas fa-plus"></i>
@@ -28,9 +28,9 @@
             {{/each}}
         </div>
     </div>
-    <div class="sheet-list talent">
+    <div class="sheet-list spells">
         <div class="list-header row-content">
-            <div class="list-name">{{localize "SHEET.LoreSpell"}}</div>
+            <div class="list-name">{{localize "SHEET.LoreSpell"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="spell"><i class="fas fa-sort-alpha-down"></i></a></div>
             <div class="flex" data-tooltip="{{localize 'WFRP4E.TrappingType.Ingredients'}}" class="ingredients">{{localize "WFRP4E.TrappingType.Ingredients"}}</div>
             <div class="tiny" data-tooltip="{{localize 'SHEET.CN'}}">{{localize "CN"}}</div>
             <div class="tiny" data-tooltip="{{localize 'SHEET.SL'}}">{{localize "SL"}}</div>

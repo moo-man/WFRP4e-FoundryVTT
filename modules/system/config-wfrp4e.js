@@ -1802,6 +1802,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "bleeding",
             statuses: ["bleeding"],
             name: "WFRP4E.ConditionName.Bleeding",
+            description : "WFRP4E.Conditions.Bleeding",
             system: {
                 condition : {
                     value : 1,
@@ -1873,6 +1874,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "poisoned",
             statuses: ["poisoned"],
             name: "WFRP4E.ConditionName.Poisoned",
+            description : "WFRP4E.Conditions.Poisoned",
             system: {
                 condition : {
                     value : 1,
@@ -1924,6 +1926,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "ablaze",
             statuses: ["ablaze"],
             name: "WFRP4E.ConditionName.Ablaze",
+            description : "WFRP4E.Conditions.Ablaze",
             system: {
                 condition : {
                     value : 1,
@@ -1980,6 +1983,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "deafened",
             statuses: ["deafened"],
             name: "WFRP4E.ConditionName.Deafened",
+            description : "WFRP4E.Conditions.Deafened",
             system: {
                 condition : {
                     value : 1,
@@ -1999,6 +2003,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "stunned",
             statuses: ["stunned"],
             name: "WFRP4E.ConditionName.Stunned",
+            description : "WFRP4E.Conditions.Stunned",
             system: {
                 condition : {
                     value : 1,
@@ -2027,6 +2032,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "entangled",
             statuses: ["entangled"],
             name: "WFRP4E.ConditionName.Entangled",
+            description : "WFRP4E.Conditions.Entangled",
             system: {
                 condition : {
                     value : 1,
@@ -2049,6 +2055,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "fatigued",
             statuses: ["fatigued"],
             name: "WFRP4E.ConditionName.Fatigued",
+            description : "WFRP4E.Conditions.Fatigued",
             system: {
                 condition : {
                     value : 1,
@@ -2071,6 +2078,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "blinded",
             statuses: ["blinded"],
             name: "WFRP4E.ConditionName.Blinded",
+            description : "WFRP4E.Conditions.Blinded",
             system: {
                 condition : {
                     value : 1,
@@ -2103,6 +2111,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "broken",
             statuses: ["broken"],
             name: "WFRP4E.ConditionName.Broken",
+            description : "WFRP4E.Conditions.Broken",
             system: {
                 condition : {
                     value : 1,
@@ -2125,6 +2134,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "prone",
             statuses: ["prone"],
             name: "WFRP4E.ConditionName.Prone",
+            description : "WFRP4E.Conditions.Prone",
             system: {
                 condition : {
                     value : null,
@@ -2157,6 +2167,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "surprised",
             statuses: ["surprised"],
             name: "WFRP4E.ConditionName.Surprised",
+            description : "WFRP4E.Conditions.Surprised",
             system: {
                 condition : {
                     value : null,
@@ -2181,6 +2192,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "unconscious",
             statuses: ["unconscious"],
             name: "WFRP4E.ConditionName.Unconscious",
+            description : "WFRP4E.Conditions.Unconscious",
             system : {
                 condition : {
                     value : null,
@@ -2193,6 +2205,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "grappling",
             statuses: ["grappling"],
             name: "WFRP4E.ConditionName.Grappling",
+            description : "WFRP4E.Conditions.Grappling",
             system : {
                 condition : {
                     value : null,
@@ -2205,6 +2218,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "engaged",
             statuses: ["engaged"],
             name: "WFRP4E.ConditionName.Engaged",
+            description : "WFRP4E.Conditions.Engaged",
             system: {
                 condition : {
                     value : null,
@@ -2229,6 +2243,7 @@ WFRP4E.PrepareSystemItems = function() {
             id: "dead",
             statuses: ["dead"],
             name: "WFRP4E.ConditionName.Dead",
+            description : "WFRP4E.Conditions.Dead",
             system : {
                 condition : {
                     value : null,
@@ -2301,7 +2316,7 @@ WFRP4E.PrepareSystemItems = function() {
                 scriptData : [{
                     label : "Blast",
                     trigger : "rollWeaponTest",
-                    script : "if (args.test.succeeded) args.result.other.push(`<a class='aoe-template' data-type='radius'><i class='fas fa-ruler-combined'></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)",
+                    script : "if (args.test.succeeded) args.test.result.other.push(`<a class='aoe-template' data-type='radius'><i class='fas fa-ruler-combined'></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)",
                 }]
             }
         },

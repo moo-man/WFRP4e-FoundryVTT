@@ -12,7 +12,7 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
           advanceSkill : {buttons: [0, 2], handler : this._onAdvanceSkill},
           advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
           addUntrainedSkill : this._onAddUntrainedSkill,
-          addUntrainedTalent : this._onAddUntrainedTalent,
+          clickUntrainedTalent : {buttons: [0, 2], handler : this._onClickUntrainedTalent},
           rollIncome : this._onRollIncome,
           changeCareer : this._onChangeCareer,
           onRest : this._onRest
@@ -94,7 +94,7 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
         try {
           if (await Dialog.confirm({ title: game.i18n.localize("SHEET.AddSkillTitle"), content: `<p>${game.i18n.localize("SHEET.AddSkillPrompt")}</p>`}))
           {
-            this.actor.createEmbeddedDocuments("Item", [skill]);
+            this.actor.createEmbeddedDocuments("Item", [skill], {career : true});
           }
         }
         catch
@@ -105,7 +105,7 @@ export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorShee
       }
     }
 
-    static async _onAddUntrainedTalent(ev)
+    static async _onClickUntrainedTalent(ev)
     {
       let talent = await WFRP_Utility.findTalent(ev.target.text);
 

@@ -21,8 +21,8 @@ export default class StatBlockParser extends FormApplication {
 
 
     async _updateObject(event, formData) {
-        let {name, type, data, items} = await StatBlockParser.parseStatBlock(formData.statBlock, this.object.type)
-        await this.object.update({name, type, data})
+        let {name, type, system, items} = await StatBlockParser.parseStatBlock(formData.statBlock, this.object.type)
+        await this.object.update({name, type, system})
         await this.object.createEmbeddedDocuments("Item", items)
     }
 
@@ -328,22 +328,23 @@ export default class StatBlockParser extends FormApplication {
         traits.forEach(t => {
             delete t._id
         })
-        let effects = trappings.reduce((total, trapping) => total.concat(trapping.effects), []).concat(talents.reduce((total, talent) => total.concat(talent.effects), [])).concat(traits.reduce((total, trait) => total.concat(trait.effects), []))
-        effects = effects.filter(e => !!e)
-        effects = effects.filter(e => e.transfer)
-    
+
+        let items = skills.concat(talents).concat(traits).concat(trappings).concat(moneyItems)
+
+        let effects = items.reduce((effects, item) => effects.concat(item.effects), []);
+
         effects.forEach(e => {
-            let charChanges = e.changes.filter(c => c.key.includes("characteristics"))
-            for(let change of charChanges)
+            for(let c of e.changes)
             {
-                let split = change.key.split(".")
-                let target = split.slice(1).join(".")
-                foundry.utils.setProperty(model, target, (getProperty(model, target) + (-1 * change.value))) // Counteract effect changes
+                let systemPath = c.key.replace("system.", "");
+                if (foundry.utils.hasProperty(model, systemPath))
+                {
+                    foundry.utils.setProperty(model, systemPath, -1 * Number(c.value) + foundry.utils.getProperty(model, systemPath));
+                }
             }
         })
 
-        return { name, type, data: model, items: skills.concat(talents).concat(traits).concat(trappings).concat(moneyItems), effects }
-
+        return { name, type, system: model, items}
     }
 
 }

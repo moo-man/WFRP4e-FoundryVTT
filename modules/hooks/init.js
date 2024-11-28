@@ -455,7 +455,7 @@ export default function() {
 
     game.settings.register("wfrp4e", "mooCritModifiers", {
       name: "SETTINGS.MooCritModifiers",
-      hint: "SETTINGS.MooCritMOdifiersHint",
+      hint: "SETTINGS.MooCritModifiersHint",
       scope: "world",
       config: false,
       homebrew: true,
@@ -716,7 +716,6 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
-      "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
       "systems/wfrp4e/templates/sheets/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
@@ -736,6 +735,10 @@ export default function() {
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
       aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
+      meleeWeapons: "systems/wfrp4e/templates/sheets/partials/melee-weapons.hbs",
+      rangedWeapons: "systems/wfrp4e/templates/sheets/partials/ranged-weapons.hbs",
+      armourLocation: "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
+      creatureArmour: "systems/wfrp4e/templates/sheets/partials/creature-armour.hbs",
     });
 
     // Load name construction from files

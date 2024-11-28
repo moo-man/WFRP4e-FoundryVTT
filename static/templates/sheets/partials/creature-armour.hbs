@@ -1,0 +1,14 @@
+{{#if locData.show}}
+<div class="attribute-box {{loc}}">
+    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{locData.label}}</label></div>
+    <div class="field interact bottom" style="grid-column: 1 / span 4">
+        <a class="ap-source armour" data-tooltip="{{localize 'SHEET.ArmourAP'}}">{{locData.value}}</a>
+    </div>
+    <div class="field interact bottom" style="grid-column: 5 / span 4">
+        <a class="ap-source shield" data-tooltip="{{localize 'SHEET.ShieldAP'}}{{#if system.status.armour.shieldDamage}} - {{system.status.armour.shieldDamage}} {{localize 'Damage'}}{{/if}}">{{system.status.armour.shield}}</a>
+    </div>
+    <div class="field interact bottom" style="grid-column: 9 / span 4">
+        <span class="ap-source toughness" data-tooltip="{{localize 'SHEET.TB'}}">{{system.characteristics.t.bonus}}</span>
+    </div>
+</div>
+{{/if}}

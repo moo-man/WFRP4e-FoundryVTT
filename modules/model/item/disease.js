@@ -146,54 +146,53 @@ export class DiseaseModel extends BaseItemModel {
       throw new Error("Must provide incubation or duration as type")
     }
 
-    let roll
-    try 
+    try
     {
-      roll = await new Roll(this[type].value, this.parent).roll();
+      let roll = await new Roll(this[type].value, this.parent).roll();
       let update = {[`system.${type}.value`] : roll.total};
       if (type == "duration")
       {
         update["system.duration.active"] = true;
       }
       await this.parent.update(update);
+
+      let messageData = this.getMessageData()
+
+      messageData.speaker.alias += " " + type;
+
+      roll.toMessage(messageData, {rollMode : "gmroll"})
     } 
     catch (e) 
     {
       ChatMessage.create(this.getMessageData(game.i18n.localize("CHAT.DiseaseRollError")));
     }
-
-    let messageData = this.getMessageData()
-
-    messageData.speaker.alias += " " + type;
-
-    roll.toMessage(messageData, {rollMode : "gmroll"})
   }
 
-  increment()
+  async increment()
   {
     if (this.duration.active)
     {
-      return this.parent.update({"system.duration.value" : Number(this.duration.value) + 1})
+      return await this.parent.update({"system.duration.value" : Number(this.duration.value) + 1})
     }
     else 
     {
-      return this.parent.update({"system.incubation.value" : Number(this.incubation.value) + 1})
+      return await this.parent.update({"system.incubation.value" : Number(this.incubation.value) + 1})
     }
   }
 
-  decrement()
+  async decrement()
   {
     let update = {}
     if (this.duration.active)
     {
       if (isNaN(this.duration.value))
       {
-        return this.start("duration");
+        return await this.start("duration");
       }
       let duration = Number(this.duration.value) - 1;
       if (duration == 0)
       {
-        return this.finishDuration();
+        return await this.finishDuration();
       }
       else 
       {
@@ -204,20 +203,20 @@ export class DiseaseModel extends BaseItemModel {
     {
       if (isNaN(this.incubation.value))
       {
-        return this.start("incubation");
+        return await this.start("incubation");
       }
       let incubation = Number(this.incubation.value) - 1;
       if (incubation == 0)
       {
         update = {"system.incubation.value" : incubation};
-        this.start("duration");
+        await this.start("duration");
       }
       else 
       {
         update = {"system.incubation.value" : incubation};
       }
     }
-    return this.parent.update(update);
+    return await this.parent.update(update);
   }
 
   async finishDuration() {
@@ -234,7 +233,7 @@ export class DiseaseModel extends BaseItemModel {
         let difficultyname = lingering.specifier;
         let difficulty = warhammer.utility.findKey(difficultyname, game.wfrp4e.config.difficultyNames, { caseInsensitive: true }) || "challenging"
 	  
-        let test = await this.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
+        let test = await this.parent.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle: ` - ${game.i18n.localize("NAME.Lingering")}`, fields: {difficulty : difficulty} }, {skipTargets: true});
         await test.roll();
 
         if (test.failed) 

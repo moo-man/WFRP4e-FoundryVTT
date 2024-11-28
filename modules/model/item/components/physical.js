@@ -118,6 +118,43 @@ export class PhysicalItemModel extends BaseItemModel
         return await this.parent.update({"system.quantity.value": this.quantity.value - amount});
     }
 
+    async split(amount) 
+    {
+        let actor = this.parent.actor
+        if (!actor) 
+        {
+            return;
+        }
+
+        let newItem = this.parent.toObject();
+        delete newItem._id;
+        let itemUpdate = this.toObject();
+
+        let oldQuantity = this.quantity.value;
+
+        if (this.parent.type == "cargo") 
+        {
+            oldQuantity = this.encumbrance.value;
+        }
+
+        if (amount >= oldQuantity) 
+        {
+            return ui.notifications.notify(game.i18n.localize("Invalid Quantity"))
+        }
+
+        if (this.parent.type == "cargo") 
+        {
+            newItem.system.encumbrance.value = amount;
+            itemUpdate.encumbrance.value -= amount;
+        }
+        else 
+        {
+            newItem.system.quantity.value = amount;
+            itemUpdate.quantity.value -= amount;
+        }
+        await actor.update({ items: [newItem, { _id: this.parent.id, system: itemUpdate }] });
+    }
+
     static migrateData(data)
     {
         if (data.location?.value === '0')

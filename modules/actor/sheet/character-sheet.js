@@ -216,7 +216,7 @@ export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
               {
                 label: game.i18n.localize("Yes"),
                 callback: dlg => {
-                  this.actor.createEmbeddedDocuments("Item", [skill.toObject()]);
+                  this.actor.createEmbeddedDocuments("Item", [skill.toObject()], {career : true});
                 }
               },
               cancel:
