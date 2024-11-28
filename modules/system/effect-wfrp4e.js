@@ -168,7 +168,6 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 
     get radius()
     {
-        if (typeof this.applicationData.radius === 'number') return this.applicationData.radius;
         let sizeMod = 0;
         if (this.actor)
         {
