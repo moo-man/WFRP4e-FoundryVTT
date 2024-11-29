@@ -8,10 +8,11 @@ let fields = foundry.data.fields;
  * @mixes PropertiesMixin
  */
 export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
-  static defineSchema() {
+    static LOCALIZATION_PREFIXES = ["WH.Models.armour"];
+    static defineSchema() {
     let schema = super.defineSchema();
     schema.armorType = new fields.SchemaField({ // TODO migrate this to the "correct" spelling
-      value: new fields.StringField()
+      value: new fields.StringField({}),//choices : game.wfrp4e.config.armorTypes})
     });
     schema.penalty = new fields.SchemaField({
       value: new fields.StringField()

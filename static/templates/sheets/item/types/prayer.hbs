@@ -1,0 +1,22 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.type.fields.value value=source.system.type.value}}
+    {{formGroup fields.god.fields.value value=source.system.god.value}}
+    {{formGroup fields.range.fields.value value=source.system.range.value}}
+    {{formGroup fields.duration.fields.value value=source.system.duration.value}}
+    {{formGroup fields.target.fields.aoe value=source.system.target.aoe}}
+    {{#if source.system.target.aoe}}
+        {{formGroup fields.target.fields.value value=source.system.target.value label="Radius"}}
+        {{formGroup fields.target.fields.extendableAoE value=source.system.target.extendableAoE}}
+    {{else}}
+        {{formGroup fields.target.fields.value value=source.system.target.value}}
+    {{/if}}
+    <fieldset>
+        <legend>{{localize "Damage"}}</legend>
+        {{formGroup fields.damage.fields.value value=source.system.damage.value}}
+        {{formGroup fields.damage.fields.dice value=source.system.damage.dice}}
+        {{formGroup fields.damage.fields.addSL value=source.system.damage.addSL}}
+    </fieldset>
+
+    {{> extraOvercast}}
+    
+</section>

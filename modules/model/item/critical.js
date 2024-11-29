@@ -2,6 +2,9 @@ import { LocationalItemModel } from "./components/locational";
 let fields = foundry.data.fields;
 
 export class CriticalModel extends LocationalItemModel {
+
+    static LOCALIZATION_PREFIXES = ["WH.Models.critical"];
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.wounds = new fields.SchemaField({

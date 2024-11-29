@@ -1,0 +1,81 @@
+{{formGroup fields.overcast.fields.enabled value=source.system.overcast.enabled}}
+{{#if system.overcast.enabled}}
+    <div class="form-group">
+        <label>{{localize "Label"}}</label>
+        <div class="form-fields">
+            <input type="text" name="system.overcast.label" value="{{system.overcast.label}}" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>{{localize "Initial"}}</label>
+        <div class="form-fields">
+            <select name="system.overcast.initial.type">
+                {{#select system.overcast.initial.type}}
+                    <option value="value">{{localize "Value"}}</option>
+                    <option value="SL">{{localize "SL"}}</option>
+                    <option value="characteristic">{{localize "Characteristic"}}</option>
+                {{/select}}
+            </select>
+
+
+            {{#if (eq system.overcast.initial.type "value")}}
+
+                <input type="text" name="system.overcast.initial.value" value="{{system.overcast.initial.value}}" />
+
+
+            {{else if (eq system.overcast.initial.type "SL")}}
+
+                <input placeholder="{{localize 'SHEET.Additional'}}" type="text"
+                    name="system.overcast.initial.additional" value="{{system.overcast.initial.additional}}" />
+
+            {{else if (eq system.overcast.initial.type "characteristic")}}
+
+                <select name="system.overcast.initial.characteristic">
+                    {{selectOptions (config "characteristics") selected=system.overcast.initial.characteristic}}
+                </select>
+
+                {{localize "Bonus"}}
+                <input type="checkbox" value="system.overcast.initial.bonus" checked={{system.overcast.initial.bonus}}>
+            {{/if}}
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label>{{localize "ITEM.ValuePerOvercast"}}</label>
+        <div class="form-fields">
+            <select name="system.overcast.valuePerOvercast.type">
+                {{#select system.overcast.valuePerOvercast.type}}
+                    <option value="value">{{localize "Value"}}</option>
+                    <option value="SL">{{localize "SL"}}</option>
+                    <option value="characteristic">{{localize "Characteristic"}}</option>
+                {{/select}}
+            </select>
+
+
+            {{#if (eq system.overcast.valuePerOvercast.type "value")}}
+
+                <input type="text" name="system.overcast.valuePerOvercast.value"
+                    value="{{system.overcast.valuePerOvercast.value}}" />
+
+
+            {{else if (eq system.overcast.valuePerOvercast.type "SL")}}
+
+                <input placeholder="{{localize 'SHEET.Additional'}}" type="text"
+                    name="system.overcast.valuePerOvercast.additional"
+                    value="{{system.overcast.valuePerOvercast.additional}}" />
+
+            {{else if (eq system.overcast.valuePerOvercast.type "characteristic")}}
+
+                <select name="system.overcast.valuePerOvercast.characteristic">
+                    {{selectOptions (config "characteristics") selected=system.overcast.valuePerOvercast.characteristic}}
+                </select>
+
+                {{localize "Bonus"}}
+                <input type="checkbox" value="system.overcast.valuePerOvercast.bonus"
+                    checked={{system.overcast.valuePerOvercast.bonus}}>
+            {{/if}}
+        </div>
+    </div>
+{{/if}}

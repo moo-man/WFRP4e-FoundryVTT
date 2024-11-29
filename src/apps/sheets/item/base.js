@@ -1,10 +1,16 @@
+import ItemProperties from "../../../../modules/apps/item-properties";
+
 export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 {
 
+  static type=""
+
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
-    actions : {},
-    defaultTab : "decription",
+    defaultTab : "description",
+    position : {
+      height: 600
+    },
     window : {
       controls : [
         {
@@ -15,15 +21,22 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
       ]
     },
     actions : {
-      postToChat : () => this.item.postItem(),
+      postToChat : function() {this.item.postItem()},
+      configureProperties : this._onConfigureProperties
     }
   }
-
-
  
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
+    context.physical = this.item.system.tags.has("physical");
+    context.hide = {
+      quantity : false,
+      encumbrance : false,
+      price : false,
+      availability : false,
+      category : true
+    }
     return context;
   }
 
@@ -44,7 +57,6 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
       label: "Effects",
     }
   }
-
 
   //#region Effects
 
@@ -116,7 +128,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
   async _handleEnrichment() {
     let enrichment = {}
     enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
-    enrichment["system.gmdescription.gmnotes.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
+    enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
     return expandObject(enrichment)
   }
@@ -124,7 +136,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 
   //#region Action Handlers
 
-
+  static _onConfigureProperties()
+  {
+    new ItemProperties(this.document).render(true)
+  }
 
     //#endregion
 }

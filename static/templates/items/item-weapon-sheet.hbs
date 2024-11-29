@@ -111,7 +111,6 @@
         <label class="label-text">{{localize "ITEM.AmmunitionGroup"}}</label>
         <select name="system.ammunitionGroup.value" data-dtype="{{system.ammunitionGroup.type}}">
           {{#select system.ammunitionGroup.value}}
-          <option value="none">{{localize "NoneAmmo"}}</option>
           {{#each (config "ammunitionGroups") as |group g|}}
           <option value="{{g}}">{{group}}</option>
           {{/each}}

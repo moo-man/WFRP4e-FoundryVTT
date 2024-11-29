@@ -1,11 +1,13 @@
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
+
 export class TalentModel extends BaseItemModel {
+    static LOCALIZATION_PREFIXES = ["WH.Models.talent"];
     static defineSchema() {
         let schema = super.defineSchema();
         schema.max = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({choices : game.wfrp4e.config.talentMax})
         });
         schema.advances = new fields.SchemaField({
             value: new fields.NumberField({initial : 1, min: 1}),

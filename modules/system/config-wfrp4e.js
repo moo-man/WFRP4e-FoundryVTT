@@ -398,6 +398,7 @@ WFRP4E.weaponReaches = {
 
 // Ammo Groups
 WFRP4E.ammunitionGroups = {
+    "none": "NoneAmmo",
     "BPandEng": "WFRP4E.BPandEng",
     "bow": "WFRP4E.Bow",
     "crossbow": "WFRP4E.Crossbow",

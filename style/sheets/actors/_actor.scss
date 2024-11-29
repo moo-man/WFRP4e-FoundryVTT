@@ -5,21 +5,8 @@
     --characteristic-header : transparent;
     --characteristic-total : transparent;
     --characteristic-border : var(--color-cool-3);
-    --attribute-input : var(--color-cool-4);
-    --attribute-input-border : transparent;
-    --attribute-border : var(--color-cool-3);
-    --attribute-locked-input : transparent;
-    --attribute-locked-border : transparent;
-    --attribute-label : transparent;
-    --attribute-field : transparent;
     --property-icon : var(--color-cool-3);
     
-
-    input {
-        &:focus {
-        }
-    }
-
     section.tab {
         overflow-y: auto
     }
@@ -158,65 +145,6 @@
 
     .attribute-box {
         margin: 5px 5px;
-
-        &:first-child {
-            margin-left: 0px;
-        }
-        &:last-child {
-            margin-right: 0px;
-        }
-
-        flex: 1;
-        border: 1px solid var(--attribute-border);
-        border-right: none;
-        height: 45px;
-
-        display: grid;
-        grid-template-columns: repeat(12, 8.333%);
-        grid-template-rows: repeat(2, 50%);
-
-        > div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        input {
-            height: 100%;
-            width: 100%;
-            border-radius: 0px;
-            text-align: center;
-            background-color: var(--attribute-input);
-            border : 1px solid var(--attribute-input-border);
-        }
-
-        input:disabled,
-        input[readonly]
-        {
-            background-color: var(--attribute-locked-input);
-            border : 1px solid var(--attribute-locked-border);
-        }
-
-        .field {
-            border-right: 1px solid var(--attribute-border);
-            width: 100%;
-            background: var(--attribute-field);
-        }
-
-        .interact {
-            &.bottom {
-                border-top: 1px solid var(--attribute-border);
-            }
-            background: var(--attribute-input);
-            display: flex;
-            justify-content: space-evenly;
-        }
-
-        .label {
-            border-right: 1px solid var(--attribute-border);
-            width: 100%;
-            background: var(--attribute-label);
-        }
 
         &.movement {
             flex: 2;

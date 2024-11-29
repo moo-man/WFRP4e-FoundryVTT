@@ -11,6 +11,7 @@ let fields = foundry.data.fields;
  * @mixes PropertiesMixin
  */
 export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
+    static LOCALIZATION_PREFIXES = ["WH.Models.weapon"];
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({
@@ -18,10 +19,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             dice: new fields.StringField({ initial: "" })
         });
         schema.weaponGroup = new fields.SchemaField({
-            value: new fields.StringField({ initial: "basic" })
+            value: new fields.StringField({ initial: "basic", blank : true, choices : game.wfrp4e.config.weaponGroups})
         });
         schema.reach = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank : true, choices : game.wfrp4e.config.weaponReaches })
         });
         schema.range = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })
@@ -30,13 +31,13 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             value: new fields.StringField({ initial: "" })
         });
         schema.modeOverride = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank: true, choices : game.wfrp4e.config.weaponTypes })
         });
         schema.twohanded = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false })
         });
         schema.ammunitionGroup = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank : true, choices : game.wfrp4e.config.ammunitionGroups })
         });
         schema.currentAmmo = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })

@@ -277,6 +277,7 @@
     "SHEET.CannotDeleteItemEffect" : "This effect is from an Item on this Actor. Delete the Item itself or the effect from the Item's sheet.",
     "SHEET.CannotDeleteCrewEffect" : "This effect is from a Vehicle this Actor is on, and must be deleted from that Vehicle.",
     "SHEET.Attacker" : "Attacker",
+    "SHEET.LocationAP" : "Location AP",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -1917,6 +1918,504 @@
     "WH" : {
         "TransferType" : {
           "Crew" : "Crew"
+        },
+
+        "Models" : {
+            "ammunition" : {
+                "FIELDS" : {
+                    "ammunitionType.value" : {
+                        "label" : "Ammunition Type",
+                        "hint" : "Designates what types of Weapons can use this Ammunition"
+                    },
+                    "range.value" : {
+                        "label" : "Range",
+                        "hint" : "Modifies the Range of the Weapon using this Ammunition. e.g. Add: +2, Subtract: -2, Multiply: *2, Divide: /2"
+                    },
+                    "damage.value" : {
+                        "label" : "Damage",
+                        "hint" : "Modifies the Damage of the Weapon using this Ammunition. See Range examples above."
+                    },
+                    "damage.dice" : {
+                        "label" : "Dice",
+                        "hint" : "Add a dice roll to Damage"
+                    },
+                    "special.value" : {
+                        "label" : "Special"
+                    }
+                }
+            },
+            "armour" : {
+                "FIELDS" : {
+                    "armorType.value" : {
+                        "label" : "Armour Type"
+                    },
+                    "AP" : {
+                        "head" : {
+                            "label" : "Head"
+                        },
+                        "lArm" : {
+                            "label" : "Left Arm"
+                        },
+                        "rArm" : {
+                            "label" : "Right Arm"
+                        },
+                        "lLeg" : {
+                            "label" : "Left Leg"
+                        },
+                        "rLeg" : {
+                            "label" : "Right Leg"
+                        },
+                        "body" : {
+                            "label" : "Body"
+                        }
+                    },
+                    "special.value" : {
+                        "label" : "Special",
+                        "hint" : "Miscellaneous text that will show in the chat card."
+                    }
+                }
+            },
+            "career" : {
+                "FIELDS" : {
+                    "class.value" : {
+                        "label" : "Class"
+                    },
+                    "careergroup.value" : {
+                        "label" : "Career Group"
+                    },
+                    "level.value" : {
+                        "label" : "Career Level"
+                    },
+                    "status" : {
+                        "tier" : {
+                            "label" : "Tier"
+                        },
+                        "standing" : {
+                            "label" : "Standing "
+                        }
+                    }
+                }
+            },
+            "cargo" : {
+                "FIELDS" : {
+                    "tradeType" : {
+                        "label" : "Trade Type"
+                    },
+                    "cargoType.value" : {
+                        "label" : "Cargo Type"
+                    },
+                    "unitPrice.value" : {
+                        "label" : "Unit Price"
+                    },
+                    "origin.value" : {
+                        "label" : "Origin"
+                    },
+                    "quality" : {
+                        "value" : {
+                            "label" : "Quality"
+                        }
+                    }
+                }
+            },
+            "container" : {
+                "FIELDS" : {
+                    "wearable.value" : {
+                        "label" : "Wearable"
+                    },
+                    "carries.value" : {
+                        "label" : "Carries"
+                    },
+                    "countEnc.value" : {
+                        "label" : "Count Encumbrance",
+                        "hint" : "Add this encumbrance to character's encumbrance (uncheck if not carried around e.g. a cart)"
+                    }
+                }
+            },
+            "disease" : {
+                "FIELDS" : {
+                    "contraction.value" : {
+                        "label" : "Contraction"
+                    },
+                    "incubation.value" : {
+                        "label" : "Incubation"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "symptoms.value" : {
+                        "label" : "Symptoms"
+                    },
+                    "permanent.value" : {
+                        "label" : "Permanent"
+                    }
+                }
+            },
+            "extendedTest" : {
+                "FIELDS" : {
+                    "SL.target" : {
+                        "label" : "Target SL"
+                    },
+                    "test.value" : {
+                        "label" : "Test"
+                    },
+                    "difficulty.value" : {
+                        "label" : "Default Difficulty"
+                    },
+                    "negativePossible.value" : {
+                        "label" : "Negative SL Possible",
+                        "hint" : "Allow the progress of this Test to go below 0"
+                    },
+                    "failingDecreases.value" : {
+                        "label" : "Failing Decreases Progress",
+                        "hint" : "Reduce Progress on failed Tests"
+                    },
+                    "completion.value" : {
+                        "label" : "On Completion",
+                        "hint" : "Once complete, perform this action"
+                    },
+                    "hide.test" : {
+                        "label" : "Hide Test",
+                        "hint" : "Hide this Test from Players"
+                    },
+                    "hide.progress" : {
+                        "label" : "Hide Progress",
+                        "hint" : "Hide Test progress from Players"
+                    }
+                }
+            },
+            "money" : {
+                "FIELDS" : {
+                    "coinValue.value" : {
+                        "label" : "Coin Value",
+                        "hint" : "Value of this coin type (in brass pennies)."
+                    }
+                }
+            },
+            "skill" : {
+                "FIELDS" : {
+                    "advanced.value" : {
+                        "label" : "Skill Type"
+                    },
+                    "grouped.value" : {
+                        "label" : "Specialization"
+                    },
+                    "characteristic.value" : {
+                        "label" : "Characteristic"
+                    },
+                    "modifier.value" : {
+                        "label" : "Modifier"
+                    },
+                    "advances.force" : {
+                        "label" : "Force Advancement Indicator",
+                        "hint" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience."
+                    },
+                    "advances.costModifier" : {
+                        "label" : "XP Cost Modifier"
+                    }
+                }
+            },
+            "talent" : {
+                "FIELDS" : {
+                    "tests.value" : {
+                        "label" : "Tests"
+                    },
+                    "max.value" : {
+                        "label" : "Max"
+                    },
+                    "advances.force" : {
+                        "label" : "Force Advancement Indicator",
+                        "hint" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience."
+                    }
+                }
+            },
+            "mutation" : {
+                "FIELDS" : {
+                    "mutationType.value" : {
+                        "label" : "Mutation Type"
+                    }
+                }
+            },
+            "critical" : {
+                "FIELDS" : {
+                    "wounds.value" : {
+                        "label" : "Wounds"
+                    },
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            },
+            "injury" : {
+                "FIELDS" : {
+                    "duration" : {
+                        "value" : {
+                            "label": "Duration"
+                        },
+                        "permanent" : {
+                            "label" : "Permanent"
+                        }
+                    },
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a left or right location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            },
+            "prayer" : {
+                "FIELDS" : {
+                    "type.value" : {
+                        "label" : "Type"
+                    },
+                    "god.value" : {
+                        "label" : "God"
+                    },
+                    "range.value" : {
+                        "label" : "Range"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "target" : {
+                        "value" : {
+                            "label" : "Target"
+                        },
+                        "aoe" : {
+                            "label" : "Area of Effect"
+                        },
+                        "extendableAoE" : {
+                            "label" : "Extendable AoE",
+                            "hint" : "Can the AoE be enlarged with extra SL?"
+                        }
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        },
+                        "addSL" : {
+                            "label" : "Add SL",
+                            "hint" : "Add SL to Damage value"
+                        }
+                    },
+                    "overcast" : {
+                        "enabled" : {
+                            "label" : "Extra Overcast Options"
+                        }
+                    }
+                }
+            },
+            "spell" : {
+                "FIELDS" : {
+                    "cn.value" : {
+                        "label" : "Casting Number"
+                    },
+                    "lore.value" : {
+                        "label" : "Lore"
+                    },
+                    "skill.value" : {
+                        "label" : "Casting Skill"
+                    },
+                    "wind.value" : {
+                        "label" : "Channelling Skill"
+                    },
+                    "ritual.value" : {
+                        "label" : "Ritual"
+                    },
+                    "ritual.xp" : {
+                        "label" : "Learning XP"
+                    },
+                    "range.vortex" : {
+                        "label" : "Random Vortex"
+                    },
+                    "range.value" : {
+                        "label" : "Range"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "duration.extendable" : {
+                        "label" : "Extendable Duration",
+                        "hint" : "When the spell should end, you may make a Willpower Test to extend the Duration for +1 round."
+                    },
+                    "magicMissile.value" : {
+                        "label" : "Magic Missile"
+                    },
+
+                    "target" : {
+                        "value" : {
+                            "label" : "Target"
+                        },
+                        "aoe" : {
+                            "label" : "Area of Effect"
+                        }
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        }
+                    },
+                    "overcast" : {
+                        "enabled" : {
+                            "label" : "Extra Overcast Options"
+                        }
+                    }
+                }
+            },
+            "trait" : {
+                "FIELDS" : {
+                    "category" : {
+                        "label" : "Category"
+                    },
+                    "rollable" : {
+                        "value" : {
+                            "label" : "Rollable"
+                        },
+                        "damage" : {
+                            "label" : "Does Damage"
+                        },
+                        "skill" : {
+                            "label" : "Skill"
+                        },
+                        "rollCharacteristic" : {
+                            "label" : "Roll Characteristic"
+                        },
+                        "bonusCharacteristic" : {
+                            "label" : "Bonus Characteristic"
+                        },
+                        "dice" : {
+                            "label" : "Dice Roll"
+                        },
+                        "defaultDifficulty" : {
+                            "label" : "Difficulty"
+                        },
+                        "SL" : {
+                            "label" : "Add SL"
+                        },
+                        "attackType" : {
+                            "label" : "Attack Type"
+                        }
+                    },
+                    "specification.value" : {
+                        "label" : "Specification"
+                    }
+                }
+            },
+            "trapping" : {
+                "FIELDS" : {
+                    "trappingType.value" : {
+                        "label" : "Trapping Type"
+                    }
+                }
+            },
+            "vehicleMod" : {
+                "FIELDS" : {
+                    "modType.value" : {
+                        "label" : "Modification Type"
+                    }
+                }
+            },
+            "vehicleRole" : {
+                "FIELDS" : {
+                    "test" : {
+                        "label" : "Test Skill"
+                    }
+                }
+            },
+            "vehicleTest" : {
+                "FIELDS" : {
+                    "roles" : {
+                        "value" : {
+                            "label" : "Roles"
+                        },
+                        "vital" : {
+                            "label" : "Vital Roles"
+                        }
+                    },
+                    "handling" : {
+                        "label" : "Vehicle Handling"
+                    }
+                }
+            },
+            "weapon" : {
+                "FIELDS" : {
+                    "weaponGroup.value" : {
+                        "label" : "Weapon Group"
+                    },
+                    "skill.value" : {
+                        "label" : "Skill"
+                    },
+                    "modeOverride.value" : {
+                        "label" : "Attack Type"
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        }
+                    },
+                    "reach" : {
+                        "value" : {
+                            "label" : "Reach"
+                        }
+                    },
+                    "range" : {
+                        "value" : {
+                            "label" : "Range"
+                        }
+                    },
+                    "ammunitionGroup" : {
+                        "value" : {
+                            "label" : "Ammunition Group"
+                        }
+                    },
+                    "consumesAmmo" : {
+                        "value" : {
+                            "label" : "Consumes Ammo"
+                        }
+                    },
+                    "twohanded" : {
+                        "value" : {
+                            "label" : "Two-handed"
+                        }
+                    },
+                    "special" : {
+                        "value" : {
+                            "label" : "Special"
+                        }
+                    }
+                }
+            }
+        },
+
+        "Components" : {
+            "Locational" : {
+                "FIELDS" : {
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            }
         }
       }
 }
