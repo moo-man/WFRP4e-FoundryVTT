@@ -73,6 +73,7 @@ import socketHandlers from "./modules/system/socket-handlers.js";
 import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
+import  OpposedHandler from "./modules/system/opposed-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
 import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
 import { GenericAspectModel } from "./modules/model/item/generic.js";
@@ -182,6 +183,7 @@ Hooks.once("init", function () {
     audio: WFRP_Audio,
     names: NameGenWfrp,
     migration: Migration,
+    opposedHandler: OpposedHandler,
     tags : new TagManager(),
     trade : new TradeManager()
   }
