@@ -96,7 +96,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     return context;
   }
 
-  _getListContextOptions()
+  _getContetMenuOptions()
   { 
     return [
       {

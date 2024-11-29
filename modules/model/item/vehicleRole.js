@@ -3,6 +3,7 @@ import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
 export class VehicleRoleModel extends BaseItemModel {
+    static LOCALIZATION_PREFIXES = ["WH.Models.vehicleRole"];
     static defineSchema() {
         let schema = super.defineSchema();
         schema.test = new fields.StringField();

@@ -1,15 +1,18 @@
-import ItemSheetWfrp4e from "../../../../modules/item/item-sheet";
+import BaseWFRP4eItemSheet from "./base";
 
-export default class TalentSheet extends ItemSheetWfrp4e
+export default class TalentSheet extends BaseWFRP4eItemSheet
 {
-  static DEFAULT_OPTIONS = {
-    classes: ["talent"],
-  }
+  static type="talent"
 
+  static DEFAULT_OPTIONS = {
+    classes: [this.type],
+  }
+  
   static PARTS = {
-    header : {scrollable: [""], template : '', classes: ["sheet-header"] },
-    tabs: { scrollable: [""], template: '' },
-    description: { scrollable: [""], template: '' },
-    details: { scrollable: [""], template: '' },
+    header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/item/item-header.hbs', classes: ["sheet-header"] },
+    tabs: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/item-tabs.hbs' },
+    description: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-description.hbs' },
+    details: { scrollable: [""], template: `systems/wfrp4e/templates/sheets/item/types/${this.type}.hbs` },
+    effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-effects.hbs' },
   }
 }

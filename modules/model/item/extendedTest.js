@@ -2,6 +2,9 @@ import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
 export class ExtendedTestModel extends BaseItemModel {
+    static LOCALIZATION_PREFIXES = ["WH.Models.extendedTest"];
+
+
     static defineSchema() {
         let schema = super.defineSchema();
 
@@ -23,7 +26,7 @@ export class ExtendedTestModel extends BaseItemModel {
         });
 
         schema.completion = new fields.SchemaField({
-            value: new fields.StringField({ initial: "none" })
+            value: new fields.StringField({ initial: "none", choices : game.wfrp4e.config.extendedTestCompletion})
         });
 
         schema.hide = new fields.SchemaField({
@@ -32,7 +35,7 @@ export class ExtendedTestModel extends BaseItemModel {
         });
 
         schema.difficulty = new fields.SchemaField({
-            value: new fields.StringField({ initial: "challenging" })
+            value: new fields.StringField({ initial: "challenging", choices : game.wfrp4e.config.difficultyLabels })
         });
 
         return schema;

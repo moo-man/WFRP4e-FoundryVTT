@@ -3,22 +3,19 @@ let fields = foundry.data.fields;
 
 export class MutationModel extends BaseItemModel
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.mutation"];
+
     static defineSchema() 
     {
         // Patron Fields
         let schema = super.defineSchema();
         schema.mutationType = new fields.SchemaField({
-            value : new fields.StringField(),
+            value : new fields.StringField({choices : game.wfrp4e.config.mutationTypes}),
         });
         
         schema.modifier = new fields.SchemaField({
             value : new fields.StringField(),
         })
-
-        schema.modifiesSkills = new fields.SchemaField({
-            value : new fields.BooleanField(),
-        });
-
         return schema;
     }
 

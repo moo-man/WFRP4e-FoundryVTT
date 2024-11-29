@@ -2,6 +2,10 @@ import { BaseItemModel } from "./base";
 let fields = foundry.data.fields;
 
 export class LocationalItemModel extends BaseItemModel {
+
+    static LOCALIZATION_PREFIXES = ["WH.Components.Locational"];
+
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.prompt = new fields.BooleanField();

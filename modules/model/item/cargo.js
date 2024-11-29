@@ -3,11 +3,13 @@ let fields = foundry.data.fields;
 
 export class CargoModel extends PhysicalItemModel
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.cargo"];
     static defineSchema() 
     {
+
         let schema = super.defineSchema();
         schema.cargoType = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({})
         });
         schema.unitPrice = new fields.SchemaField({
             value: new fields.NumberField()
@@ -18,7 +20,7 @@ export class CargoModel extends PhysicalItemModel
         schema.quality = new fields.SchemaField({
             value: new fields.StringField({initial : "average"})
         });
-        schema.tradeType = new fields.StringField({initial : "river"})
+        schema.tradeType = new fields.StringField({initial : "river", choices : {river : "River", maritime : "Maritime"}})
         return schema;
     }
 

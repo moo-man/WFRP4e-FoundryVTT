@@ -1,15 +1,19 @@
-import ActorSettings from "../../../../modules/apps/actor-settings";
-import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
+import ItemProperties from "../../../../modules/apps/item-properties";
 import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
 
-export default class WFRP4eItemSheet extends WarhammerItemSheetV2
+export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 {
+
+  static type=""
+
+  static hasConditionEffects = false
 
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
-    actions : {},
-    defaultTab : "decription",
+    defaultTab : "description",
+    position : {
+      height: 600
+    },
     window : {
       controls : [
         {
@@ -20,25 +24,51 @@ export default class WFRP4eItemSheet extends WarhammerItemSheetV2
       ]
     },
     actions : {
-      postToChat : () => this.item.postItem(),
+      postToChat : function() {this.item.postItem()},
+      configureProperties : this._onConfigureProperties,
+      clickCondition : {buttons : [0, 2], handler : this._onClickCondition}
     }
   }
-
-
  
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
+    context.physical = this.item.system.tags.has("physical");
+    context.hide = {
+      quantity : false,
+      encumbrance : false,
+      price : false,
+      availability : false,
+      category : true
+    }
     return context;
+  }
+
+  static TABS = {
+    description: {
+      id: "description",
+      group: "primary",
+      label: "Description",
+    },
+    details: {
+      id: "details",
+      group: "primary",
+      label: "Details",
+    },
+    effects: {
+      id: "effects",
+      group: "primary",
+      label: "Effects",
+    }
   }
 
   //#region Effects
 
 
-  _getConditionData(context) {
+  _getConditionData() {
     try {
       let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new ActiveEffectWFRP4e(e));
-      let currentConditions = this.actor.effects.filter(e => e.isCondition);
+      let currentConditions = this.item.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
 
       for (let condition of conditions) {
@@ -59,15 +89,19 @@ export default class WFRP4eItemSheet extends WarhammerItemSheetV2
     }
   }
 
-  //#endregion
-
-  _addEventListeners()
+  _prepareEffectsContext(context) 
   {
-    super._addEventListeners();
+      super._prepareEffectsContext(context);
+      if (this.constructor.hasConditionEffects)
+      {
+        context.effects.conditions = this._getConditionData()
+      }
+      return context;
   }
 
-  
-  _getListContextOptions()
+  //#endregion
+
+  _getContetMenuOptions()
   { 
     return [
       {
@@ -108,7 +142,7 @@ export default class WFRP4eItemSheet extends WarhammerItemSheetV2
   async _handleEnrichment() {
     let enrichment = {}
     enrichment["system.description.value"] = await TextEditor.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
-    enrichment["system.gmdescription.gmnotes.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
+    enrichment["system.gmdescription.value"] = await TextEditor.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
     return expandObject(enrichment)
   }
@@ -116,7 +150,23 @@ export default class WFRP4eItemSheet extends WarhammerItemSheetV2
 
   //#region Action Handlers
 
+  static _onConfigureProperties()
+  {
+    new ItemProperties(this.document).render(true)
+  }
 
+  
+  static _onClickCondition(ev) {
+    let conditionKey = this._getParent(ev.target, ".condition")?.dataset.key
+    let existing = this.item.hasCondition(conditionKey)
+    
+    if (!existing?.isNumberedCondition && ev.button == 0)
+    {
+      this.item.removeCondition(conditionKey);
+    }
+    
+    ev.button == 0 ? this.item.addCondition(conditionKey) : this.item.removeCondition(conditionKey) 
+  }
 
     //#endregion
 }

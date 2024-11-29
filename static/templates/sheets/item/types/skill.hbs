@@ -1,0 +1,10 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.characteristic.fields.value value=source.system.characteristic.value}}
+    {{formGroup fields.advanced.fields.value value=source.system.advanced.value}}
+    {{formGroup fields.grouped.fields.value value=source.system.grouped.value}}
+    {{#if item.isOwned}}
+        {{formGroup fields.modifier.fields.value value=source.system.modifier.value}}
+        {{formGroup fields.advances.fields.force value=source.system.advances.force}}
+        {{formGroup fields.advances.fields.costModifier value=source.system.advances.costModifier}}
+    {{/if}}
+</section>

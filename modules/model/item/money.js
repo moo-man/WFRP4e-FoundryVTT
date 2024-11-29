@@ -3,6 +3,8 @@ let fields = foundry.data.fields;
 
 export class MoneyModel extends PhysicalItemModel
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.money"];
+    
     static defineSchema() 
     {
         // Patron Fields

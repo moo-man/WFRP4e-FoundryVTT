@@ -1,0 +1,21 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.rollable.fields.value value=source.system.rollable.value}}
+        {{#if source.system.rollable.value}}
+            {{formGroup fields.rollable.fields.rollCharacteristic value=source.system.rollable.rollCharacteristic}}
+            {{formGroup fields.rollable.fields.skill value=source.system.rollable.skill}}
+            {{formGroup fields.rollable.fields.defaultDifficulty value=source.system.rollable.defaultDifficulty}}
+            {{formGroup fields.rollable.fields.damage value=source.system.rollable.damage}}
+            {{#if source.system.rollable.damage}}
+            {{formGroup fields.rollable.fields.bonusCharacteristic value=source.system.rollable.bonusCharacteristic}}
+            {{formGroup fields.rollable.fields.attackType value=source.system.rollable.attackType}}
+            {{formGroup fields.rollable.fields.dice value=source.system.rollable.dice}}
+            {{formGroup fields.rollable.fields.SL value=source.system.rollable.SL}}
+                {{formGroup fields.specification.fields.value value=source.system.specification.value label="SHEET.DamageValue" localize=true}}
+                {{> itemProperties}}
+            {{else}}
+                {{formGroup fields.specification.fields.value value=source.system.specification.value}}
+            {{/if}}
+        {{else}}
+            {{formGroup fields.specification.fields.value value=source.system.specification.value}}
+        {{/if}}
+</section>

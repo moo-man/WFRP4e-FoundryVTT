@@ -7,6 +7,8 @@ let fields = foundry.data.fields;
  */
 export class DiseaseModel extends BaseItemModel {
 
+  static LOCALIZATION_PREFIXES = ["WH.Models.disease"];
+
   static defineSchema() {
     let schema = super.defineSchema();
     schema.contraction = new fields.SchemaField({
@@ -43,6 +45,11 @@ export class DiseaseModel extends BaseItemModel {
     if (data.system?.active && user == game.user.id)
     {
       this.start("duration");
+    }
+
+    if (foundry.utils.hasProperty(options, "changed.system.symptoms.value") && !options.skipSymptomHandling)
+    {
+      this.updateSymptoms(this.symptoms.value);
     }
   }
 
@@ -136,7 +143,7 @@ export class DiseaseModel extends BaseItemModel {
       // Add symptoms from input
       await this.parent.createEmbeddedDocuments("ActiveEffect", symptomEffects)
   
-      return this.parent.update({ "system.symptoms.value": text })
+      return this.parent.update({ "system.symptoms.value": text }, {skipSymptomHandling : true})
   }
 
   async start(type, update=false)

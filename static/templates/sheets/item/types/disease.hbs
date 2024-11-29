@@ -1,0 +1,23 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.contraction.fields.value value=source.system.contraction.value}}
+    <div class="form-group">
+        <label>{{localize "Incubation"}}</label>
+        <div class="form-fields">
+            <input type="number" name="system.incubation.value" value="{{system.incubation.value}}">
+            <select name="system.incubation.unit">
+                {{selectOptions units selected=system.incubation.unit}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{{localize "Duration"}}</label>
+        <div class="form-fields">
+            <input type="number" name="system.duration.value" value="{{system.duration.value}}">
+            <select name="system.duration.unit">
+                {{selectOptions units selected=system.duration.unit}}
+            </select>
+        </div>
+    </div>
+    {{formGroup fields.symptoms.fields.value value=source.system.symptoms.value}}
+    {{formGroup fields.permanent.fields.value value=source.system.permanent.value}}
+</section>

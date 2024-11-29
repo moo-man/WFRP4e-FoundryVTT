@@ -5,6 +5,8 @@ import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 
 export class SpellModel extends OvercastItemModel {
+    static LOCALIZATION_PREFIXES = ["WH.Models.spell"];
+
     static defineSchema() {
         let schema = super.defineSchema();
 

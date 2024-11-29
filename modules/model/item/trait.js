@@ -4,22 +4,23 @@ let fields = foundry.data.fields;
 
 export class TraitModel extends PropertiesMixin(BaseItemModel)
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.trait"];
     static defineSchema() 
     {
         let schema = super.defineSchema();
 
-        schema.category = new fields.StringField({initial : "standard"});
+        schema.category = new fields.StringField({initial : "standard", choices : {standard : "Standard", vehicle : "Vehicle"}});
 
         schema.rollable = new fields.SchemaField({
             value : new fields.BooleanField({}),
             damage : new fields.BooleanField({}),
             skill : new fields.StringField({}),
-            rollCharacteristic : new fields.StringField({}),
-            bonusCharacteristic : new fields.StringField({}),
+            rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
+            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics, initial : "s"}),
             dice : new fields.StringField({}),
-            defaultDifficulty : new fields.StringField({}),
+            defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
             SL : new fields.BooleanField({}),
-            attackType : new fields.StringField({initial: "melee"}),
+            attackType : new fields.StringField({initial: "melee", choices : {melee : "Melee", ranged : "Ranged"}})
         });
 
         schema.specification = new fields.SchemaField({

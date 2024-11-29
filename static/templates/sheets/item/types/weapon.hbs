@@ -1,0 +1,35 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.weaponGroup.fields.value value=source.system.weaponGroup.value}}
+    <fieldset>
+        <legend>{{localize "Overrides"}}</legend>
+        {{formGroup fields.skill.fields.value value=source.system.skill.value}}
+        {{formGroup fields.modeOverride.fields.value value=source.system.modeOverride.value}}
+    </fieldset>
+
+    {{#if item.system.isMelee}}
+        {{formGroup fields.reach.fields.value value=source.system.reach.value}}
+    {{else}}
+        {{formGroup fields.range.fields.value value=source.system.range.value}}
+        {{#if (settings "mooRangeBands")}}
+        <div class="form-group">
+            <label>{{localize "ITEM.OptimalRange"}}</label>
+            <div class="form-fields">
+            <select name="flags.wfrp4e.optimalRange">
+                {{selectOptions (config "rangeBands") selected=item.flags.wfrp4e.optimalRange}}
+            </select>
+            </div>
+        </div>
+        {{/if}}
+        {{formGroup fields.ammunitionGroup.fields.value value=source.system.ammunitionGroup.value}}
+        {{formGroup fields.consumesAmmo.fields.value value=source.system.consumesAmmo.value}}
+    {{/if}}
+    {{formGroup fields.twohanded.fields.value value=source.system.twohanded.value}}
+    <fieldset>
+        <legend>{{localize "Damage"}}</legend>
+        {{formGroup fields.damage.fields.value value=source.system.damage.value}}
+        {{formGroup fields.damage.fields.dice value=source.system.damage.dice}}
+    </fieldset>
+
+    {{> itemProperties}}
+    {{formGroup fields.special.fields.value value=source.system.special.value}}
+</section>

@@ -739,6 +739,8 @@ export default function() {
       rangedWeapons: "systems/wfrp4e/templates/sheets/partials/ranged-weapons.hbs",
       armourLocation: "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
       creatureArmour: "systems/wfrp4e/templates/sheets/partials/creature-armour.hbs",
+      itemProperties: "systems/wfrp4e/templates/sheets/partials/item-properties.hbs",
+      extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
     });
 
     // Load name construction from files

@@ -79,6 +79,28 @@ import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet
 import { GenericAspectModel } from "./modules/model/item/generic.js";
 import ActorSheetWFRP4eNPCV2 from "./src/apps/sheets/actor/npc-sheet.js";
 import ActorSheetWFRP4eCreatureV2 from "./src/apps/sheets/actor/creature-sheet.js";
+import TalentSheet from "./src/apps/sheets/item/talent-sheet.js";
+import MutationSheet from "./src/apps/sheets/item/mutation-sheet.js";
+import CriticalSheet from "./src/apps/sheets/item/critical-sheet.js";
+import InjurySheet from "./src/apps/sheets/item/injury-sheet.js";
+import AmmunitionSheet from "./src/apps/sheets/item/ammunition-sheet.js";
+import SkillSheet from "./src/apps/sheets/item/skill-sheet.js";
+import ArmourSheet from "./src/apps/sheets/item/armour-sheet.js";
+import CareerSheet from "./src/apps/sheets/item/career-sheet.js";
+import CargoSheet from "./src/apps/sheets/item/cargo.js";
+import ContainerSheet from "./src/apps/sheets/item/container-sheet.js";
+import ExtendedTestSheet from "./src/apps/sheets/item/extendedTest-sheet.js";
+import DiseaseSheet from "./src/apps/sheets/item/disease-sheet.js";
+import MoneySheet from "./src/apps/sheets/item/money.js";
+import PrayerSheet from "./src/apps/sheets/item/prayer-sheet.js";
+import PsychologySheet from "./src/apps/sheets/item/psychology-sheet.js";
+import SpellSheet from "./src/apps/sheets/item/spell-sheet.js";
+import TraitSheet from "./src/apps/sheets/item/trait-sheet.js";
+import TrappingSheet from "./src/apps/sheets/item/trapping-sheet.js";
+import VehicleModSheet from "./src/apps/sheets/item/vehicleMod-sheet.js";
+import VehicleRoleSheet from "./src/apps/sheets/item/vehicleRole-sheet.js";
+import VehicleTestSheet from "./src/apps/sheets/item/vehicleTest-sheet.js";
+import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -103,6 +125,28 @@ Hooks.once("init", function () {
   
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
+  Items.registerSheet("wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: true });
+  Items.registerSheet("wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: true });
+  Items.registerSheet("wfrp4e", CareerSheet, { types: ["career"], makeDefault: true });
+  Items.registerSheet("wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: true });
+  Items.registerSheet("wfrp4e", ContainerSheet, { types: ["container"], makeDefault: true });
+  Items.registerSheet("wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: true });
+  Items.registerSheet("wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: true });
+  Items.registerSheet("wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: true });
+  Items.registerSheet("wfrp4e", InjurySheet, { types: ["injury"], makeDefault: true });
+  Items.registerSheet("wfrp4e", MoneySheet, { types: ["money"], makeDefault: true });
+  Items.registerSheet("wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: true });
+  Items.registerSheet("wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: true });
+  Items.registerSheet("wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: true });
+  Items.registerSheet("wfrp4e", SkillSheet, { types: ["skill"], makeDefault: true });
+  Items.registerSheet("wfrp4e", SpellSheet, { types: ["spell"], makeDefault: true });
+  Items.registerSheet("wfrp4e", TalentSheet, { types: ["talent"], makeDefault: true });
+  Items.registerSheet("wfrp4e", TraitSheet, { types: ["trait"], makeDefault: true });
+  Items.registerSheet("wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: true });
+  Items.registerSheet("wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: true });
+  Items.registerSheet("wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: true });
+  Items.registerSheet("wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true });
+  Items.registerSheet("wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})

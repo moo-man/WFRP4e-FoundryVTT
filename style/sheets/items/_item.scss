@@ -1,0 +1,141 @@
+.wfrp4e.item.sheet.application {
+
+    --header-label-line : var(--color-cool-3);
+
+    --attribute-input : var(--color-cool-4);
+    --attribute-input-border : transparent;
+    --attribute-border : var(--color-cool-3);
+    --attribute-locked-input : transparent;
+    --attribute-locked-border : transparent;
+    --attribute-label : transparent;
+    --attribute-field : transparent;
+
+    --career-header: var(--color-cool-3);
+
+    section.tab {
+        overflow-y: auto
+    }
+
+    .sheet-header {
+        display: flex;
+        flex-direction: row;
+
+        .header-fields {
+            flex: 1;
+        }
+
+        input {
+            text-align: crgba(247, 165, 165, 0.1);
+            text-align: center;
+        }
+        img {
+            width: 80px;
+            height: 80px;
+            &.img-border {
+                border: 2px dotted var(--header-label-line);
+            }
+
+        }
+        .header-row {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            padding: 0px 5px;
+        }
+
+        .attribute-box:not(.single)
+        {
+            .label {
+                border-bottom: 1px solid var(--attribute-border)
+            }
+        }
+
+        .gc {
+            input {
+                color: #FFD700;
+                text-shadow: 0px 0px 5px #FFD700
+
+            }
+        }
+        .ss {
+            input {
+                color: #C0C0C0;
+                text-shadow: 0px 0px 3px #C0C0C0
+            }
+        }
+        .bp {
+            input {
+                color: #c2742f
+            }
+        }
+    }
+
+
+    section[data-tab="details"] {
+        .form-group {
+            margin: 10px 0px;
+        }
+
+        .attribute-box {
+            margin: 5px 0px;
+        }
+    }
+
+    section[data-tab="effects"] {
+        .condition-section {
+            margin-top: 0px;
+        }
+    }
+
+    &.career
+    {
+        .career-list {
+            label {
+                width: 100%;
+                height: 1.5rem;
+                line-height: 1.5rem;
+                text-align: center;
+                background-color: var(--career-header);
+            }
+            display: flex;
+            flex-direction: column;
+            .list-container {
+                padding: 5px 0px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .characteristic {
+                margin: 5px;
+                border: 1px solid var(--color-warm-2);
+                width: 3rem;
+                border-radius: 5px;
+                flex: 0 0 3rem;
+                text-align: center;
+                font-weight: bold;
+                &.active {
+                    background-color: var(--color-warm-2);
+                }
+            }
+
+            select,
+            input {
+                // width: fit-content;
+                border-radius: 5px;
+                margin: 5px;
+                height: 1.5rem;
+                text-align: center;
+            }
+
+            a[data-action='listDelete'] {
+                border: 1px solid var(--color-cool-3);
+                background: var(--color-cool-3);
+                border-radius: 50%;
+                width: 1rem;
+                height: 1rem;
+                text-align: center;
+                margin-left: -1rem;
+            }
+        }
+    }
+}

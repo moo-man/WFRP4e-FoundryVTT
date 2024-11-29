@@ -7,6 +7,8 @@ let fields = foundry.data.fields;
  * @extends EquippableItemModel
  */
 export class ContainerModel extends EquippableItemModel {
+    static LOCALIZATION_PREFIXES = ["WH.Models.container"];
+    
     static defineSchema() {
         let schema = super.defineSchema();
         schema.wearable = new fields.SchemaField({

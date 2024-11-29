@@ -1,0 +1,55 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.cn.fields.value value=source.system.cn.value}}
+    {{!-- {{formGroup fields.lore.fields.value value=source.system.lore.value}} --}}
+    <div class="form-group">
+        <label>{{localize "Lore"}}</label>
+        <div class="form-fields">
+            <input type="text" list="lores" name="system.lore.value" value="{{loreValue}}">
+        </div>
+    </div>
+    <datalist id="lores">
+        {{#each (config "magicLores")}}
+            <option>{{this}}</option>
+        {{/each}}
+    </datalist>
+    <fieldset>
+        <legend>{{localize "Overrides"}}</legend>
+        {{formGroup fields.skill.fields.value value=source.system.skill.value}}
+        {{formGroup fields.wind.fields.value value=source.system.wind.value}}
+    </fieldset>
+    {{formGroup fields.ritual.fields.value value=source.system.ritual.value}}
+    {{#unless system.ritual.value}}
+        
+        {{#unless source.system.range.vortex}}
+            {{formGroup fields.range.fields.value value=source.system.range.value}}
+        {{else}}
+            {{formGroup fields.range.fields.value value="Random Vortex" disabled=true}}
+        {{/unless}}
+        {{formGroup fields.range.fields.vortex value=source.system.range.vortex}}
+
+        {{formGroup fields.duration.fields.value value=source.system.duration.value}}
+        {{formGroup fields.duration.fields.extendable value=source.system.duration.extendable}}
+
+        {{formGroup fields.target.fields.aoe value=source.system.target.aoe}}
+        {{#if source.system.target.aoe}}
+            {{formGroup fields.target.fields.value value=source.system.target.value label="Radius"}}
+        {{else}}
+            {{formGroup fields.target.fields.value value=source.system.target.value}}
+        {{/if}}
+
+    <fieldset>
+        <legend>{{localize "Damage"}}</legend>
+        {{formGroup fields.damage.fields.value value=source.system.damage.value}}
+        {{formGroup fields.damage.fields.dice value=source.system.damage.dice}}
+    </fieldset>
+        
+        {{formGroup fields.magicMissile.fields.value value=source.system.magicMissile.value}}
+        {{> extraOvercast}}
+
+    {{else}}
+    {{formGroup fields.ritual.fields.xp value=source.system.ritual.xp}}
+
+    {{/unless}}
+
+    
+</section>
