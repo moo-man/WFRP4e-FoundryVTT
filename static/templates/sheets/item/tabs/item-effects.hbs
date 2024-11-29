@@ -1,4 +1,5 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{#if effects.conditions}}
     <div class="condition-section">
         {{#each effects.conditions}}
             <div class="condition" data-key="{{this.key}}">
@@ -17,7 +18,9 @@
             </div>
         {{/each}}
     </div>
+    {{/if}}
 
+    <div class="effect-lists">
     {{#if effects.temporary.length}}
     <div class="sheet-list">
         <div class="list-header row-content">
@@ -95,5 +98,7 @@
         </div>
     </div>
     {{/if}}
+    </div>
+
 
 </section>

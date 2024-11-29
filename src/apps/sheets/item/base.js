@@ -1,9 +1,12 @@
 import ItemProperties from "../../../../modules/apps/item-properties";
+import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
 
 export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 {
 
   static type=""
+
+  static hasConditionEffects = false
 
   static DEFAULT_OPTIONS = {
     classes: ["wfrp4e"],
@@ -22,7 +25,8 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     },
     actions : {
       postToChat : function() {this.item.postItem()},
-      configureProperties : this._onConfigureProperties
+      configureProperties : this._onConfigureProperties,
+      clickCondition : {buttons : [0, 2], handler : this._onClickCondition}
     }
   }
  
@@ -61,10 +65,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
   //#region Effects
 
 
-  _getConditionData(context) {
+  _getConditionData() {
     try {
       let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).filter(i => !["fear", "grappling", "engaged"].includes(i.id)).map(e => new ActiveEffectWFRP4e(e));
-      let currentConditions = this.actor.effects.filter(e => e.isCondition);
+      let currentConditions = this.item.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
 
       for (let condition of conditions) {
@@ -83,6 +87,16 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     {
       ui.notifications.error("Error Adding Condition Data: " + e);
     }
+  }
+
+  _prepareEffectsContext(context) 
+  {
+      super._prepareEffectsContext(context);
+      if (this.constructor.hasConditionEffects)
+      {
+        context.effects.conditions = this._getConditionData()
+      }
+      return context;
   }
 
   //#endregion
@@ -139,6 +153,19 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
   static _onConfigureProperties()
   {
     new ItemProperties(this.document).render(true)
+  }
+
+  
+  static _onClickCondition(ev) {
+    let conditionKey = this._getParent(ev.target, ".condition")?.dataset.key
+    let existing = this.item.hasCondition(conditionKey)
+    
+    if (!existing?.isNumberedCondition && ev.button == 0)
+    {
+      this.item.removeCondition(conditionKey);
+    }
+    
+    ev.button == 0 ? this.item.addCondition(conditionKey) : this.item.removeCondition(conditionKey) 
   }
 
     //#endregion

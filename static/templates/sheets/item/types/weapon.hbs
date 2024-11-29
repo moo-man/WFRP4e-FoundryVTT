@@ -10,6 +10,16 @@
         {{formGroup fields.reach.fields.value value=source.system.reach.value}}
     {{else}}
         {{formGroup fields.range.fields.value value=source.system.range.value}}
+        {{#if (settings "mooRangeBands")}}
+        <div class="form-group">
+            <label>{{localize "ITEM.OptimalRange"}}</label>
+            <div class="form-fields">
+            <select name="flags.wfrp4e.optimalRange">
+                {{selectOptions (config "rangeBands") selected=item.flags.wfrp4e.optimalRange}}
+            </select>
+            </div>
+        </div>
+        {{/if}}
         {{formGroup fields.ammunitionGroup.fields.value value=source.system.ammunitionGroup.value}}
         {{formGroup fields.consumesAmmo.fields.value value=source.system.consumesAmmo.value}}
     {{/if}}

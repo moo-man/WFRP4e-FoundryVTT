@@ -3,6 +3,7 @@ import BaseWFRP4eItemSheet from "./base";
 export default class CriticalSheet extends BaseWFRP4eItemSheet
 {
   static type="critical"
+  static hasConditionEffects = true;
 
   static DEFAULT_OPTIONS = {
     classes: [this.type],

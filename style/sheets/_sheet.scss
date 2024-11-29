@@ -1,0 +1,46 @@
+.wfrp4e.sheet.application {
+    --condition-label : transparent;
+--condition-border : var(--color-cool-3);
+--condition-control-bg : var(--color-cool-4);  
+
+
+    section.tab[data-tab="effects"] {
+        &.active {
+            display : flex;
+        }
+        .condition-section {
+            display: flex;
+            flex-direction: column;
+            flex: 0 0 8rem;
+            margin-top: 8px;
+            margin-right: 5px;
+            .condition {
+                border: 1px solid var(--condition-border);
+                background: var(--condition-label);
+                margin: 3px;
+                height: 2rem;
+                line-height: 2rem;
+                display : flex;
+                justify-content: space-between;
+                > :first-of-type {
+                    padding: 0px 5px;
+                }
+                .controls {
+                background: var(--condition-control-bg);
+                text-align: center;
+                font-size: var(--font-size-16);
+                flex: 0 0 2rem;
+                }
+            }
+        }
+
+        .effect-lists {
+            flex: 1;
+            .flex {
+                i {
+                    margin-right: 3px;
+                }
+            }
+        }
+    } 
+}

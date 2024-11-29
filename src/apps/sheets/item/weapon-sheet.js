@@ -15,4 +15,10 @@ export default class WeaponSheet extends BaseWFRP4eItemSheet
     details: { scrollable: [""], template: `systems/wfrp4e/templates/sheets/item/types/${this.type}.hbs` },
     effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-effects.hbs' },
   }
+
+  async _prepareContext(options)
+  {
+    let context = await super._prepareContext(options);
+    return context;
+  }
 }

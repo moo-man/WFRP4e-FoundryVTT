@@ -3,6 +3,7 @@ import BaseWFRP4eItemSheet from "./base";
 export default class MutationSheet extends BaseWFRP4eItemSheet
 {
   static type="mutation"
+  static hasConditionEffects = true;
 
   static DEFAULT_OPTIONS = {
     classes: [this.type],

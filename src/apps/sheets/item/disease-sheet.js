@@ -3,6 +3,7 @@ import BaseWFRP4eItemSheet from "./base";
 export default class DiseaseSheet extends BaseWFRP4eItemSheet
 {
   static type="disease"
+  static hasConditionEffects = true;
 
   static DEFAULT_OPTIONS = {
     classes: [this.type],

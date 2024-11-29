@@ -15,4 +15,19 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
     details: { scrollable: [""], template: `systems/wfrp4e/templates/sheets/item/types/${this.type}.hbs` },
     effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-effects.hbs' },
   }
+
+  async _prepareContext(options)
+  {
+    let context = await super._prepareContext(options);
+      if (game.wfrp4e.config.magicLores[this.item.lore.value]) 
+      {
+        context.loreValue = game.wfrp4e.config.magicLores[this.item.lore.value]
+      }
+      else 
+      {
+        context.loreValue = this.item.lore.value;
+      }
+    return context;
+  }
+
 }
