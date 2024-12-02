@@ -125,28 +125,28 @@ Hooks.once("init", function () {
   
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
-  Items.registerSheet("wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: true });
-  Items.registerSheet("wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: true });
-  Items.registerSheet("wfrp4e", CareerSheet, { types: ["career"], makeDefault: true });
-  Items.registerSheet("wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: true });
-  Items.registerSheet("wfrp4e", ContainerSheet, { types: ["container"], makeDefault: true });
-  Items.registerSheet("wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: true });
-  Items.registerSheet("wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: true });
-  Items.registerSheet("wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: true });
-  Items.registerSheet("wfrp4e", InjurySheet, { types: ["injury"], makeDefault: true });
-  Items.registerSheet("wfrp4e", MoneySheet, { types: ["money"], makeDefault: true });
-  Items.registerSheet("wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: true });
-  Items.registerSheet("wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: true });
-  Items.registerSheet("wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: true });
-  Items.registerSheet("wfrp4e", SkillSheet, { types: ["skill"], makeDefault: true });
-  Items.registerSheet("wfrp4e", SpellSheet, { types: ["spell"], makeDefault: true });
-  Items.registerSheet("wfrp4e", TalentSheet, { types: ["talent"], makeDefault: true });
-  Items.registerSheet("wfrp4e", TraitSheet, { types: ["trait"], makeDefault: true });
-  Items.registerSheet("wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: true });
-  Items.registerSheet("wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: true });
-  Items.registerSheet("wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: true });
-  Items.registerSheet("wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true });
-  Items.registerSheet("wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
+  Items.registerSheet("wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CareerSheet, { types: ["career"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ContainerSheet, { types: ["container"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: false });
+  Items.registerSheet("wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: false });
+  Items.registerSheet("wfrp4e", InjurySheet, { types: ["injury"], makeDefault: false });
+  Items.registerSheet("wfrp4e", MoneySheet, { types: ["money"], makeDefault: false });
+  Items.registerSheet("wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: false });
+  Items.registerSheet("wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: false });
+  Items.registerSheet("wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: false });
+  Items.registerSheet("wfrp4e", SkillSheet, { types: ["skill"], makeDefault: false });
+  Items.registerSheet("wfrp4e", SpellSheet, { types: ["spell"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TalentSheet, { types: ["talent"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TraitSheet, { types: ["trait"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: false });
+  Items.registerSheet("wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: false });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})

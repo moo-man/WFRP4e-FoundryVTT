@@ -90,10 +90,6 @@ export default class RollDialog extends WarhammerRollDialog {
         this.data.context = {};
         let data = super._getSubmissionData();
         data.breakdown = data.context.breakdown;
-        if (!this.options.skipTargets)
-        {
-            data.targets = Array.from(data.targets).map(t => t.actor.speakerData(t.document))
-        }
         data.chatOptions = this._setupChatOptions()
         data.chatOptions.rollMode = data.rollMode;
 
