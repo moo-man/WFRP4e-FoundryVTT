@@ -68,7 +68,7 @@ export default function() {
             {
 
               let tokenUpdate = {_id : mountId, x : updateData.x || token.x, y: updateData.y || token.y, sort : token.sort - 1 }
-              if (token.actor.details.size.value == token.actor.mount.details.size.value)
+              if (token.actor?.details.size.value == token.actor?.mount.details.size.value)
               {
                 tokenUpdate.x += canvas.grid.size / 4
                 tokenUpdate.y += canvas.grid.size / 4
