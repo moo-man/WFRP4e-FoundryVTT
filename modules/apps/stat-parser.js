@@ -64,14 +64,14 @@ export default class StatBlockParser extends FormApplication {
             if (characteristicNames[i] == "Agi")
                 characteristicNames[i] = "Ag"
             if (characteristicNames[i].toLowerCase() == "m") {
-                model.details.move.value = Number(value);
+                model.details.move.value = value;
                 continue;
             }
             if (characteristicNames[i].toLowerCase() == "w")
                 continue;
 
             try {
-                model.characteristics[characteristicNames[i].toLowerCase()].initial = Number(value)
+                model.characteristics[characteristicNames[i].toLowerCase()].initial = value
             }
             catch { }
         }
