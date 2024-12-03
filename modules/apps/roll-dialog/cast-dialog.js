@@ -68,6 +68,13 @@ export default class CastDialog extends SkillDialog {
             return super._computeAdvantage();
         }
     }
+    
+    _defaultFields() 
+    {
+        return mergeObject({
+            overchannelling : 0
+        }, super._defaultFields());
+    }
 
     // Backwards compatibility for effects
     get type() 
