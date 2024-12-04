@@ -35,7 +35,7 @@ export default class WFRP_Utility {
     for (let char in game.wfrp4e.config.characteristics) {
       if (average) {
         // Take average - 2d10+20 -> split on +, take the 20, add 10 (average of 2d10). This assumes, perhaps erroneously, that all species will have a 2d10 randomizer
-        characteristics[char] = { value: parseInt(characteristicFormulae[char].split("+")[1]) + 10, formula: characteristicFormulae[char] }
+        characteristics[char] = { value: Roll.safeEval(characteristicFormulae[char].replace("2d10", "10")) , formula: characteristicFormulae[char] }
       }
       else {
         let roll = await new Roll(characteristicFormulae[char]).roll()

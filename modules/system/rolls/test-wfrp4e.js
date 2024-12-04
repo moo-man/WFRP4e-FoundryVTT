@@ -1160,7 +1160,7 @@ export default class TestWFRP extends WarhammerTestBase{
           html += `${game.i18n.format("FORTUNE.UsageAddSLText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
   
         html += `<b>${game.i18n.localize("FORTUNE.PointsRemaining")} </b>${this.actor.system.status.fortune.value - 1}`;
-        ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+        ChatMessage.create(WFRP_Utility.chatDataSetup(html, "gmroll"));
   
   
         if (type == "reroll") {
@@ -1189,7 +1189,7 @@ export default class TestWFRP extends WarhammerTestBase{
     let corruption = Math.trunc(this.actor.system.status.corruption.value) + 1;
     html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.actor.system.status.corruption.max}`;
 
-    ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+    ChatMessage.create(WFRP_Utility.chatDataSetup(html, "gmroll"));
     this.actor.update({ "system.status.corruption.value": corruption });
 
     this.reroll()
