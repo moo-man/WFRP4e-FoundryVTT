@@ -76,9 +76,9 @@ export default class ActorSheetWFRP4eCharacter extends ActorSheetWFRP4e {
           sheetData.career.status = game.wfrp4e.config.statusTiers[career.status.tier] + " " + career.status.standing;
 
         // Setup advancement indicators for characteristics
-        let availableCharacteristics = career.characteristics
+        let availableCharacteristics = career.system.characteristics
         for (let char in sheetData.system.characteristics) {
-          if (availableCharacteristics.includes(char)) {
+          if (availableCharacteristics[char]) {
             sheetData.system.characteristics[char].career = true;
             if (sheetData.system.characteristics[char].advances >= career.level.value * 5) {
               sheetData.system.characteristics[char].complete = true;

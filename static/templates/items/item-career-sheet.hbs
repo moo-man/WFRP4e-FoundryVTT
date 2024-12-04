@@ -62,17 +62,16 @@
         </div>
       </div>
 
-
       <div class="form-group">
         <label class="label-text" id="characteristics-label">{{localize "Characteristics"}}</label>
         <table id="characteristics-table">
-          {{#each characteristicList as |charValue charIndex|}}
+          {{#each (config "characteristicsAbbrev")}}
           <th class="characteristics-box">
-            <label class="label-text-char">{{charValue.abrev}}</label>
-            {{#if charValue.checked}}
-            <a class="char-checkbox" name={{charIndex}}><i class="far fa-check-circle"></i></a>
+            <label class="label-text-char">{{this}}</label>
+            {{#if (lookup ../system.characteristics @key)}}
+            <a class="char-checkbox" data-name="{{@key}}"><i class="far fa-check-circle"></i></a>
             {{else}}
-            <a class="char-checkbox" name={{charIndex}}><i class="far fa-circle"></i></a>
+            <a class="char-checkbox" data-name="{{@key}}"><i class="far fa-circle"></i></a>
             {{/if}}
           </th>
           {{/each}}

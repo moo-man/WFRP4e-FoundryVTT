@@ -54,13 +54,22 @@ export class SkillModel extends BaseItemModel {
         }
         return ""
       }
-    
+
+    get isGrouped() 
+    {
+        return this.grouped.value == "isSpec";
+    }
+
+    get isBasic()
+    {
+        return this.advanced.value == "bsc";
+    }
 
     async _preUpdate(data, options, user) {
         await super._preUpdate(data, options, user);
         let actor = this.parent.actor
 
-        if (actor?.type == "character" && this.grouped.value == "isSpec" && options.changed.name) 
+        if (actor?.type == "character" && this.isGrouped && options.changed.name) 
         {
             this._handleSkillNameChange(data.name, this.parent.name)
         }
@@ -79,10 +88,10 @@ export class SkillModel extends BaseItemModel {
 
     async _preCreate(data, options, user)
     {
-        if (this.parent.isEmbedded)
+        if (this.parent.isEmbedded && !options.skipSpecialisationChoice)
         {
             // If skill has (any) or (), ask for a specialisation
-            if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || (this.grouped.value == "isSpec" && !(this.parent.specifier)))
+            if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || (this.isGrouped && !(this.parent.specifier)))
             {
                 let skills = await warhammer.utility.findAllItems("skill", "Loading Skills", true);
                 let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);

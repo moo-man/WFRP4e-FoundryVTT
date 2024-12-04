@@ -468,7 +468,7 @@ export default class ActorWFRP4e extends WarhammerActor
     let skillsToAdd = allBasicSkills.filter(s => !ownedBasicSkills.find(ownedSkill => ownedSkill.name == s.name))
 
     // Add those missing basic skills
-    this.createEmbeddedDocuments("Item", skillsToAdd);
+    this.createEmbeddedDocuments("Item", skillsToAdd, {skipSpecialisationChoice : true});
   }
 
   /**
