@@ -59,17 +59,19 @@ export default class StatBlockParser extends FormApplication {
         let characteristicValues = blockArray[tableIndex + 1].split(" ")
 
         for (let i = 0; i < characteristicNames.length; i++) {
+            const value = Number(characteristicValues[i]) || 0;
+
             if (characteristicNames[i] == "Agi")
                 characteristicNames[i] = "Ag"
             if (characteristicNames[i].toLowerCase() == "m") {
-                model.details.move.value = Number(characteristicValues[i]);
+                model.details.move.value = value;
                 continue;
             }
             if (characteristicNames[i].toLowerCase() == "w")
                 continue;
 
             try {
-                model.characteristics[characteristicNames[i].toLowerCase()].initial = Number(characteristicValues[i])
+                model.characteristics[characteristicNames[i].toLowerCase()].initial = value
             }
             catch { }
         }
