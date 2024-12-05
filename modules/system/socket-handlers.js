@@ -88,7 +88,7 @@ export default function () {
                 default: 0,
                 [id]: 3
             }
-            let actor = await Actor.implementation.create(actorData)
+            let actor = await Actor.implementation.create(actorData, payload.options || {})
             return actor.id;
         },
 
