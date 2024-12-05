@@ -123,17 +123,19 @@ export default class CombatHelpersWFRP {
         msg += CombatHelpersWFRP.checkSizeFearTerror(combat)
 
         if (msg)
-            await ChatMessage.create({ content: msg })
+            await ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "gmroll"))
     }
 
     static checkSizeFearTerror(combat) {
         let sizeMap = {}
         let msg = ""
-        for (let turn of combat.turns) {
-            sizeMap[turn.name] = turn.actor.sizeNum
+        for (let turn of combat.turns) 
+        {
+            sizeMap[turn.id] = turn.actor?.sizeNum || 3
         }
-        for (let actor in sizeMap) {
-            let size = sizeMap[actor]
+        for (let id in sizeMap) {
+            let combatant = combat.combatants.get(id);
+            let size = sizeMap[id]
             let smallerBy = {
                 1: [],
                 2: [],
@@ -143,18 +145,26 @@ export default class CombatHelpersWFRP {
                 6: []
             }
 
-            for (let otherActor in sizeMap) {
-                if (otherActor == actor)
+            for (let otherCombatantId in sizeMap) {
+                let otherCombatant = combat.combatants.get(otherCombatantId);
+                let bothFriendly =  (combatant.token?.disposition == otherCombatant.token?.disposition == 1)
+                if (otherCombatantId == id || bothFriendly)
+                {
                     continue
-                try {
-                    if (size > sizeMap[otherActor])
-                        smallerBy[size - sizeMap[otherActor]].push(otherActor)
+                }
+                try 
+                {
+                    if (size > sizeMap[otherCombatantId])
+                    {
+                        smallerBy[size - sizeMap[otherCombatantId]].push(otherCombatant.name)
+                    }
                 }
                 catch (e) {
 
                 }
             }
 
+            let actor = combatant.name;
             if (smallerBy[1].length)
                 msg += game.i18n.format("CHAT.CausesFear", { fear: `@Fear[${1}, ${actor}]`, actor: actor, target: smallerBy[1].join(", ")});
 

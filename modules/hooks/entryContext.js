@@ -123,7 +123,7 @@ export default function () {
       //Own the roll
       let message = game.messages.get(li.attr("data-message-id"));
       let test = message.system?.test;
-      return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.getOppose()?.resultMessage)
+      return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.system.opposedHandler?.resultMessage)
     };
 
     let canApplyTotalPower = function (li) {

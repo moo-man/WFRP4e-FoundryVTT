@@ -159,6 +159,11 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
     data.effects = this._handleEffects();
     data.enrichment = await this._handleEnrichment();
     data.fromEffect = this.item.fromEffect;
+    if (data.effects.temporary.length)
+    {
+      ui.notifications.warn(game.i18n.format("SHEET.ItemSheetEditableDisabled", {effects: data.effects.temporary.map(i => i.name).join(", ")}))
+      this.options.editable = false;
+    }
     return data;
   }
 

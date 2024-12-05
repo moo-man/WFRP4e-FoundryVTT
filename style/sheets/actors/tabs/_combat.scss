@@ -1,4 +1,4 @@
-.wfrp4e.actor.sheet {
+.application.wfrp4e.actor.sheet {
     --mount-outline: var(--color-cool-3);
     --attacker-border: var(--color-cool-3);
     --ap-border : var(--color-cool-3);
@@ -6,20 +6,13 @@
     section.tab[data-tab="combat"] {
         height: calc(100% - 200px);
 
-        .armour 
+        .armour-section
         {
             .flexrow {
                 align-items: flex-start;
+                gap: 5px;
             }
             .sheet-list {
-                margin: 5px;
-                &:first-of-type {
-                    margin-left: 0px;
-                }
-                &:last-of-type {
-                    margin-right: 0px;
-                }
-
                 .list-header {
 
                     .location-label {

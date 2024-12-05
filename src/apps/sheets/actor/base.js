@@ -116,12 +116,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
           if (uuid)
           {
-            let doc = fromUuidSync(uuid);
-            if (doc?.documentName == "ActiveEffect")
+            let parsed = foundry.utils.parseUuid(uuid);
+            if (parsed.type == "ActiveEffect")
             {
-              return doc.parent.uuid == this.document.uuid; // If an effect's parent is not this document, don't show the delete option
+              return parsed.primaryId == this.document.id; // If an effect's parent is not this document, don't show the delete option
             }
-            else if (doc)
+            else if (parsed.type)
             {
               return true;
             }
@@ -143,8 +143,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
           if (uuid)
           {
-            let doc = fromUuidSync(uuid);
-            return doc?.documentName == "Item"; // Can only post Items to chat
+            let parsed = foundry.utils.parseUuid(uuid);
+            return parsed.type == "Item"; // Can only post Items to chat
           }
           else return false;
         },
@@ -160,7 +160,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => {
           let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
-          if (uuid)
+          if (uuid && !uuid.includes("Compendium"))
           {
             let doc = fromUuidSync(uuid);
             return doc?.documentName == "Item" && doc.system.isPhysical; // Can only duplicate physical items
@@ -179,7 +179,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         icon: '<i class="fa-solid fa-split"></i>',
         condition: li => {
           let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
-          if (uuid)
+          if (uuid && !uuid.includes("Compendium"))
           {
             let doc = fromUuidSync(uuid);
             return doc?.documentName == "Item" && doc.system.isPhysical; // Can only split physical items

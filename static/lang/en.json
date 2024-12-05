@@ -221,6 +221,7 @@
     "SHEET.TemporaryEffectHint" : "These Active Effects come from the owning Actor. To interact with it, do so through the Actor's sheet",
     "SHEET.ExperienceLog" : "Experience Log",
     "Sheet.RollIncome" : "Roll Income",
+    "SHEET.ItemSheetEditableDisabled" : "Editing this Item has been disabled while under the effects of {effects}. Disable or delete these effects on the owning Actor.",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",

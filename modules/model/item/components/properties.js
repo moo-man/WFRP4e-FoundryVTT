@@ -44,7 +44,7 @@ const PropertiesMixin = (cls) => class extends cls
 
     get properties() {
 
-        if (this._properties)
+        if (this._properties && this._properties._totalProperties == this.qualities.value.length + this.flaws.value.length)
         {
             return this._properties;
         }
@@ -53,6 +53,8 @@ const PropertiesMixin = (cls) => class extends cls
             qualities: this.constructor.propertyArrayToObject(this.qualities.value, game.wfrp4e.utility.qualityList(), this.parent),
             flaws: this.constructor.propertyArrayToObject(this.flaws.value, game.wfrp4e.utility.flawList(),  this.parent),
         }
+
+        this._properties._totalProperties = this.qualities.value.length + this.flaws.value.length;
 
         return this._properties;
     }
@@ -238,7 +240,7 @@ const PropertiesMixin = (cls) => class extends cls
         let effectData = foundry.utils.deepClone(game.wfrp4e.config.propertyEffects[property.name]);
         if (effectData)
         {
-            let type = game.wfrp4e.config.weaponQualities[property.name] ? "qualities" : "flaws"
+            let type = game.wfrp4e.utility.qualityList()[property.name] ? "qualities" : "flaws"
             setProperty(effectData, "flags.wfrp4e", {value : property.value, path : `system.properties.${type}.${property.name}.effect`});
             return new CONFIG.ActiveEffect.documentClass(effectData, {parent : document});
         }
