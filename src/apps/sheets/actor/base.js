@@ -208,6 +208,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         let document = await fromUuid(data.uuid);
         let container = await fromUuid(containerDropElement.dataset.uuid);
 
+        let documentData = document.toObject();
+
         //
         if (container.id == document.system.location.value)
         {
@@ -215,7 +217,11 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
         if (container)
         {
-          document.update({"system.location.value" : container.id})
+          documentData.system.location.value = container.id;
+          documentData.system.equipped.value = false;
+          
+          // This handles both updating when dragging within the same sheet and creating a new item when dragging from another sheet
+          this.document.update({items : [documentData]});
         }
       }
       else 

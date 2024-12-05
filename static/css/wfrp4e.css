@@ -2225,7 +2225,6 @@
       }
       .app.window-app.sheet.item-sheet .sheet-tabs.tabs .item.active {
         border-radius: 0px;
-        border-bottom: none;
         width: 72px;
         color: #4a0404;
         box-shadow: none;
@@ -3747,7 +3746,6 @@
     }
     .app.window-app.sheet.wfrp4e.actor .sheet-tabs > .item.active {
       border-radius: 0px;
-      border-bottom: none;
       width: 72px;
       color: var(--tab-header-color-active);
       box-shadow: none;
