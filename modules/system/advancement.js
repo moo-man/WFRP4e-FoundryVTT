@@ -285,7 +285,7 @@ export default class Advancement
         let advancesNeeded = this.career.system.level.value * 5; // Tier 1 needs 5, 2 needs 10, 3 needs 15, 4 needs 20 in all characteristics and skills
       
         // Update all necessary characteristics to the advancesNeeded
-        for (let advChar of this.career.system.characteristics)
+        for (let advChar of Object.keys(this.career.system.characteristics).filter(i => this.career.system.characteristics[i]))
           if (this.actor.system.characteristics[advChar].advances < 5 * this.career.system.level.value)
             updateObj[`system.characteristics.${advChar}.advances`] = 5 * this.career.system.level.value;
     
