@@ -2588,7 +2588,7 @@ WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 
 WFRP4E.rollModes = CONFIG.Dice.rollModes;
 
-
+WFRP4E.transferDocumentTypes = defaultWarhammerConfig.transferDocumentTypes;
 // To migrate
 // "invoke => manual"
 // "oneTime" => "immediate"
