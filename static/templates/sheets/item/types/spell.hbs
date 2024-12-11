@@ -32,7 +32,7 @@
 
         {{formGroup fields.target.fields.aoe value=source.system.target.aoe}}
         {{#if source.system.target.aoe}}
-            {{formGroup fields.target.fields.value value=source.system.target.value label="Radius"}}
+            {{formGroup fields.target.fields.value value=source.system.target.value label="Radius" localize=true}}
         {{else}}
             {{formGroup fields.target.fields.value value=source.system.target.value}}
         {{/if}}

@@ -5,7 +5,7 @@
     {{formGroup fields.duration.fields.value value=source.system.duration.value}}
     {{formGroup fields.target.fields.aoe value=source.system.target.aoe}}
     {{#if source.system.target.aoe}}
-        {{formGroup fields.target.fields.value value=source.system.target.value label="Radius"}}
+        {{formGroup fields.target.fields.value value=source.system.target.value label="Radius" localize=true}}
         {{formGroup fields.target.fields.extendableAoE value=source.system.target.extendableAoE}}
     {{else}}
         {{formGroup fields.target.fields.value value=source.system.target.value}}

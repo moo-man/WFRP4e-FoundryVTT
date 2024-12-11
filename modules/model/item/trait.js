@@ -9,7 +9,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     {
         let schema = super.defineSchema();
 
-        schema.category = new fields.StringField({initial : "standard", choices : {standard : "Standard", vehicle : "Vehicle"}});
+        schema.category = new fields.StringField({initial : "standard", choices : {standard : game.i18n.localize("ITEM.Standard"), vehicle : game.i18n.localize("SPEC.Vehicle")}});
 
         schema.rollable = new fields.SchemaField({
             value : new fields.BooleanField({}),
@@ -20,7 +20,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
             dice : new fields.StringField({}),
             defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
             SL : new fields.BooleanField({}),
-            attackType : new fields.StringField({initial: "melee", choices : {melee : "Melee", ranged : "Ranged"}})
+            attackType : new fields.StringField({initial: "melee", choices : {melee : game.i18n.localize("Melee"), ranged : game.i18n.localize("Ranged")}})
         });
 
         schema.specification = new fields.SchemaField({
