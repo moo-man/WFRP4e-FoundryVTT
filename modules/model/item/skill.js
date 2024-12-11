@@ -93,11 +93,11 @@ export class SkillModel extends BaseItemModel {
             // If skill has (any) or (), ask for a specialisation
             if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || (this.isGrouped && !(this.parent.specifier)))
             {
-                let skills = await warhammer.utility.findAllItems("skill", "Loading Skills", true);
+                let skills = await warhammer.utility.findAllItems("skill", game.i18n.localize("SHEET.LoadingSkills"), true);
                 let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);
 
                 // if specialisations are found, prompt it, if not, skip to value dialog
-                let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : "Skill Specialisation", text : "Select specialisation, if no selection is made, enter one manually."}) : []
+                let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : game.i18n.localize("SHEET.SkillSpecialization"), text : game.i18n.localize("SHEET.SkillSpecializationText")}) : []
                 let newName = ""
                 if (choice[0])
                 {
@@ -105,7 +105,7 @@ export class SkillModel extends BaseItemModel {
                 }
                 else 
                 {
-                    newName = this.parent.baseName + ` (${await ValueDialog.create({text: "Enter Skill Specialisation", title : "Skill Specialisation"})})`;
+                    newName = this.parent.baseName + ` (${await ValueDialog.create({text: game.i18n.localize("SHEET.SkillSpecializationEnter"), title : game.i18n.localize("SHEET.SkillSpecialization")})})`;
 
                 }
 
