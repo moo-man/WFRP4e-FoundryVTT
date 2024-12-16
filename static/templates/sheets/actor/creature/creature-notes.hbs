@@ -45,4 +45,25 @@
             {{/each}}
         </div>
     </div>
+        {{#if items.template.length}}
+        <div class="sheet-list condensed">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "SHEET.AppliedTemplates"}}</div>
+            </div>
+            <div class="list-content">
+                {{#each items.template}}
+                    <div class="list-row" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                            </div>
+                            <div class="list-controls">
+                                <a class="list-control" data-action="deleteEmbedded"><i class="fa-regular fa-xmark"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
 </section>

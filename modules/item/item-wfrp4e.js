@@ -17,7 +17,11 @@ export default class ItemWfrp4e extends WarhammerItem
       warhammer.utility.log("Migrating Item: " + this.name, true, migration)
     }
 
-    await super._preCreate(data, options, user)
+    if (options.fromTemplate)
+    {
+        this.updateSource({[`flags.${game.system.id}.fromTemplate`] : options.fromTemplate});
+    }
+    return await super._preCreate(data, options, user)
   }
 
   async _onCreate(data, options, user)

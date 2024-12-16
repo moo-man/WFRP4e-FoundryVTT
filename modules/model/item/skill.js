@@ -88,6 +88,36 @@ export class SkillModel extends BaseItemModel {
 
     async _preCreate(data, options, user)
     {
+        await super._preCreate(data, options, user);
+        await this._handleSpecialisationChoice(data, options, user);
+        return this._handleSkillMerging(data, options,user);
+    }
+
+    async _onUpdate(data, options, user)
+    {
+        await super._onUpdate(data, options, user);
+    }
+
+    computeOwned()
+    {
+        this.total.value = this.modifier.value + this.advances.value + this.parent.actor.system.characteristics[this.characteristic.value].value;
+        this.advances.indicator = this.advances.force;
+    }
+
+    addCareerData(career) {
+        if (!career)
+          return
+          
+        this.advances.career = this;
+        if (this.advances.value >= career.level.value * 5)
+        {
+            this.advances.complete = true;
+        }
+        this.advances.indicator = this.advances.indicator || !!this.advances.career || false
+      }
+
+    async _handleSpecialisationChoice(data, options, user)
+    {
         if (this.parent.isEmbedded && !options.skipSpecialisationChoice)
         {
             // If skill has (any) or (), ask for a specialisation
@@ -118,32 +148,6 @@ export class SkillModel extends BaseItemModel {
         }
     }
 
-    async _onUpdate(data, options, user)
-    {
-        await super._onUpdate(data, options, user);
-
-
-    }
-
-    computeOwned()
-    {
-        this.total.value = this.modifier.value + this.advances.value + this.parent.actor.system.characteristics[this.characteristic.value].value;
-        this.advances.indicator = this.advances.force;
-    }
-
-
-    addCareerData(career) {
-        if (!career)
-          return
-          
-        this.advances.career = this;
-        if (this.advances.value >= career.level.value * 5)
-        {
-            this.advances.complete = true;
-        }
-        this.advances.indicator = this.advances.indicator || !!this.advances.career || false
-      }
-
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName, oldName, skipPrompt=false) {
         let currentCareer = this.parent.actor?.currentCareer;
@@ -155,6 +159,34 @@ export class SkillModel extends BaseItemModel {
         {
             currentCareer.system.changeSkillName(newName, oldName, skipPrompt)
         }
+    }
+    
+    _handleSkillMerging()
+    {
+        if (this.parent.isEmbedded)
+        {
+            let actor = this.parent.actor;
+
+            let existing = actor.itemTags.skill.find(i => i.name == this.parent.name);
+
+            if (existing)
+            {
+                existing.update({"system.advances.value" : existing.advances.value + this.advances.value});
+            }
+        }
+    }
+
+    
+    async allowCreation(data, options, user)
+    {
+        let allowed = super.allowCreation(data, options, user)
+        if (allowed && this.parent.isEmbedded && this.advances.value != 0)
+        {
+            let actor = this.parent.actor;
+            let existing = actor.itemTags.skill.find(i => i.name == this.parent.name);
+            allowed = !existing
+        }
+        return allowed
     }
 
     chatData() {

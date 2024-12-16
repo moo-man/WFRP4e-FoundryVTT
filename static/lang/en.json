@@ -224,6 +224,9 @@
     "Sheet.RollIncome" : "Roll Income",
     "SHEET.ItemSheetEditableDisabled" : "Editing this Item has been disabled while under the effects of {effects}. Disable or delete these effects on the owning Actor.",
     "SHEET.AlterName" : "Alter Name",
+    "SHEET.SpecialisationAbbrev" : "Spec.",
+    "SHEET.TemplateSpecialisationTooltip" : "How many specialisations to pick (e.g. \"Melee\" and \"2\" corresponds to \"Melee (any two)\")",
+    "SHEET.TemplateGroupTooltip" : "Providing a group number will give the option to choose between any other Item with the same group number.",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
@@ -281,6 +284,7 @@
     "SHEET.CannotDeleteCrewEffect" : "This effect is from a Vehicle this Actor is on, and must be deleted from that Vehicle.",
     "SHEET.Attacker" : "Attacker",
     "SHEET.LocationAP" : "Location AP",
+    "SHEET.AppliedTemplates" : "Applied Templates",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",

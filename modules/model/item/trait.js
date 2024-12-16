@@ -140,7 +140,10 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
           if (this.rollable.bonusCharacteristic && this.rollable.damage)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
           {
             specification = parseInt(this.specification.value) || 0
-            specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            if (actor)
+            {
+              specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            }
             if (this.attackType && actor)
             {
               specification += (actor.flags[`${this.attackType}DamageIncrease`] || 0)
