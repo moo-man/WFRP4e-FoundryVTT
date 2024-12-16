@@ -442,7 +442,8 @@
       "vehicleMod",
       "vehicleRole",
       "vehicleTest",
-      "cargo"
+      "cargo",
+      "template"
     ],
     "templates": {
       "quantity": {
@@ -1196,6 +1197,9 @@
       "modType" : {
         "value" : ""
       }
+    },
+    "template" : {
+      "templates" : []
     }
   },
   "ChatMessage" : {

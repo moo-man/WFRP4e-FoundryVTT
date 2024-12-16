@@ -29,6 +29,7 @@
     "TYPES.Item.vehicleMod" : "Vehicle Modification",
     "TYPES.Item.vehicleTest" : "Vehicle Crew Test",
     "TYPES.Item.vehicleRole" : "Vehicle Role",
+    "TYPES.Item.template" : "Template",
     
     "Targets" : "Targets",
     "Trapping" : "Trapping",
@@ -222,6 +223,7 @@
     "SHEET.ExperienceLog" : "Experience Log",
     "Sheet.RollIncome" : "Roll Income",
     "SHEET.ItemSheetEditableDisabled" : "Editing this Item has been disabled while under the effects of {effects}. Disable or delete these effects on the owning Actor.",
+    "SHEET.AlterName" : "Alter Name",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
