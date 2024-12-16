@@ -16,7 +16,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
             damage : new fields.BooleanField({}),
             skill : new fields.StringField({}),
             rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
-            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics, initial : "s"}),
+            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
             dice : new fields.StringField({}),
             defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
             SL : new fields.BooleanField({}),
