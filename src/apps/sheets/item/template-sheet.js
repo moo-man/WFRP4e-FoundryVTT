@@ -24,6 +24,27 @@ export default class TemplateSheet extends BaseWFRP4eItemSheet
   {
     let context = await super._prepareContext(options);
     context.traits = await this.document.system.traits.awaitDocuments();
+
+    context.loreIcons = {
+      [game.i18n.localize("WFRP4E.MagicLores.petty")] : "modules/wfrp4e-core/icons/spells/petty.png",
+      [game.i18n.localize("WFRP4E.MagicLores.beasts")] : "modules/wfrp4e-core/icons/spells/beasts.png",
+      [game.i18n.localize("WFRP4E.MagicLores.death")] : "modules/wfrp4e-core/icons/spells/death.png",
+      [game.i18n.localize("WFRP4E.MagicLores.fire")] : "modules/wfrp4e-core/icons/spells/fire.png",
+      [game.i18n.localize("WFRP4E.MagicLores.heavens")] : "modules/wfrp4e-core/icons/spells/heavens.png",
+      [game.i18n.localize("WFRP4E.MagicLores.metal")] : "modules/wfrp4e-core/icons/spells/metal.png",
+      [game.i18n.localize("WFRP4E.MagicLores.life")] : "modules/wfrp4e-core/icons/spells/life.png",
+      [game.i18n.localize("WFRP4E.MagicLores.light")] : "modules/wfrp4e-core/icons/spells/light.png",
+      [game.i18n.localize("WFRP4E.MagicLores.shadow")] : "modules/wfrp4e-core/icons/spells/shadow.png",
+      [game.i18n.localize("WFRP4E.MagicLores.hedgecraft")] : "modules/wfrp4e-core/icons/spells/hedgecraft.png",
+      [game.i18n.localize("WFRP4E.MagicLores.witchcraft")] : "modules/wfrp4e-core/icons/spells/witchcraft.png",
+      [game.i18n.localize("WFRP4E.MagicLores.daemonology")] : "modules/wfrp4e-core/icons/spells/daemonology.png",
+      [game.i18n.localize("WFRP4E.MagicLores.necromancy")] : "modules/wfrp4e-core/icons/spells/necromancy.png",
+      [game.i18n.localize("WFRP4E.MagicLores.undivided")] : "modules/wfrp4e-core/icons/spells/undivided.png",
+      [game.i18n.localize("WFRP4E.MagicLores.nurgle")] : "modules/wfrp4e-core/icons/spells/nurgle.png",
+      [game.i18n.localize("WFRP4E.MagicLores.slaanesh")] : "modules/wfrp4e-core/icons/spells/slaanesh.png",
+      [game.i18n.localize("WFRP4E.MagicLores.tzeentch")] : "modules/wfrp4e-core/icons/spells/tzeentch.png"
+    }
+
     return context;
   }
 

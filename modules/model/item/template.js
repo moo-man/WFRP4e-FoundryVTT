@@ -39,6 +39,11 @@ export class TemplateModel extends BaseItemModel
           group : new fields.NumberField({nullable : true})
         }))
 
+        schema.lores = ListModel.createListModel(new fields.SchemaField({
+          name : new fields.StringField({}),
+          number : new fields.NumberField()
+        }))
+
         schema.traits = new fields.EmbeddedDataField(DiffReferenceListModel);
 
         schema.trappings = new fields.EmbeddedDataField(ChoiceModel);
@@ -139,6 +144,20 @@ export class TemplateModel extends BaseItemModel
       }
     }))
     talents = talents.concat(advancedTalents);
+
+    if (this.lores.list.length)
+    {
+      let spells = await warhammer.utility.findAllItems("spell", "Loading Spells");
+      for(let lore of this.lores.list)
+      {
+        let filtered = spells.filter(s => {
+          let spellLore = game.wfrp4e.config.magicLores[s.system.lore.value] || s.system.lore.value;
+          return lore.name == spellLore;
+        })
+
+        items = items.concat((await ItemDialog.create(filtered, lore.number, {title : this.parent.name, text : `Select ${lore.number}`})) || []);
+      }
+    }
 
     items = items.concat(skills.filter(i => i));
     items = items.concat(talents.filter(i => i));

@@ -54,7 +54,7 @@
         </div>
     </div>
 
-        <div class="sheet-list">
+    <div class="sheet-list">
         <div class="list-header row-content">
             <div class="list-name">{{localize "Talents"}}</div>
             <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
@@ -98,7 +98,39 @@
 
                         <div class="list-controls">
                             <a class="list-control" data-action="editDiff"><i class="fa-solid fa-file-plus-minus"></i></a>
-                            <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                            <a class="list-control" data-action="listDelete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Magic"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="listCreate" data-path="system.lores">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each system.lores.list}}
+                <div class="list-row" data-index="{{@key}}" data-path="system.lores">
+                    <div class="row-content">
+                        <div class="list-name">
+                            {{#if (lookup ../loreIcons this.name)}}
+                            <img src="{{lookup ../loreIcons this.name}}">
+                            {{else}}
+                            <img src="systems/wfrp4e/icons/blank.png">
+                            {{/if}}
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Lore" value="{{this.name}}">
+                        </div>
+
+                        <input class="small" type="number" data-action="editList" data-ipath="number" value="{{this.number}}">
+                        <div class="list-controls">
+                            <a class="list-control" data-action="listDelete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
                         </div>
                     </div>
                 </div>

@@ -17,7 +17,7 @@ if (!this.item.name.includes("(") || this.item.system.tests.value.includes("(Sen
             smell : "Smell",
             hearing : "Hearing",
             touch : "Touch"
-        }, this.item.img), 1, "Choose Sense");
+        }, this.item.img), 1, {title : this.item.name, text : "Choose Sense"});
         if (choice[0])
         {
             name = `${name.split("(")[0].trim()} (${choice[0].name})`
