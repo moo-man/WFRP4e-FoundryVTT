@@ -46,6 +46,8 @@
     "WFRP4e Homebrew": "WFRP4e Homebrew",
     "Homebrew Settings": "Homebrew Settings",
     "Settings for common homebrew/house rules": "Settings for common homebrew/house rules.",
+    "SETTINGS.DisableTheme" : "Disable Theme",
+    "SETTINGS.DisableThemeHint" : "Disables the Warhammer theming of default Foundry UI (Document Sheet theme can be toggled via the sheet configuration at the top of the sheet).",
     "SETTINGS.InitRule" : "Initiative Rules",
     "SETTINGS.InitHint" : "Configure which method is used to determine who acts first in combat.",
     "SETTINGS.InitDefault" : "Default (Highest to Lowest Initative, Agility Tiebreaks)",

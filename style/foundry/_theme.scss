@@ -1,0 +1,146 @@
+@layer system {
+
+    @font-face {
+        font-family: "CaslonAntique";
+        src: url('../wfrp4e/fonts/CaslonAntique.ttf');
+    }
+
+    @font-face {
+        font-family: "CaslonAntique";
+        src: url('../wfrp4e/fonts/CaslonAntique-Bold.ttf');
+        font-weight: bold;
+    }
+
+    @font-face {
+        font-family: "CaslonPro";
+        src: url('../wfrp4e/fonts/ACaslonPro-Regular.otf');
+    }
+
+    @font-face {
+        font-family: "CaslonPro";
+        src: url('../wfrp4e/fonts/ACaslonPro-Bold.otf');
+        font-weight: bold;
+    }
+
+    @font-face {
+        font-family: "OnlySkulls";
+        src: url('../wfrp4e/fonts/only-skulls.ttf');
+    }
+
+    :root {
+
+        --header-font: CaslonAntique;
+        --type-font: CaslonPro
+    }
+
+    body:not(.no-theme) {
+        background: url(../wfrp4e/ui/background.webp) repeat;
+
+        #sidebar-content {
+            background: url(../wfrp4e/ui/sidebar.webp) repeat;
+            box-shadow: 0 0 10px #000;
+        }
+
+        .sidebar-tab {
+            background: none;
+        }
+
+        .chat-form {
+            textarea {
+                background: url(../wfrp4e/ui/frames/parchment-texture.webp) repeat;
+                border: 1px solid black;
+                border-image: url(../wfrp4e/ui/chat-form-border.webp) 10 repeat;
+                border-image-width: 10px;
+                border-image-outset: 0px 0px;
+                padding: 15px;
+                box-shadow: inset 0 0 40px #000000;
+                color: black;
+            }
+        }
+
+        .ui-control {
+            background: url(../wfrp4e/ui/sidebar_button-background_cyan.webp) repeat;
+            border: 1px solid black;
+            border-image: url(../wfrp4e/ui/footer-button.webp) 10 repeat;
+            border-image-width: 4px;
+            border-image-outset: 0px;
+
+            &[aria-pressed='true'],
+            &.active {
+                // color: var(--color-warm-1);
+                box-shadow: inset 0 0 10px var(--color-warm-1);
+               background: url(../wfrp4e/ui/sidebar_button-background_red.webp) repeat;
+            }
+        }
+
+        .action-buttons {
+            button {
+                border: 1px solid black;
+                border-image: url(../wfrp4e/ui/footer-button.webp) 10 repeat;
+                border-image-width: 4px;
+                border-image-outset: 0px;
+                box-shadow: 4px 4px 1px #00000085;
+                background: url(../wfrp4e/ui/sidebar_button-background_red.webp) repeat;
+            }
+        }
+
+        .sidebar-tab {
+
+            .inline-control {
+                background: url(../wfrp4e/ui/stamp.webp) repeat;
+            }
+
+            input[type='search'] {
+                background: url(../wfrp4e/ui/frames/parchment-texture.webp);
+                border: 2px groove #564d3a;
+                border-image: url(../wfrp4e/ui/chat-controls-border.webp) 4 repeat;
+                border-image-width: 4px;
+                border-image-outset: 1px;
+                box-shadow: inset 0 0 10px #000000;
+                color: black;
+
+                &::placeholder {
+                    color: rgba(0, 0, 0, 0.5);
+                }
+            }
+        }
+
+        .chat-log .message {
+
+            border: 1px solid transparent;
+            border-image: url(../wfrp4e/ui/frames/chat-message-border.webp) 21 repeat;
+            border-image-width: 10px;
+            border-image-outset: 8px;
+            border-radius: 0px;
+            background: url(../wfrp4e/ui/frames/parchment-texture.webp) repeat;
+            color: black;
+            margin: 20px 10px;
+        }
+
+
+        #players {
+            gap: 26px;
+
+            #players-active {
+                border: 1px solid transparent;
+                border-image: url(../wfrp4e/ui/players-border.webp) 21 repeat;
+                border-image-slice: 23 19 23 19;
+                border-image-width: 23px 19px 23px 19px;
+                border-image-outset: 22px 17px 16px 14px;
+                border-radius: 0px;
+                box-shadow: inset 0 0 10px #000000;
+            }
+        }
+
+        #menu {
+            border: 1px solid transparent;
+            border-image: url(../wfrp4e/ui/menu-border.webp) 21 repeat;
+            border-image-slice: 78 4 81 4;
+            border-image-width: 80px 6px 80px 6px;
+            border-image-outset: 76px 0px 76px 0px;
+            border-radius: 0px;
+            box-shadow: 3px 4px 11px #000;
+        }
+    }
+
+}

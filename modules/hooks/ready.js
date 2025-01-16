@@ -5,6 +5,11 @@ import MooHouseRules from "../system/moo-house.js"
 export default function () {
   Hooks.on("ready", async () => {
 
+    if (game.settings.get("wfrp4e", "disableTheme"))
+    {
+      document.body.classList.add("no-theme")
+    }
+
     SocketHandlers.register.bind(SocketHandlers)();
 
     Object.defineProperty(game.user, "isUniqueGM", {

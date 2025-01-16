@@ -40,6 +40,16 @@ export default function() {
     restricted: true
 })
 
+    game.settings.register("wfrp4e", "disableTheme", {
+      name: "SETTINGS.DisableTheme",
+      hint: "SETTINGS.DisableThemeHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean,
+      onChange : rule => rule ? document.body.classList.add("no-theme") : document.body.classList.remove("no-theme")
+    });
+
     // Register initiative rule
     game.settings.register("wfrp4e", "initiativeRule", {
       name: "SETTINGS.InitRule",
