@@ -9,6 +9,9 @@
             </select>
         </div>
     </div>
+    <div class="form-group disease-text">
+        <input type="text" name="system.incubation.text" value="{{system.incubation.text}}" placeholder="Text regarding disease incubation">
+    </div>
     <div class="form-group">
         <label>{{localize "Duration"}}</label>
         <div class="form-fields">
@@ -17,6 +20,9 @@
                 {{selectOptions units selected=system.duration.unit}}
             </select>
         </div>
+    </div>
+    <div class="form-group disease-text">
+        <input type="text" name="system.duration.text" value="{{system.duration.text}}" placeholder="Text regarding disease duration">
     </div>
     {{formGroup fields.symptoms.fields.value value=source.system.symptoms.value}}
     {{formGroup fields.permanent.fields.value value=source.system.permanent.value}}

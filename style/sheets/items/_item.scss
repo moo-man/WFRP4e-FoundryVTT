@@ -87,6 +87,14 @@
         }
     }
 
+    &.disease 
+    {
+        .form-group.disease-text {
+            margin-top: -10px;
+            border-top: 0px;
+        }
+    }
+
     &.career
     {
         .career-list {

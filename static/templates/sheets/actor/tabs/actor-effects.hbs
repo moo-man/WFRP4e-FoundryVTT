@@ -201,15 +201,16 @@
                                 </div>
 
                                 {{#if (isGM)}}
-                                    <a class="prevent-context" data-action="stepAilment">{{this.system.incubation.value}}</a>
-                                    <a class="prevent-context" data-action="stepAilment">{{this.system.duration.value}}
-                                        {{this.system.duration.unit}}</a>
+                                    <a class="prevent-context" data-action="stepAilment" {{#if this.system.incubation.text}}data-tooltip="{{this.system.incubation.value}} {{this.system.incubation.unit}} {{this.system.incubation.text}}"{{/if}}>
+                                        {{this.system.incubation.value}} {{this.system.incubation.unit}} {{this.system.incubation.text}}
+                                    </a>
+                                    <a class="prevent-context" data-action="stepAilment" {{#if this.system.duration.text}}data-tooltip="{{this.system.duration.value}} {{this.system.duration.unit}} {{this.system.duration.text}}"{{/if}}>
+                                        {{this.system.duration.value}} {{this.system.duration.unit}} {{this.system.duration.text}}
+                                    </a>
                                     {{#if this.system.diagnosed}}
-                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i
-                                                class="far fa-check-circle"></i></a>
+                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i class="far fa-check-circle"></i></a>
                                     {{else}}
-                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i
-                                                class="far fa-circle"></i></a>
+                                        <a data-action="toggleProperty" data-path="system.diagnosed"><i class="far fa-circle"></i></a>
                                     {{/if}}
 
                                 {{else}}

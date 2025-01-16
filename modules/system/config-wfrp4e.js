@@ -139,7 +139,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             const a = document.createElement("a")
             a.classList.add("table-click")
-            a.dataset.table = match[1]
+            let values = match[1].split(",");
+            a.dataset.table = valuse[0];
+            a.dataset.modifier = values[1] || 0;
             a.innerHTML = `<i class="fas fa-list"></i>${(game.wfrp4e.tables.findTable(match[1])?.name && !match[2]) ? game.wfrp4e.tables.findTable(match[1])?.name : match[2]}`
             return a
         }
@@ -2274,11 +2276,6 @@ WFRP4E.PrepareSystemItems = function() {
                         hideScript : "",
                         activateScript : "return true"
                     }
-                },
-                {
-                    label : "Script",
-                    trigger : "manual",
-                    script : "this.script.notification('test')",
                 }
             ],
             }

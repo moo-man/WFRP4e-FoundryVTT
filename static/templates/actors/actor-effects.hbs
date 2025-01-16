@@ -279,8 +279,8 @@
       </div>
 
       {{#if (isGM)}}
-      <a class="incubation disease-roll" data-type="incubation">{{item.incubation.value}} {{item.incubation.unit}}</a>
-      <a class="duration disease-roll" data-type="duration">{{item.duration.value}} {{item.duration.unit}}</a>
+      <a class="incubation disease-roll" data-type="incubation"><span>{{item.incubation.value}} {{item.incubation.unit}}</span>{{#if item.system.incubation.text}}<span>{{item.system.incubation.text}}</span>{{/if}}</a>
+      <a class="duration disease-roll" data-type="duration"><span>{{item.duration.value}} {{item.duration.unit}}</span>{{#if item.system.duration.text}}<span>{{item.system.duration.text}}</span>{{/if}}</a>
         {{#if item.system.diagnosed}}
           <a class="diagnosed" data-tooltip="{{localize 'DiagnosedTT'}}"><i class="far fa-check-circle"></i></a>
         {{else}}
