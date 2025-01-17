@@ -8,7 +8,7 @@ let debounceReload = foundry.utils.debounce(() => {
   window.location.reload();
 }, 100);
 
-export default function() {
+export default function () {
   /**
    * Init function loads tables, registers settings, and loads templates
    */
@@ -30,15 +30,15 @@ export default function() {
       hint: "Settings for common homebrew/house rules",
       type: HomebrewSettings,
       restricted: true
-  })
+    })
 
-  game.settings.registerMenu("wfrp4e", "tableSettings", {
-    name: "WFRP4e Table Settings",
-    label: "WFRP4e Table Settings",
-    hint: "Configure which tables to roll on when multiple of the same key exist.",
-    type: TableSettings,
-    restricted: true
-})
+    game.settings.registerMenu("wfrp4e", "tableSettings", {
+      name: "WFRP4e Table Settings",
+      label: "WFRP4e Table Settings",
+      hint: "Configure which tables to roll on when multiple of the same key exist.",
+      type: TableSettings,
+      restricted: true
+    })
 
     // Register initiative rule
     game.settings.register("wfrp4e", "initiativeRule", {
@@ -352,6 +352,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "uiaBleeding", {
+      name: "SETTINGS.UIABleeding",
+      hint: "SETTINGS.UIABleedingHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     game.settings.register("wfrp4e", "tables", {
       scope: "world",
       config: false,
@@ -373,7 +382,7 @@ export default function() {
       type: Object
     });
 
-    
+
     game.settings.register("wfrp4e", "tableRollMode", {
       scope: "client",
       config: false,
@@ -387,14 +396,14 @@ export default function() {
       scope: "world",
       config: true,
       default: false,
-      type: Boolean, 
+      type: Boolean,
       onChange: debounceReload,
     });
 
     game.settings.register("wfrp4e", "groupAdvantageValues", {
       scope: "world",
       config: false,
-      default: {players: 0, enemies : 0},
+      default: { players: 0, enemies: 0 },
       type: Object
     });
 
@@ -421,7 +430,7 @@ export default function() {
     });
 
 
-    
+
     // game.settings.register("wfrp4e", "mooCritsFumbles", {
     //   name: "SETTINGS.MooCritsFumbles",
     //   hint: "SETTINGS.MooCritsFumblesHint",
@@ -515,7 +524,7 @@ export default function() {
       type: Boolean
     });
 
-      
+
     game.settings.register("wfrp4e", "partialChannelling", {
       name: "SETTINGS.PartialChannelling",
       hint: "SETTINGS.PartialChannellingHint",
@@ -617,7 +626,7 @@ export default function() {
       type: Boolean
     });
 
-    
+
     game.settings.register("wfrp4e", "mooHomebrewItemChanges", {
       name: "SETTINGS.MooHomebrewItems",
       hint: "SETTINGS.MooHomebrewItemHint",
@@ -627,7 +636,7 @@ export default function() {
       default: false,
       type: Boolean
     });
-    
+
     // Register Unofficial Grimoire
     game.settings.register("wfrp4e", "unofficialgrimoire", {
       name: "SETTINGS.UnofficialGrimoire",
@@ -680,18 +689,18 @@ export default function() {
       scope: "world",
       config: false,
       default: {
-        species : "FM6ASUoNX21MHuWa",
-        minormis : "iPVwX0ul6lHVbKSX",
-        majormis : "we8Vo5GC3ZsDI7aA",
-        mutatephys : "YQ5XdjikeSiwo8fn",
-        mutatemental : "5HKnpyOk4XDPdZ7V",
-        oops : "MWkeER1iuwAJASNo",
-        wrath : "CcKYnmbQyRzGkrFy",
-        doom : "led1vSPKcqMpS6jp",
-        critarm : "JYX8E8WgNb2em8g3",
-        critleg : "j2joGAVBNJgS1G1g",
-        crithead : "7KReueNRjaI6dVLk",
-        critbody : "CUIX4e2hiHdSoJ64",
+        species: "FM6ASUoNX21MHuWa",
+        minormis: "iPVwX0ul6lHVbKSX",
+        majormis: "we8Vo5GC3ZsDI7aA",
+        mutatephys: "YQ5XdjikeSiwo8fn",
+        mutatemental: "5HKnpyOk4XDPdZ7V",
+        oops: "MWkeER1iuwAJASNo",
+        wrath: "CcKYnmbQyRzGkrFy",
+        doom: "led1vSPKcqMpS6jp",
+        critarm: "JYX8E8WgNb2em8g3",
+        critleg: "j2joGAVBNJgS1G1g",
+        crithead: "7KReueNRjaI6dVLk",
+        critbody: "CUIX4e2hiHdSoJ64",
       },
       type: Object
     });
@@ -731,7 +740,7 @@ export default function() {
       "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
 
-    loadTemplates({            
+    loadTemplates({
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
       aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
@@ -746,16 +755,16 @@ export default function() {
     // Load name construction from files
     NameGenWfrp._loadNames();
 
-      CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.5, red: 0.25, blue: 0.25, morrslieb: true })
-      CONFIG.MorrsliebObject = {
-        color: { value:"#4cb53a", apply: true },
-        gamma: 1.0,
-        contrast: 1.0,
-        brightness: 1.0,
-        saturation: 0.2
+    CONFIG.Morrslieb = new PIXI.filters.AdjustmentFilter({ green: 0.5, red: 0.25, blue: 0.25, morrslieb: true })
+    CONFIG.MorrsliebObject = {
+      color: { value: "#4cb53a", apply: true },
+      gamma: 1.0,
+      contrast: 1.0,
+      brightness: 1.0,
+      saturation: 0.2
     }
 
-    CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
+    CONFIG.fontDefinitions.CaslonAntique = { editor: true, fonts: [] }
 
     CONFIG.canvasTextStyle = new PIXI.TextStyle({
       fontFamily: "CaslonAntique",
