@@ -105,7 +105,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
     await this.rollDices();
     await this.computeResult();
-
+    this.computeTables();
     await this.runPostEffects();
     await this.postTest();
 
@@ -402,6 +402,27 @@ export default class TestWFRP extends WarhammerTestBase{
       }
     }
     return this.result
+  }
+
+  computeTables()
+  {
+    if (this.result.critical && this.result.hitloc)
+    {
+      this.result.tables.critical = {
+        label : this.result.critical,
+        class : "critical-roll",
+        modifier : this.result.critModifier,
+        key: `crit${this.result.hitloc.result}`
+      }
+    }
+    if (this.result.fumble)
+    {
+      this.result.tables.fumble = {
+        label : this.result.fumble,
+        class : "fumble-roll",
+        key : "oops"
+      }
+    }
   }
 
 
@@ -768,7 +789,8 @@ export default class TestWFRP extends WarhammerTestBase{
       roll: undefined,
       description: "",
       tooltips: {},
-      other: []
+      other: [],
+      tables: {} // label, column, modifier, style, class, nulled
     }, this.preData)
   }
 

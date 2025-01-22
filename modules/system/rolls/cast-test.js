@@ -315,6 +315,70 @@ export default class CastTest extends TestWFRP {
     }
   }
 
+  computeTables()
+  {
+    super.computeTables();
+    if (this.result.minormis)
+    {
+      this.result.tables.minormis = {
+        label : this.result.minormis,
+        class : "fumble-roll",
+        key : "minormis"
+      }
+    }
+    if (this.result.nullminormis)
+    {
+      this.result.tables.minormis = {
+        label : this.result.nullminormis,
+        class : "fumble-roll",
+        key : "minormis",
+        nulled : true
+      }
+    }
+    if (this.result.majormis)
+    {
+      this.result.tables.majormis = {
+        label : this.result.majormis,
+        class : "fumble-roll",
+        key : "majormis",
+      }
+    }
+    if (this.result.nullmajormis)
+    {
+      this.result.tables.majormis = {
+        label : this.result.nullmajormis,
+        class : "fumble-roll",
+        key : "majormis",
+        nulled : true
+      }
+    }
+    if (this.result.catastrophicmis)
+    {
+      this.result.tables.catastrophicmis = {
+        label : this.result.catastrophicmis,
+        class : "fumble-roll",
+        key : "catastrophicmis",
+      }
+    }
+    if (this.result.nullcatastrophicmis)
+    {
+      this.result.tables.catastrophicmis = {
+        label : this.result.nullcatastrophicmis,
+        class : "fumble-roll",
+        key : "nullcatastrophicmis",
+        nulled : true
+      }
+    }
+    if (this.result.grimoiremiscast)
+    {
+      this.result.tables.grimoiremiscast = {
+        label : this.result.grimoiremiscast,
+        class : "fumble-roll",
+        key : "grimoire-miscast",
+      }
+    }
+  }
+
 
   async postTest() {
     //@/HOUSE

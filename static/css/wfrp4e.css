@@ -15048,6 +15048,12 @@ button.capture-position {
   margin: -3px 0px;
 }
 
+.app .table-click.nulled {
+  border: none;
+  background: none;
+  text-decoration: line-through;
+  pointer-events: none;
+}
 
 .app a.content-link.broken {
   background: rgba(255, 0, 0, 0.05);
