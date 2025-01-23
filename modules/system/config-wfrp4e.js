@@ -1817,7 +1817,8 @@ WFRP4E.PrepareSystemItems = function() {
                     {
                         trigger: "manual",
                         label: "@effect.name",
-                        script: `let actor = this.actor;
+                        script: `let uiaBleeding = game.settings.get("wfrp4e", "uiaBleeding");
+                            let actor = this.actor;
                             let effect = this.effect;
                             let bleedingAmt;
                             let bleedingRoll;
@@ -1832,8 +1833,19 @@ WFRP4E.PrepareSystemItems = function() {
 
                             if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
                             {
-                                await actor.addCondition("unconscious")
-                                msg += "<br>" + game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })
+                                addBleedingUnconscious = async () => {
+                                    await actor.addCondition("unconscious")
+                                    msg += "<br>" + game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })
+                                }
+                                if (uiaBleeding) {
+                                    test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "challenging"}});
+                                    await test.roll();
+                                    if (test.failed) {
+                                        await addBleedingUnconscious();
+                                    }
+                                } else {
+                                    await addBleedingUnconscious();
+                                }
                             }
 
                             if (actor.hasCondition("unconscious"))
