@@ -328,7 +328,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   _addEventListeners()
   {    
     super._addEventListeners();
-    this.element.querySelector("[data-action='editCharacteristic']")?.addEventListener("change", this.constructor._onEditCharacteristic.bind(this));
+    this.element.querySelectorAll("[data-action='editCharacteristic']").forEach(e => e.addEventListener("change", this.constructor._onEditCharacteristic.bind(this)));
     this.element.querySelector("[data-action='editSpecies']")?.addEventListener("change", this.constructor._onEditSpecies.bind(this));
   }
 
