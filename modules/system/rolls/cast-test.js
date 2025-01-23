@@ -320,7 +320,7 @@ export default class CastTest extends TestWFRP {
     super.computeTables();
     if (this.result.minormis)
     {
-      this.result.tables.minormis = {
+      this.result.tables.miscast = {
         label : this.result.minormis,
         class : "fumble-roll",
         key : "minormis"
@@ -328,7 +328,7 @@ export default class CastTest extends TestWFRP {
     }
     if (this.result.nullminormis)
     {
-      this.result.tables.minormis = {
+      this.result.tables.nullminormis = {
         label : this.result.nullminormis,
         class : "fumble-roll",
         key : "minormis",
@@ -337,7 +337,7 @@ export default class CastTest extends TestWFRP {
     }
     if (this.result.majormis)
     {
-      this.result.tables.majormis = {
+      this.result.tables.miscast = {
         label : this.result.majormis,
         class : "fumble-roll",
         key : "majormis",
@@ -345,7 +345,7 @@ export default class CastTest extends TestWFRP {
     }
     if (this.result.nullmajormis)
     {
-      this.result.tables.majormis = {
+      this.result.tables.nullmajormis = {
         label : this.result.nullmajormis,
         class : "fumble-roll",
         key : "majormis",
@@ -354,7 +354,7 @@ export default class CastTest extends TestWFRP {
     }
     if (this.result.catastrophicmis)
     {
-      this.result.tables.catastrophicmis = {
+      this.result.tables.miscast = {
         label : this.result.catastrophicmis,
         class : "fumble-roll",
         key : "catastrophicmis",
@@ -362,7 +362,7 @@ export default class CastTest extends TestWFRP {
     }
     if (this.result.nullcatastrophicmis)
     {
-      this.result.tables.catastrophicmis = {
+      this.result.tables.nullcatastrophicmis = {
         label : this.result.nullcatastrophicmis,
         class : "fumble-roll",
         key : "nullcatastrophicmis",
