@@ -606,8 +606,10 @@ export default class WFRP_Utility {
 
       chatOptions["content"] = html;
       chatOptions["type"] = 0;
-      if (html)
+      if (!foundry.utils.isEmpty(html))
+      {
         ChatMessage.create(chatOptions);
+      }
 
     }
   }
