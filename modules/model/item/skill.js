@@ -125,13 +125,17 @@ export class SkillModel extends BaseItemModel {
             {
                 let skills = await warhammer.utility.findAllItems("skill", "Loading Skills", true);
                 let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);
+                let effects = [];
 
                 // if specialisations are found, prompt it, if not, skip to value dialog
                 let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : "Skill Specialisation", text : "Select specialisation, if no selection is made, enter one manually."}) : []
                 let newName = ""
                 if (choice[0])
                 {
-                    newName = choice[0].name;
+                    // Need to fetch the item to get effects...
+                    let chosenSkill = await fromUuid(choice[0].uuid);
+                    newName = chosenSkill.name;
+                    effects = chosenSkill.effects?.contents.map(i => i.toObject());
                 }
                 else 
                 {
@@ -142,7 +146,7 @@ export class SkillModel extends BaseItemModel {
                 if (newName)
                 {
                     this._handleSkillNameChange(newName, this.parent.name, options.career)
-                    this.parent.updateSource({name : newName})
+                    this.parent.updateSource({name : newName, effects})
                 }
             }
         }
