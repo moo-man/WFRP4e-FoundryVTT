@@ -150,6 +150,10 @@ export class TemplateModel extends BaseItemModel
       let spells = await warhammer.utility.findAllItems("spell", "Loading Spells");
       for(let lore of this.lores.list)
       {
+        if (lore.name == "*")
+        {
+          lore.name = (await ItemDialog.create(ItemDialog.objectToArray(game.wfrp4e.config.magicLores), 1, {title : this.parent.name, text : "Select a Lore"}))?.[0]?.name;
+        }
         let filtered = spells.filter(s => {
           let spellLore = game.wfrp4e.config.magicLores[s.system.lore.value] || s.system.lore.value;
           return lore.name == spellLore;
