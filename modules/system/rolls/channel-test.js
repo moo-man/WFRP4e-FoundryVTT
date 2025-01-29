@@ -137,7 +137,7 @@ export default class ChannelTest extends TestWFRP {
     }
     if (this.result.nullminormis)
     {
-      this.result.tables.miscast = {
+      this.result.tables.nullminormis = {
         label : this.result.nullminormis,
         class : "fumble-roll",
         key : "minormis",
@@ -154,7 +154,7 @@ export default class ChannelTest extends TestWFRP {
     }
     if (this.result.nullmajormis)
     {
-      this.result.tables.miscast = {
+      this.result.tables.nullmajormis = {
         label : this.result.nullmajormis,
         class : "fumble-roll",
         key : "majormis",
@@ -171,7 +171,7 @@ export default class ChannelTest extends TestWFRP {
     }
     if (this.result.nullcatastrophicmis)
     {
-      this.result.tables.miscast = {
+      this.result.tables.nullcatastrophicmis = {
         label : this.result.nullcatastrophicmis,
         class : "fumble-roll",
         key : "nullcatastrophicmis",
