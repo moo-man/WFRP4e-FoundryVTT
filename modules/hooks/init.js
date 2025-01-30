@@ -127,14 +127,30 @@ export default function() {
     });
 
     // Register Fast SL rule
-    game.settings.register("wfrp4e", "fastSL", {
-      name: "SETTINGS.FastSL",
-      hint: "SETTINGS.FastSLHint",
+    game.settings.register("wfrp4e", "SLMethod", {
+      name: "SETTINGS.SLMethod",
+      hint: "SETTINGS.SLMethodHint",
       scope: "world",
       config: true,
-      default: false,
-      type: Boolean
+      default: "default",
+      choices: {
+        "default": "SETTINGS.SLDefault",
+        "fast": "SETTINGS.SLFast",
+        "dos": "SETTINGS.SLDOS",
+      },
+      type: String
     });
+
+
+    // // Register Fast SL rule
+    // game.settings.register("wfrp4e", "fastSL", {
+    //   name: "SETTINGS.FastSL",
+    //   hint: "SETTINGS.FastSLHint",
+    //   scope: "world",
+    //   config: true,
+    //   default: false,
+    //   type: Boolean
+    // });
 
     // Register Tests above 100% Rule
     game.settings.register("wfrp4e", "testAbove100", {

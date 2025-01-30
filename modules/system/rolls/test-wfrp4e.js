@@ -184,6 +184,10 @@ export default class TestWFRP extends WarhammerTestBase{
 
 
     let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
+    if (game.settings.get("wfrp4e", "SLMethod") == "dos")
+    {
+      baseSL = Math.floor(Math.abs(target - this.result.roll) / 10) * ((target - this.result.roll) < 0 ? -1 : 1);
+    }
     let SL
     if (this.preData.SL == 0)
       SL = this.preData.SL
@@ -246,7 +250,8 @@ export default class TestWFRP extends WarhammerTestBase{
     else if (this.result.roll <= automaticSuccess || this.result.roll <= target) {
       description = game.i18n.localize("ROLL.Success")
       outcome = "success"
-      if (game.settings.get("wfrp4e", "fastSL")) {
+      if (game.settings.get("wfrp4e", "SLMethod") == "fast") 
+      {
         let rollString = this.result.roll.toString();
         if (rollString.length == 2)
           SL = Number(rollString.split('')[0])
@@ -1135,6 +1140,17 @@ export default class TestWFRP extends WarhammerTestBase{
         }
         testBreakdown += SLstring
       }
+
+      if (game.settings.get("wfrp4e", "SLMethod") != "default")
+      {
+        testBreakdown += "<p>SL Evaluated with " + (game.settings.get("wfrp4e", "SLMethod") == "fast" ? "Fast SL" : "Degrees of Success") + "</p>"
+      }
+
+      if (breakdown.modifier)
+      {
+        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${HandlebarsHelpers.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
+      }
+
 
       if (breakdown.modifiersBreakdown)
       {
