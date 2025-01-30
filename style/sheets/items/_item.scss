@@ -1,16 +1,17 @@
 .wfrp4e.item.sheet.application {
 
-    --header-label-line : var(--color-cool-3);
+    --header-label-line: var(--color-cool-3);
 
-    --attribute-input : var(--color-cool-4);
-    --attribute-input-border : transparent;
-    --attribute-border : var(--color-cool-3);
-    --attribute-locked-input : transparent;
-    --attribute-locked-border : transparent;
-    --attribute-label : transparent;
-    --attribute-field : transparent;
+    --attribute-input: var(--color-cool-4);
+    --attribute-input-border: transparent;
+    --attribute-border: var(--color-cool-3);
+    --attribute-locked-input: transparent;
+    --attribute-locked-border: transparent;
+    --attribute-label: transparent;
+    --attribute-field: transparent;
 
     --career-header: var(--color-cool-3);
+    --career-input: var(--color-cool-4);
 
     section.tab {
         overflow-y: auto
@@ -28,14 +29,17 @@
             text-align: crgba(247, 165, 165, 0.1);
             text-align: center;
         }
+
         img {
             width: 80px;
             height: 80px;
+
             &.img-border {
                 border: 2px dotted var(--header-label-line);
             }
 
         }
+
         .header-row {
             display: flex;
             flex-wrap: nowrap;
@@ -43,8 +47,7 @@
             padding: 0px 5px;
         }
 
-        .attribute-box:not(.single)
-        {
+        .attribute-box:not(.single) {
             .label {
                 border-bottom: 1px solid var(--attribute-border)
             }
@@ -54,15 +57,16 @@
             input {
                 color: #FFD700;
                 text-shadow: 0px 0px 5px #FFD700
-
             }
         }
+
         .ss {
             input {
                 color: #C0C0C0;
                 text-shadow: 0px 0px 3px #C0C0C0
             }
         }
+
         .bp {
             input {
                 color: #c2742f
@@ -87,8 +91,14 @@
         }
     }
 
-    &.career
-    {
+    &.disease {
+        .form-group.disease-text {
+            margin-top: -10px;
+            border-top: 0px;
+        }
+    }
+
+    &.career {
         .career-list {
             label {
                 width: 100%;
@@ -97,14 +107,17 @@
                 text-align: center;
                 background-color: var(--career-header);
             }
+
             display: flex;
             flex-direction: column;
+
             .list-container {
                 padding: 5px 0px;
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
             }
+
             .characteristic {
                 margin: 5px;
                 border: 1px solid var(--color-warm-2);
@@ -113,6 +126,7 @@
                 flex: 0 0 3rem;
                 text-align: center;
                 font-weight: bold;
+
                 &.active {
                     background-color: var(--color-warm-2);
                 }
@@ -125,11 +139,10 @@
                 margin: 5px;
                 height: 1.5rem;
                 text-align: center;
+                background: var(--career-input)
             }
 
             a[data-action='listDelete'] {
-                border: 1px solid var(--color-cool-3);
-                background: var(--color-cool-3);
                 border-radius: 50%;
                 width: 1rem;
                 height: 1rem;
@@ -138,4 +151,58 @@
             }
         }
     }
+
+    &.template {
+        table {
+            margin: 0px;
+            table-layout: fixed;
+            border-radius: 0px;
+            border: none;
+            margin: 1rem 0px;
+
+            tbody {}
+
+            td {
+                &:first-of-type {
+                    border-left: none;
+                }
+
+                &:last-of-type {
+                    border-right: none;
+                }
+
+                text-align: center;
+                padding: 0px;
+                height: 2rem;
+                width: 1rem;
+                line-height: 2rem;
+                border-right: 1px solid var(--attribute-border);
+
+                input {
+                    padding: 0px;
+                    border: none;
+                    background: var(--attribute-input);
+                }
+            }
+
+            tr {
+                &:first-of-type {
+                    background: var(--attribute-label);
+                    border-bottom: 1px solid var(--attribute-border);
+                }
+            }
+        }
+
+            .sheet-list {
+                margin: 1rem 0px;
+
+                .row-content {
+                    gap: 1rem;
+                }
+                .label {
+                    padding-left: 5px;
+                    margin: 0px;
+                }
+            }
+        }
 }

@@ -337,10 +337,8 @@ export default class Advancement
         {
           if (characteristics[char].initial == 0)
             continue
-          characteristics[char].initial -= 10;
-          characteristics[char].initial += (await roll.reroll()).total;
-          if (characteristics[char].initial < 0)
-            characteristics[char].initial = 0
+          characteristics[char].modifier = -10;
+          characteristics[char].modifier += (await roll.reroll()).total;
         }
         await this.actor.update({ "system.characteristics": characteristics })
       }

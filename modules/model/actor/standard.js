@@ -107,6 +107,7 @@ export class StandardActorModel extends BaseActorModel {
     computeDerived() {
         this.runScripts("prePrepareItems", {actor : this.parent })
         // Recompute bonuses as active effects may have changed it
+        this.computeTemplates()
         this.characteristics.compute();
         this.computeItems();
         super.computeDerived();
@@ -129,6 +130,18 @@ export class StandardActorModel extends BaseActorModel {
 
         this.runScripts("prepareData", { actor: this.parent })
 
+    }
+
+    computeTemplates()
+    {
+        let templates = this.parent.itemTypes.template
+        for(let t of templates)
+        {
+            for(let c in this.characteristics)
+            {
+                this.characteristics[c].modifier += t.system.characteristics[c]
+            }
+        }
     }
 
     computeAdvantage() {

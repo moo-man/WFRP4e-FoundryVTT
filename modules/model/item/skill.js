@@ -88,41 +88,14 @@ export class SkillModel extends BaseItemModel {
 
     async _preCreate(data, options, user)
     {
-        if (this.parent.isEmbedded && !options.skipSpecialisationChoice)
-        {
-            // If skill has (any) or (), ask for a specialisation
-            if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || (this.isGrouped && !(this.parent.specifier)))
-            {
-                let skills = await warhammer.utility.findAllItems("skill", game.i18n.localize("SHEET.LoadingSkills"), true);
-                let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);
-
-                // if specialisations are found, prompt it, if not, skip to value dialog
-                let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : game.i18n.localize("SHEET.SkillSpecialization"), text : game.i18n.localize("SHEET.SkillSpecializationText")}) : []
-                let newName = ""
-                if (choice[0])
-                {
-                    newName = choice[0].name;
-                }
-                else 
-                {
-                    newName = this.parent.baseName + ` (${await ValueDialog.create({text: game.i18n.localize("SHEET.SkillSpecializationEnter"), title : game.i18n.localize("SHEET.SkillSpecialization")})})`;
-
-                }
-
-                if (newName)
-                {
-                    this._handleSkillNameChange(newName, this.parent.name, options.career)
-                    this.parent.updateSource({name : newName})
-                }
-            }
-        }
+        await super._preCreate(data, options, user);
+        await this._handleSpecialisationChoice(data, options, user);
+        return this._handleSkillMerging(data, options,user);
     }
 
     async _onUpdate(data, options, user)
     {
         await super._onUpdate(data, options, user);
-
-
     }
 
     computeOwned()
@@ -130,7 +103,6 @@ export class SkillModel extends BaseItemModel {
         this.total.value = this.modifier.value + this.advances.value + this.parent.actor.system.characteristics[this.characteristic.value].value;
         this.advances.indicator = this.advances.force;
     }
-
 
     addCareerData(career) {
         if (!career)
@@ -144,6 +116,42 @@ export class SkillModel extends BaseItemModel {
         this.advances.indicator = this.advances.indicator || !!this.advances.career || false
       }
 
+    async _handleSpecialisationChoice(data, options, user)
+    {
+        if (this.parent.isEmbedded && !options.skipSpecialisationChoice)
+        {
+            // If skill has (any) or (), ask for a specialisation
+            if (this.parent.specifier.toLowerCase() == game.i18n.localize("SPEC.Any").toLowerCase() || (this.isGrouped && !(this.parent.specifier)))
+            {
+                let skills = await warhammer.utility.findAllItems("skill", game.i18n.localize("SHEET.LoadingSkills"), true);
+                let specialisations = skills.filter(i => i.name.split("(")[0]?.trim() == this.parent.baseName);
+                let effects = [];
+
+                // if specialisations are found, prompt it, if not, skip to value dialog
+                let choice = specialisations.length > 0 ? await ItemDialog.create(specialisations, 1, {title : game.i18n.localize("SHEET.SkillSpecialization"), text : game.i18n.localize("SHEET.SkillSpecializationText")}) : []
+                let newName = ""
+                if (choice[0])
+                {
+                    // Need to fetch the item to get effects...
+                    let chosenSkill = await fromUuid(choice[0].uuid);
+                    newName = chosenSkill.name;
+                    effects = chosenSkill.effects?.contents.map(i => i.toObject());
+                }
+                else 
+                {
+                    newName = this.parent.baseName + ` (${await ValueDialog.create({text: game.i18n.localize("SHEET.SkillSpecializationEnter"), title : game.i18n.localize("SHEET.SkillSpecialization")})})`;
+
+                }
+
+                if (newName)
+                {
+                    this._handleSkillNameChange(newName, this.parent.name, options.career)
+                    this.parent.updateSource({name : newName, effects})
+                }
+            }
+        }
+    }
+
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName, oldName, skipPrompt=false) {
         let currentCareer = this.parent.actor?.currentCareer;
@@ -155,6 +163,34 @@ export class SkillModel extends BaseItemModel {
         {
             currentCareer.system.changeSkillName(newName, oldName, skipPrompt)
         }
+    }
+    
+    _handleSkillMerging()
+    {
+        if (this.parent.isEmbedded)
+        {
+            let actor = this.parent.actor;
+
+            let existing = actor.itemTags.skill.find(i => i.name == this.parent.name);
+
+            if (existing)
+            {
+                existing.update({"system.advances.value" : existing.advances.value + this.advances.value});
+            }
+        }
+    }
+
+    
+    async allowCreation(data, options, user)
+    {
+        let allowed = super.allowCreation(data, options, user)
+        if (allowed && this.parent.isEmbedded && this.advances.value != 0)
+        {
+            let actor = this.parent.actor;
+            let existing = actor.itemTags.skill.find(i => i.name == this.parent.name);
+            allowed = !existing
+        }
+        return allowed
     }
 
     chatData() {

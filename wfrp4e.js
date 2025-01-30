@@ -101,6 +101,8 @@ import VehicleModSheet from "./src/apps/sheets/item/vehicleMod-sheet.js";
 import VehicleRoleSheet from "./src/apps/sheets/item/vehicleRole-sheet.js";
 import VehicleTestSheet from "./src/apps/sheets/item/vehicleTest-sheet.js";
 import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
+import { TemplateModel } from "./modules/model/item/template.js";
+import TemplateSheet from "./src/apps/sheets/item/template-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -147,6 +149,7 @@ Hooks.once("init", function () {
   Items.registerSheet("wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: false });
   Items.registerSheet("wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: false });
   Items.registerSheet("wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})
@@ -179,6 +182,7 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["vehicleRole"] = VehicleRoleModel
   CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
   CONFIG.Item.dataModels["cargo"] = CargoModel
+  CONFIG.Item.dataModels["template"] = TemplateModel
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
@@ -236,7 +240,8 @@ Hooks.once("init", function () {
 
   CONFIG.Actor.documentClass = ActorWFRP4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e;
+  CONFIG.RollTable.documentClass = WarhammerRollTable;
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
 

@@ -16,7 +16,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
             damage : new fields.BooleanField({}),
             skill : new fields.StringField({}),
             rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
-            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics, initial : "s"}),
+            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
             dice : new fields.StringField({}),
             defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
             SL : new fields.BooleanField({}),
@@ -140,7 +140,10 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
           if (this.rollable.bonusCharacteristic && this.rollable.damage)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
           {
             specification = parseInt(this.specification.value) || 0
-            specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            if (actor)
+            {
+              specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            }
             if (this.attackType && actor)
             {
               specification += (actor.flags[`${this.attackType}DamageIncrease`] || 0)

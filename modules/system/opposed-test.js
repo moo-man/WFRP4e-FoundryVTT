@@ -401,7 +401,8 @@ export default class OpposedTest {
 
       // Remap the hit location roll to the defender's hit location table, note the change if it is different
       let remappedHitLoc = await game.wfrp4e.tables.rollTable(this.defender.details.hitLocationTable.value, { lookup: attackerHitloc.roll, hideDSN: true })
-      if (remappedHitLoc)
+
+      if (remappedHitLoc && this.defender.details.hitLocationTable.value != "hitloc") // Only remap if using a different hitloc table, this prevents Primary Arm -> Right Arm -> Primary Arm (Remapped)
       {
         if (remappedHitLoc.result != attackerHitloc.result) {
           remappedHitLoc.description = game.i18n.localize(remappedHitLoc.description) + " (Remapped)";

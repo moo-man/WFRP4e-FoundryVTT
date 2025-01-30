@@ -6,7 +6,7 @@ import { VehicleStatusModel } from "./components/vehicle/status";
 let fields = foundry.data.fields;
 
 export class VehicleModel extends BaseActorModel {
-    static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "skill", "prayer", "injury"];
+    static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "skill", "prayer", "injury", "template"];
 
     static defineSchema() {
         let schema = super.defineSchema();

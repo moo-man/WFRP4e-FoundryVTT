@@ -1,0 +1,1 @@
+return !args.weapon?.system?.attackType || game.settings.get("wfrp4e", "useGroupAdvantage")
