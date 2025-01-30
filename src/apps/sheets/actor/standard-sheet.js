@@ -341,6 +341,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
       characteristics[characteristic].initial = value;
       characteristics[characteristic].advances = 0
+      characteristics[characteristic].modifier = 0
     }
     return this.actor.update({ "system.characteristics": characteristics })
   }
