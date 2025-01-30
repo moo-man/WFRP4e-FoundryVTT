@@ -1094,7 +1094,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-soc" : "Sea of Claws",
     "wfrp4e-lustria" : "Lustria",
     "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
-    "wfrp4e-ua3" : "Ubersreik Adventures III"
+    "wfrp4e-ua3" : "Ubersreik Adventures III",
+    "wfrp4e-tribes" : "Tribes & Tribulations"
 }
 
 WFRP4E.trade = { 

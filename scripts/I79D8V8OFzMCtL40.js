@@ -1,0 +1,2 @@
+const target = await ValueDialog.create({title: "Select Target", text: "Select Target for Hatred"}, "Target");
+await this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.5hH73j2NgPdsLCZN", this.effect, {name: `Hatred (${target})`});

@@ -1,0 +1,1 @@
+await this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.5hH73j2NgPdsLCZN", this.effect, {name: "Hatred (All enemies)"});

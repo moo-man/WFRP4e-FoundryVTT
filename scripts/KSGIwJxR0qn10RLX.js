@@ -1,0 +1,1 @@
+this.actor.itemTags.template.find(t => t.name === "Hungry Troll").delete();

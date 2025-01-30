@@ -1,0 +1,1 @@
+this.actor.removeCondition("fatigued", 1);
