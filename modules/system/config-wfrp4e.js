@@ -2687,6 +2687,11 @@ WFRP4E.triggerMapping = {
     "preUpdate" : "preUpdateDocument"
 };
 
+WFRP4E.placeholderItemData = {
+    type : "trapping",
+    img : "systems/wfrp4e/icons/blank.png"
+},
+
 WFRP4E.getZoneTraitEffects = (region) => 
 {
     return [];
