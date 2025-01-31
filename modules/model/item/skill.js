@@ -165,9 +165,9 @@ export class SkillModel extends BaseItemModel {
         }
     }
     
-    _handleSkillMerging()
+    _handleSkillMerging(data, options, user)
     {
-        if (this.parent.isEmbedded)
+        if (this.parent.isEmbedded && this.parent.actor.inCollection) // prevent error during chargen
         {
             let actor = this.parent.actor;
 
@@ -175,7 +175,7 @@ export class SkillModel extends BaseItemModel {
 
             if (existing)
             {
-                existing.update({"system.advances.value" : existing.advances.value + this.advances.value});
+                existing.update({"system.advances.value" : existing.advances.value + this.advances.value}, options);
             }
         }
     }
