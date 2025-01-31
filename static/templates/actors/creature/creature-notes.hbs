@@ -34,3 +34,33 @@
   </li>
   {{/each}}
 </ol>
+
+{{#if items.templates.length}}
+<div class="inventory-header trait-header">
+  <div id="trait-name">{{localize "SHEET.AppliedTemplates"}}</div>
+</div>
+
+<ol class="inventory-list trait-list">
+  {{#each items.templates as |item i|}}
+  <li class="item" data-id="{{item.id}}">
+    <div class="content">
+      <div class="item-name trait-name">
+        <div class="image item-image" style="background-image: url({{item.img}})"></div>
+        <a class = "name trait-include">{{item.name}}</a>
+      </div>
+
+      {{#if ../document.isOwner}}
+      <div class="item-controls">
+      {{else}}
+      <div class="item-controls" style = "visibility : hidden;">
+      {{/if}}
+        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+      </div>
+    </div>
+  </li>
+  {{/each}}
+</ol>
+{{/if}}

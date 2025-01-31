@@ -143,6 +143,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     items.vehicleMods = sheetData.actor.itemTags["vehicleMod"]
     items.vehicleTests = sheetData.actor.itemTags["vehicleTest"]
     items.vehicleRoles = sheetData.actor.itemTags["vehicleRole"]
+    items.templates = sheetData.actor.itemTags["template"]
 
     items.grimoire = {
       petty: sheetData.actor.itemTags["spell"].filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
