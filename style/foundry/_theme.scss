@@ -45,6 +45,10 @@
             background: none;
         }
 
+        .sidebar-tab.sidebar-popout {
+            background: url(../wfrp4e/ui/frames/bookshelf-texture.webp);
+        }
+
         .chat-form {
             textarea {
                 background: url(../wfrp4e/ui/frames/parchment-texture.webp) repeat;
@@ -72,7 +76,7 @@
                background: url(../wfrp4e/ui/sidebar_button-background_red.webp) repeat;
             }
         }
-
+        #settings,
         .action-buttons {
             button {
                 border: 1px solid black;

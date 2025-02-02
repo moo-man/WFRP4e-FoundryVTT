@@ -96,15 +96,16 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     return context;
   }
 
-  _getContetMenuOptions()
+  _getContextMenuOptions()
   { 
+    let getParent = this._getParent.bind(this);
     return [
       {
         name: "Edit",
         icon: '<i class="fas fa-edit"></i>',
-        condition: li => !!li.data("uuid") || !!li.parents("[data-uuid]"),
+        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           const document = await fromUuid(uuid);
           document.sheet.render(true);
         }
@@ -113,7 +114,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         name: "Remove",
         icon: '<i class="fas fa-times"></i>',
         condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid
           if (uuid)
           {
             let parsed = foundry.utils.parseUuid(uuid);
@@ -131,7 +132,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         },
         callback: async li => 
         {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           const document = await fromUuid(uuid);
           document.delete();
         }
@@ -140,7 +141,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         name: "Post to Chat",
         icon: '<i class="fas fa-comment"></i>',
         condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           if (uuid)
           {
             let parsed = foundry.utils.parseUuid(uuid);
@@ -150,7 +151,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         },
         callback: async li => 
         {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           const document = await fromUuid(uuid);
           document.postItem();
         }
@@ -159,7 +160,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         name: "Duplicate",
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           if (uuid && !uuid.includes("Compendium"))
           {
             let doc = fromUuidSync(uuid);
@@ -169,7 +170,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         },
         callback: async li => 
         {
-            let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+            let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
             const document = await fromUuid(uuid);
             this.actor.createEmbeddedDocuments("Item", [document.toObject()]);
         }
@@ -178,7 +179,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         name: "Split",
         icon: '<i class="fa-solid fa-split"></i>',
         condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           if (uuid && !uuid.includes("Compendium"))
           {
             let doc = fromUuidSync(uuid);
@@ -188,7 +189,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         },
         callback: async li => 
         {
-            let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
+            let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
             if (uuid)
             {
               let doc = fromUuidSync(uuid);

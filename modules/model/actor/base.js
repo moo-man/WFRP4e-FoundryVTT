@@ -18,7 +18,7 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         await super._preCreate(data, options, user);
         
         let preCreateData = {};
-        let defaultToken = game.settings.get("core", "defaultToken");
+        let defaultToken = game.settings.get("core", "prototypeTokenOverrides")[data.type];
 
         // Set wounds, advantage, and display name visibility
         if (!data.prototypeToken)

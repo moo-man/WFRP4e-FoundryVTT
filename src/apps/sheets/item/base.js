@@ -101,15 +101,16 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 
   //#endregion
 
-  _getContetMenuOptions()
+  _getContextMenuOptions()
   { 
+    let getParent = this._getParent.bind(this);
     return [
       {
         name: "Edit",
         icon: '<i class="fas fa-edit"></i>',
-        condition: li => !!li.data("uuid") || !!li.parents("[data-uuid]"),
+        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           const document = await fromUuid(uuid);
           document.sheet.render(true);
         }
@@ -117,10 +118,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
       {
         name: "Remove",
         icon: '<i class="fas fa-times"></i>',
-        condition: li => !!li.data("uuid") || !!li.parents("[data-uuid]"),
+        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => 
         {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
           const document = await fromUuid(uuid);
           document.delete();
         }
@@ -128,10 +129,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
       {
         name: "Duplicate",
         icon: '<i class="fa-solid fa-copy"></i>',
-        condition: li => !!li.data("uuid") || !!li.parents("[data-uuid]"),
+        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => 
         {
-            let uuid = li.data("uuid") || li.parents("[data-uuid]").data("uuid");
+            let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
             const document = await fromUuid(uuid);
             this.actor.createEmbeddedDocuments("ActiveEffect", [document.toObject()]);
         }
