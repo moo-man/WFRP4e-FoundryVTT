@@ -1,0 +1,1 @@
+this.actor.system.status.addArmour(1, {source: this.effect, magical: true});

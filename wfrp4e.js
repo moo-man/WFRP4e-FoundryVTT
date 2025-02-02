@@ -240,7 +240,8 @@ Hooks.once("init", function () {
 
   CONFIG.Actor.documentClass = ActorWFRP4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e;
+  CONFIG.RollTable.documentClass = WarhammerRollTable;
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
 

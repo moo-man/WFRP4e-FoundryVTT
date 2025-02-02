@@ -107,6 +107,20 @@ export default class PrayerTest extends TestWFRP {
     } // If something went wrong calculating damage, do nothing and still render the card
   }
 
+  computeTables()
+  {
+    super.computeTables();
+    if (this.result.wrath)
+    {
+      this.result.tables.wrath = {
+        label : this.result.wrath,
+        class : "fumble-roll",
+        modifier : this.result.wrathModifier,
+        key : "wrath"
+      }
+    }
+  }
+
   async postTest() {
     if (this.result.wrath) {
       let sin = this.actor.status.sin.value - 1

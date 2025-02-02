@@ -89,11 +89,6 @@ export default function () {
     canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     game.wfrp4e.tags.createTags();
-
-    if (game.mErr)
-    {
-      warhammer.utility.error("Failed to load compendium data", true)
-    }
   })
 
   FoundryOverrides();

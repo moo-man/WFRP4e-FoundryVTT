@@ -160,6 +160,9 @@ npm run pack
 
 - [Archives of the Empire: Vol 3.](https://foundryvtt.com/packages/wfrp4e-archives3/) - A diverse collection of fascinating articles detailing the activities of merchants, and the folk worship common to many rural corners of the Empire. Several minor faiths are explored in new detail, and forgotten beliefs brought under scrutiny.
 
+- [Ubersreik Adventures III](https://foundryvtt.com/packages/wfrp4e-ua3/) - Four exciting adventures alongside details covering the dramatic events that have befallen the City of Ubersreik in the wake of the Turmoil and last days of The Enemy Within campaign
+
+- [Tribes & Tribulations](https://foundryvtt.com/packages/wfrp4e-tribes/) - Provides details on a number of these belligerent and spiteful creatures: Goblins, Orcs, Black Orcs, Hobgoblins, Snotlings, Ogres, and Trolls. Each specific tribe receives its own chapter, demonstrating the variety of Orc and Goblin warbands that plague the Old World and beyond.
 
 **Unofficial**
 

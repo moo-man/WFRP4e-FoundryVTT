@@ -139,7 +139,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             const a = document.createElement("a")
             a.classList.add("table-click")
-            a.dataset.table = match[1]
+            let values = match[1].split(",");
+            a.dataset.table = values[0];
+            a.dataset.modifier = values[1] || 0;
             a.innerHTML = `<i class="fas fa-list"></i>${(game.wfrp4e.tables.findTable(match[1])?.name && !match[2]) ? game.wfrp4e.tables.findTable(match[1])?.name : match[2]}`
             return a
         }
@@ -1092,7 +1094,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-soc" : "Sea of Claws",
     "wfrp4e-lustria" : "Lustria",
     "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
-    "wfrp4e-ua3" : "Ubersreik Adventures III"
+    "wfrp4e-ua3" : "Ubersreik Adventures III",
+    "wfrp4e-tribes" : "Tribes & Tribulations"
 }
 
 WFRP4E.trade = { 
@@ -1815,7 +1818,8 @@ WFRP4E.PrepareSystemItems = function() {
                     {
                         trigger: "manual",
                         label: "@effect.name",
-                        script: `let actor = this.actor;
+                        script: `let uiaBleeding = game.settings.get("wfrp4e", "uiaBleeding");
+                            let actor = this.actor;
                             let effect = this.effect;
                             let bleedingAmt;
                             let bleedingRoll;
@@ -1830,8 +1834,19 @@ WFRP4E.PrepareSystemItems = function() {
 
                             if (actor.status.wounds.value == 0 && !actor.hasCondition("unconscious"))
                             {
-                                await actor.addCondition("unconscious")
-                                msg += "<br>" + game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })
+                                addBleedingUnconscious = async () => {
+                                    await actor.addCondition("unconscious")
+                                    msg += "<br>" + game.i18n.format("BleedUnc", {name: actor.prototypeToken.name })
+                                }
+                                if (uiaBleeding) {
+                                    test = await actor.setupSkill(game.i18n.localize("NAME.Endurance"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "challenging"}});
+                                    await test.roll();
+                                    if (test.failed) {
+                                        await addBleedingUnconscious();
+                                    }
+                                } else {
+                                    await addBleedingUnconscious();
+                                }
                             }
 
                             if (actor.hasCondition("unconscious"))
@@ -2274,11 +2289,6 @@ WFRP4E.PrepareSystemItems = function() {
                         hideScript : "",
                         activateScript : "return true"
                     }
-                },
-                {
-                    label : "Script",
-                    trigger : "manual",
-                    script : "this.script.notification('test')",
                 }
             ],
             }
@@ -2676,6 +2686,11 @@ WFRP4E.triggerMapping = {
     "addItems" : "onCreate",
     "preUpdate" : "preUpdateDocument"
 };
+
+WFRP4E.placeholderItemData = {
+    type : "trapping",
+    img : "systems/wfrp4e/icons/blank.png"
+},
 
 WFRP4E.getZoneTraitEffects = (region) => 
 {

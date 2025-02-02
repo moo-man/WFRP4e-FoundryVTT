@@ -95,8 +95,8 @@ export class TemplateModel extends BaseItemModel
     {
       // Load all the skills, find all those with the same base name as the skill choice
       let allSkills = await warhammer.utility.findAllItems("skill", "Loading Skills")
-      
-      for (let skill of skillChoices)
+      let initialSkillChoices = foundry.utils.deepClone(skillChoices);
+      for (let skill of initialSkillChoices)
         {
           if (skill.specialisations > 1)
           {
@@ -150,6 +150,10 @@ export class TemplateModel extends BaseItemModel
       let spells = await warhammer.utility.findAllItems("spell", "Loading Spells");
       for(let lore of this.lores.list)
       {
+        if (lore.name == "*")
+        {
+          lore.name = (await ItemDialog.create(ItemDialog.objectToArray(game.wfrp4e.config.magicLores), 1, {title : this.parent.name, text : "Select a Lore"}))?.[0]?.name;
+        }
         let filtered = spells.filter(s => {
           let spellLore = game.wfrp4e.config.magicLores[s.system.lore.value] || s.system.lore.value;
           return lore.name == spellLore;
@@ -205,8 +209,11 @@ export class TemplateModel extends BaseItemModel
 
     for(let choices of Object.values(groups))
     {
-      let choice = await ItemDialog.create(choices, 1, {title : this.parent.name});
-      items = items.concat(choice);
+      if (choices.length > 1)
+      {
+        let choice = await ItemDialog.create(choices, 1, {title : this.parent.name});
+        items = items.concat(choice);
+      }
     }
 
     return items;

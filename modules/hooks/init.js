@@ -137,14 +137,30 @@ export default function() {
     });
 
     // Register Fast SL rule
-    game.settings.register("wfrp4e", "fastSL", {
-      name: "SETTINGS.FastSL",
-      hint: "SETTINGS.FastSLHint",
+    game.settings.register("wfrp4e", "SLMethod", {
+      name: "SETTINGS.SLMethod",
+      hint: "SETTINGS.SLMethodHint",
       scope: "world",
       config: true,
-      default: false,
-      type: Boolean
+      default: "default",
+      choices: {
+        "default": "SETTINGS.SLDefault",
+        "fast": "SETTINGS.SLFast",
+        "dos": "SETTINGS.SLDOS",
+      },
+      type: String
     });
+
+
+    // // Register Fast SL rule
+    // game.settings.register("wfrp4e", "fastSL", {
+    //   name: "SETTINGS.FastSL",
+    //   hint: "SETTINGS.FastSLHint",
+    //   scope: "world",
+    //   config: true,
+    //   default: false,
+    //   type: Boolean
+    // });
 
     // Register Tests above 100% Rule
     game.settings.register("wfrp4e", "testAbove100", {
@@ -362,6 +378,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "uiaBleeding", {
+      name: "SETTINGS.UIABleeding",
+      hint: "SETTINGS.UIABleedingHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     game.settings.register("wfrp4e", "tables", {
       scope: "world",
       config: false,
@@ -383,7 +408,7 @@ export default function() {
       type: Object
     });
 
-    
+
     game.settings.register("wfrp4e", "tableRollMode", {
       scope: "client",
       config: false,
@@ -431,7 +456,7 @@ export default function() {
     });
 
 
-    
+
     // game.settings.register("wfrp4e", "mooCritsFumbles", {
     //   name: "SETTINGS.MooCritsFumbles",
     //   hint: "SETTINGS.MooCritsFumblesHint",
@@ -525,7 +550,7 @@ export default function() {
       type: Boolean
     });
 
-      
+
     game.settings.register("wfrp4e", "partialChannelling", {
       name: "SETTINGS.PartialChannelling",
       hint: "SETTINGS.PartialChannellingHint",
@@ -627,7 +652,7 @@ export default function() {
       type: Boolean
     });
 
-    
+
     game.settings.register("wfrp4e", "mooHomebrewItemChanges", {
       name: "SETTINGS.MooHomebrewItems",
       hint: "SETTINGS.MooHomebrewItemHint",

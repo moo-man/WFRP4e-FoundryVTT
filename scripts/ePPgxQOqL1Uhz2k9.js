@@ -1,52 +1,48 @@
-let choice1 = [
-    {
-        type : "skill",
-        name : "Ranged (Bow)",
-        diff : {
-            system : {
-                advances : {
-                    value : 10
-                }
-            }
-        }
-    },
-    {
-        type : "weapon",
-        name : "Bow",
-    },
-    {
-        type : "ammunition",
-        name : "Arrow",
-    }
-]
-let choice2 = [
-]
-
 let choice = await Dialog.wait({
-        title : "Option",
-        content : 
-        `<p>
-        Add Option?
-        </p>
-        <ol>
-        <li>Ranged (Bow) +10 and a Bow with 12 Arrows</li>
-        </ol> 
-        `,
-        buttons : {
-            1 : {
-                label : "Yes",
-                callback : () => {
-                    return choice1
-                }
-            },
-            2 : {
-                label : "No",
-                callback : () => {
-                    choice2
-                }
+    title : "Option",
+    content : 
+    `<p>
+    Add Option?
+    </p>
+    <ol>
+    <li>Ranged (Bow) +10 and a Longbow with 12 Arrows</li>
+    </ol> 
+    `,
+    buttons : {
+        1 : {
+            label : "Yes",
+            callback : () => {
+                return [
+                    {
+                        type : "skill",
+                        name : "Ranged (Bow)",
+                        diff : {
+                            system : {
+                                advances : {
+                                    value : 10
+                                }
+                            }
+                        }
+                    },
+                    {
+                        type : "weapon",
+                        name : "Longbow",
+                    },
+                    {
+                        type : "ammunition",
+                        name : "Arrow",
+                    }
+                ];
+            }
+        },
+        2 : {
+            label : "No",
+            callback : () => {
+                return [];
             }
         }
-    })
+    }
+})
 
 let updateObj = this.actor.toObject();
 let items = []

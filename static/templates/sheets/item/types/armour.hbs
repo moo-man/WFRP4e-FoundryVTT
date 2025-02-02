@@ -2,12 +2,13 @@
     {{formGroup fields.armorType.fields.value value=source.system.armorType.value choices=(config "armorTypes")}}
     <fieldset>
         <legend>{{localize "SHEET.LocationAP"}}</legend>
-        {{formGroup fields.AP.fields.head value=source.AP.head.head}}
-        {{formGroup fields.AP.fields.lArm value=source.AP.head.lArm}}
-        {{formGroup fields.AP.fields.rArm value=source.AP.head.rArm}}
-        {{formGroup fields.AP.fields.lLeg value=source.AP.head.lLeg}}
-        {{formGroup fields.AP.fields.rLeg value=source.AP.head.rLeg}}
-        {{formGroup fields.AP.fields.body value=source.AP.head.body}}
+        {{log source}}
+        {{formGroup fields.AP.fields.head value=source.system.AP.head}}
+        {{formGroup fields.AP.fields.lArm value=source.system.AP.lArm}}
+        {{formGroup fields.AP.fields.rArm value=source.system.AP.rArm}}
+        {{formGroup fields.AP.fields.lLeg value=source.system.AP.lLeg}}
+        {{formGroup fields.AP.fields.rLeg value=source.system.AP.rLeg}}
+        {{formGroup fields.AP.fields.body value=source.system.AP.body}}
     </fieldset>
     {{> itemProperties}}
     {{formGroup fields.special.fields.value value=source.system.special.value}}

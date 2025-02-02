@@ -1,11 +1,11 @@
         const templateMap = {
             'P2e7Yx98bK3u110a' : "",
-            'iuMp3KLaMT2WCmie' : "Xp4r2KUhqfjak8zq", 
-            'RBuYcT5tppwcmnC5' : "wYN19h3WVF1yOVq2", 
-            'vcGpNwNbhvfzVveQ' : "ac5ClOuaYtzOYyWp", 
-            'jmhKZy0w9TzkEK9c' : "IS3LTdTuay6uRHUq", 
-            '9Byj6k7SmdTYis2V' : "LjMlx99gBGeRJUQu", 
-            'laJwc2l9tzJPgaaJ' : "x5wpMprsObuqMCYg",
+            'iuMp3KLaMT2WCmie' : "4s01nHFKVKTEZd3B", 
+            'RBuYcT5tppwcmnC5' : "h3yuJDWnixliXeBG", 
+            'vcGpNwNbhvfzVveQ' : "7QrsbofccMOE1YsF", 
+            'jmhKZy0w9TzkEK9c' : "scVTPVyDDbli4WZL", 
+            '9Byj6k7SmdTYis2V' : "4Cd7Dknee2WjReOo", 
+            'laJwc2l9tzJPgaaJ' : "2hJ2a5YjbwZWWYrd",
         }
         let template = (await game.wfrp4e.tables.rollTable("hireling-templates", {hideDSN: true})).object;
         let physicalQuirk = (await game.wfrp4e.tables.rollTable("physical-quirks", {hideDSN: true})).text;

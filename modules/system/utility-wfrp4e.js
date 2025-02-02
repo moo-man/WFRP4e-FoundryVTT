@@ -133,7 +133,11 @@ export default class WFRP_Utility {
     skill = await this.findBaseName(skillName, "skill");
 
     if (skill)
-      return skill;
+    {
+      let skillData = skill.toObject();
+      skillData.effects = [];
+      return new Item.implementation(skillData);
+    }
 
     throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`;
   }
@@ -606,8 +610,10 @@ export default class WFRP_Utility {
 
       chatOptions["content"] = html;
       chatOptions["type"] = 0;
-      if (html)
+      if (!foundry.utils.isEmpty(html))
+      {
         ChatMessage.create(chatOptions);
+      }
 
     }
   }

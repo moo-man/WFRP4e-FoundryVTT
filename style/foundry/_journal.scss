@@ -1,0 +1,26 @@
+.wfrp4e,
+.journal-sheet {
+    table.embedded { 
+        thead {
+            background: rgba(0, 0, 0, 0.1);
+            text-shadow: none;
+            th:first-of-type {
+                border-right: 1px solid black;
+            }
+        }
+
+
+        tr {
+            td:first-of-type {
+                border-left: 0px;
+                width: 15%;
+                text-align: center;
+            }
+            td:last-of-type {
+                border-right: 0px;
+            }
+            td {
+            }
+        }
+    }
+}

@@ -2165,6 +2165,7 @@
         text-align: center;
         background: none;
       }
+
       .app.window-app.sheet.item-sheet .item-details.row2 .input-text {
         flex-grow: 2;
         width: 100%;
@@ -2579,6 +2580,17 @@
     padding-left: 3px;
     padding-right: 3px;
   }
+
+  
+  .app.window-app.sheet.item-sheet.disease-sheet .tab .input-text.disease-text {
+    margin-top: -6px;
+    border: 1px solid #736953a6;
+    border-top: none;
+    margin-right: 0px;
+  }
+
+
+
   .app.window-app.sheet.item-sheet.disease-sheet .tab .input-text:hover {
     border: 1px dotted #463a3a;
     box-shadow: none;
@@ -10063,10 +10075,11 @@
         text-align: center;
       }
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .disease-roll {
-        flex: 0.5;
-        padding: 11px 0px 0px 0px;
+        justify-content: center;
+        flex: 0.5 1 0%;
         text-align: center;
-        /* background: aqua; */
+        display: flex;
+        flex-direction: column;
       }
       .app.window-app.sheet.wfrp4e.actor  .inventory-list.disease-list .item .content .item-controls {
         padding: 5px 0px 0px 0px;
@@ -15035,6 +15048,12 @@ button.capture-position {
   margin: -3px 0px;
 }
 
+.app .table-click.nulled {
+  border: none;
+  background: none;
+  text-decoration: line-through;
+  pointer-events: none;
+}
 
 .app a.content-link.broken {
   background: rgba(255, 0, 0, 0.05);

@@ -1,6 +1,7 @@
 @import "./actors/index";
 
-.theme-light .wfrp4e.sheet.application {
+.theme-light .wfrp4e.item.sheet.application,
+    .theme-light .wfrp4e.actor.sheet.application {
     --header-label-line : var(--color-dark-6);
     --characteristic-input : transparent;
     --characteristic-total : rgba(0, 0, 0, 0.1);
@@ -30,5 +31,6 @@
     --container-lines : var(--color-dark-6);
 
     --career-header : rgba(0, 0, 0, 0.1);
+    --career-input: rgba(0, 0, 0, 0.1);
 
 }

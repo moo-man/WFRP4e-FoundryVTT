@@ -1,0 +1,1 @@
+args.test.data.result.other.push(`You may not use Fortune Points because of ${this.effect.name}`);
