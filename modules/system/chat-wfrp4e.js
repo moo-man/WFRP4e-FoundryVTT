@@ -161,7 +161,7 @@ export default class ChatWFRP {
       return ui.notifications.error("ErrorHackPermission", {localize : true})
 
     let loc = opposedTest.result.hitloc.value
-    let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
+    let armour = opposedTest.defenderTest.actor.itemTags.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
     if (armour.length)
     {
       let chosen = await ItemDialog.create(armour, 1, "Choose Armour to damage");
