@@ -41,6 +41,69 @@ export class ExtendedTestModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["SL", {
+                label: "WH.Models.extendedTest.FIELDS.SL.target.label",
+                type: "range",
+                config: {
+                    keyPath: "system.SL.target"
+                }
+            }],
+            ["test", {
+                label: "WH.Models.extendedTest.FIELDS.test.value.label",
+                type: "text",
+                config: {
+                    keyPath: "system.test.value"
+                }
+            }],
+            ["negativePossible", {
+                label: "WH.Models.extendedTest.FIELDS.negativePossible.value.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.negativePossible.value"
+                }
+            }],
+            ["failingDecreases", {
+                label: "WH.Models.extendedTest.FIELDS.failingDecreases.value.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.failingDecreases.value"
+                }
+            }],
+            ["completion", {
+                label: "WH.Models.extendedTest.FIELDS.completion.value.label",
+                type: "boolean",
+                config: {
+                    choices: game.wfrp4e.config.extendedTestCompletion,
+                    keyPath: "system.completion.value"
+                }
+            }],
+            ["difficulty", {
+                label: "WH.Models.extendedTest.FIELDS.difficulty.value.label",
+                type: "boolean",
+                config: {
+                    choices: game.wfrp4e.config.difficultyLabels,
+                    keyPath: "system.difficulty.value"
+                }
+            }],
+            ["hide.test", {
+                label: "WH.Models.extendedTest.FIELDS.hide.test.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.hide.test"
+                }
+            }],
+            ["hide.progress", {
+                label: "WH.Models.extendedTest.FIELDS.hide.progress.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.hide.progress"
+                }
+            }]
+        ]);
+    }
 
     /**
      * Used to identify an Item as one being a child or instance of ExtendedTestModel

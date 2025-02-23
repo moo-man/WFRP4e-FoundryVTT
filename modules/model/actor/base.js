@@ -13,6 +13,15 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         return schema;
     }
 
+    static _deriveSource(uuid) {
+        const source = super._deriveSource(uuid);
+
+        if (game.wfrp4e.config.premiumModules[source.slug])
+            source.value = game.wfrp4e.config.premiumModules[source.slug];
+
+        return source;
+    }
+
     async _preCreate(data, options, user) 
     {
         await super._preCreate(data, options, user);

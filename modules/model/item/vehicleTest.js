@@ -5,6 +5,11 @@ let fields = foundry.data.fields;
 
 export class VehicleTestModel extends BaseItemModel {
     static LOCALIZATION_PREFIXES = ["WH.Models.vehicleTest"];
+
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+        isVehicle: true
+    }, {inplace: false}));
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.roles = new fields.SchemaField({

@@ -4,6 +4,11 @@ let fields = foundry.data.fields;
 export class VehicleModModel extends PhysicalItemModel
 {
     static LOCALIZATION_PREFIXES = ["WH.Models.vehicleMod"];
+
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+      isVehicle: true
+    }, {inplace: false}));
+
     static defineSchema() 
     {
         let schema = super.defineSchema();

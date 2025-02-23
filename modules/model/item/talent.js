@@ -22,6 +22,27 @@ export class TalentModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["max", {
+                label: "WH.Models.talent.FIELDS.max.value.label",
+                type: "set",
+                config: {
+                    choices : game.wfrp4e.config.talentMax,
+                    keyPath: "system.max.value"
+                }
+            }],
+            ["tests", {
+                label: "WH.Models.talent.FIELDS.tests.value.label",
+                type: "text",
+                config: {
+                    keyPath: "system.tests.value",
+                }
+            }],
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of TalentModel
      *

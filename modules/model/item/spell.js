@@ -58,6 +58,71 @@ export class SpellModel extends OvercastItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["lore", {
+          label: "WH.Models.spell.FIELDS.lore.value.label",
+          type: "set",
+          config: {
+            blank: "None",
+            choices : game.wfrp4e.config.magicLores,
+            keyPath: "system.lore.value"
+          }
+        }],
+        ["range", {
+          label: "WH.Models.spell.FIELDS.range.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.range.value"
+          }
+        }],
+        ["target", {
+          label: "WH.Models.spell.FIELDS.target.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.target.value"
+          }
+        }],
+        ["aoe", {
+          label: "WH.Models.spell.FIELDS.target.aoe.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.target.aoe"
+          }
+        }],
+        ["duration", {
+          label: "WH.Models.spell.FIELDS.duration.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.duration.value"
+          }
+        }],
+        ["magicMissile", {
+          label: "WH.Models.spell.FIELDS.magicMissile.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.magicMissile.value",
+          }
+        }],
+        ["ritual", {
+          label: "WH.Models.spell.FIELDS.ritual.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.ritual.value",
+          }
+        }],
+        ["doesDamage", {
+          label: "SHEET.DoesDamage",
+          type: "boolean",
+          config: {
+            keyPath: "system.damage",
+            valueGetter: (data) => !!data.system.damage?.value?.length || !!data.system.damage?.dice?.length,
+          }
+        }],
+      ]);
+    }
+
     async _preUpdate(data, options, user)
     {
       await super._preUpdate(data, options, user)

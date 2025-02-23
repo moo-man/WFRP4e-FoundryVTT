@@ -17,6 +17,20 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["wounds", {
+                label: "WH.Models.critical.FIELDS.wounds.value.label",
+                type: "range",
+                config: {
+                    keyPath: "system.wounds.value"
+                }
+            }]
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of CriticalModel
      *

@@ -297,28 +297,42 @@ export default class WFRP_Utility {
   /**
    * Return a list of all qualities
    */
-  static qualityList() {
+  static qualityList(type = null) {
     let weapon = foundry.utils.duplicate(game.wfrp4e.config.weaponQualities);
     let armor = foundry.utils.duplicate(game.wfrp4e.config.armorQualities);
     let item = foundry.utils.duplicate(game.wfrp4e.config.itemQualities);
-    let list = foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor))
-    return list;
+
+    switch (type) {
+      case "weapon":
+        return foundry.utils.mergeObject(item, weapon);
+      case "armor":
+        return foundry.utils.mergeObject(item, armor);
+      default:
+        return foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor));
+    }
   }
 
 
   /**
    * Return a list of all flaws
    */
-  static flawList() {
+  static flawList(type = null) {
     let weapon = foundry.utils.duplicate(game.wfrp4e.config.weaponFlaws);
     let armor = foundry.utils.duplicate(game.wfrp4e.config.armorFlaws);
     let item = foundry.utils.duplicate(game.wfrp4e.config.itemFlaws);
-    let list = foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor))
-    return list;
+
+    switch (type) {
+      case "weapon":
+        return foundry.utils.mergeObject(item, weapon);
+      case "armor":
+        return foundry.utils.mergeObject(item, armor);
+      default:
+        return foundry.utils.mergeObject(weapon, foundry.utils.mergeObject(item, armor));
+    }
   }
 
-  static allProperties() {
-    return foundry.utils.mergeObject(this.qualityList(), this.flawList())
+  static allProperties(type = null) {
+    return foundry.utils.mergeObject(this.qualityList(type), this.flawList(type))
   }
 
 

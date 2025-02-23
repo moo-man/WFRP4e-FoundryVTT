@@ -1,8 +1,13 @@
 import { BaseItemModel } from "./base";
+import MarketWFRP4e from "../../../apps/market-wfrp4e.js";
 let fields = foundry.data.fields;
 
 export class PhysicalItemModel extends BaseItemModel
 {
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+        isPhysical: true
+    }, {inplace: false}));
+
     static defineSchema() 
     {
         let schema = super.defineSchema();
@@ -28,6 +33,63 @@ export class PhysicalItemModel extends BaseItemModel
             shield: new fields.NumberField({min: 0}),
         });
         return schema;
+    }
+
+    static sumPriceValue(price) {
+        let value = 0;
+
+        value += Number(price?.gc) * 240 || 0;
+        value += Number(price?.ss) * 12 || 0;
+        value += Number(price?.bp) || 0;
+
+        return value;
+    }
+
+    /** @override */
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["quantity", {
+                label: "Quantity",
+                type: "range",
+                config: {
+                    keyPath: "system.quantity.value"
+                }
+            }],
+            ["encumbrance", {
+                label: "Encumbrance",
+                type: "range",
+                config: {
+                    keyPath: "system.encumbrance.value"
+                }
+            }],
+            ["price", {
+                label: "Price",
+                type: "range",
+                config: {
+                    text: true,
+                    valueGetter: (data) => PhysicalItemModel.sumPriceValue(data.system.price),
+                    keyPath: "system.price",
+                    mutator: ({min, max}) => {
+                        min = game.wfrp4e.market.parseMoneyTransactionString(min || "");
+                        max = game.wfrp4e.market.parseMoneyTransactionString(max || "");
+
+                        return {
+                            min: min ? PhysicalItemModel.sumPriceValue(min) : undefined,
+                            max: max ? PhysicalItemModel.sumPriceValue(max) : undefined,
+                        };
+                    }
+                }
+            }],
+            ["availability", {
+                label: "Availability",
+                type: "set",
+                config: {
+                    keyPath: "system.availability.value",
+                    choices: game.wfrp4e.config.availability
+                }
+            }]
+        ]);
     }
 
         /**
