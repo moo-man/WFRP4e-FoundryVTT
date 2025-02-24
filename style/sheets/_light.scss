@@ -1,8 +1,8 @@
 @import "./actors/index";
 
-.theme-light .wfrp4e.sheet.application {
+.theme-light .wfrp4e.item.sheet.application,
+    .theme-light .wfrp4e.actor.sheet.application {
     --header-label-line : var(--color-dark-6);
-    --tab-color : var(--color-border-light-primary);
     --characteristic-input : transparent;
     --characteristic-total : rgba(0, 0, 0, 0.1);
     --characteristic-header : rgba(0, 0, 0, 0.1);
@@ -14,20 +14,10 @@
     --attribute-locked-border : transparent;
     --attribute-label : rgba(0, 0, 0, 0.1);;
     --attribute-field : transparent;
-    --list-header : rgba(0, 0, 0, 0.1);
-    --list-header-border : var(--color-dark-6);
-    --list-row-alternate : rgba(0, 0, 0, 0.05);
-
-    --editor-header : rgba(0, 0, 0, 0.1);
-    --editor-header-border : var(--color-dark-6);
 
     --experience-header : rgba(0, 0, 0, 0.1);
     --experience-header-border : var(--color-dark-6);
 
-    --form-label : rgba(0, 0, 0, 0.1);//var(--color-dark-6);
-    --form-input : transparent;
-    --form-input-border : transparent;
-    --form-group-border : var(--color-dark-6);
     --property-icon : transparent;
 
     --ap-border : var(--color-dark-6);
@@ -40,7 +30,7 @@
     --advances-border : #999;
     --container-lines : var(--color-dark-6);
 
-    --hover-bg : var(--color-cool-5);
-
+    --career-header : rgba(0, 0, 0, 0.1);
+    --career-input: rgba(0, 0, 0, 0.1);
 
 }

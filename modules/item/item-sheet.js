@@ -144,20 +144,6 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
       data['earningSkills'] = this.item.system.incomeSkill.map(skillIndex => this.item.system.skills[skillIndex]);
       data['talents'] = this.item.system.talents.toString();
       data['trappings'] = this.item.system.trappings.toString();
-      let characteristicList = foundry.utils.duplicate(game.wfrp4e.config.characteristicsAbbrev);
-      for (let char in characteristicList) {
-        if (this.item.system.characteristics.includes(char))
-          characteristicList[char] = {
-            abrev: game.wfrp4e.config.characteristicsAbbrev[char],
-            checked: true
-          };
-        else
-          characteristicList[char] = {
-            abrev: game.wfrp4e.config.characteristicsAbbrev[char],
-            checked: false
-          };
-      }
-      data['characteristicList'] = characteristicList;
     }
 
     else if (this.item.type == "cargo") {
@@ -173,6 +159,11 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
     data.effects = this._handleEffects();
     data.enrichment = await this._handleEnrichment();
     data.fromEffect = this.item.fromEffect;
+    if (data.effects.temporary.length)
+    {
+      ui.notifications.warn(game.i18n.format("SHEET.ItemSheetEditableDisabled", {effects: data.effects.temporary.map(i => i.name).join(", ")}))
+      this.options.editable = false;
+    }
     return data;
   }
 
@@ -318,17 +309,8 @@ export default class ItemSheetWfrp4e extends WarhammerItemSheet
   // characteristics for that career remains valid.
   _onCharCheckboxClick(event) {
     this._onSubmit(event);
-    let charChanged = $(event.currentTarget).attr("name")
-
-    let characteristicList = foundry.utils.duplicate(this.item.characteristics);
-
-    // If the charChanged is already in the list, remove it
-    if (characteristicList.includes(charChanged))
-      characteristicList.splice(characteristicList.findIndex(c => c == charChanged));
-    else // If it isn't in the list, add it
-      characteristicList.push(charChanged);
-
-    this.item.update({ 'system.characteristics': characteristicList })
+    let charChanged = event.currentTarget.dataset.name;
+    this.item.update({ [`system.characteristics.${charChanged}`]: !this.item.system.characteristics[charChanged] });
   }
 
   _onCheckboxClick(event) {

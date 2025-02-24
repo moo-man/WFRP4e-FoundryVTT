@@ -3,11 +3,12 @@ let fields = foundry.data.fields;
 
 export class VehicleModModel extends PhysicalItemModel
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.vehicleMod"];
     static defineSchema() 
     {
         let schema = super.defineSchema();
         schema.modType = new fields.SchemaField({
-            value : new fields.StringField({})
+            value : new fields.StringField({choices: game.wfrp4e.config.modTypes})
         })
         return schema;
     }

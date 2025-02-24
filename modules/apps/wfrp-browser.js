@@ -320,12 +320,17 @@ export default class BrowserWfrp4e extends Application {
           }
             break;
 
-          case "characteristics":
           case "skills":
           case "talents":
             if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
               filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].value.every(value => { return i.system[filter].find(v => v.toLowerCase().includes(value.toLowerCase())) })))
             break;
+
+            
+          case "characteristics":
+            if (this.filters.dynamic[filter].value.length && this.filters.dynamic[filter].value.some(x => x))
+              filteredItems = filteredItems.filter(i => !i.system[filter] || (i.system[filter] && this.filters.dynamic[filter].value.every(value => { return i.system[filter][value.toLowerCase()]})))
+              break;
 
           case "twohanded":
           case "rollable":

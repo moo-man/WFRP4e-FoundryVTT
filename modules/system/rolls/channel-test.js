@@ -7,8 +7,9 @@ export default class ChannelTest extends TestWFRP {
     if (!data)
       return
 
-    this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.data.preData.malignantInfluence = data.malignantInfluence
+    this.data.preData.malignantInfluence = data.malignantInfluence;
+    this.data.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    this.data.preData.ingredientMode = data.ingredientMode ?? "none";
     this.data.preData.skill = data.skill?.id;
     this.data.context.channelUntilSuccess = data.channelUntilSuccess
 
@@ -112,8 +113,81 @@ export default class ChannelTest extends TestWFRP {
 
     miscastCounter += this._checkInfluences() || 0
     this._handleMiscasts(miscastCounter)
-    this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
+    this.result.tooltips.miscast = "<ul style='text-align: left'>" + this.result.tooltips.miscast.map(t => `<li>${t}</li>`).join("") + "</ul>";
   }
+
+  computeTables()
+  {
+    super.computeTables();
+    if (this.result.criticalchannell)
+    {
+      // Not really a table?
+      this.result.tables.criticalchannell = {
+        label : this.result.criticalchannell,
+        class : "critical-roll",
+      }
+    }
+    if (this.result.minormis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.minormis,
+        class : "fumble-roll",
+        key : "minormis"
+      }
+    }
+    if (this.result.nullminormis)
+    {
+      this.result.tables.nullminormis = {
+        label : this.result.nullminormis,
+        class : "fumble-roll",
+        key : "minormis",
+        nulled : true
+      }
+    }
+    if (this.result.majormis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.majormis,
+        class : "fumble-roll",
+        key : "majormis",
+      }
+    }
+    if (this.result.nullmajormis)
+    {
+      this.result.tables.nullmajormis = {
+        label : this.result.nullmajormis,
+        class : "fumble-roll",
+        key : "majormis",
+        nulled : true
+      }
+    }
+    if (this.result.catastrophicmis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.catastrophicmis,
+        class : "fumble-roll",
+        key : "catastrophicmis",
+      }
+    }
+    if (this.result.nullcatastrophicmis)
+    {
+      this.result.tables.nullcatastrophicmis = {
+        label : this.result.nullcatastrophicmis,
+        class : "fumble-roll",
+        key : "nullcatastrophicmis",
+        nulled : true
+      }
+    }
+    if (this.result.grimoiremiscast)
+    {
+      this.result.tables.grimoiremiscast = {
+        label : this.result.grimoiremiscast,
+        class : "fumble-roll",
+        key : "grimoire-miscast",
+      }
+    }
+  }
+
 
   _checkInfluences()
   {
@@ -138,7 +212,7 @@ export default class ChannelTest extends TestWFRP {
     
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-        if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+        if (this.preData.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
           await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
           this.result.ingredientConsumed = true;
           ChatMessage.create({ speaker: this.data.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
@@ -169,7 +243,7 @@ export default class ChannelTest extends TestWFRP {
       }
 
     //@HOUSE
-    if(this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
+    if(this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.result.ingredientConsumed && this.succeeded) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       SL = Number(SL) * 2
     }

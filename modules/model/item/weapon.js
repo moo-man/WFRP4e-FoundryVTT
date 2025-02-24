@@ -11,6 +11,7 @@ let fields = foundry.data.fields;
  * @mixes PropertiesMixin
  */
 export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
+    static LOCALIZATION_PREFIXES = ["WH.Models.weapon"];
     static defineSchema() {
         let schema = super.defineSchema();
         schema.damage = new fields.SchemaField({
@@ -18,10 +19,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             dice: new fields.StringField({ initial: "" })
         });
         schema.weaponGroup = new fields.SchemaField({
-            value: new fields.StringField({ initial: "basic" })
+            value: new fields.StringField({ initial: "basic", blank : true, choices : game.wfrp4e.config.weaponGroups})
         });
         schema.reach = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank : true, choices : game.wfrp4e.config.weaponReaches })
         });
         schema.range = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })
@@ -30,13 +31,13 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             value: new fields.StringField({ initial: "" })
         });
         schema.modeOverride = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank: true, choices : game.wfrp4e.config.weaponTypes })
         });
         schema.twohanded = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false })
         });
         schema.ammunitionGroup = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.StringField({ initial: "", blank : true, choices : game.wfrp4e.config.ammunitionGroups })
         });
         schema.currentAmmo = new fields.SchemaField({
             value: new fields.StringField({ initial: "" })
@@ -230,14 +231,17 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     get properties() {
-        if (this._properties)
+        // Kinda jank, but if some properties have been added by scripts, we need to recreate the properties object
+        let _totalProperties = this.qualities.value.length + this.flaws.value.length + (this.ammo?.system.properties._totalProperties || 0);
+        if (this._properties && this._properties._totalProperties == _totalProperties)
         {
             return this._properties;
         }
 
         let properties = super.properties;
-        properties.unusedQualities = {},
-        properties.inactiveQualities = {}
+        properties.unusedQualities = {};
+        properties.inactiveQualities = {};
+        properties._totalProperties = _totalProperties;
 
         //TODO: Don't like having to check for type here
         if (this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
@@ -446,7 +450,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
    * @return {Number} Numeric formula evaluation
    */
     computeWeaponFormula(type, mount) {
-        let formula = this[type].value || 0
+        let formula = this[type].value || "0"
         let actorToUse = this.parent.actor
         try {
             formula = formula.toLowerCase();
@@ -467,8 +471,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
             return (0, eval)(formula);
         }
-        catch
+        catch (e)
         {
+            console.error(`computeWeaponFormula from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
             return formula
         }
     }

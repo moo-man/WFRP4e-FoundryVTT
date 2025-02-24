@@ -123,7 +123,7 @@ export class CharacterModel extends StandardActorModel {
           let availableCharacteristics = career.system.characteristics
           for (let char in this.characteristics) 
           {
-            if (availableCharacteristics.includes(char))
+            if (availableCharacteristics[char])
             {
                 this.characteristics[char].career = true;
                 if (this.characteristics[char].advances >= career.system.level.value * 5) 

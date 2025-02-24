@@ -9,11 +9,12 @@ let fields = foundry.data.fields;
  */
 export class TrappingModel extends PropertiesMixin(EquippableItemModel)
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.trapping"];
     static defineSchema() 
     {
         let schema = super.defineSchema();
         schema.trappingType = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({choices: game.wfrp4e.config.trappingTypes})
         }),
         schema.spellIngredient = new fields.SchemaField({
             value: new fields.StringField()
@@ -87,7 +88,7 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
       super.migrateData(data);
 
       if (data.worn) {
-        data.equipped.value = data.worn;
+        data.equipped = {value: data.worn};
       }
     }
 }

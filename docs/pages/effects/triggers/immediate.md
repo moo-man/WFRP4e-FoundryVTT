@@ -30,6 +30,8 @@ If an Effect has no other scripts or changes than their immediate scripts, it sh
 1. When the Immediate trigger is selected, a checkbox is shown for whether the effect should be deleted. 
 2. The script can `return false` to denote that the effect should be deleted. 
 
+Additionally, if the effect is owned by the Item, you can set `args.options.scriptAborted` to prevent that Item from being created.
+
 ## Examples
 
 ### Stun

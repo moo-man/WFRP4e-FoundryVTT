@@ -1,0 +1,12 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.SL.fields.target value=source.system.SL.target}}
+    {{formGroup fields.test.fields.value value=source.system.test.value placeholder=(localize 'TestPlaceholder')}}
+    {{formGroup fields.difficulty.fields.value value=source.system.difficulty.value}}
+    {{formGroup fields.negativePossible.fields.value value=source.system.negativePossible.value}}
+    {{formGroup fields.failingDecreases.fields.value value=source.system.failingDecreases.value}}
+    {{formGroup fields.completion.fields.value value=source.system.completion.value}}
+    {{#if (isGM)}}
+    {{formGroup fields.hide.fields.test value=source.system.hide.test}}
+    {{formGroup fields.hide.fields.progress value=source.system.hide.progress}}
+    {{/if}}
+</section>

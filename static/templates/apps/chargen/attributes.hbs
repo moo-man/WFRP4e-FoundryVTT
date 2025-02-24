@@ -74,13 +74,15 @@
 
       <p class="centered">{{localize "CHARGEN.Attributes.CharacteristicAdvances"}}</p>
       <div class="flexrow">
-        {{#each data.items.career.system.characteristics as |characteristic ch|}}
-        <div class="flexcol allocation-input">
-            <h4>{{configLookup "characteristics" characteristic}}</h4>
-            {{#with (lookup ../context.characteristics characteristic)}}
-            <input class="ch-advance" value="{{advances}}" data-ch="{{../this}}" type="number">
+        {{#each data.items.career.system.characteristics}}
+            {{#if this}}
+            <div class="flexcol allocation-input">
+            <h4>{{configLookup "characteristics" @key}}</h4>
+            {{#with (lookup ../context.characteristics @key)}}
+              <input class="ch-advance" value="{{advances}}" data-ch="{{@key}}" type="number">
             {{/with}}
-        </div>
+          </div>
+            {{/if}}
           {{/each}}
       </div>
     </div>

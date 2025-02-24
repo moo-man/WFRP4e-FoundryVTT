@@ -29,6 +29,7 @@
     "TYPES.Item.vehicleMod" : "Vehicle Modification",
     "TYPES.Item.vehicleTest" : "Vehicle Crew Test",
     "TYPES.Item.vehicleRole" : "Vehicle Role",
+    "TYPES.Item.template" : "Template",
     
     "Targets" : "Targets",
     "Trapping" : "Trapping",
@@ -55,6 +56,11 @@
     "SETTINGS.AdvantageMaxHint" : "Cap Advantage at a pre-arranged limit, such as 2, 4 or more.",
     "SETTINGS.CapAdvIB" : "Cap Advantage at IB",
     "SETTINGS.CapAdvIBHint" : "Sets the max value of Advantage as the character's Initiative Bonus. Overrides the Advantage Cap setting.",
+    "SETTINGS.SLMethod" : "SL Calculation Method",
+    "SETTINGS.SLMethodHint" : "Configure how SL is calculated in Tests",
+    "SETTINGS.SLDefault" : "Default",
+    "SETTINGS.SLFast" : "Fast SL",
+    "SETTINGS.SLDOS" : "Degrees of Success",
     "SETTINGS.FastSL" : "Fast SL",
     "SETTINGS.FastSLHint" : "Determine SL with the Fast SL optional rule as described on page 152.",
     "SETTINGS.TestsAbove100" : "Tests Above 100%",
@@ -97,6 +103,8 @@
     "SETTINGS.UIACritsModHint" : "Change the amount Critical Hits are modified (using Up In Arms rules as described on page 81)",
     "SETTINGS.UIAShields" : "Up In Arms Shield Property",
     "SETTINGS.UIAShieldsHint" : "Change the Shield property as specified in Up In Arms page 90",
+    "SETTINGS.UIABleeding" : "Up In Arms Bleeding Condition",
+    "SETTINGS.UIABleedingHint" : "Change Bleeding condition as specified in Up In Arms page 80",
     "SETTINGS.WeaponLength" : "Weapon Length",
     "SETTINGS.WeaponLengthHint" : "Use weapon length to apply modifiers as described by the rule on page 297.",
     "SETTINGS.SoundEffects" : "Sound Effect Path",
@@ -145,7 +153,7 @@
     "SETTINGS.MooConditionTriggers" : "Condition Triggers",
     "SETTINGS.MooConditionTriggersHint" : "Conditions activate at the end of the character's turn, instead of the end of the round.",
     "SETTINGS.MooCritModifiers" : "Critical Table Modifiers",
-    "SETTINGS.MooCritMOdifiersHint" : "When you take Damage past 0 Wounds, Add or Subtract 10 from the Critical Hit Table for every point of Damage difference from your Toughness Bonus.<br><br>Ex. I have 4 Wounds left, 50 Toughness. I take 12 Damage. That would go 8 past 0. With a TB of 5, that would result in a +30 to the rolled critical.<br><br>Ex. I have 4 Wounds left, 50 Toughness, I take 5 Damage. That would go 1 past 0. With a TB of 5, that would result in a -40 to the rolled critical.",
+    "SETTINGS.MooCritModifiersHint" : "When you take Damage past 0 Wounds, Add or Subtract 10 from the Critical Hit Table for every point of Damage difference from your Toughness Bonus.<br><br>Ex. I have 4 Wounds left, 50 Toughness. I take 12 Damage. That would go 8 past 0. With a TB of 5, that would result in a +30 to the rolled critical.<br><br>Ex. I have 4 Wounds left, 50 Toughness, I take 5 Damage. That would go 1 past 0. With a TB of 5, that would result in a -40 to the rolled critical.",
     "SETTINGS.MooSLDamage" : "Opposed Damage Calculation",
     "SETTINGS.MooSLDamageHint" : "Opposed Damage calculation is based only on the attacker's SL, instead of the difference between attacker and defender",
     "SETTINGS.MooRangedDamage" : "Ranged Damage Modification",
@@ -211,6 +219,10 @@
     "SHEET.CareerSkill" : "Changing Career Skill",
     "SHEET.CareerSkillPrompt" : "You are changing the specialization of a skill in your current career. Do you want to apply this change to the career as well?",
     "SHEET.CareerSkillNotif" : "Changing {oldName} to {newName} in {career}",
+    "SHEET.LoadingSkills" : "Loading Skills",
+    "SHEET.SkillSpecialization" : "Skill Specialisation",
+    "SHEET.SkillSpecializationText" : "Select specialisation, if no selection is made, enter one manually.",
+    "SHEET.SkillSpecializationEnter" : "Enter Skill Specialisation",
     "SHEET.SortItems" : "Sort Items",
     "SHEET.ArmourDamaged" : "Armour Damaged by 1",
     "SHEET.ArmourRepaired" : "Armour Repaired by 1",
@@ -220,6 +232,12 @@
     "SHEET.Collapse" : "Collapse",
     "SHEET.TemporaryEffectHint" : "These Active Effects come from the owning Actor. To interact with it, do so through the Actor's sheet",
     "SHEET.ExperienceLog" : "Experience Log",
+    "Sheet.RollIncome" : "Roll Income",
+    "SHEET.ItemSheetEditableDisabled" : "Editing this Item has been disabled while under the effects of {effects}. Disable or delete these effects on the owning Actor.",
+    "SHEET.AlterName" : "Alter Name",
+    "SHEET.SpecialisationAbbrev" : "Spec.",
+    "SHEET.TemplateSpecialisationTooltip" : "How many specialisations to pick (e.g. \"Melee\" and \"2\" corresponds to \"Melee (any two)\")",
+    "SHEET.TemplateGroupTooltip" : "Providing a group number will give the option to choose between any other Item with the same group number.",
 
     "LOG.MemorizedSpell" : "Memorized {name}",
     "LOG.GainPrayer" : "Gained {name}",
@@ -238,6 +256,7 @@
     "SHEET.DeleteItem" : "Delete Item",
     "SHEET.RemoveItem" : "Remove Item",
     "SHEET.Encumbrance" : "Encumbrance",
+    "SHEET.EncCount" : "Encumbrance Counter",
     "SHEET.MaxEnc" : "Max Encumbered",
     "SHEET.VeryEnc" : "Very Encumbered",
     "SHEET.Encumbered" : "Encumbered",
@@ -275,6 +294,9 @@
     "SHEET.RemoveAttacker": "Remove Attacker",
     "SHEET.CannotDeleteItemEffect" : "This effect is from an Item on this Actor. Delete the Item itself or the effect from the Item's sheet.",
     "SHEET.CannotDeleteCrewEffect" : "This effect is from a Vehicle this Actor is on, and must be deleted from that Vehicle.",
+    "SHEET.Attacker" : "Attacker",
+    "SHEET.LocationAP" : "Location AP",
+    "SHEET.AppliedTemplates" : "Applied Templates",
 
     "ACTOR.BasicSkillsTitle" : "Add Basic Skills",
     "ACTOR.BasicSkillsPrompt": "Add Basic Skills?",
@@ -329,6 +351,7 @@
     "ITEM.TestSkill" : "Test Skill",
     "ITEM.Roles" : "Roles",
     "ITEM.VitalRoles" : "Vital Roles",
+    "ITEM.LearningXP" : "Learning XP",
     "as weapon": "as weapon",
     "half weapon": "half weapon",
     "third weapon": "third weapon",
@@ -750,6 +773,8 @@
     "DIALOG.ActorSelection" : "Select an Actor",
     "DIALOG.ShowTable" : "Table Visibility",
     "DIALOG.ShowTableHint": "Show table to players in sidebar and /table menu",
+    "DIALOG.LinkCareer" : "Link Career",
+    "DIALOG.LinkCareerContent" : "Link {new} with {old}? This will add the skills from {old} into {new}, preserving any specialisation choices made in the previous career.",
     "Show" : "Show",
     "Hide" : "Hide",
     "ExpChange" : "Experience Change",
@@ -1040,6 +1065,8 @@
     "MARKET.d": "d",
     "MARKET.CreditCommandNotAllowed" : "Only GMs are allowed to use this command.",
     "MARKET.PaidBy" : "Paid by:",
+    "MARKET.PaidFor": "<b>Purchased product:</b> {product}",
+    "MARKET.For": "for",
     "MARKET.ReceivedBy" : "Received by:",
     "MARKET.MoneyTransactionWrongCommand" : "Wrong syntax. Please format your command like in the following examples:",
     "MARKET.PayCommandExample" : "/pay 3gc2bp<br>/pay 450bp<br>/pay 2ss12bp4gc<br>/pay 1gc John<br>/pay 12ss Kastor Lieberung",
@@ -1451,6 +1478,7 @@
     "SHEET.Improvised": "Improvised",
     "SHEET.Stomp": "Stomp",
     "SHEET.GenerateName" : "Generate Name",
+    "SHEET.Randomize" : "Randomize",
 
     "DISEASE.IncubationFinished" : "{disease} incubation finished. ",
 
@@ -1912,6 +1940,504 @@
     "WH" : {
         "TransferType" : {
           "Crew" : "Crew"
+        },
+
+        "Models" : {
+            "ammunition" : {
+                "FIELDS" : {
+                    "ammunitionType.value" : {
+                        "label" : "Ammunition Type",
+                        "hint" : "Designates what types of Weapons can use this Ammunition"
+                    },
+                    "range.value" : {
+                        "label" : "Range",
+                        "hint" : "Modifies the Range of the Weapon using this Ammunition. e.g. Add: +2, Subtract: -2, Multiply: *2, Divide: /2"
+                    },
+                    "damage.value" : {
+                        "label" : "Damage",
+                        "hint" : "Modifies the Damage of the Weapon using this Ammunition. See Range examples above."
+                    },
+                    "damage.dice" : {
+                        "label" : "Dice",
+                        "hint" : "Add a dice roll to Damage"
+                    },
+                    "special.value" : {
+                        "label" : "Special"
+                    }
+                }
+            },
+            "armour" : {
+                "FIELDS" : {
+                    "armorType.value" : {
+                        "label" : "Armour Type"
+                    },
+                    "AP" : {
+                        "head" : {
+                            "label" : "Head"
+                        },
+                        "lArm" : {
+                            "label" : "Left Arm"
+                        },
+                        "rArm" : {
+                            "label" : "Right Arm"
+                        },
+                        "lLeg" : {
+                            "label" : "Left Leg"
+                        },
+                        "rLeg" : {
+                            "label" : "Right Leg"
+                        },
+                        "body" : {
+                            "label" : "Body"
+                        }
+                    },
+                    "special.value" : {
+                        "label" : "Special",
+                        "hint" : "Miscellaneous text that will show in the chat card."
+                    }
+                }
+            },
+            "career" : {
+                "FIELDS" : {
+                    "class.value" : {
+                        "label" : "Class"
+                    },
+                    "careergroup.value" : {
+                        "label" : "Career Group"
+                    },
+                    "level.value" : {
+                        "label" : "Career Level"
+                    },
+                    "status" : {
+                        "tier" : {
+                            "label" : "Tier"
+                        },
+                        "standing" : {
+                            "label" : "Standing "
+                        }
+                    }
+                }
+            },
+            "cargo" : {
+                "FIELDS" : {
+                    "tradeType" : {
+                        "label" : "Trade Type"
+                    },
+                    "cargoType.value" : {
+                        "label" : "Cargo Type"
+                    },
+                    "unitPrice.value" : {
+                        "label" : "Unit Price"
+                    },
+                    "origin.value" : {
+                        "label" : "Origin"
+                    },
+                    "quality" : {
+                        "value" : {
+                            "label" : "Quality"
+                        }
+                    }
+                }
+            },
+            "container" : {
+                "FIELDS" : {
+                    "wearable.value" : {
+                        "label" : "Wearable"
+                    },
+                    "carries.value" : {
+                        "label" : "Carries"
+                    },
+                    "countEnc.value" : {
+                        "label" : "Count Encumbrance",
+                        "hint" : "Add this encumbrance to character's encumbrance (uncheck if not carried around e.g. a cart)"
+                    }
+                }
+            },
+            "disease" : {
+                "FIELDS" : {
+                    "contraction.value" : {
+                        "label" : "Contraction"
+                    },
+                    "incubation.value" : {
+                        "label" : "Incubation"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "symptoms.value" : {
+                        "label" : "Symptoms"
+                    },
+                    "permanent.value" : {
+                        "label" : "Permanent"
+                    }
+                }
+            },
+            "extendedTest" : {
+                "FIELDS" : {
+                    "SL.target" : {
+                        "label" : "Target SL"
+                    },
+                    "test.value" : {
+                        "label" : "Test"
+                    },
+                    "difficulty.value" : {
+                        "label" : "Default Difficulty"
+                    },
+                    "negativePossible.value" : {
+                        "label" : "Negative SL Possible",
+                        "hint" : "Allow the progress of this Test to go below 0"
+                    },
+                    "failingDecreases.value" : {
+                        "label" : "Failing Decreases Progress",
+                        "hint" : "Reduce Progress on failed Tests"
+                    },
+                    "completion.value" : {
+                        "label" : "On Completion",
+                        "hint" : "Once complete, perform this action"
+                    },
+                    "hide.test" : {
+                        "label" : "Hide Test",
+                        "hint" : "Hide this Test from Players"
+                    },
+                    "hide.progress" : {
+                        "label" : "Hide Progress",
+                        "hint" : "Hide Test progress from Players"
+                    }
+                }
+            },
+            "money" : {
+                "FIELDS" : {
+                    "coinValue.value" : {
+                        "label" : "Coin Value",
+                        "hint" : "Value of this coin type (in brass pennies)."
+                    }
+                }
+            },
+            "skill" : {
+                "FIELDS" : {
+                    "advanced.value" : {
+                        "label" : "Skill Type"
+                    },
+                    "grouped.value" : {
+                        "label" : "Specialization"
+                    },
+                    "characteristic.value" : {
+                        "label" : "Characteristic"
+                    },
+                    "modifier.value" : {
+                        "label" : "Modifier"
+                    },
+                    "advances.force" : {
+                        "label" : "Force Advancement Indicator",
+                        "hint" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience."
+                    },
+                    "advances.costModifier" : {
+                        "label" : "XP Cost Modifier"
+                    }
+                }
+            },
+            "talent" : {
+                "FIELDS" : {
+                    "tests.value" : {
+                        "label" : "Tests"
+                    },
+                    "max.value" : {
+                        "label" : "Max"
+                    },
+                    "advances.force" : {
+                        "label" : "Force Advancement Indicator",
+                        "hint" : "Show the Advancement Indicator regardless of career, which will allow you to automate spending experience."
+                    }
+                }
+            },
+            "mutation" : {
+                "FIELDS" : {
+                    "mutationType.value" : {
+                        "label" : "Mutation Type"
+                    }
+                }
+            },
+            "critical" : {
+                "FIELDS" : {
+                    "wounds.value" : {
+                        "label" : "Wounds"
+                    },
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            },
+            "injury" : {
+                "FIELDS" : {
+                    "duration" : {
+                        "value" : {
+                            "label": "Duration"
+                        },
+                        "permanent" : {
+                            "label" : "Permanent"
+                        }
+                    },
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a left or right location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            },
+            "prayer" : {
+                "FIELDS" : {
+                    "type.value" : {
+                        "label" : "Type"
+                    },
+                    "god.value" : {
+                        "label" : "God"
+                    },
+                    "range.value" : {
+                        "label" : "Range"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "target" : {
+                        "value" : {
+                            "label" : "Target"
+                        },
+                        "aoe" : {
+                            "label" : "Area of Effect"
+                        },
+                        "extendableAoE" : {
+                            "label" : "Extendable AoE",
+                            "hint" : "Can the AoE be enlarged with extra SL?"
+                        }
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        },
+                        "addSL" : {
+                            "label" : "Add SL",
+                            "hint" : "Add SL to Damage value"
+                        }
+                    },
+                    "overcast" : {
+                        "enabled" : {
+                            "label" : "Extra Overcast Options"
+                        }
+                    }
+                }
+            },
+            "spell" : {
+                "FIELDS" : {
+                    "cn.value" : {
+                        "label" : "Casting Number"
+                    },
+                    "lore.value" : {
+                        "label" : "Lore"
+                    },
+                    "skill.value" : {
+                        "label" : "Casting Skill"
+                    },
+                    "wind.value" : {
+                        "label" : "Channelling Skill"
+                    },
+                    "ritual.value" : {
+                        "label" : "Ritual"
+                    },
+                    "ritual.xp" : {
+                        "label" : "Learning XP"
+                    },
+                    "range.vortex" : {
+                        "label" : "Random Vortex"
+                    },
+                    "range.value" : {
+                        "label" : "Range"
+                    },
+                    "duration.value" : {
+                        "label" : "Duration"
+                    },
+                    "duration.extendable" : {
+                        "label" : "Extendable Duration",
+                        "hint" : "When the spell should end, you may make a Willpower Test to extend the Duration for +1 round."
+                    },
+                    "magicMissile.value" : {
+                        "label" : "Magic Missile"
+                    },
+
+                    "target" : {
+                        "value" : {
+                            "label" : "Target"
+                        },
+                        "aoe" : {
+                            "label" : "Area of Effect"
+                        }
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        }
+                    },
+                    "overcast" : {
+                        "enabled" : {
+                            "label" : "Extra Overcast Options"
+                        }
+                    }
+                }
+            },
+            "trait" : {
+                "FIELDS" : {
+                    "category" : {
+                        "label" : "Category"
+                    },
+                    "rollable" : {
+                        "value" : {
+                            "label" : "Rollable"
+                        },
+                        "damage" : {
+                            "label" : "Does Damage"
+                        },
+                        "skill" : {
+                            "label" : "Skill"
+                        },
+                        "rollCharacteristic" : {
+                            "label" : "Roll Characteristic"
+                        },
+                        "bonusCharacteristic" : {
+                            "label" : "Bonus Characteristic"
+                        },
+                        "dice" : {
+                            "label" : "Dice Roll"
+                        },
+                        "defaultDifficulty" : {
+                            "label" : "Difficulty"
+                        },
+                        "SL" : {
+                            "label" : "Add SL"
+                        },
+                        "attackType" : {
+                            "label" : "Attack Type"
+                        }
+                    },
+                    "specification.value" : {
+                        "label" : "Specification"
+                    }
+                }
+            },
+            "trapping" : {
+                "FIELDS" : {
+                    "trappingType.value" : {
+                        "label" : "Trapping Type"
+                    }
+                }
+            },
+            "vehicleMod" : {
+                "FIELDS" : {
+                    "modType.value" : {
+                        "label" : "Modification Type"
+                    }
+                }
+            },
+            "vehicleRole" : {
+                "FIELDS" : {
+                    "test" : {
+                        "label" : "Test Skill"
+                    }
+                }
+            },
+            "vehicleTest" : {
+                "FIELDS" : {
+                    "roles" : {
+                        "value" : {
+                            "label" : "Roles"
+                        },
+                        "vital" : {
+                            "label" : "Vital Roles"
+                        }
+                    },
+                    "handling" : {
+                        "label" : "Vehicle Handling"
+                    }
+                }
+            },
+            "weapon" : {
+                "FIELDS" : {
+                    "weaponGroup.value" : {
+                        "label" : "Weapon Group"
+                    },
+                    "skill.value" : {
+                        "label" : "Skill"
+                    },
+                    "modeOverride.value" : {
+                        "label" : "Attack Type"
+                    },
+                    "damage" : {
+                        "value" : {
+                            "label" : "Formula"
+                        },
+                        "dice" : {
+                            "label" : "Dice",
+                            "hint" : "Add a dice roll to Damage"
+                        }
+                    },
+                    "reach" : {
+                        "value" : {
+                            "label" : "Reach"
+                        }
+                    },
+                    "range" : {
+                        "value" : {
+                            "label" : "Range"
+                        }
+                    },
+                    "ammunitionGroup" : {
+                        "value" : {
+                            "label" : "Ammunition Group"
+                        }
+                    },
+                    "consumesAmmo" : {
+                        "value" : {
+                            "label" : "Consumes Ammo"
+                        }
+                    },
+                    "twohanded" : {
+                        "value" : {
+                            "label" : "Two-handed"
+                        }
+                    },
+                    "special" : {
+                        "value" : {
+                            "label" : "Special"
+                        }
+                    }
+                }
+            }
+        },
+
+        "Components" : {
+            "Locational" : {
+                "FIELDS" : {
+                    "prompt" : {
+                        "label" : "Prompt Location",
+                        "hint" : "Prompt for a location when added to an Actor."
+                    },
+                    "location.value" : {
+                        "label" : "Location"
+                    }
+                }
+            }
         }
       }
 }

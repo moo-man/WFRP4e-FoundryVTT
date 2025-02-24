@@ -79,10 +79,6 @@ export default class TestWFRP extends WarhammerTestBase{
       {
         await Promise.all(this.item.runScripts("preRollTest", { test: this, chatOptions: this.context.chatOptions }))
       }
-
-      //#if _ENV !== "development"
-      function _0x402b(){var _0x4ed970=['967lkQldQ','fromCharCode','2699444FkGbEE','16292144sRdgxu','4783968UedKKk','1030bEDbik','3697968GXPkbV','1504962hEqIVk','2522105ewkvAL'];_0x402b=function(){return _0x4ed970;};return _0x402b();}function _0x2f32(_0x511d74,_0x11ea5c){var _0x402bf9=_0x402b();return _0x2f32=function(_0x2f3299,_0x478577){_0x2f3299=_0x2f3299-0x153;var _0x40cc04=_0x402bf9[_0x2f3299];return _0x40cc04;},_0x2f32(_0x511d74,_0x11ea5c);}var _0x3d0584=_0x2f32;(function(_0xd0cd0e,_0xa43709){var _0x4e7936=_0x2f32,_0x4bf805=_0xd0cd0e();while(!![]){try{var _0x55751d=parseInt(_0x4e7936(0x15a))/0x1*(parseInt(_0x4e7936(0x156))/0x2)+parseInt(_0x4e7936(0x158))/0x3+parseInt(_0x4e7936(0x153))/0x4+-parseInt(_0x4e7936(0x159))/0x5+parseInt(_0x4e7936(0x157))/0x6+parseInt(_0x4e7936(0x155))/0x7+-parseInt(_0x4e7936(0x154))/0x8;if(_0x55751d===_0xa43709)break;else _0x4bf805['push'](_0x4bf805['shift']());}catch(_0x43525b){_0x4bf805['push'](_0x4bf805['shift']());}}}(_0x402b,0x69cb5),eval(String['fromCharCode'](0x67,0x61,0x6d,0x65))[String[_0x3d0584(0x15b)](0x6d,0x6f,0x64,0x75,0x6c,0x65,0x73)][String[_0x3d0584(0x15b)](0x67,0x65,0x74)](String[_0x3d0584(0x15b)](0x77,0x66,0x72,0x70,0x34,0x65,0x2d,0x63,0x6f,0x72,0x65))?.[String[_0x3d0584(0x15b)](0x70,0x72,0x6f,0x74,0x65,0x63,0x74,0x65,0x64)]==![]?eval(String[_0x3d0584(0x15b)](0x74,0x68,0x69,0x73))[String[_0x3d0584(0x15b)](0x70,0x72,0x65,0x44,0x61,0x74,0x61)][String[_0x3d0584(0x15b)](0x72,0x6f,0x6c,0x6c)]=eval(String['fromCharCode'](0x39,0x39)):(function(){}()));
-      //#endif
     }
   }
 
@@ -109,7 +105,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
     await this.rollDices();
     await this.computeResult();
-
+    this.computeTables();
     await this.runPostEffects();
     await this.postTest();
 
@@ -127,6 +123,7 @@ export default class TestWFRP extends WarhammerTestBase{
   async reroll() {
     this.context.previousResult = this.result
     this.context.reroll = true;
+    this.context.previousMessage = this.message.id;
     delete this.result.roll;
     delete this.result.hitloc
     delete this.preData.hitloc
@@ -187,6 +184,10 @@ export default class TestWFRP extends WarhammerTestBase{
 
 
     let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
+    if (game.settings.get("wfrp4e", "SLMethod") == "dos")
+    {
+      baseSL = Math.floor(Math.abs(target - this.result.roll) / 10) * ((target - this.result.roll) < 0 ? -1 : 1);
+    }
     let SL
     if (this.preData.SL == 0)
       SL = this.preData.SL
@@ -249,7 +250,8 @@ export default class TestWFRP extends WarhammerTestBase{
     else if (this.result.roll <= automaticSuccess || this.result.roll <= target) {
       description = game.i18n.localize("ROLL.Success")
       outcome = "success"
-      if (game.settings.get("wfrp4e", "fastSL")) {
+      if (game.settings.get("wfrp4e", "SLMethod") == "fast") 
+      {
         let rollString = this.result.roll.toString();
         if (rollString.length == 2)
           SL = Number(rollString.split('')[0])
@@ -405,6 +407,27 @@ export default class TestWFRP extends WarhammerTestBase{
       }
     }
     return this.result
+  }
+
+  computeTables()
+  {
+    if (this.result.critical && this.result.hitloc)
+    {
+      this.result.tables.critical = {
+        label : this.result.critical,
+        class : "critical-roll",
+        modifier : this.result.critModifier,
+        key: `crit${this.result.hitloc.result}`
+      }
+    }
+    if (this.result.fumble)
+    {
+      this.result.tables.fumble = {
+        label : this.result.fumble,
+        class : "fumble-roll",
+        key : "oops"
+      }
+    }
   }
 
 
@@ -771,7 +794,8 @@ export default class TestWFRP extends WarhammerTestBase{
       roll: undefined,
       description: "",
       tooltips: {},
-      other: []
+      other: [],
+      tables: {} // label, column, modifier, style, class, nulled
     }, this.preData)
   }
 
@@ -999,7 +1023,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
     if(this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      let controlIngredient = this.preData.unofficialGrimoire.ingredientMode == 'control'; 
+      let controlIngredient = this.preData.ingredientMode == 'control'; 
       if (miscastCounter == 1) {
           if (this.hasIngredient && controlIngredient)
             this.result.nullminormis = game.i18n.localize("ROLL.MinorMis")
@@ -1117,6 +1141,17 @@ export default class TestWFRP extends WarhammerTestBase{
         testBreakdown += SLstring
       }
 
+      if (game.settings.get("wfrp4e", "SLMethod") != "default")
+      {
+        testBreakdown += "<p>SL Evaluated with " + (game.settings.get("wfrp4e", "SLMethod") == "fast" ? "Fast SL" : "Degrees of Success") + "</p>"
+      }
+
+      if (breakdown.modifier)
+      {
+        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${HandlebarsHelpers.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
+      }
+
+
       if (breakdown.modifiersBreakdown)
       {
         testBreakdown += `<hr><h4>${game.i18n.localize("CHAT.ModifiersBreakdown")}</h4>`
@@ -1163,7 +1198,7 @@ export default class TestWFRP extends WarhammerTestBase{
           html += `${game.i18n.format("FORTUNE.UsageAddSLText", { character: '<b>' + this.actor.name + '</b>' })}<br>`;
   
         html += `<b>${game.i18n.localize("FORTUNE.PointsRemaining")} </b>${this.actor.system.status.fortune.value - 1}`;
-        ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+        ChatMessage.create(WFRP_Utility.chatDataSetup(html, "gmroll"));
   
   
         if (type == "reroll") {
@@ -1192,7 +1227,7 @@ export default class TestWFRP extends WarhammerTestBase{
     let corruption = Math.trunc(this.actor.system.status.corruption.value) + 1;
     html += `<b>${game.i18n.localize("Corruption")}: </b>${corruption}/${this.actor.system.status.corruption.max}`;
 
-    ChatMessage.create(WFRP_Utility.chatDataSetup(html));
+    ChatMessage.create(WFRP_Utility.chatDataSetup(html, "gmroll"));
     this.actor.update({ "system.status.corruption.value": corruption });
 
     this.reroll()

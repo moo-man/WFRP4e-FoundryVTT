@@ -377,7 +377,12 @@ export default class CharGenWfrp4e extends FormApplication {
         let actorItems = this.actor.items;
         this.actor.items = [];
         let document = await Actor.create(this.actor, {skipItems : true});
-        await document.createEmbeddedDocuments("Item", actorItems)
+        await document.createEmbeddedDocuments("Item", actorItems, {skipSpecialisationChoice : true})
+        for(let i of document.items.contents)
+        {
+          // Run onCreate scripts
+          await i._onCreate(i._source, {}, game.user.id);
+        }
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }
@@ -387,12 +392,17 @@ export default class CharGenWfrp4e extends FormApplication {
         for(let i of tempActor.items.contents)
         {
           // Run preCreate scripts
-          await i._preCreate(i._source, {}, game.user.id);
+          await i._preCreate(i._source, {skipSpecialisationChoice : true}, game.user.id);
         }
-        const payload =  {id : game.user.id, data : tempActor.toObject()}
+        const payload =  {id : game.user.id, data : tempActor.toObject(), options : {skipSpecialisationChoice : true}}
         let id = await SocketHandlers.executeOnUserAndWait("GM", "createActor", payload);
         let actor = game.actors.get(id);
         if (actor && actor.isOwner) {
+          for(let i of actor.items.contents)
+          {
+            // Run onCreate scripts
+            await i._onCreate(i._source, {}, game.user.id);
+          }
           actor.sheet.render(true)
           localStorage.removeItem("wfrp4e-chargen")
         }

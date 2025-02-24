@@ -17,7 +17,11 @@ export default class ItemWfrp4e extends WarhammerItem
       warhammer.utility.log("Migrating Item: " + this.name, true, migration)
     }
 
-    await super._preCreate(data, options, user)
+    if (options.fromTemplate)
+    {
+        this.updateSource({[`flags.${game.system.id}.fromTemplate`] : options.fromTemplate});
+    }
+    return await super._preCreate(data, options, user)
   }
 
   async _onCreate(data, options, user)
@@ -389,7 +393,7 @@ export default class ItemWfrp4e extends WarhammerItem
     {
       let applicableEffects = Array.from(this.actor.allApplicableEffects());
       
-      return applicableEffects.find(i => i.id == this.getFlag("wfrp4e", "fromEffect"));
+      return applicableEffects.find(i => i.id && i.id == this.getFlag("wfrp4e", "fromEffect"));
     }
   }
 

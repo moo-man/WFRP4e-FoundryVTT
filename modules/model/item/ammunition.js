@@ -4,11 +4,13 @@ let fields = foundry.data.fields;
 
 export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.ammunition"];
+
     static defineSchema() 
     {
         let schema = super.defineSchema();
         schema.ammunitionType = new fields.SchemaField({
-            value: new fields.StringField()
+            value: new fields.StringField({choices : game.wfrp4e.config.ammunitionGroups})
         });
         schema.range = new fields.SchemaField({
             value: new fields.StringField()
@@ -17,9 +19,7 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
             value: new fields.StringField(),
             dice: new fields.StringField({ initial: "" })
         });
-        schema.ammunitionType = new fields.SchemaField({
-            value: new fields.StringField()
-        });
+        
         schema.special = new fields.SchemaField({
             value: new fields.StringField()
         });

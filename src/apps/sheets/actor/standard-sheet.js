@@ -18,6 +18,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       dismount : this._dismount,
       showMount : this._showMount,
       randomize: this._randomize,
+      stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
     },
   }
 
@@ -299,8 +300,8 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
       // All items referencing (inside) that container
       var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
-      cont.system.carrying = itemsInside.filter(i => i.type != "container").sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
-      cont.system.packsInside = itemsInside.filter(i => i.type == "container").sort((a, b) => a.sort - b.sort); // cont.system.packsInside -> containers the container is carrying
+      cont.system.carrying = itemsInside.filter(i => i.type != "container")//.sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
+      cont.system.packsInside = itemsInside.filter(i => i.type == "container")//.sort((a, b) => a.sort - b.sort); // cont.system.packsInside -> containers the container is carrying
       cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
         return Number(prev) + Number(cur.system.encumbrance.total);
       }, 0);
@@ -318,7 +319,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   
   _filterItemCategory(category, itemsInContainers) {
     itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.system.location?.value))
-    category.items = category.items.filter(i => !i.system.location?.value).sort((a, b) => a.sort - b.sort);
+    category.items = category.items.filter(i => !i.system.location?.value)//.sort((a, b) => a.sort - b.sort);
     category.show = category.items.length > 0
     return itemsInContainers
   }
@@ -327,7 +328,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   _addEventListeners()
   {    
     super._addEventListeners();
-    this.element.querySelector("[data-action='editCharacteristic']")?.addEventListener("change", this.constructor._onEditCharacteristic.bind(this));
+    this.element.querySelectorAll("[data-action='editCharacteristic']").forEach(e => e.addEventListener("change", this.constructor._onEditCharacteristic.bind(this)));
     this.element.querySelector("[data-action='editSpecies']")?.addEventListener("change", this.constructor._onEditSpecies.bind(this));
   }
 
@@ -340,6 +341,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
       characteristics[characteristic].initial = value;
       characteristics[characteristic].advances = 0
+      characteristics[characteristic].modifier = 0
     }
     return this.actor.update({ "system.characteristics": characteristics })
   }
@@ -448,6 +450,21 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
     catch (error) {
       warhammer.utility.log("Could not randomize: " + error, true)
+    }
+  }
+
+  static async _onStepAilment(ev)
+  {
+    ev.stopPropagation();
+    ev.preventDefault();
+    let document = (await this._getDocument(ev)) || this.document;
+
+    if (!document) return;
+
+    if (ev.button === 0) {
+      document.system.decrement();
+    } else {
+      document.system.increment();
     }
   }
 

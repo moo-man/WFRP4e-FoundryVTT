@@ -29,8 +29,11 @@ export default class AttackTest extends TestWFRP {
           impenetrable = true;
       }
       if (this.result.critical && impenetrable && this.result.roll % 2 != 0) {
-        delete this.result.critical
-        this.result.nullcritical = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`
+        if (this.result.tables.critical)
+        {
+          this.result.tables.critical.nulled = true
+          this.result.tables.critical.label = `${game.i18n.localize("CHAT.CriticalsNullified")} (${game.i18n.localize("PROPERTY.Impenetrable")})`;
+        }
       }
     }
   }
@@ -52,9 +55,6 @@ export default class AttackTest extends TestWFRP {
     }
     else // if success
     {
-      if (this.item.properties.qualities.blast)
-        this.result.other.push(`<a class='aoe-template' data-type="radius"><i class="fas fa-ruler-combined"></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)
-
       if (this.result.roll % 11 == 0)
         this.result.critical = game.i18n.localize("Critical")
 
@@ -65,6 +65,18 @@ export default class AttackTest extends TestWFRP {
       if (this.result.critical && this.item.properties.qualities.slash)
       {
           this.result.other.push(`${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(this.item.properties.qualities.slash.value)})}`)
+      }
+    }
+  }
+
+  computeTables()
+  {
+    super.computeTables();
+    if (this.result.scatter)
+    {
+      this.result.tables.scatter = {
+        label : this.result.scatter,
+        key : "scatter"
       }
     }
   }

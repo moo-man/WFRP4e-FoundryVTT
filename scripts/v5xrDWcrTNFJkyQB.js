@@ -1,27 +1,3 @@
-let choice1 = [
-    {
-        type : "skill",
-        name : "Ranged (Bow)",
-        diff : {
-            system : {
-                advances : {
-                    value : 10
-                }
-            }
-        }
-    },
-    {
-        type : "weapon",
-        name : "Longbow",
-    },
-    {
-        type : "ammunition",
-        name : "Arrow",
-    }
-]
-let choice2 = [
-]
-
 let choice = await Dialog.wait({
     title : "Option",
     content : 
@@ -36,13 +12,33 @@ let choice = await Dialog.wait({
         1 : {
             label : "Yes",
             callback : () => {
-                return choice1;
+                return [
+                    {
+                        type : "skill",
+                        name : "Ranged (Bow)",
+                        diff : {
+                            system : {
+                                advances : {
+                                    value : 10
+                                }
+                            }
+                        }
+                    },
+                    {
+                        type : "weapon",
+                        name : "Longbow",
+                    },
+                    {
+                        type : "ammunition",
+                        name : "Arrow",
+                    }
+                ];
             }
         },
         2 : {
             label : "No",
             callback : () => {
-                return choice2;
+                return [];
             }
         }
     }

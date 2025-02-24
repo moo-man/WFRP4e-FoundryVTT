@@ -24,5 +24,12 @@ export class WFRP4eActiveEffectModel extends WarhammerActiveEffectModel {
         return schema;
     }
 
+    async expandData(htmlOptions) {
+        htmlOptions.async = true;
+        const data = {description : {value : await TextEditor.enrichHTML(this.parent.description, htmlOptions)}}
+        data.description.value = data.description.value || "";
+        return data;
+    }
+
     static _avoidTestModel = WFRP4eAvoidTestModel;
 }

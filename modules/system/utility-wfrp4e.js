@@ -35,7 +35,7 @@ export default class WFRP_Utility {
     for (let char in game.wfrp4e.config.characteristics) {
       if (average) {
         // Take average - 2d10+20 -> split on +, take the 20, add 10 (average of 2d10). This assumes, perhaps erroneously, that all species will have a 2d10 randomizer
-        characteristics[char] = { value: parseInt(characteristicFormulae[char].split("+")[1]) + 10, formula: characteristicFormulae[char] }
+        characteristics[char] = { value: Roll.safeEval(characteristicFormulae[char].replace("2d10", "10")) , formula: characteristicFormulae[char] }
       }
       else {
         let roll = await new Roll(characteristicFormulae[char]).roll()
@@ -94,7 +94,7 @@ export default class WFRP_Utility {
     }
     else 
     {
-      return foundry.utils.mergeObject(duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
+      return foundry.utils.mergeObject(foundry.utils.duplicate(game.wfrp4e.config.systemEffects), foundry.utils.duplicate(game.wfrp4e.config.symptomEffects))
     }
 
   }
@@ -133,7 +133,11 @@ export default class WFRP_Utility {
     skill = await this.findBaseName(skillName, "skill");
 
     if (skill)
-      return skill;
+    {
+      let skillData = skill.toObject();
+      skillData.effects = [];
+      return new Item.implementation(skillData);
+    }
 
     throw `"${game.i18n.format("ERROR.NoSkill", {skill: skillName})}"`;
   }
@@ -476,32 +480,35 @@ export default class WFRP_Utility {
    * Returns all basic skills from the skills compendium
    */
   static async allBasicSkills() {
-    let returnSkills = [];
+    let skillData = []
 
     const packs = game.wfrp4e.tags.getPacksWithTag(["skill"])
 
     if (!packs.length)
       return []
 
-    for (let pack of packs) {
-      let items
-      await pack.getDocuments().then(content => items = content.filter(i => i.type == "skill"));
-      for (let i of items) {
-        if (i.system.advanced.value == "bsc") {
-          if (i.system.grouped.value != "noSpec") {
-            let skill = i.toObject()
-            let startParen = skill.name.indexOf("(")
-            skill.name = skill.name.substring(0, startParen).trim();
-            if (returnSkills.filter(x => x.name.includes(skill.name)).length <= 0)
-              returnSkills.push(skill);
+    for (let pack of packs) 
+    {
+      let skills = (await pack.getDocuments({ type__in: ["skill"] })).filter(i => i.system.isBasic)
+      for (let i of skills) 
+      {
+        if (i.system.isGrouped) 
+        {
+          if (!i.specifier) 
+          {
+            let data = i.toObject();
+            data.name = i.baseName;
+            skillData.push(data)
           }
-          else
-            returnSkills.push(i.toObject())
+        }
+        else 
+        {
+          skillData.push(i.toObject())
         }
       }
     }
-    warhammer.utility.log("Found Basic Skills: ", undefined, returnSkills )
-    return returnSkills;
+    warhammer.utility.log("Found Basic Skills: ", undefined, skillData)
+    return skillData;
   }
 
   /**
@@ -603,8 +610,10 @@ export default class WFRP_Utility {
 
       chatOptions["content"] = html;
       chatOptions["type"] = 0;
-      if (html)
+      if (!foundry.utils.isEmpty(html))
+      {
         ChatMessage.create(chatOptions);
+      }
 
     }
   }
@@ -692,6 +701,8 @@ export default class WFRP_Utility {
     let payString = $(event.currentTarget).attr("data-pay")
     if (game.user.isGM)
       MarketWFRP4e.generatePayCard(payString);
+    else
+      MarketWFRP4e.handlePlayerPayment({payString});
   }
 
   static handleCreditClick(event) {

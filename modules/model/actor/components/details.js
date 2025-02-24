@@ -134,10 +134,10 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             value: new fields.NumberField({min: 1, initial : 25})
         });
         schema.description = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" })
+            value: new fields.HTMLField()
         });
         schema.gmdescription = new fields.SchemaField({
-            value: new fields.StringField({ initial: "" }),
+            value: new fields.HTMLField()
         });
         schema.price = new fields.SchemaField({
             gc: new fields.NumberField({initial : 0})

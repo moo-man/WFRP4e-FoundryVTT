@@ -4,22 +4,23 @@ let fields = foundry.data.fields;
 
 export class TraitModel extends PropertiesMixin(BaseItemModel)
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.trait"];
     static defineSchema() 
     {
         let schema = super.defineSchema();
 
-        schema.category = new fields.StringField({initial : "standard"});
+        schema.category = new fields.StringField({initial : "standard", choices : {standard : game.i18n.localize("ITEM.Standard"), vehicle : game.i18n.localize("SPEC.Vehicle")}});
 
         schema.rollable = new fields.SchemaField({
             value : new fields.BooleanField({}),
             damage : new fields.BooleanField({}),
             skill : new fields.StringField({}),
-            rollCharacteristic : new fields.StringField({}),
-            bonusCharacteristic : new fields.StringField({}),
+            rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
+            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
             dice : new fields.StringField({}),
-            defaultDifficulty : new fields.StringField({}),
+            defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
             SL : new fields.BooleanField({}),
-            attackType : new fields.StringField({initial: "melee"}),
+            attackType : new fields.StringField({initial: "melee", choices : {melee : game.i18n.localize("Melee"), ranged : game.i18n.localize("Ranged")}})
         });
 
         schema.specification = new fields.SchemaField({
@@ -136,10 +137,13 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
 
         let specification
         if (this.specification.value) {
-          if (this.rollable.bonusCharacteristic)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
+          if (this.rollable.bonusCharacteristic && this.rollable.damage)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
           {
             specification = parseInt(this.specification.value) || 0
-            specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            if (actor)
+            {
+              specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
+            }
             if (this.attackType && actor)
             {
               specification += (actor.flags[`${this.attackType}DamageIncrease`] || 0)

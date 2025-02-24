@@ -107,6 +107,7 @@ export class StandardActorModel extends BaseActorModel {
     computeDerived() {
         this.runScripts("prePrepareItems", {actor : this.parent })
         // Recompute bonuses as active effects may have changed it
+        this.computeTemplates()
         this.characteristics.compute();
         this.computeItems();
         super.computeDerived();
@@ -129,6 +130,18 @@ export class StandardActorModel extends BaseActorModel {
 
         this.runScripts("prepareData", { actor: this.parent })
 
+    }
+
+    computeTemplates()
+    {
+        let templates = this.parent.itemTypes.template
+        for(let t of templates)
+        {
+            for(let c in this.characteristics)
+            {
+                this.characteristics[c].modifier += t.system.characteristics[c]
+            }
+        }
     }
 
     computeAdvantage() {
@@ -325,7 +338,7 @@ export class StandardActorModel extends BaseActorModel {
     _handleWoundsUpdate(data, options) {
         // Prevent wounds from exceeding max
         if (foundry.utils.hasProperty(data, "system.status.wounds.value")) {
-            if (data.system.status.wounds.value > (getProperty(data, "system.status.wounds.max") || this.status.wounds.max)) {
+            if (data.system.status.wounds.value > (foundry.utils.getProperty(data, "system.status.wounds.max") || this.status.wounds.max)) {
                 data.system.status.wounds.value = this.status.wounds.max;
             }
 

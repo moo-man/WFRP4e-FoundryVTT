@@ -8,8 +8,10 @@ export default class CastTest extends TestWFRP {
       return
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
-    this.preData.unofficialGrimoire = data.unofficialGrimoire;
-    this.data.preData.malignantInfluence = data.malignantInfluence
+    this.preData.malignantInfluence = data.malignantInfluence;
+    this.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    this.preData.overchannelling = data.overchannelling;
+    this.preData.ingredientMode = data.ingredientMode ?? "none";
 
     this.data.context.templates = data.templates || [];
 
@@ -33,7 +35,7 @@ export default class CastTest extends TestWFRP {
     await Promise.all(this.item.runScripts("preRollCastTest", { test: this, chatOptions: this.context.chatOptions }))
 
     //@HOUSE
-    if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.ingredientMode == 'power' && this.hasIngredient) { 
+    if (this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
       this.preData.canReverse = true;
     }
@@ -116,7 +118,7 @@ export default class CastTest extends TestWFRP {
         //@/HOUSE
       }
       //@/HOUSE
-      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) { 
+      if (this.preData.unofficialGrimoire && this.preData.overchannelling > 0) { 
         game.wfrp4e.utility.logHomebrew("overchannelling");
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
         miscastCounter++;
@@ -128,7 +130,7 @@ export default class CastTest extends TestWFRP {
       this.result.castOutcome = "failure"
       this.result.description = game.i18n.localize("ROLL.CastingFailed")
       //@/HOUSE
-      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) { 
+      if (this.preData.unofficialGrimoire && this.preData.overchannelling > 0) { 
         game.wfrp4e.utility.logHomebrew("overchannelling");
         this.result.tooltips.miscast.push(game.i18n.localize("CHAT.OverchannellingMiscast"))
         miscastCounter++;
@@ -151,9 +153,10 @@ export default class CastTest extends TestWFRP {
       this.result.castOutcome = "success"
       this.result.description = game.i18n.localize("ROLL.CastingSuccess");
       //@/HOUSE
-      if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.overchannelling > 0) {
+      if (this.preData.unofficialGrimoire && this.preData.overchannelling > 0) {
         game.wfrp4e.utility.logHomebrew("overchannelling");
-        slOver += this.preData.unofficialGrimoire.overchannelling;
+        slOver += this.preData.overchannelling;
+        this.result.SL = "+" + slOver;
       }
       //@/HOUSE
 
@@ -195,7 +198,7 @@ export default class CastTest extends TestWFRP {
 
     // TODO handle all tooltips (when they are added) in one place
     // TODO Fix weird formatting in tooltips (indenting)
-    this.result.tooltips.miscast = this.result.tooltips.miscast.join("\n")
+    this.result.tooltips.miscast = "<ul style='text-align: left'>" + this.result.tooltips.miscast.map(t => `<li>${t}</li>`).join("") + "</ul>";
 
     return this.result;
   }
@@ -312,12 +315,76 @@ export default class CastTest extends TestWFRP {
     }
   }
 
+  computeTables()
+  {
+    super.computeTables();
+    if (this.result.minormis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.minormis,
+        class : "fumble-roll",
+        key : "minormis"
+      }
+    }
+    if (this.result.nullminormis)
+    {
+      this.result.tables.nullminormis = {
+        label : this.result.nullminormis,
+        class : "fumble-roll",
+        key : "minormis",
+        nulled : true
+      }
+    }
+    if (this.result.majormis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.majormis,
+        class : "fumble-roll",
+        key : "majormis",
+      }
+    }
+    if (this.result.nullmajormis)
+    {
+      this.result.tables.nullmajormis = {
+        label : this.result.nullmajormis,
+        class : "fumble-roll",
+        key : "majormis",
+        nulled : true
+      }
+    }
+    if (this.result.catastrophicmis)
+    {
+      this.result.tables.miscast = {
+        label : this.result.catastrophicmis,
+        class : "fumble-roll",
+        key : "catastrophicmis",
+      }
+    }
+    if (this.result.nullcatastrophicmis)
+    {
+      this.result.tables.nullcatastrophicmis = {
+        label : this.result.nullcatastrophicmis,
+        class : "fumble-roll",
+        key : "nullcatastrophicmis",
+        nulled : true
+      }
+    }
+    if (this.result.grimoiremiscast)
+    {
+      this.result.tables.grimoiremiscast = {
+        label : this.result.grimoiremiscast,
+        class : "fumble-roll",
+        key : "grimoire-miscast",
+      }
+    }
+  }
+
 
   async postTest() {
     //@/HOUSE
     if (this.preData.unofficialGrimoire) {
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      if (this.preData.unofficialGrimoire.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
+      if (this.preData.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {
         await this.item.ingredient.update({ "system.quantity.value": this.item.ingredient.quantity.value - 1 })
         ChatMessage.create({ speaker: this.context.speaker, content: game.i18n.localize("ConsumedIngredient") })
       }

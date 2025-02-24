@@ -1,0 +1,1 @@
+this.actor.name = this.actor.name.replace("Common Troll", "Troll");

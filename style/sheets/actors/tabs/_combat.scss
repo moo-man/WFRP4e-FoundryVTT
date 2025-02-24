@@ -1,4 +1,4 @@
-.wfrp4e.actor.sheet {
+.application.wfrp4e.actor.sheet {
     --mount-outline: var(--color-cool-3);
     --attacker-border: var(--color-cool-3);
     --ap-border : var(--color-cool-3);
@@ -6,45 +6,18 @@
     section.tab[data-tab="combat"] {
         height: calc(100% - 200px);
 
-        .armour 
+        .armour-section
         {
             .flexrow {
                 align-items: flex-start;
+                gap: 5px;
             }
             .sheet-list {
-                margin: 5px;
-                &:first-of-type {
-                    margin-left: 0px;
-                }
-                &:last-of-type {
-                    margin-right: 0px;
-                }
-
                 .list-header {
-
-                    padding-right: 5px;
 
                     .location-label {
                         margin-left: 5px;
                         text-align: left;
-                    }
-
-                    .ap-source {
-                        background: var(--mount-outline);
-                        flex: 0 0 20px;
-                        border-right: 1px solid var(--ap-border);
-
-                        &.armour {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(93,20,43,1) 100%);
-                        }
-
-                        &.shield {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(92,135,185,1) 100%);
-                        }
-
-                        &.toughness {
-                            background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
-                        }
                     }
                 }
             }

@@ -1,0 +1,142 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="form-group">
+        <label>{{localize "SHEET.AlterName"}}</label>
+        <div class="form-fields">
+            <input type="text" placeholder="Prepend" name="system.alterName.pre" value="{{system.alterName.pre}}">
+            <input type="text" placeholder="Append" name="system.alterName.post" value="{{system.alterName.post}}">
+        </div>
+    </div>
+    <table>
+        <tbody>
+            <tr>
+                {{#each (config "characteristicsAbbrev")}}
+                    <td>{{this}}</td>
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each system.characteristics}}
+                <td>
+                    <input type="number" name="system.characteristics.{{@key}}" value="{{this}}">
+                </td>
+                {{/each}}
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Skills"}}</div>
+            <div class="small" data-tooltip="{{localize "SHEET.TemplateSpecialisationTooltip"}}">{{localize "SHEET.SpecialisationAbbrev"}}</div>
+            <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+            <div class="small" data-tooltip="{{localize "SHEET.TemplateGroupTooltip"}}">{{localize "Group"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="listCreate" data-path="system.skills">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each system.skills.list}}
+                <div class="list-row" data-index="{{@key}}" data-path="system.skills">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Skill Name" value="{{this.name}}">
+                        </div>
+                        <input class="small" type="number" data-action="editList" data-ipath="specialisations" value="{{this.specialisations}}">
+                        <input class="small" type="number" data-action="editList" data-ipath="advances" value="{{this.advances}}">
+                        <input class="small" type="number" data-action="editList" data-ipath="group" value="{{this.group}}">
+                        <div class="list-controls">
+                            <a class="list-control" data-action="listDelete"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Talents"}}</div>
+            <div class="small">{{localize "SHEET.AdvAbbrev"}}</div>
+            <div class="small" data-tooltip="Providing a group number will give the option to choose between any other Item with the same group number.">{{localize "Group"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="listCreate" data-path="system.talents">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each system.talents.list}}
+                <div class="list-row" data-index="{{@key}}" data-path="system.talents">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Talent Name" value="{{this.name}}">
+                        </div>
+                        <input class="small" type="number" data-action="editList" data-ipath="advances" value="{{this.advances}}">
+                        <input class="small" type="number" data-action="editList" data-ipath="group" value="{{this.group}}">
+                        <div class="list-controls">
+                            <a class="list-control" data-action="listDelete"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Traits"}}</div>
+        </div>
+        <div class="list-content">
+            {{#each traits}}
+                <div class="list-row" data-index="{{@key}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="openSheet">{{this.system.DisplayName}}</a>
+                        </div>
+
+                        <div class="list-controls">
+                            <a class="list-control" data-action="editDiff"><i class="fa-solid fa-file-plus-minus"></i></a>
+                            <a class="list-control" data-action="listDelete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Magic"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="listCreate" data-path="system.lores">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each system.lores.list}}
+                <div class="list-row" data-index="{{@key}}" data-path="system.lores">
+                    <div class="row-content">
+                        <div class="list-name">
+                            {{#if (lookup ../loreIcons this.name)}}
+                            <img src="{{lookup ../loreIcons this.name}}">
+                            {{else}}
+                            <img src="systems/wfrp4e/icons/blank.png">
+                            {{/if}}
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Lore" value="{{this.name}}">
+                        </div>
+
+                        <input class="small" type="number" data-action="editList" data-ipath="number" value="{{this.number}}">
+                        <div class="list-controls">
+                            <a class="list-control" data-action="listDelete" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <hr>
+    {{> choiceDisplay label="Trappings" path="trappings" display=system.trappings.textDisplay}}
+</section>

@@ -143,6 +143,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     items.vehicleMods = sheetData.actor.itemTags["vehicleMod"]
     items.vehicleTests = sheetData.actor.itemTags["vehicleTest"]
     items.vehicleRoles = sheetData.actor.itemTags["vehicleRole"]
+    items.templates = sheetData.actor.itemTags["template"]
 
     items.grimoire = {
       petty: sheetData.actor.itemTags["spell"].filter(i => i.lore.value == "petty" || i.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")),
@@ -933,7 +934,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   _onSkillSwitch(ev) {
-    this.actor.setFlag("wfrp4e", "showExtendedTests", !getProperty(this.actor, "flags.wfrp4e.showExtendedTests"))
+    this.actor.setFlag("wfrp4e", "showExtendedTests", !foundry.utils.getProperty(this.actor, "flags.wfrp4e.showExtendedTests"))
     this.render(true)
   }
 
@@ -1007,7 +1008,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     // Damage traits first
     for (let armourTrait of armourTraits) {
       // If APDamage flag doesn't exist
-      if (armourTrait && !getProperty(armourTrait, "flags.wfrp4e.APdamage")) foundry.utils.setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
+      if (armourTrait && !foundry.utils.getProperty(armourTrait, "flags.wfrp4e.APdamage")) foundry.utils.setProperty(armourTrait, "flags.wfrp4e.APdamage", { head: 0, body: 0, lArm: 0, rArm: 0, lLeg: 0, rLeg: 0 })
       if (armourTrait) {
         if (ev.button == 0) {
           if (armourTrait.flags.wfrp4e.APdamage[location] != 0) {
@@ -1146,26 +1147,15 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
   }
 
   async _onInjuryDurationClick(ev) {
-    let itemId = this._getId(ev);
-    let injury = this.actor.items.get(itemId).toObject()
-    if (!isNaN(injury.system.duration.value)) {
-      if (ev.button == 0)
-        return this.actor.decrementInjury(injury)
-      else injury.system.duration.value++
-      return this.actor.updateEmbeddedDocuments("Item", [injury])
+    const injury = this._getDocument(ev);
+
+    if (ev.button === 0)
+    {
+      injury.system.decrement();
     }
-    else {
-      try {
-        let roll = await new Roll(injury.system.duration.value, this.actor).roll();
-        roll.toMessage({speaker : {alias : this.actor.name}, flavor : injury.name})
-        injury.system.duration.value = roll.total;
-        injury.system.duration.active = true;
-        return this.actor.updateEmbeddedDocuments("Item", [injury])
-      }
-      catch
-      {
-        return ui.notifications.error(game.i18n.localize("ERROR.ParseInjury"))
-      }
+    else
+    {
+      injury.system.increment();
     }
   }
 
@@ -1455,7 +1445,7 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     }
     else {
       let div = $(`<div class="item-summary">${expandData}</div>`);
-      if (existing?.manualScripts.length) {
+      if (existing?.manualScripts?.length) {
         let button = $(`<br><br>
           ${existing.manualScripts.map((s, i) => `<a class="trigger-script" data-uuid="${existing.uuid}" data-index="${s.index}">${s.Label}</a>`)}
         `)
@@ -1713,7 +1703,8 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
     let dragData = JSON.parse(ev.dataTransfer.getData("text/plain"));
     let dropID = $(ev.target).parents(".item").attr("data-id");
 
-    let item = (await Item.implementation.fromDropData(dragData))
+    let item = (await Item.implementation.fromDropData(dragData)).toObject()
+
     let update = {system : {location : {value : dropID}}};
     
     if (item.system.isEquippable)
@@ -1721,7 +1712,10 @@ export default class ActorSheetWFRP4e extends WarhammerActorSheet {
       update.system.equipped = {value : false};
     }
 
-    return item.update(update);
+    foundry.utils.mergeObject(item, update);
+
+    // This handles both updating when dragging within the same sheet and creating a new item when dragging from another sheet
+    return this.actor.update({items : [item]});
   }
 
   // Dropping a character creation result

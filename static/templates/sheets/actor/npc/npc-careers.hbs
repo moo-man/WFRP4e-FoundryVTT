@@ -1,14 +1,14 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="form-group">
-        <label><a data-action="getIncome" data-tooltip="Receive Income">Status <i class="fas fa-coins"></i></a></label>
+        <label><a data-action="getIncome" data-tooltip="Receive Income">{{localize "Status"}} <i class="fas fa-coins"></i></a></label>
         <div class="form-fields">
             <input name="system.details.status.value" type="text" value="{{system.details.status.value}}">
         </div>
     </div>
     <div class="sheet-list careers">
         <div class="list-header row-content">
-            <div class="list-name">Careers</div>
-            <div>Complete</div>
+            <div class="list-name">{{localize "Careers"}}</div>
+            <div>{{localize "Complete"}}</div>
             <div class="list-controls"></div>
         </div>
         <div class="list-content">

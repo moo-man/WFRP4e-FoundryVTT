@@ -2,6 +2,9 @@ import { LocationalItemModel } from "./components/locational";
 let fields = foundry.data.fields;
 
 export class CriticalModel extends LocationalItemModel {
+
+    static LOCALIZATION_PREFIXES = ["WH.Models.critical"];
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.wounds = new fields.SchemaField({
@@ -53,7 +56,10 @@ export class CriticalModel extends LocationalItemModel {
                     minorInfections.push(actor.name)
                     game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
                 }
-                actor.update({ "system.status.wounds.value": newWounds });
+                if (newWounds)
+                {
+                    actor.update({ "system.status.wounds.value": newWounds });
+                }
             }
             catch (e) {
                 console.error(`_onCreate from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this);

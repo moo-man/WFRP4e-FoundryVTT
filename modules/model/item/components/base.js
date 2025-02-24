@@ -7,10 +7,10 @@ let fields = foundry.data.fields;
      {
         return {
             description : new fields.SchemaField({
-                value: new fields.StringField()
+                value: new fields.HTMLField()
             }),
             gmdescription : new fields.SchemaField({
-                value: new fields.StringField()
+                value: new fields.HTMLField()
             }),
         } 
      }

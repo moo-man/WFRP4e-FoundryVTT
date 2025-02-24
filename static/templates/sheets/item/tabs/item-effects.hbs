@@ -1,0 +1,104 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{#if effects.conditions}}
+    <div class="condition-section">
+        {{#each effects.conditions}}
+            <div class="condition" data-key="{{this.key}}">
+                <a>{{localize this.name}}</a>
+                <div class="controls">
+                    {{#if this.isNumberedCondition}}
+                        <a data-action="clickCondition">{{this.conditionValue}}</a>
+                    {{else}}
+                        {{#if this.existing}}
+                            <a data-action="clickCondition"><i class="far fa-check-circle"></i></a>
+                        {{else}}
+                            <a data-action="clickCondition"><i class="far fa-circle"></i></a>
+                        {{/if}}
+                    {{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    <div class="effect-lists">
+    {{#if effects.temporary.length}}
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "SHEET.TemporaryEffects"}}</div>
+        </div>
+        <div class="list-content">
+            {{#each effects.temporary}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
+                        </div>
+
+                        <div class="list-controls">
+                            <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-check-circle"></i></a>
+                            <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{/if}}
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Effects"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createEffect">
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each effects.active}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
+                        </div>
+
+                        <div class="list-controls">
+                            <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-check-circle"></i></a>
+                            <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    {{#if effects.disabled.length}}
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "SHEET.DisabledEffects"}}</div>
+        </div>
+        <div class="list-content inactive">
+            {{#each effects.disabled}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
+                        </div>
+
+                        <div class="list-controls">
+                            <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-circle"></i></a>
+                            <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    {{/if}}
+    </div>
+
+
+</section>

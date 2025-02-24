@@ -8,7 +8,6 @@ export default function() {
         if (setting.key == "wfrp4e.groupAdvantageValues")
         {
             ui.notifications.notify(game.i18n.format("GroupAdvantageUpdated", {players : setting.value.players, enemies : setting.value.enemies}))
-
             if (game.user.isGM && game.combat)
             {
                 // This sorta sucks because there isn't a way to update both actors and synthetic actors in one call
@@ -25,7 +24,6 @@ export default function() {
                 })
             })
         }
-        
     })
 
   

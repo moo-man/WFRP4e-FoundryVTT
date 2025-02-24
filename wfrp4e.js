@@ -73,11 +73,36 @@ import socketHandlers from "./modules/system/socket-handlers.js";
 import { WFRPTestMessageModel } from "./modules/model/message/test.js";
 import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
 import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
+import  OpposedHandler from "./modules/system/opposed-handler.js";
 import CombatHelpersWFRP from "./modules/system/combat.js";
 import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
 import { GenericAspectModel } from "./modules/model/item/generic.js";
 import ActorSheetWFRP4eNPCV2 from "./src/apps/sheets/actor/npc-sheet.js";
 import ActorSheetWFRP4eCreatureV2 from "./src/apps/sheets/actor/creature-sheet.js";
+import TalentSheet from "./src/apps/sheets/item/talent-sheet.js";
+import MutationSheet from "./src/apps/sheets/item/mutation-sheet.js";
+import CriticalSheet from "./src/apps/sheets/item/critical-sheet.js";
+import InjurySheet from "./src/apps/sheets/item/injury-sheet.js";
+import AmmunitionSheet from "./src/apps/sheets/item/ammunition-sheet.js";
+import SkillSheet from "./src/apps/sheets/item/skill-sheet.js";
+import ArmourSheet from "./src/apps/sheets/item/armour-sheet.js";
+import CareerSheet from "./src/apps/sheets/item/career-sheet.js";
+import CargoSheet from "./src/apps/sheets/item/cargo.js";
+import ContainerSheet from "./src/apps/sheets/item/container-sheet.js";
+import ExtendedTestSheet from "./src/apps/sheets/item/extendedTest-sheet.js";
+import DiseaseSheet from "./src/apps/sheets/item/disease-sheet.js";
+import MoneySheet from "./src/apps/sheets/item/money.js";
+import PrayerSheet from "./src/apps/sheets/item/prayer-sheet.js";
+import PsychologySheet from "./src/apps/sheets/item/psychology-sheet.js";
+import SpellSheet from "./src/apps/sheets/item/spell-sheet.js";
+import TraitSheet from "./src/apps/sheets/item/trait-sheet.js";
+import TrappingSheet from "./src/apps/sheets/item/trapping-sheet.js";
+import VehicleModSheet from "./src/apps/sheets/item/vehicleMod-sheet.js";
+import VehicleRoleSheet from "./src/apps/sheets/item/vehicleRole-sheet.js";
+import VehicleTestSheet from "./src/apps/sheets/item/vehicleTest-sheet.js";
+import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
+import { TemplateModel } from "./modules/model/item/template.js";
+import TemplateSheet from "./src/apps/sheets/item/template-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -102,6 +127,29 @@ Hooks.once("init", function () {
   
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
+  Items.registerSheet("wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CareerSheet, { types: ["career"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ContainerSheet, { types: ["container"], makeDefault: false });
+  Items.registerSheet("wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: false });
+  Items.registerSheet("wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: false });
+  Items.registerSheet("wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: false });
+  Items.registerSheet("wfrp4e", InjurySheet, { types: ["injury"], makeDefault: false });
+  Items.registerSheet("wfrp4e", MoneySheet, { types: ["money"], makeDefault: false });
+  Items.registerSheet("wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: false });
+  Items.registerSheet("wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: false });
+  Items.registerSheet("wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: false });
+  Items.registerSheet("wfrp4e", SkillSheet, { types: ["skill"], makeDefault: false });
+  Items.registerSheet("wfrp4e", SpellSheet, { types: ["spell"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TalentSheet, { types: ["talent"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TraitSheet, { types: ["trait"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: false });
+  Items.registerSheet("wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: false });
+  Items.registerSheet("wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: false });
+  Items.registerSheet("wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
   DocumentSheetConfig.registerSheet(RollTable, "wfrp4e", WFRPTableConfig, {makeDefault: true})
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
   // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})
@@ -134,6 +182,7 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["vehicleRole"] = VehicleRoleModel
   CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
   CONFIG.Item.dataModels["cargo"] = CargoModel
+  CONFIG.Item.dataModels["template"] = TemplateModel
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
@@ -182,6 +231,7 @@ Hooks.once("init", function () {
     audio: WFRP_Audio,
     names: NameGenWfrp,
     migration: Migration,
+    opposedHandler: OpposedHandler,
     tags : new TagManager(),
     trade : new TradeManager()
   }
@@ -190,7 +240,8 @@ Hooks.once("init", function () {
 
   CONFIG.Actor.documentClass = ActorWFRP4e;
   CONFIG.Item.documentClass = ItemWfrp4e;
-  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e
+  CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e;
+  CONFIG.RollTable.documentClass = WarhammerRollTable;
   CONFIG.ActiveEffect.legacyTransferral = false;
 });
 

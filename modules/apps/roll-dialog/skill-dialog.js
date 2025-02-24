@@ -137,7 +137,7 @@ export default class SkillDialog extends CharacteristicDialog {
             if (this.item.name.includes(game.i18n.localize("NAME.Stealth"))) {
                 if (stealthPenaltyValue) {
                     this.fields.modifier += stealthPenaltyValue
-                    this.tooltips.addModifier(stealthPenaltyValue, game.i18n.localize("SHEET.ArmourPenalties"));
+                    this.tooltips.add("modifier", stealthPenaltyValue, game.i18n.localize("SHEET.ArmourPenalties"));
                 }
             }
         }
@@ -151,7 +151,7 @@ export default class SkillDialog extends CharacteristicDialog {
             let skillValue = (this.skill?.system.advances.value + this.skill?.system.modifier.value) || 0
             if (skillValue)
             {
-                breakdown.skill = `${HandlebarsHelpers.numberFormat(skillValue, {hash :{sign: true}})} (${this.skill.name})`
+                breakdown.skill = `${this.skill.name} ${HandlebarsHelpers.numberFormat(skillValue, {hash :{sign: true}})}`
             }
         }
         return breakdown;

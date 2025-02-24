@@ -127,14 +127,30 @@ export default function() {
     });
 
     // Register Fast SL rule
-    game.settings.register("wfrp4e", "fastSL", {
-      name: "SETTINGS.FastSL",
-      hint: "SETTINGS.FastSLHint",
+    game.settings.register("wfrp4e", "SLMethod", {
+      name: "SETTINGS.SLMethod",
+      hint: "SETTINGS.SLMethodHint",
       scope: "world",
       config: true,
-      default: false,
-      type: Boolean
+      default: "default",
+      choices: {
+        "default": "SETTINGS.SLDefault",
+        "fast": "SETTINGS.SLFast",
+        "dos": "SETTINGS.SLDOS",
+      },
+      type: String
     });
+
+
+    // // Register Fast SL rule
+    // game.settings.register("wfrp4e", "fastSL", {
+    //   name: "SETTINGS.FastSL",
+    //   hint: "SETTINGS.FastSLHint",
+    //   scope: "world",
+    //   config: true,
+    //   default: false,
+    //   type: Boolean
+    // });
 
     // Register Tests above 100% Rule
     game.settings.register("wfrp4e", "testAbove100", {
@@ -352,6 +368,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "uiaBleeding", {
+      name: "SETTINGS.UIABleeding",
+      hint: "SETTINGS.UIABleedingHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     game.settings.register("wfrp4e", "tables", {
       scope: "world",
       config: false,
@@ -373,7 +398,7 @@ export default function() {
       type: Object
     });
 
-    
+
     game.settings.register("wfrp4e", "tableRollMode", {
       scope: "client",
       config: false,
@@ -421,7 +446,7 @@ export default function() {
     });
 
 
-    
+
     // game.settings.register("wfrp4e", "mooCritsFumbles", {
     //   name: "SETTINGS.MooCritsFumbles",
     //   hint: "SETTINGS.MooCritsFumblesHint",
@@ -455,7 +480,7 @@ export default function() {
 
     game.settings.register("wfrp4e", "mooCritModifiers", {
       name: "SETTINGS.MooCritModifiers",
-      hint: "SETTINGS.MooCritMOdifiersHint",
+      hint: "SETTINGS.MooCritModifiersHint",
       scope: "world",
       config: false,
       homebrew: true,
@@ -515,7 +540,7 @@ export default function() {
       type: Boolean
     });
 
-      
+
     game.settings.register("wfrp4e", "partialChannelling", {
       name: "SETTINGS.PartialChannelling",
       hint: "SETTINGS.PartialChannellingHint",
@@ -617,7 +642,7 @@ export default function() {
       type: Boolean
     });
 
-    
+
     game.settings.register("wfrp4e", "mooHomebrewItemChanges", {
       name: "SETTINGS.MooHomebrewItems",
       hint: "SETTINGS.MooHomebrewItemHint",
@@ -716,7 +741,6 @@ export default function() {
       "systems/wfrp4e/templates/actors/vehicle/vehicle-cargo.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-description.hbs",
       "systems/wfrp4e/templates/actors/vehicle/vehicle-effects.hbs",
-      "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
       "systems/wfrp4e/templates/sheets/partials/container-contents.hbs",
       "systems/wfrp4e/templates/partials/armour-location.hbs",
       "systems/wfrp4e/templates/partials/item-container.hbs",
@@ -736,6 +760,12 @@ export default function() {
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
       aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
+      meleeWeapons: "systems/wfrp4e/templates/sheets/partials/melee-weapons.hbs",
+      rangedWeapons: "systems/wfrp4e/templates/sheets/partials/ranged-weapons.hbs",
+      armourLocation: "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",
+      creatureArmour: "systems/wfrp4e/templates/sheets/partials/creature-armour.hbs",
+      itemProperties: "systems/wfrp4e/templates/sheets/partials/item-properties.hbs",
+      extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
     });
 
     // Load name construction from files

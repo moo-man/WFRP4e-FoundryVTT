@@ -107,6 +107,4 @@ export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
       WFRP_Audio.PlayContextAudio({ item: { type: "money" }, action: "gain" })
       this.actor.updateEmbeddedDocuments("Item", money);
     }
-  
-
 }

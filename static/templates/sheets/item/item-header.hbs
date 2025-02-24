@@ -1,0 +1,52 @@
+<div class="sheet-header">
+
+    <img data-action="editImage" src="{{item.img}}" {{#if (eq item.img "systems/wfrp4e/icons/blank.png")}}class="img-border"{{/if}}>
+    <div class="header-fields">
+        <div class="header-row">
+            <input type="text" name="name" value="{{source.name}}">
+        </div>
+        {{#if physical}}
+        <div class="header-row">
+            {{#unless hide.quantity}}
+            <div class="attribute-box single">
+                <div class="label" style="grid-column: 1 / span 8"><label>{{localize "Quantity"}}</label></div>
+                <div class="field" style="grid-column: 9 / span 4"><input type="number" name="system.quantity.value" value="{{source.system.quantity.value}}"></div>
+            </div>
+            {{/unless}}
+            {{#unless hide.encumbrance}}
+            <div class="attribute-box single">
+                <div class="label" style="grid-column: 1 / span 9"><label>{{localize "Encumbrance"}}</label></div>
+                <div class="field" style="grid-column: 10 / span 3"><input type="number" name="system.encumbrance.value" value="{{source.system.encumbrance.value}}"></div>
+            </div>
+            {{/unless}}
+        </div>
+        <div class="header-row">    
+            {{#unless hide.price}}
+            <div class="attribute-box">
+                <div class="label" style="grid-column: 1 / span 12"><label>{{localize "Price"}}</label></div>
+                <div class="field gc" style="grid-column: 1 / span 4"><input type="number" data-tooltip="{{localize 'NAME.GCPlural'}}" placeholder="{{localize "MARKET.Abbrev.GC"}}" name="system.price.gc" value="{{source.system.price.gc}}"></div>
+                <div class="field ss" style="grid-column: 5 / span 4"><input type="number" data-tooltip="{{localize 'NAME.SSPlural'}}" placeholder="{{localize "MARKET.Abbrev.SS"}}" name="system.price.ss" value="{{source.system.price.ss}}"></div>
+                <div class="field bp" style="grid-column: 9 / span 4"><input type="number" data-tooltip="{{localize 'NAME.BPPlural'}}" placeholder="{{localize "MARKET.Abbrev.BP"}}" name="system.price.bp" value="{{source.system.price.bp}}"></div>
+            </div>
+            {{/unless}}
+            {{#unless hide.availability}}
+            <div class="attribute-box">
+                <div class="label" style="grid-column: 1 / span 12"><label>{{localize "Availability"}}</label></div>
+                <div class="field" style="grid-column: 1 / span 12"><select name="system.availability.value">{{selectOptions (config "availability") selected=source.system.availability.value}}</select></div>
+            </div>
+            {{/unless}}
+        </div>
+        {{/if}}
+
+        {{#unless hide.category}}
+        <div class="header-row">
+                <div class="attribute-box single">
+                    <div class="label" style="grid-column: 1 / span 8"><label>{{localize "Category"}}</label></div>
+                    <div class="field" style="grid-column: 9 / span 4"><select name="system.category">{{selectOptions fields.category.choices selected=source.system.category}}</select></div>
+                </div>
+                {{!-- {{formGroup fields.category value=source.system.category}} --}}
+        </div>
+        {{/unless}}
+
+    </div>
+</div>

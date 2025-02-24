@@ -1,0 +1,88 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.class.fields.value value=source.system.class.value}}
+    {{formGroup fields.careergroup.fields.value value=source.system.careergroup.value}}
+    {{formGroup fields.level.fields.value value=source.system.level.value}}
+    <fieldset>
+        <legend>{{localize "Status"}}</legend>
+        <div class="form-group">
+            <label>{{localize "Tier"}}</label>
+            <select>
+                {{selectOptions (config "statusTiers") selected=source.system.status.tier}}
+            </select>
+            <label>{{localize "Standing"}}</label>
+            <input type="number" name="system.status.standing" value="{{system.status.standing}}">
+        </div>
+        {{!-- {{formGroup fields.status.fields.tier value=source.system.status.tier}} --}}
+        {{!-- {{formGroup fields.status.fields.standing value=source.system.status.standing}} --}}
+    </fieldset>
+    <div class="form-group characteristics">
+        <div class="career-list">
+        <label>{{localize "Characteristics"}}</label>
+            <div class="list-container">
+            {{#each system.characteristics}}
+                <a data-action="toggleProperty" data-path="system.characteristics.{{@key}}" class="characteristic {{#if this}}active{{/if}}">
+                    {{configLookup "characteristicsAbbrev" @key}}
+                </a>
+            {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group skills" data-group="skills">
+        <div class="career-list">
+        <label>{{localize "Skills"}}</label>
+            <div class="list-container" data-path="system.skills">
+                {{#each system.skills}}
+                    <input class="skill" data-action="editList" data-index="{{@key}}" onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" type="text" value="{{this}}">
+                    <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
+                {{/each}}
+                <input type="text" class="empty" style="width: 3rem" data-action="listCreateValue"  onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" placeholder="+">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="career-list">
+            <label>{{localize "Earning Skill"}}</label>
+            <div class="form-fields">
+                <div class="list-container" data-path="system.incomeSkill">
+                    {{#each system.incomeSkill}}
+                    <input class="skill" disabled data-index="{{@key}}" type="text" value="{{lookup ../system.skills this}}">
+                    <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
+                    {{/each}}
+                    <select class="empty" style="width: fit-content" data-action="listCreateValue">
+                        <option></option>
+                        {{selectOptions system.skills}}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group talents" data-group="talents">
+        <div class="career-list">
+        <label>{{localize "Talents"}}</label>
+            <div class="list-container" data-path="system.talents">
+                {{#each system.talents}}
+                    <input class="talent" data-action="editList" data-index="{{@key}}" onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" type="text" value="{{this}}">
+                    <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
+                {{/each}}
+                <input type="text" class="empty" style="width: 3rem" data-action="listCreateValue"  onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" placeholder="+">
+            </div>
+        </div>
+    </div>
+
+        <div class="form-group trappings" data-group="trappings">
+        <div class="career-list">
+        <label>{{localize "Trappings"}}</label>
+            <div class="list-container" data-path="system.trappings">
+                {{#each system.trappings}}
+                    <input class="trapping" data-action="editList" data-index="{{@key}}" onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" type="text" value="{{this}}">
+                    <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
+                {{/each}}
+                <input type="text" class="empty" style="width: 3rem" data-action="listCreateValue"  onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" placeholder="+">
+            </div>
+        </div>
+    </div>
+
+</section>

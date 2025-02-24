@@ -5,12 +5,14 @@ let fields = foundry.data.fields;
 
 export class PrayerModel extends OvercastItemModel
 {
+    static LOCALIZATION_PREFIXES = ["WH.Models.prayer"];
+
     static defineSchema() 
     {
         let schema = super.defineSchema();
 
         schema.type = new fields.SchemaField({
-            value : new fields.StringField(),
+            value : new fields.StringField({initial : "blessing", choices : game.wfrp4e.config.prayerTypes}),
         });
         schema.god = new fields.SchemaField({
             value : new fields.StringField(),
