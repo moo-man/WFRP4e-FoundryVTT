@@ -37,17 +37,37 @@
         }
     }
 
+    .tab[data-tab="notes"] {
+        .header-row {
+            display:  flex;
+            .header-group {
+                margin: 0.25rem 0.5rem;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                
+                input {
+                    background: none;
+                    border: none;
+                    line-height: 1.5rem;
+                    height: 1.5rem;
+                    padding: 0 0.1rem;
+                }
+            }
+        }
+    }
+
     .tab[data-tab='main'] .armour-section {
         display: flex;
         .field {
             height: 1.5rem;
             display: flex;
+            border-bottom: 1px solid var(--attribute-border);
             > * {
                 height: 100%;
                 line-height: 1.5rem;
                 flex: 1
             }
-            border-bottom: 1px solid var(--attribute-border);
         }
     }
 
