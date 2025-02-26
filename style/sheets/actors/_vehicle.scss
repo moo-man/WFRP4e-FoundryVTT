@@ -1,0 +1,31 @@
+.wfrp4e.actor.vehicle.sheet.application {
+
+    
+    .events {
+        display: flex;
+        gap: 1rem;
+        margin: 10px;
+    }
+    
+    .sell-cargo {
+        padding: 5px;
+        button {
+            height: 100%;
+        }
+    }
+
+    .tab[data-tab='main'] .armour-section {
+        display: flex;
+        .field {
+            height: 1.5rem;
+            display: flex;
+            > * {
+                height: 100%;
+                line-height: 1.5rem;
+                flex: 1
+            }
+            border-bottom: 1px solid var(--attribute-border);
+        }
+    }
+
+}

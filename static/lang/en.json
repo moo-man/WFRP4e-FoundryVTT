@@ -801,7 +801,7 @@
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
     "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",
     "DIALOG.ItemDialog" : "Item Dialog",
-    "DIALOG.ChooseActor" : "Choose the Actor to perform Test",
+    "DIALOG.ChoosePassenger" : "Choose Passenger",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",

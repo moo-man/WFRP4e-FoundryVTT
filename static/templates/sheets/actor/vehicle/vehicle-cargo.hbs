@@ -1,0 +1,251 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="encumbrance-section">
+        <div class="header">
+            <label>{{localize "SHEET.Encumbrance"}} <a class="sort-items" data-action="sortItems" data-tooltip="{{localize 'SHEET.SortItems'}}" data-type="trapping,weapon,armour,ammunition,container"><i class="fas fa-sort-alpha-down"></i></a></label>
+            <div class="counter">
+                <div class="value">
+                    {{system.status.encumbrance.total}}
+                </div>
+                <div>/</div>
+                <div class="max">
+                    {{actor.status.carries.max}}
+                </div>
+            </div>
+        </div>
+
+        <div class="status">{{system.status.encumbrance.message}}</div>
+        {{#if system.status.encumbrance.overEncumbered}}
+            <div class="bar max" style="width:100%"></div>
+        {{else}}
+            {{#if system.status.encumbrance.pct}}
+                <div class="bar partial" data-tooltip="{{system.status.encumbrance.modMsg}}" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+            {{/if}}
+            {{#if system.status.encumbrance.carryPct}}
+                <div class="bar none" data-tooltip="{{system.status.encumbrance.carryMsg}}" style="width:{{system.status.encumbrance.carryPct}}%"></div>
+            {{/if}}
+        {{/if}}
+
+    </div>
+
+    <div class="sheet-list currency">
+        <div class="list-header row-content">
+            <div class="list-name">
+                <a data-action="consolidateCurrency" data-tooltip="{{localize 'MARKET.Exchange'}}" data-tooltip-direction="UP">
+                    <i class="fas fa-coins"></i>
+                </a>
+            
+                {{localize "WFRP4E.TrappingType.Money"}} ({{localize "Total"}}:
+                {{inventory.money.total}}{{localize "MARKET.d"}}) 1 {{localize "MARKET.Abbrev.GC"}} <a data-type="gc"
+                    data-action="convertCurrency"><i class="fas fa-caret-right"></i></a> 20
+                {{localize "MARKET.Abbrev.SS"}} <a data-type="ss" data-action="convertCurrency"><i
+                        class="fas fa-caret-right"></i></a> 240 {{localize "MARKET.Abbrev.BP"}}
+            </div>
+            <a class="small">{{localize "SHEET.QtyAbbrev"}}</a>
+            <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+            <div class="list-controls">
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each inventory.money.items}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <a class="small prevent-context" data-action="stepProperty" data-path="system.quantity.value">{{this.system.quantity.value}}</a>
+                        <div class="small">{{this.system.encumbrance.total}}</div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list passengers">
+        <div class="list-header row-content">
+            <div class="list-name">
+                {{localize "SECTION.Passengers"}}
+            </div>
+            <a class="small">{{localize "SHEET.QtyAbbrev"}}</a>
+            {{#if actor.flags.actorEnc}}
+              <span class="weight">{{localize "SHEET.EncAbbrev"}}</span>
+            {{/if}}
+            <div class="list-controls">
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each actor.system.passengers.list}}
+                <div class="list-row nocontext" data-index="{{@key}}" data-id="{{this.id}}" data-path="system.passengers">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="passengerClick">{{this.actor.name}}</a>
+                        </div>
+                        {{#unless this.linked}}
+                        <a class="small prevent-context" data-action="passengerQty" data-path="">{{this.count}}</a>
+                        {{/unless}}
+
+                        {{#if ../actor.flags.actorEnc}}
+                            <div class="small">{{this.enc}}</div>
+                        {{/if}}
+                        <div class="list-controls">
+                            <a class="list-control" data-action="listDelete"><i class="fa-regular fa-xmark"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    {{#each inventory.categories}}
+        {{#if this.show}}
+            <div class="sheet-list inventory {{@key}}">
+                <div class="list-header row-content">
+                    <div class="list-name">{{this.label}}</div>
+                    {{#if this.toggle}}
+                        <div>{{this.toggleName}}</div>
+                    {{/if}}
+
+                    <a class="small">{{localize "SHEET.QtyAbbrev"}}</a>
+                    <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+
+                    <div class="list-controls">
+                        <a class="list-control" data-action="createItem" data-type="{{this.dataType}}" data-category="{{@key}}"><i class="fas fa-plus"></i></a>
+                        {{#if this.collapsed}}
+                            <a data-action="collapseSection" data-section="{{@key}}" class="list-control" data-tooltip="{{localize 'SHEET.Expand'}}"><i class="fa-solid fa-chevron-down"></i></a>
+                        {{else}}
+                            <a data-action="collapseSection" data-section="{{@key}}" class="list-control" data-tooltip="{{localize 'SHEET.Collapse'}}"><i class="fa-solid fa-chevron-up"></i></a>
+                        {{/if}}
+                    </div>
+                </div>
+                <div class="list-content">
+                    {{#if this.collapsed}}
+                    <div class="collapsed-rows">
+                        {{#each this.items}}
+                        <div data-uuid="{{this.uuid}}" class="collapsed-icon" data-tooltip="{{this.name}}">
+                            <a data-action="editEmbedded"><img src="{{this.img}}"></a>
+                            {{#if ../this.toggle}}
+                                {{#if this.isEquipped}}
+                                    <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-check-circle"></i></a>
+                                {{else}}
+                                    <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-circle"></i></a>
+                                {{/if}}
+                            {{/if}}
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{else}}
+                    {{#each this.items}}
+                        <div class="list-row" data-uuid="{{this.uuid}}">
+                            <div class="row-content">
+                                <div class="list-name">
+                                    <img src="{{this.img}}">
+                                    <a class="label" data-action="toggleSummary">{{this.name}}</a>
+                                </div>
+                                {{#if (eq @../key "ingredients")}}
+                                <div class="flex">
+                                    <select data-action="editProperty" data-path="system.spellIngredient.value">
+                                        {{#select system.spellIngredient.value}}
+                                        <option>-</option>
+                                        {{#each ../../items.spell.lore}}
+                                        <option value="{{this.id}}">{{this.name}}</option>
+                                        {{/each}}
+                                        {{/select}}
+                                    </select>
+                                </div>
+                                {{/if}}
+
+                                {{#if (eq @../key "cargo")}}
+                                <div class="sell-cargo">
+                                    <button  type="button" data-action="sellCargo">{{localize "VEHICLE.SellCargo"}}</button>
+                                </div>
+                                {{/if}}
+
+                                {{#if ../this.toggle}}
+                                    {{#if this.isEquipped}}
+                                        <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-check-circle"></i></a>
+                                    {{else}}
+                                        <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-circle"></i></a>
+                                    {{/if}}
+                                {{/if}}
+                                <a class="small prevent-context" data-action="stepProperty" data-path="system.quantity.value">{{this.system.quantity.value}}</a>
+                                <div class="small">{{this.system.encumbrance.total}}</div>
+                                <div class="list-controls">
+                                    <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                                </div>
+                            </div>
+                            {{> sheetButtons document=this}}
+                            <div class="dropdown-content collapsed">
+
+                            </div>
+                        </div>
+                    {{/each}}
+                    {{/if}}
+                </div>
+            </div>
+        {{/if}}
+    {{/each}}
+    {{#if inventory.containers.items.length}}
+        <div class="sheet-list inventory container">
+            <div class="list-header row-content">
+                <div class="list-name">{{localize "WFRP4E.TrappingType.Container"}}</div>
+                <div>{{localize "Count Enc."}}</div>
+                <div>{{localize "Worn"}}</div>
+                <div class="small">{{localize "SHEET.EncAbbrev"}}</div>
+                <div class="small">{{localize "Sort"}}</div>
+
+                <div class="list-controls">
+                        <a class="list-control" data-action="createItem" data-type="container"><i class="fas fa-plus"></i></a>
+
+                </div>
+            </div>
+            <div class="list-content">
+                {{#each inventory.containers.items}}
+                    <div class="list-row container-drop" data-uuid="{{this.uuid}}">
+                        <div class="row-content">
+                            <div class="list-name">
+                                <img src="{{this.img}}">
+                                <a class="label">{{this.name}}</a>
+                                ({{this.system.carries.current}} / {{this.system.carries.value}})
+                            </div>
+            
+                            {{#if this.system.countEnc.value}}
+                                <a data-tooltip="{{localize 'SHEET.CountEncOn'}}" data-action="toggleProperty" data-path="system.countEnc.value"><i class="far fa-check-circle"></i></a>
+                            {{else}}
+                                <a data-tooltip="{{localize 'SHEET.CountEncOff'}}" data-action="toggleProperty" data-path="system.countEnc.value"><i class="far fa-circle"></i></a>
+                            {{/if}}
+                            {{#if this.system.wearable.value}}
+                                {{#if this.isEquipped}}
+                                    <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-check-circle"></i></a>
+                                {{else}}
+                                    <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-circle"></i></a>
+                                {{/if}}
+                            {{else}}
+                            <a class="inactive disabled"><i class="far fa-circle"></i></a>
+                            {{/if}}
+                            <div class="small">{{this.system.encumbrance.total}}</div>
+                            <div class="small">
+                                <a data-action="containerSort" data-direction="up"><i class="fa-solid fa-arrow-up"></i></a>
+                                <a data-action="containerSort" data-direction="down"><i class="fa-solid fa-arrow-down"></i></a>
+                            </div>
+
+                            <div class="list-controls">
+                                {{#if this.system.collapsed}}
+                                    <a class="list-control" data-action="collapseSection" data-section="{{this.id}}" data-tooltip="{{localize 'SHEET.Expand'}}"><i class="fa-solid fa-chevron-down"></i></a>
+                                {{else}}
+                                    <a class="list-control" data-action="collapseSection" data-section="{{this.id}}" data-tooltip="{{localize 'SHEET.Collapse'}}"><i class="fa-solid fa-chevron-up"></i></a>
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-content">
+                        {{> systems/wfrp4e/templates/sheets/partials/container-contents.hbs level=1 pack=this}}
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    {{/if}}
+</section>

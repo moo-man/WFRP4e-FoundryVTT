@@ -102,6 +102,7 @@ import VehicleTestSheet from "./src/apps/sheets/item/vehicleTest-sheet.js";
 import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
 import { TemplateModel } from "./modules/model/item/template.js";
 import TemplateSheet from "./src/apps/sheets/item/template-sheet.js";
+import ActorSheetWFRP4eVehicleV2 from "./src/apps/sheets/actor/vehicle-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -123,6 +124,7 @@ Hooks.once("init", function () {
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreature, { types: ["creature"] });
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"], makeDefault: true});
   Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"] });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicleV2, { types: ["vehicle"], makeDefault: true });
   
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });
