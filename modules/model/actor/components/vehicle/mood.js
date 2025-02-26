@@ -20,7 +20,7 @@ export class ManannMoodModel extends CumulativeVehicleModifiers {
 
         if (result)
         {
-            ChatMessage.create({content : result, speaker : {alias : this.parent.parent.parent.name}, flavor : game.i18n.localize("VEHICLE.ManannsMood") + " - " + game.wfrp4e.tables.findTable(key).name});
+            ChatMessage.create(ChatMessage.applyRollMode({content : result, speaker : {alias : this.parent.parent.parent.name}, flavor : game.i18n.localize("VEHICLE.ManannsMood") + " - " + game.wfrp4e.tables.findTable(key).name}, "gmroll"));
         }
 
     }

@@ -1,0 +1,285 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <div class="attribute-row flexrow">
+        <div class="attribute-box top-label">
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "VEHICLE.Crew"}}</label></div>
+            <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.details.crew.current" disabled value="{{system.details.crew.current}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" name="system.details.crew.starting" value="{{system.details.crew.starting}}"></div>
+        </div>
+        <div class="attribute-box top-label">
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Size"}}</label></div>
+            <div class="field" style="grid-column: 1 / span 12"><input type="text" value="{{configLookup "actorSizes" system.details.size.value}}" disabled /></div>
+        </div>
+
+        <div class="attribute-box top-label">
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "VEHICLE.CollisionRating"}}</label></div>
+            <div class="field" style="grid-column: 1 / span 12"><input type="text" value="{{system.collision}}" disabled /></div>
+        </div>
+
+        <div class="attribute-box top-label">
+            <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "VEHICLE.Man"}}</label></div>
+            <div class="field" style="grid-column: 1 / span 12"><input type="text" name="system.details.man" value="{{system.details.man}}" /></div>
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name"><a data-action="configureCrew">{{localize "VEHICLE.Crew"}} <i class="fas fa-cog"></i></a></div>
+            <div class="flex large">Roles ({{items.vehicleRole.length}})</div>
+            <div class="list-controls"></div>
+        </div>
+        <div class="list-content">
+            {{#each system.crew}}
+                <div class="list-row" data-id="{{this.id}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="passengerClick">{{this.actor.name}}</a>
+                        </div>
+                        <div class="flex large">{{{this.rolesDisplay}}}</div>
+
+                        <div class="list-controls">
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name"><a>{{localize "VEHICLE.CrewTests"}} <i style="margin-left : 5px" class="fas fa-chevron-down"></i></a></div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="vehicleTest"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.vehicleTest}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label" data-action="rollCrewTest">{{this.name}}</a>
+                        </div>
+
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Traits"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="trait" data-category="vehicle"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.trait}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Extended Test"}}</div>
+            <div class="flex large">{{localize "ITEM.Progress"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="extendedTest"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.extendedTest}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <a class="label" data-action="rollTest" data-type="extendedTest">{{this.name}}</a>
+                        </div>
+                        <div class="large flex">
+                            <div class="progress-bar">
+                                <div class="fill" style="width: {{pct this.system.SL.current this.system.SL.target}}%"></div>
+                            </div>
+                        </div>
+                        <div><a class="prevent-context" data-action="stepProperty" data-path="system.SL.current" data-uuid="{{this.uuid}}">{{this.system.SL.current}} / {{this.system.SL.target}} {{localize "SuccessLevels"}}</a></div>
+                        <div class="list-controls">
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "VEHICLE.Modifications"}}</div>
+            <div>{{localize "VEHICLE.ModType"}}</div>
+            <div>{{localize "Encumbrance"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="vehicleMod"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.vehicleMod}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        
+                        </div>
+
+                        <div>
+                            {{mod.ModType}}
+                        </div>
+
+                        <div>
+                            {{mod.encumbrance.value}}
+                        </div>
+
+
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="sheet-list">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Critical"}}</div>
+            <div>{{localize "Location"}}</div>
+            <div class="list-controls">
+                <a class="list-control" data-action="createItem" data-type="critical"><i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each items.critical}}
+                <div class="list-row" data-uuid="{{this.uuid}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label">{{this.name}}</a>
+                        </div>
+                        <div>
+                            {{critical.system.location.value}}
+                        </div>
+                        <div class="list-controls">
+                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    {{> meleeWeapons weapons=items.weapon}}
+    
+    {{> rangedWeapons weapons=items.weapon}}
+
+    <div class="armour-section">
+        {{> vehicleArmour loc="head" locData=(lookup system.status.armour "head")}}
+        {{> vehicleArmour loc="body" locData=(lookup system.status.armour "body")}}
+        {{> vehicleArmour loc="lArm" locData=(lookup system.status.armour "lArm")}}
+        {{> vehicleArmour loc="rArm" locData=(lookup system.status.armour "rArm")}}
+        {{> vehicleArmour loc="lLeg" locData=(lookup system.status.armour "lLeg")}}
+        {{> vehicleArmour loc="rLeg" locData=(lookup system.status.armour "rLeg")}}
+    </div>
+
+    <div class="sheet-list condensed">
+            <div class="list-header row-content">
+                <div class="large">{{localize "VEHICLE.Morale"}}: {{system.status.morale.value}} <a data-action="rollMorale"><i class="fa-solid fa-dice"></i></a></div>
+                <div class="flex">{{localize "VEHICLE.Change"}}</div>
+                <div class="flex">{{localize "Total"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="configureMorale"><i class="fa-solid fa-gear"></i></a>
+                </div>
+                </div>
+                <div class="list-content">
+                        <div class="list-row">
+                            <div class="row-content">
+                                <div class="large">{{localize "VEHICLE.Starting"}}</div>
+                                <div class="flex">{{system.status.morale.starting}}</div>
+                                <div class="flex">{{system.status.morale.starting}}</div>
+                                <div class="list-controls">
+                                    <a class="list-control inactive disabled"><i class="fa-solid fa-xmark"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    {{#each system.status.morale.log}}
+                        <div class="list-row" data-index="{{@key}}">
+                            <div class="row-content">
+                                <div class="large">{{this.label}}</div>
+                                <div class="flex">{{this.value}}</div>
+                                <div class="flex">{{this.sum}}</div>
+                                <div class="list-controls">
+                                    <a class="list-control" data-action="listDelete" data-path="system.status.morale.log"><i class="fa-solid fa-xmark"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+        </div>
+
+      {{#if (eq system.vehicleType "water")}}
+        <div class="sheet-list condensed">
+            <div class="list-header row-content">
+                <div class="large">{{localize "VEHICLE.ManannsMood"}}: {{system.status.mood.value}} <a data-action="rollMood"><i class="fa-solid fa-dice"></i></a></div>
+                <div class="flex">{{localize "VEHICLE.Change"}}</div>
+                <div class="flex">{{localize "Total"}}</div>
+                <div class="list-controls">
+                    <a class="list-control" data-action="configureMood"><i class="fa-solid fa-gear"></i></a>
+                </div>
+                </div>
+                <div class="list-content">
+                        <div class="list-row">
+                            <div class="row-content">
+                                <div class="large">{{localize "VEHICLE.Starting"}}</div>
+                                <div class="flex">{{system.status.mood.starting}}</div>
+                                <div class="flex">{{system.status.mood.starting}}</div>
+                                <div class="list-controls">
+                                    <a class="list-control inactive disabled"><i class="fa-solid fa-xmark"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    {{#each system.status.mood.log}}
+                        <div class="list-row" data-index="{{@key}}">
+                            <div class="row-content">
+                                <div class="large">{{this.label}}</div>
+                                <div class="flex">{{this.value}}</div>
+                                <div class="flex">{{this.sum}}</div>
+                                <div class="list-controls">
+                                    <a class="list-control" data-action="listDelete" data-path="system.status.mood.log"><i class="fa-solid fa-xmark"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    {{/each}}
+                </div>
+        </div>
+
+        <div class="events">
+          {{#if portStayEvents}}
+            <button type="button" data-action="moodEventClick" data-key="port-stay-events">{{portStayEvents.name}}</button>
+          {{/if}}
+          {{#if shipboardEvents}}
+            <button type="button" data-action="moodEventClick"  data-key="shipboard-events">{{shipboardEvents.name}}</button>
+          {{/if}}
+        </div>
+        {{/if}}
+</section>

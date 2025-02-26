@@ -91,12 +91,210 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           aspects[item.system.placement][item.system.pluralLabel] = [item];
         }
     })
+    if (context.system.status?.armour)
+    {
+      this.formatArmourSection(context);
+    }
     context.items.aspect = aspects
     context.showExtendedTests = this.showExtendedTests;
     return context;
   }
 
-  _getContetMenuOptions()
+    //#region Trappings
+    prepareInventory() {
+
+      let collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")
+      // Inventory object is for the Trappings tab - each sub object is for an individual inventory section
+      const categories = {
+        weapons: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Weapon"), // Label - what is displayed in the inventory section header
+          items: this.actor.itemTags["weapon"], // Array of items in the sectio.filter(i => !i.system.location.value)n
+          toggle: true,                                 // Is there a toggle in the section? (Equipped, worn, etc.)
+          toggleName: game.i18n.localize("Equipped"),   // What is the name of the toggle in the header
+          show: false,                                  // Should this section be shown (if an item exists in this list, it is set to true)
+          collapsed: collapsed?.weapons,
+          dataType: "weapon"                            // What type of FVTT Item is in this section (used by the + button to add an item of this type)
+        },
+        armor: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Armour"),
+          items: this.actor.itemTags["armour"],
+          toggle: true,
+          toggleName: game.i18n.localize("Worn"),
+          show: false,
+          collapsed: collapsed?.armor,
+          dataType: "armour"
+        },
+        ammunition: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Ammunition"),
+          items: this.actor.itemTags["ammunition"],
+          show: false,
+          collapsed: collapsed?.ammunition,
+          dataType: "ammunition"
+        },
+        clothingAccessories: {
+          label: game.i18n.localize("WFRP4E.TrappingType.ClothingAccessories"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "clothingAccessories"),
+          toggle: true,
+          toggleName: game.i18n.localize("Worn"),
+          show: false,
+          collapsed: collapsed?.clothingAccessories,
+          dataType: "trapping"
+        },
+        booksAndDocuments: {
+          label: game.i18n.localize("WFRP4E.TrappingType.BooksDocuments"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "booksAndDocuments"),
+          show: false,
+          collapsed: collapsed?.booksAndDocuments,
+          dataType: "trapping"
+        },
+        toolsAndKits: {
+          label: game.i18n.localize("WFRP4E.TrappingType.ToolsKits"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "toolsAndKits" || i.system.trappingType.value == "tradeTools"),
+          show: false,
+          collapsed: collapsed?.toolsAndKits,
+          dataType: "trapping"
+        },
+        foodAndDrink: {
+          label: game.i18n.localize("WFRP4E.TrappingType.FoodDrink"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "foodAndDrink"),
+          show: false,
+          collapsed: collapsed?.foodAndDrink,
+          dataType: "trapping"
+        },
+        drugsPoisonsHerbsDraughts: {
+          label: game.i18n.localize("WFRP4E.TrappingType.DrugsPoisonsHerbsDraughts"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "drugsPoisonsHerbsDraughts"),
+          show: false,
+          collapsed: collapsed?.drugsPoisonsHerbsDraughts,
+          dataType: "trapping"
+        },
+        misc: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Misc"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "misc" || !i.system.trappingType.value),
+          show: true,
+          collapsed: collapsed?.misc,
+          dataType: "trapping"
+        },
+        ingredient: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Ingredient"),
+          items: this.actor.itemTags["trapping"].filter(i => i.system.trappingType.value == "ingredient"),
+          show: false,
+          collapsed: collapsed?.ingredient,
+          dataType: "trapping"
+        },
+        cargo: {
+          label: game.i18n.localize("WFRP4E.TrappingType.Cargo"),
+          items: this.actor.itemTags["cargo"],
+          show: false,
+          collapsed: collapsed?.cargo,
+          dataType: "cargo"
+        }
+      }
+  
+      const money = {
+        items: this.actor.itemTags["money"],
+        total: 0,     // Total coinage value
+        show: true,
+        collapsed : false
+      }
+      const containers = {
+        items: this.actor.itemTags["container"],
+        show: false
+      }
+      const misc = {}
+      let inContainers = []; // inContainers is the temporary storage for items within a container
+  
+      
+      if (this.actor.hasSpells || this.actor.type == "vehicle")
+        inContainers = this._filterItemCategory(categories.ingredient, inContainers)
+      else
+      {
+        categories.misc.items = categories.misc.items.concat(categories.ingredient.items)
+        delete categories.ingredient
+      }
+  
+      // Allow 3rd party modules to expand Inventory by adding new categories
+      Hooks.callAll("wfrp4e:constructInventory", this, categories, collapsed);
+  
+      for (let itemCategory in categories)
+        inContainers = this._filterItemCategory(categories[itemCategory], inContainers)
+  
+      inContainers = this._filterItemCategory(money, inContainers)
+      inContainers = this._filterItemCategory(containers, inContainers)
+  
+      // Add names of containers to item.location object. Used for ammo selection
+      inContainers.forEach(i => {
+        const container = this.actor.itemTags["container"].find(c => c.id === i.system.location.value);
+        i.system.location.name = container?.name || false;
+      });
+  
+      misc.totalShieldDamage = categories["weapons"].items.reduce((prev, current) => prev += current.system.damageToItem.shield, 0)
+  
+      money.total = money.items.reduce((prev, current) => { return prev + (current.system.coinValue.value * current.system.quantity.value) }, 0)
+  
+      categories.misc.show = true
+  
+      // ******************************** Container Setup ***********************************
+  
+      for (var cont of this.actor.itemTags["container"]) // For each container
+      {
+        // All items referencing (inside) that container
+        var itemsInside = inContainers.filter(i => i.system.location.value == cont.id);
+        cont.system.carrying = itemsInside.filter(i => i.type != "container")//.sort((a, b) => a.sort - b.sort);    // cont.system.carrying -> items the container is carrying
+        cont.system.packsInside = itemsInside.filter(i => i.type == "container")//.sort((a, b) => a.sort - b.sort); // cont.system.packsInside -> containers the container is carrying
+        cont.system.carries.current = itemsInside.reduce(function (prev, cur) {   // cont.system.holding -> total encumbrance the container is holding
+          return Number(prev) + Number(cur.system.encumbrance.total);
+        }, 0);
+        cont.system.carries.current = Math.floor(cont.system.carries.current * 10) / 10;
+        cont.system.collapsed = this.actor.getFlag("wfrp4e", "sheetCollapsed")?.[cont.id];
+      }
+  
+      return {
+        categories,
+        money,
+        containers,
+        misc
+      }
+    }
+    
+    _filterItemCategory(category, itemsInContainers) {
+      itemsInContainers = itemsInContainers.concat(category.items.filter(i => !!i.system.location?.value))
+      category.items = category.items.filter(i => !i.system.location?.value)//.sort((a, b) => a.sort - b.sort);
+      category.show = category.items.length > 0
+      return itemsInContainers
+    }
+
+  formatArmourSection(context) {
+    let AP = context.system.status.armour
+
+    // Change out hit locations if using custom table
+    let table = game.wfrp4e.tables.findTable(context.system.details.hitLocationTable.value)
+    for (let loc in AP) {
+      if (loc == "shield" || loc == "shieldDamage")
+        continue
+      if (table)
+      {
+        try {
+          let result  = table.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
+          if (result)
+          AP[loc].label = game.i18n.localize(result.text)
+          else
+          AP[loc].show = false;
+        }
+        catch(e)
+        {
+          ui.notifications.error("Error formatting armour section using Hit Location Table, using fallback implementation")
+          warhammer.utility.log("Hit Location Format Error: " + e, true)
+          AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
+        }
+      }
+      else if (game.wfrp4e.config.locations[loc]) // fallback implementation
+      {
+        AP[loc].label = game.i18n.localize(game.wfrp4e.config.locations[loc])
+      }
+    }
+  }
+  _getContextMenuOptions()
   { 
     return [
       {
@@ -365,6 +563,10 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         else if (type == "prayer")
         {
           itemData["system.type.value"] = category;
+        }
+        else if (type == "trait")
+        {
+          itemData["system.category"] = category || "standard"
         }
 
         this.document.createEmbeddedDocuments("Item", [itemData]).then(item => item[0].sheet.render(true));
