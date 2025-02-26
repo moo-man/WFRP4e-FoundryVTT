@@ -5,6 +5,25 @@
         overflow-y: unset;
     }
 
+    .section.tab[data-tab="notes"] {
+        .header-row {
+            display:  flex;
+            .header-group {
+                margin: 0.25rem 0.5rem;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                
+                input {
+                    background: none;
+                    border: none;
+                    line-height: 1.5rem;
+                    height: 1.5rem;
+                    padding: 0 0.1rem;
+                }
+            }
+        }
+    }
 
     .sheet-header {
         img {

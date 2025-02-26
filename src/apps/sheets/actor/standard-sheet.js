@@ -7,7 +7,8 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
   static DEFAULT_OPTIONS = {
     position : {
-      height: 750
+      height: 750,
+      width: 650
     },
     actions : {
       useDodge : this._onDodgeClick,

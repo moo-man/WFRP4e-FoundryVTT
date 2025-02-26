@@ -29,6 +29,25 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         schema.god = new fields.SchemaField({
             value: new fields.StringField({label : game.i18n.localize("Blessed By")})
         });
+
+        schema.age = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.height = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.weight = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.haircolour = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.eyecolour = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.distinguishingmark = new fields.SchemaField({
+            value: new fields.StringField()
+        });
         schema.status = new fields.SchemaField({
             value: new fields.StringField(),
             standing: new fields.StringField(),
@@ -72,24 +91,6 @@ export class CharacterDetailsModel extends StandardDetailsModel {
             value: new fields.StringField()
         });
         schema.careerlevel = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.age = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.height = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.weight = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.haircolour = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.eyecolour = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.distinguishingmark = new fields.SchemaField({
             value: new fields.StringField()
         });
         schema.starsign = new fields.SchemaField({

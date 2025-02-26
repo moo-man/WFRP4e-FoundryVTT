@@ -1,10 +1,52 @@
 <h2 class="note-section label">{{localize "Notes"}}</h2>
+
+<div class="row">
+  <div id="field-age" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.age.value" type="text"
+      value="{{system.details.age.value}}" placeholder="{{localize 'Age'}}" />
+    <span class="label-details">{{localize "Age"}}<span>
+  </div>
+
+  <div id="field-height" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.height.value" type="text"
+      value="{{system.details.height.value}}" placeholder="{{localize 'CharacterHeight'}}" />
+    <span class="label-details">{{localize "CharacterHeight"}}</span>
+  </div>
+
+  <div id="field-weight" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.weight.value" type="text"
+      value="{{system.details.weight.value}}" placeholder="{{localize 'Weight'}}" />
+    <span class="label-details">{{localize "Weight"}}</span>
+  </div>
+
+  <div id="field-haircolour" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.haircolour.value" type="text"
+      value="{{system.details.haircolour.value}}" placeholder="{{localize 'Hair Colour'}}" />
+    <span class="label-details">{{localize "Hair Colour"}}</span>
+  </div>
+  <div id="field-eyecolour" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.eyecolour.value" type="text"
+      value="{{system.details.eyecolour.value}}" placeholder="{{localize 'Eye Colour'}}" />
+    <span class="label-details">{{localize "Eye Colour"}}</span>
+  </div>
+</div>
+<div class="row">
+  <div id="field-distinguishingmark" class="item">
+    <input class="input-details" style="box-shadow: none !important;" name="system.details.distinguishingmark.value"
+      type="text" value="{{system.details.distinguishingmark.value}}"
+      placeholder="{{localize 'Distinguishing Mark'}}" />
+    <span class="label-details">{{localize "Distinguishing Mark"}}</span>
+  </div>
+</div>
+
 <div class="note-section biography">
-  {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror" button=true owner=owner editable=editable}}
+  {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror"
+  button=true owner=owner editable=editable}}
 </div>
 
 <div class="inventory-header trait-header">
-  <div id="trait-name">{{localize "SHEET.ToggleTraits"}}<a class="sort-items" title="{{localize 'SHEET.SortItems'}}" data-type="trait"><i class="fas fa-sort-alpha-down"></i></a></div>
+  <div id="trait-name">{{localize "SHEET.ToggleTraits"}}<a class="sort-items" title="{{localize 'SHEET.SortItems'}}"
+      data-type="trait"><i class="fas fa-sort-alpha-down"></i></a></div>
 </div>
 
 <ol class="inventory-list trait-list">
@@ -13,24 +55,24 @@
     <div class="content">
       {{#if item.included}}
       <div class="item-name trait-name">
-      {{else}}
-      <div class="excluded-trait item-name trait-name">
-      {{/if}}
-        <div class="image item-image" style="background-image: url({{item.img}})"></div>
-        <a class = "name trait-include">{{item.DisplayName}}</a>
-      </div>
+        {{else}}
+        <div class="excluded-trait item-name trait-name">
+          {{/if}}
+          <div class="image item-image" style="background-image: url({{item.img}})"></div>
+          <a class="name trait-include">{{item.DisplayName}}</a>
+        </div>
 
-      {{#if ../document.isOwner}}
-      <div class="item-controls">
-      {{else}}
-      <div class="item-controls" style = "visibility : hidden;">
-      {{/if}}
-        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
-        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
-      </div>
-    </div>
+        {{#if ../document.isOwner}}
+        <div class="item-controls">
+          {{else}}
+          <div class="item-controls" style="visibility : hidden;">
+            {{/if}}
+            <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+            <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+            <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+            <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+          </div>
+        </div>
   </li>
   {{/each}}
 </ol>
@@ -46,20 +88,20 @@
     <div class="content">
       <div class="item-name trait-name">
         <div class="image item-image" style="background-image: url({{item.img}})"></div>
-        <a class = "name trait-include">{{item.name}}</a>
+        <a class="name trait-include">{{item.name}}</a>
       </div>
 
       {{#if ../document.isOwner}}
       <div class="item-controls">
-      {{else}}
-      <div class="item-controls" style = "visibility : hidden;">
-      {{/if}}
-        <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
-        <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
-        <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
-        <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        {{else}}
+        <div class="item-controls" style="visibility : hidden;">
+          {{/if}}
+          <a class="item-post" title="{{localize 'SHEET.PostItem'}}"><i class="fas fa-comment"></i></a>
+          <a class="item-control item-edit" title="{{localize 'SHEET.EditItem'}}"><i class="fas fa-edit"></i></a>
+          <a class="item-dropdown" title="{{localize 'SHEET.Dropdown'}}"><i class="fas fa-chevron-down"></i></a>
+          <a class="item-control item-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+        </div>
       </div>
-    </div>
   </li>
   {{/each}}
 </ol>
