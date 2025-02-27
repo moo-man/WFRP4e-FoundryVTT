@@ -78,7 +78,7 @@
     </div>
     <div class="move-section">
       <div class="move-value">
-        {{#if actor.flags.autoCalcWalk}}
+        {{#if actor.system.autoCalc.walk}}
         <a >{{system.details.move.walk}} {{localize "yds"}}</a>
         {{else}}
         <input  name="system.details.move.walk" type="text" value="{{system.details.move.walk}}" data-dtype="String">
@@ -90,7 +90,7 @@
     </div>
     <div class="move-section">
       <div class="move-value">
-        {{#if actor.flags.autoCalcRun}}
+        {{#if actor.system.autoCalc.run}}
         <a >{{system.details.move.run}} {{localize "yds"}}</a>
         {{else}}
         <input  name="system.details.move.run" type="text"
@@ -141,7 +141,7 @@
           /
         </div>
         <div id="wounds-max">
-          {{#if actor.flags.autoCalcWounds}}
+          {{#if actor.system.autoCalc.wounds}}
           <a toggle-type="wounds">{{system.status.wounds.max}}</a>
           {{else}}
           <input name="system.status.wounds.max" type="text"
@@ -165,7 +165,7 @@
           /
         </div>
         <div id="criticalWounds-max">
-          {{#if actor.flags.autoCalcCritW}}
+          {{#if actor.system.autoCalc.criticals}}
           <a toggle-type="critW">{{system.status.criticalWounds.max}}</a>
           {{else}}
           <input name="system.status.criticalWounds.max" type="text"
@@ -187,7 +187,7 @@
           /
         </div>
         <div id="corruption-max">
-          {{#if actor.flags.autoCalcCorruption}}
+          {{#if actor.system.autoCalc.corruption}}
           <a toggle-type="corruption">{{system.status.corruption.max}}</a>
           {{else}}
           <input name="system.status.corruption.max" type="text" value="{{system.status.corruption.max}}" data-dtype="Number">

@@ -8,7 +8,7 @@
                 </div>
                 <div>/</div>
                 <div class="max">
-                    {{#if actor.flags.autoCalcEnc}}
+                    {{#if actor.system.autoCalc.encumbrance}}
                         {{system.status.encumbrance.max}}
                     {{else}}
                         <input type="number" name="system.status.encumbrance.max" value="{{system.status.encumbrance.max}}" />

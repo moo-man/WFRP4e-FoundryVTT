@@ -18,23 +18,21 @@ export class StandardActorModel extends BaseActorModel {
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);
         schema.status = new fields.EmbeddedDataField(StandardStatusModel);
         schema.details = new fields.EmbeddedDataField(StandardDetailsModel);
+        schema.autoCalc = new fields.SchemaField({
+            run: new fields.BooleanField({initial : true}),
+            walk: new fields.BooleanField({initial : true}),
+            wounds: new fields.BooleanField({initial : true}),
+            criticals: new fields.BooleanField({initial : true}),
+            corruption: new fields.BooleanField({initial : true}),
+            encumbrance: new fields.BooleanField({initial : true}),
+            size: new fields.BooleanField({initial : true})
+        })
         return schema;
     }
 
 
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);
-
-        // Default auto calculation to true
-        this.parent.updateSource({
-            "flags.autoCalcRun": data.flags?.autoCalcRun || true,
-            "flags.autoCalcWalk": data.flags?.autoCalcWalk || true,
-            "flags.autoCalcWounds": data.flags?.autoCalcWounds || true,
-            "flags.autoCalcCritW": data.flags?.autoCalcCritW || true,
-            "flags.autoCalcCorruption": data.flags?.autoCalcCorruption || true,
-            "flags.autoCalcEnc": data.flags?.autoCalcEnc || true,
-            "flags.autoCalcSize": data.flags?.autoCalcSize || true,
-        });
     }
 
     async _preUpdate(data, options, user) {
@@ -157,12 +155,11 @@ export class StandardActorModel extends BaseActorModel {
 
 
     computeMove() {
-        let flags = this.parent.flags;
         // Auto calculation values - only calculate if user has not opted to enter ther own values
-        if (flags.autoCalcWalk)
+        if (this.autoCalc.walk)
             this.details.move.walk = Number(this.details.move.value) * 2;
 
-        if (flags.autoCalcRun)
+        if (this.autoCalc.run)
             this.details.move.run = Number(this.details.move.value) * 4;
 
     }
@@ -190,8 +187,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     computeEncumbranceMax() {
-        let flags = this.parent.flags;
-        if (flags.autoCalcEnc) {
+        if (this.autoCalc.encumbrance) {
             this.status.encumbrance.max = this.characteristics.t.bonus + this.characteristics.s.bonus;
 
             // I don't really like hardcoding this TODO: put this in Large effect script?
@@ -231,7 +227,6 @@ export class StandardActorModel extends BaseActorModel {
   * @returns {Number} Max wound value calculated
   */
     computeWounds() {
-        let flags = this.parent.flags;
 
         // Easy to reference bonuses
         let sb = this.characteristics.s.bonus + (this.characteristics.s.calculationBonusModifier || 0);
@@ -243,7 +238,7 @@ export class StandardActorModel extends BaseActorModel {
             wpb: 0,
         }
 
-        if (flags.autoCalcCritW)
+        if (this.autoCalc.criticals)
             this.status.criticalWounds.max = tb;
 
         let effectArgs = { sb, tb, wpb, multiplier, actor: this.parent }
@@ -252,7 +247,7 @@ export class StandardActorModel extends BaseActorModel {
 
         let wounds = this.status.wounds.max;
 
-        if (flags.autoCalcWounds) {
+        if (this.autoCalc.wounds) {
             switch (this.details.size.value) // Use the size to get the correct formula (size determined in prepare())
             {
                 case "tiny":
@@ -292,7 +287,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     checkWounds(force=false) {
-        if (this.parent.flags.autoCalcWounds || force) {
+        if (this.autoCalc.wounds || force) {
             let newMaxWounds = this.computeWounds()
             let updateCurrentWounds = this.status.wounds.value == this.status.wounds.max;
 
@@ -399,10 +394,10 @@ export class StandardActorModel extends BaseActorModel {
 
                     this.details.move.value = mount.details.move.value;
 
-                    if (flags.autoCalcWalk)
+                    if (this.autoCalc.walk)
                         this.details.move.walk = mount.details.move.walk;
 
-                    if (flags.autoCalcRun)
+                    if (this.autoCalc.run)
                         this.details.move.run = mount.details.move.run;
                 }
             }

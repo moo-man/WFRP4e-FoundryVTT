@@ -74,8 +74,8 @@
     <div class="attribute-row flexrow">
         <div class="attribute-box movement">
             <div class="field" style="grid-column: 1 / span 4"><input type="text" name="system.details.move.value" value="{{system.details.move.value}}"></div>
-            <div class="field" style="grid-column: 5 / span 4"><input type="text" {{#if actor.flags.autoCalcWalk}}readonly value="{{system.details.move.walk}} {{localize "yds"}}" {{else}}name="system.details.move.walk" value="{{system.details.move.walk}}"{{/if}}></div>
-            <div class="field" style="grid-column: 9 / span 4"><input type="text" {{#if actor.flags.autoCalcRun}}readonly value="{{system.details.move.run}} {{localize "yds"}}" {{else}}name="system.details.move.run" value="{{system.details.move.run}}"{{/if}}></div>
+            <div class="field" style="grid-column: 5 / span 4"><input type="text" {{#if actor.system.autoCalc.walk}}readonly value="{{system.details.move.walk}} {{localize "yds"}}" {{else}}name="system.details.move.walk" value="{{system.details.move.walk}}"{{/if}}></div>
+            <div class="field" style="grid-column: 9 / span 4"><input type="text" {{#if actor.system.autoCalc.run}}readonly value="{{system.details.move.run}} {{localize "yds"}}" {{else}}name="system.details.move.run" value="{{system.details.move.run}}"{{/if}}></div>
             <div class="label" style="grid-column: 1 / span 4"><label class="centered">{{localize "Move"}}</label></div>
             <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
             <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
@@ -93,7 +93,7 @@
         <div class="attribute-box wounds">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label> <a data-action="onRest" data-tooltip="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div>
-            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcWounds}}readonly{{else}}name="system.status.wounds.max"{{/if}} value="{{system.status.wounds.max}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.system.autoCalc.wounds}}readonly{{else}}name="system.status.wounds.max"{{/if}} value="{{system.status.wounds.max}}"></div>
         </div>
 
     </div>
@@ -101,12 +101,12 @@
         <div class="attribute-box criticals">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Critical Wounds"}}</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" readonly value="{{nonTrivialCriticals.length}}"></div>
-            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcCritW}}disabled{{/if}} name="system.status.criticalWounds.max" value="{{system.status.criticalWounds.max}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.system.autoCalc.criticals}}disabled{{/if}} name="system.status.criticalWounds.max" value="{{system.status.criticalWounds.max}}"></div>
         </div>
         <div class="attribute-box corruption">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Corruption"}}</label></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.corruption.value" value="{{system.status.corruption.value}}"></div>
-            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.flags.autoCalcCorruption}}disabled{{/if}} name="system.status.corruption.max" value="{{system.status.corruption.max}}"></div>
+            <div class="field" style="grid-column: 7 / span 6"><input type="number" {{#if actor.system.autoCalc.corruption}}disabled{{/if}} name="system.status.corruption.max" value="{{system.status.corruption.max}}"></div>
         </div>
         <div class="attribute-box experience">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Experience"}}</label></div>

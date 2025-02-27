@@ -58,7 +58,7 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.flags.autoCalcWalk}}
+              {{#if actor.system.autoCalc.walk}}
               <a toggle-type="walk">{{system.details.move.walk}} {{localize "yds"}}</a>
               {{else}}
               <input name="system.details.move.walk" type="text"
@@ -71,7 +71,7 @@
           </div>
           <div class="move-section">
             <div class="move-value">
-              {{#if actor.flags.autoCalcRun}}
+              {{#if actor.system.autoCalc.run}}
               <a toggle-type="run">{{system.details.move.run}} {{localize "yds"}}</a>
               {{else}}
               <input name="system.details.move.run" type="text"
@@ -95,7 +95,7 @@
                 /
               </div>
               <div id="wounds-max">
-                {{#if actor.flags.autoCalcWounds}}
+                {{#if actor.system.autoCalc.wounds}}
                 <a toggle-type="wounds">{{system.status.wounds.max}}</a>
                 {{else}}
                 <input name="system.status.wounds.max" type="text"
