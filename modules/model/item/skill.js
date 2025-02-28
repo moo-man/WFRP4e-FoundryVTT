@@ -31,6 +31,36 @@ export class SkillModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["advanced", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.advanced.value.label",
+                type: "set",
+                config: {
+                    choices : game.wfrp4e.config.skillTypes,
+                    keyPath: "system.advanced.value"
+                }
+            }],
+            ["grouped", {
+                label: "ITEM.IsSpec",
+                type: "boolean",
+                config: {
+                    keyPath: "system.grouped.value",
+                    valueGetter: (data) => data.system.grouped?.value === "isSpec"
+                }
+            }],
+            ["characteristic", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.characteristic.value.label",
+                type: "set",
+                config: {
+                    choices : game.wfrp4e.config.characteristics,
+                    keyPath: "system.characteristic.value"
+                }
+            }],
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of SkillModel
      *

@@ -37,6 +37,63 @@ export class PrayerModel extends OvercastItemModel
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["prayerType", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.type.value.label",
+          type: "set",
+          config: {
+            choices : game.wfrp4e.config.prayerTypes,
+            keyPath: "system.type.value"
+          }
+        }],
+        ["god", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.god.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.god.value"
+          }
+        }],
+        ["range", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.range.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.range.value"
+          }
+        }],
+        ["target", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.target.value"
+          }
+        }],
+        ["aoe", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.aoe.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.target.aoe"
+          }
+        }],
+        ["duration", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.duration.value"
+          }
+        }],
+        ["doesDamage", {
+          label: "SHEET.DoesDamage",
+          type: "boolean",
+          config: {
+            keyPath: "system.damage",
+            valueGetter: (data) => !!data.system.damage?.value?.length || !!data.system.damage?.dice?.length,
+          }
+        }],
+      ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of PrayerModel
      *

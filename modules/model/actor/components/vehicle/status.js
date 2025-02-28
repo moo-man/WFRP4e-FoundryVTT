@@ -27,6 +27,25 @@ export class VehicleStatusModel extends foundry.abstract.DataModel {
         return schema;
     }
 
+    static get compendiumBrowserVehicleStatusFilters() {
+        return new Map([
+            ["carries", {
+                label: "Carries",
+                type: "range",
+                config: {
+                    keyPath: "system.status.carries.max"
+                }
+            }],
+            ["encumbrance", {
+                label: "Encumbrance",
+                type: "range",
+                config: {
+                    keyPath: "system.status.encumbrance.current"
+                }
+            }],
+        ]);
+    }
+
     initializeArmour()
     {
         this.ward = {value: null}

@@ -41,6 +41,20 @@ export class DiseaseModel extends BaseItemModel {
     return schema;
   }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["symptoms", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.symptoms.value.label",
+        type: "text",
+        config: {
+          keyPath: "system.symptoms.value",
+          multiple: true
+        }
+      }]
+    ]);
+  }
+
   async _onUpdate(data, options, user)
   {
     await super._onUpdate(data, options,user)

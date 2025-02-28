@@ -16,6 +16,30 @@ export class LocationalItemModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["location", {
+                label: "Location",
+                type: "set",
+                config: {
+                    choices: [
+                        "WFRP4E.Locations.head",
+                        "WFRP4E.Locations.body",
+                        "WFRP4E.Locations.arm",
+                        "WFRP4E.Locations.leg"
+                    ]
+                      .map(game.i18n.localize.bind(game.i18n))
+                      .reduce((acc, a) => {
+                          acc[a] = a;
+                          return acc;
+                      }, {}),
+                    keyPath: "system.location.value"
+                }
+            }],
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child of LocationalItemModel
      *

@@ -19,7 +19,28 @@ let fields = foundry.data.fields;
      {
         return new Set().add(this.parent.type);
      }
- 
+
+     /** @override */
+     static get compendiumBrowserFilters() {
+       return new Map([
+         ["description", {
+           label: "Description",
+           type: "text",
+           config: {
+             keyPath: "system.description.value",
+           }
+         }]
+       ]);
+     }
+
+     static _deriveSource(uuid) {
+       const source = super._deriveSource(uuid);
+
+       if (game.wfrp4e.config.premiumModules[source.slug])
+         source.value = game.wfrp4e.config.premiumModules[source.slug];
+
+       return source;
+     }
 
      async _preCreate(data, options, user)
      {

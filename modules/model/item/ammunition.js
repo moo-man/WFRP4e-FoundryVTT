@@ -36,6 +36,41 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
     return true;
   }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["ammunitionType", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.ammunitionType.value.label",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.ammunitionGroups,
+          keyPath: "system.ammunitionType.value"
+        }
+      }],
+      ["damage", {
+        label: "BROWSER.ModifiesDamage",
+        type: "boolean",
+        config: {
+          keyPath: "system.damage",
+          valueGetter: (data) => (
+            !!data.system.damage?.value?.length &&
+            data.system.range?.value.toLowerCase() !== game.i18n.localize("as weapon").toLowerCase()
+          ) || !!data.system.damage?.dice?.length
+        }
+      }],
+      ["range", {
+        label: "BROWSER.ModifiesRange",
+        type: "boolean",
+        config: {
+          keyPath: "system.range",
+          valueGetter: (data) => !!data.system.range?.value?.length &&
+            data.system.range?.value?.toLowerCase() !== game.i18n.localize("as weapon").toLowerCase()
+        }
+      }],
+      ...this.compendiumBrowserPropertiesFilter("weapon"),
+    ]);
+  }
+
       // Ammunition Expansion Data
   async expandData(htmlOptions) {
     let data = await super.expandData(htmlOptions);

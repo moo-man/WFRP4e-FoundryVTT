@@ -1,6 +1,6 @@
 import { BaseActorModel } from "./base";
 import { CharacteristicModel } from "./components/characteristics";
-import { VehicleDetailsModel } from "./components/details";
+import {StandardDetailsModel, VehicleDetailsModel} from "./components/details";
 import { VehiclePassengersModel } from "./components/vehicle/passengers";
 import { VehicleStatusModel } from "./components/vehicle/status";
 let fields = foundry.data.fields;
@@ -19,6 +19,22 @@ export class VehicleModel extends BaseActorModel {
         schema.vehicleType = new fields.StringField({initial : "water"})
         schema.roles = new fields.ArrayField(new fields.ObjectField({deprecated : true})) // needed for migrating old roles
         return schema;
+    }
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["vehicleType", {
+                label: "VEHICLE.Type",
+                type: "set",
+                config: {
+                    choices: game.wfrp4e.config.vehicleTypes,
+                    keyPath: "system.vehicleType"
+                }
+            }],
+            ...Array.from(VehicleStatusModel.compendiumBrowserVehicleStatusFilters),
+            ...Array.from(VehicleDetailsModel.compendiumBrowserVehicleDetailsFilters),
+        ]);
     }
 
     async _preCreate(data, options, user) {

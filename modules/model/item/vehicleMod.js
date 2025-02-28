@@ -4,6 +4,11 @@ let fields = foundry.data.fields;
 export class VehicleModModel extends PhysicalItemModel
 {
     static LOCALIZATION_PREFIXES = ["WH.Models.vehicleMod"];
+
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+      isVehicle: true
+    }, {inplace: false}));
+
     static defineSchema() 
     {
         let schema = super.defineSchema();
@@ -11,6 +16,20 @@ export class VehicleModModel extends PhysicalItemModel
             value : new fields.StringField({choices: game.wfrp4e.config.modTypes})
         })
         return schema;
+    }
+
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["modType", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.modType.value.label",
+          type: "set",
+          config: {
+            choices : game.wfrp4e.config.modTypes,
+            keyPath: "system.modType.value"
+          }
+        }]
+      ]);
     }
 
     /**

@@ -3,8 +3,6 @@ const name = "Rotten Regeneration";
 
 if (!trait) return;
 
-debugger;
-
 const effect = trait.effects.find(e => e.name === "Regenerate");
 const scriptData = effect.system.scriptData;
 

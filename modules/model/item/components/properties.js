@@ -14,6 +14,38 @@ const PropertiesMixin = (cls) => class extends cls
     }
 
     /**
+     * Create the properties filter configuration for a type.
+     * @param {string} type  Item type.
+     * @returns {CompendiumBrowserFilterDefinitionEntry}
+     */
+    static compendiumBrowserPropertiesFilter(type) {
+        return [
+            ["qualities", {
+                label: "Qualities",
+                type: "set",
+                config: {
+                    choices: game.wfrp4e.utility.qualityList(type),
+                    keyPath: "system.qualities.value",
+                    valueGetter: (data) => data.system.qualities.value.map(q => q.name),
+                    multiple: true,
+                    collapsed: true
+                }
+            }],
+            ["flaws", {
+                label: "Flaws",
+                type: "set",
+                config: {
+                    choices: game.wfrp4e.utility.flawList(type),
+                    keyPath: "system.flaws.value",
+                    valueGetter: (data) => data.system.flaws.value.map(f => f.name),
+                    multiple: true,
+                    collapsed: true
+                }
+            }]
+        ];
+    }
+
+    /**
      * Used to identify an Item as one being a child of PropertiesMixin
      *
      * @final

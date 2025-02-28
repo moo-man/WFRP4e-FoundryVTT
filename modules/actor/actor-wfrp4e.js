@@ -1498,4 +1498,35 @@ export default class ActorWFRP4e extends WarhammerActor
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }
+
+  static compendiumBrowserTypes({chosen = new Set()} = {}) {
+    // @todo let systems define categories in data models and change this to generate categories more dynamically
+    const [generalTypes, standardTypes] = getSortedTypes(Actor).reduce(([g, s], t) => {
+      if (t !== CONST.BASE_DOCUMENT_TYPE) {
+        if (CONFIG.Actor.dataModels[t]?.metadata?.isStandard) s.push(t);
+        else g.push(t);
+      }
+
+      return [g, s];
+    }, [[], []]);
+
+    const makeChoices = (types, categoryChosen) => types.reduce((obj, type) => {
+      obj[type] = {
+        label: CONFIG.Actor.typeLabels[type],
+        chosen: chosen.has(type) || categoryChosen
+      };
+      return obj;
+    }, {});
+
+    const choices = makeChoices(generalTypes);
+
+    if (standardTypes.length) {
+      choices.standard = {
+        label: game.i18n.localize("ITEM.Standard"),
+        children: makeChoices(standardTypes, chosen.has("standard"))
+      };
+    }
+
+    return new SelectChoices(choices);
+  }
 }
