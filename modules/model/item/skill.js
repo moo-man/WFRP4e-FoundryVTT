@@ -50,7 +50,7 @@ export class SkillModel extends BaseItemModel {
                     valueGetter: (data) => data.system.grouped?.value === "isSpec"
                 }
             }],
-            ["advanced", {
+            ["characteristic", {
                 label: this.LOCALIZATION_PREFIXES + ".FIELDS.characteristic.value.label",
                 type: "set",
                 config: {
