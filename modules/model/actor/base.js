@@ -1,4 +1,5 @@
 import WFRP_Utility from "../../system/utility-wfrp4e";
+import {StandardDetailsModel} from "./components/details.js";
 
 let fields = foundry.data.fields;
 /**
@@ -11,6 +12,19 @@ export class BaseActorModel extends BaseWarhammerActorModel {
     static defineSchema() {
         let schema = {};
         return schema;
+    }
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["linked", {
+                label: "TOKEN.CharLink",
+                type: "boolean",
+                config: {
+                    keyPath: "prototypeToken.actorLink"
+                }
+            }],
+        ]);
     }
 
     static _deriveSource(uuid) {
