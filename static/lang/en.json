@@ -1445,6 +1445,16 @@
     "SPEC.Hearing" : "Hearing",
     "SPEC.Smell" : "Smell",
 
+
+    "SHEET.CharacterSheet" : "Character Sheet",
+    "SHEET.NPCSheet" : "NPC Sheet",
+    "SHEET.CreatureSheet" : "Creature Sheet",
+    "SHEET.VehicleSheet" : "Vehicle Sheet",
+    "SHEET.CharacterSheetNoTheme" : "Character Sheet (No Theme)",
+    "SHEET.NPCSheetNoTheme" : "NPC Sheet (No Theme)",
+    "SHEET.CreatureSheetNoTheme" : "Creature Sheet (No Theme)",
+    "SHEET.VehicleSheetNoTheme" : "Vehicle Sheet (No Theme)",
+
     "SHEET.DupPrompt" : "Do you want to duplicate this item?",
     "SHEET.DupTitle" : "Duplicate item",
     "SHEET.SplitPrompt" : "Please enter the amount to to split off",

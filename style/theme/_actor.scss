@@ -1,0 +1,229 @@
+    .wfrp4e.actor.sheet.application:not(.no-theme) {
+        --color-cream: #f0d9a3;
+        --color-grey4: #f1ede9;
+        --color-grey3: #b5aeac;
+        --color-grey2: #464331c4;
+        --color-grey1: black;
+
+        --color-faded: #736953a6;
+
+        --color-cool: #273444;
+
+        --color-warm: #4a0404;
+
+        --input-font: "CaslonPro";
+        --header-font: "CaslonAntique";
+
+        
+        // Overrides
+        --characteristic-input: none;
+        --attribute-input: none;
+        --attribute-border: #736953a6;
+        --list-header: none;
+        --list-header-border: #736953a6;
+        --list-row: #7b733b29;
+        --list-row-alternate: #9e856a0d;
+
+        @mixin shadowed($color: #00000052, $size: 10px) {
+            box-shadow: 0 0 $size $color inset;
+        }
+
+        &:not(.minimized) {
+            .window-header {
+                background: none;
+                padding-top: 0.5rem;
+                font-family: CaslonAntique;
+                font-size: var(--font-size-18);
+
+                >* {
+                    color: var(--color-cream);
+                    i {
+                        opacity: 0.9;
+                    }
+                }
+
+                button {
+                    &:hover {
+                        background: unset;
+                    }
+
+                    &.header-control {
+                        --button-size: 2rem;
+                        background-image: url(./ui/buttons/stamp.webp);
+                        background-size: contain;
+                        background-position: 0px -1px;
+                    }
+                }
+            }
+        }
+
+        .controls-dropdown {
+
+            &.collapsing,
+            &.expanding {
+                background: url(./ui/frames/context-menu.webp);
+                background-size: 100%;
+            }
+
+            background: none;
+            border: 1px solid;
+            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+            border-image-slice: 70 fill;
+            border-image-width: 100px;
+            border-image-outset: 0px 0px 0px 0px;
+            box-shadow: 5px 5px 10px rgb(0, 0, 0);
+        }
+
+        .window-content {
+            border: 1px solid;
+            border-image: url(./ui/frames/actor-sheet-v2.webp) 4 repeat;
+            border-image-slice: 250 fill;
+            border-image-width: 250px;
+            border-image-outset: 37px 10px 0px 10px;
+
+            padding: 2rem;
+
+            // input {
+            //     font-family: var(--input-font);
+            // }
+            // label {
+            //     font-family: var(--header-font);
+            // }
+        }
+
+
+        .sheet-header {
+
+            .header-group {
+                height: 2.35rem;
+                input {
+                    height: 1rem;
+                    color: var(--color-grey1);
+                    // font-family: var(--input-font);
+                    &:focus {
+                        outline: none;
+                    }
+                }
+
+                label {
+                    // font-family: var(--header-font);
+                    height: 1rem;
+                    border-color: var(--color-grey2);
+                    color: var(--color-grey2);
+                }
+            }
+        }
+
+        nav.sheet-tabs.tabs {
+            > a {
+                border-image: url(./ui/actor-sheet-tab-border.webp) 4 repeat;
+                border-image-width: 4px;
+                border-image-outset: 2px;
+                color: var(--color-cool);
+                height: 1.5rem;
+                line-height: 1.5rem;
+                padding: 0px;
+
+                &.active {
+                    background: none;
+                    color: var(--color-warm);
+                }
+            }
+        }
+
+        table.characteristic-table {
+
+            th {
+                padding: 0.2rem 0rem;
+                @include shadowed();
+            }
+
+            tr {
+                @include shadowed();
+            }
+
+            tr {
+                td:first-of-type {
+                    @include shadowed();
+                }
+                &:last-of-type {
+                    > td:not(:first-of-type) {
+                        @include shadowed(#5a2d00, 4px)
+                    }
+                    border-bottom: 1px solid var(--color-faded);
+                }
+            }
+
+            th {
+                border-top: 1px solid var(--color-faded);
+                border-right: 1px solid var(--color-faded);
+                &:first-of-type{
+                    border-left: 1px solid var(--color-faded);
+                }
+                
+                label {
+                    color: var(--color-grey2);
+                }
+            }
+
+            td {
+                border-color: var(--color-faded);
+
+                &:last-of-type{
+                    border-right: 1px solid var(--color-faded);
+                }
+
+                label {
+                    color: var(--color-grey2);
+                }
+
+                a {
+                    color: var(--color-warm);
+                }
+
+                input {
+                    color: var(--color-grey1)
+                }
+            }
+
+   
+        }
+
+
+        .attribute-box {
+            .label {
+                @include shadowed();
+                color: var(--color-grey2);
+            }
+
+            .field {
+                a {
+                    color: var(--color-grey1);
+                }
+                input {
+                    color: var(--color-grey1);
+                    &:read-only,
+                    &:disabled {
+                        color: var(--color-grey2);
+                    }
+                }
+            }
+        }
+
+        .sheet-list {
+            .list-header {
+                @include shadowed(#6b3a0f87);
+                color: var(--color-grey2);
+            }
+
+            .list-content {
+                border: 1px solid var(--color-faded);
+                border-top: none;
+
+                .list-row {
+                    box-shadow: 0px 0px 1px inset black;
+                    color: var(--color-grey1);
+                }
+            }
+        }
+    }

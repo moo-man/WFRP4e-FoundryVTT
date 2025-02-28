@@ -103,6 +103,10 @@ import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
 import { TemplateModel } from "./modules/model/item/template.js";
 import TemplateSheet from "./src/apps/sheets/item/template-sheet.js";
 import ActorSheetWFRP4eVehicleV2 from "./src/apps/sheets/actor/vehicle-sheet.js";
+import ActorSheetWFRP4eCharacterV2NoTheme from "./src/apps/sheets/actor/no-theme/character-sheet.js";
+import ActorSheetWFRP4eNPCV2NoTheme from "./src/apps/sheets/actor/no-theme/npc-sheet.js";
+import ActorSheetWFRP4eCreatureV2NoTheme from "./src/apps/sheets/actor/no-theme/creature-sheet.js";
+import ActorSheetWFRP4eVehicleV2NoTheme from "./src/apps/sheets/actor/no-theme/vehicle-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -117,14 +121,14 @@ Hooks.once("init", function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacter, { types: ["character"]});
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"], makeDefault: true });
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPC, { types: ["npc"] });
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPCV2, { types: ["npc"], makeDefault: true});
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreature, { types: ["creature"] });
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"], makeDefault: true});
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicle, { types: ["vehicle"] });
-  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicleV2, { types: ["vehicle"], makeDefault: true });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"], makeDefault: true, label : "SHEET.CharacterSheet" });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPCV2, { types: ["npc"], makeDefault: true, label : "SHEET.NPCSheet"});
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"], makeDefault: true, label : "SHEET.CreatureSheet"});
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicleV2, { types: ["vehicle"], makeDefault: true, label : "SHEET.VehicleSheet" });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCharacterV2NoTheme, { types: ["character"], makeDefault: true, label : "SHEET.CharacterSheetNoTheme" });
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eNPCV2NoTheme, { types: ["npc"], makeDefault: true, label : "SHEET.NPCSheetNoTheme"});
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eCreatureV2NoTheme, { types: ["creature"], makeDefault: true, label : "SHEET.CreatureSheetNoTheme"});
+  Actors.registerSheet("wfrp4e", ActorSheetWFRP4eVehicleV2NoTheme, { types: ["vehicle"], makeDefault: true, label : "SHEET.VehicleSheetNoTheme" });
   
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("wfrp4e", ItemSheetWfrp4e, { makeDefault: true });

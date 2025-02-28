@@ -83,7 +83,6 @@
         border-radius: 0px;
         text-align: center;
         background:none;
-        table-layout: fixed;
 
         tr {
             &:nth-child(even)
@@ -108,12 +107,10 @@
             border: 1px solid var(--characteristic-border);
             height: 1.75rem;
             width: auto;
-            &:first-child {
+            &.row-label {
+                width: 3rem;
+                padding: 0px 0.3rem;
                 text-align: left;
-                border-left: none;
-                overflow: hidden;
-                text-overflow: clip;
-                width: 200px;
             }
             &:last-child {
                 border-right: none;
@@ -148,24 +145,8 @@
 
         &.movement {
             flex: 2;
-            div:nth-child(-n + 3) {
-                border-bottom: 1px solid var(--attribute-border);
-            }
         }
 
-        &.corruption,
-        &.criticals,
-        &.wounds {
-
-            a {
-                margin: 0px 5px;
-                font-size: var(--font-size-12);
-            }
-
-            .label {
-                border-bottom: 1px solid var(--attribute-border);
-            }
-        }
     }
 
     .sheet-list {
