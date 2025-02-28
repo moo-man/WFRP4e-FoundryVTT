@@ -21,7 +21,7 @@ export class MoneyModel extends PhysicalItemModel
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["coinValue", {
-          label: "WH.Models.money.FIELDS.coinValue.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.coinValue.value.label",
           type: "range",
           config: {
             keyPath: "system.coinValue.value"

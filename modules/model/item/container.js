@@ -28,14 +28,14 @@ export class ContainerModel extends EquippableItemModel {
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["wearable", {
-          label: "WH.Models.container.FIELDS.wearable.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.wearable.value.label",
           type: "boolean",
           config: {
             keyPath: "system.wearable.value"
           }
         }],
         ["carries", {
-          label: "WH.Models.container.FIELDS.carries.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.carries.value.label",
           type: "range",
           config: {
             keyPath: "system.carries.value"

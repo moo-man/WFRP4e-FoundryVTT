@@ -63,7 +63,7 @@ export class CareerModel extends BaseItemModel
       ...Array.from(super.compendiumBrowserFilters),
       // @todo type='set' and choices?
       ["careergroup", {
-        label: "WH.Models.career.FIELDS.careergroup.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.careergroup.value.label",
         type: "text",
         config: {
           keyPath: "system.careergroup.value"
@@ -71,14 +71,14 @@ export class CareerModel extends BaseItemModel
       }],
       // @todo type='set' and choices?
       ["class", {
-        label: "WH.Models.career.FIELDS.class.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.class.value.label",
         type: "text",
         config: {
           keyPath: "system.class.value"
         }
       }],
       ["level", {
-        label: "WH.Models.career.FIELDS.level.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.level.value.label",
         type: "set",
         config: {
           choices: {1: 1, 2: 2, 3: 3, 4: 4},
@@ -86,14 +86,14 @@ export class CareerModel extends BaseItemModel
         }
       }],
       ["statusStanding", {
-        label: "WH.Models.career.FIELDS.status.standing.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.status.standing.label",
         type: "range",
         config: {
           keyPath: "system.status.standing"
         }
       }],
       ["statusTier", {
-        label: "WH.Models.career.FIELDS.status.tier.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.status.tier.label",
         type: "set",
         config: {
           choices: game.wfrp4e.config.statusTiers,

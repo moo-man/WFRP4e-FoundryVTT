@@ -44,7 +44,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["category", {
-          label: "WH.Models.trait.FIELDS.category.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.category.label",
           type: "set",
           config: {
             choices: {standard: game.i18n.localize("ITEM.Standard"), vehicle: game.i18n.localize("SPEC.Vehicle")},
@@ -52,21 +52,21 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
           }
         }],
         ["rollable", {
-          label: "WH.Models.trait.FIELDS.rollable.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.value.label",
           type: "boolean",
           config: {
             keyPath: "system.rollable.value",
           }
         }],
         ["doesDamage", {
-          label: "WH.Models.trait.FIELDS.rollable.damage.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.damage.label",
           type: "boolean",
           config: {
             keyPath: "system.rollable.damage",
           }
         }],
         ["rollCharacteristic", {
-          label: "WH.Models.trait.FIELDS.rollable.rollCharacteristic.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.rollCharacteristic.label",
           type: "set",
           config: {
             keyPath: "system.rollable.rollCharacteristic",

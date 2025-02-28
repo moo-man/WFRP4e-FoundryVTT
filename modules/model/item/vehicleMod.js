@@ -18,6 +18,20 @@ export class VehicleModModel extends PhysicalItemModel
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["modType", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.modType.value.label",
+          type: "set",
+          config: {
+            choices : game.wfrp4e.config.modTypes,
+            keyPath: "system.modType.value"
+          }
+        }]
+      ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of VehicleModModel
      *

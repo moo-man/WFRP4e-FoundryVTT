@@ -65,7 +65,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         return new Map([
             ...Array.from(super.compendiumBrowserFilters),
           ["weaponGroup", {
-              label: "WH.Models.weapon.FIELDS.weaponGroup.value.label",
+              label: this.LOCALIZATION_PREFIXES + ".FIELDS.weaponGroup.value.label",
               type: "set",
               config: {
                   choices: game.wfrp4e.config.weaponGroups,

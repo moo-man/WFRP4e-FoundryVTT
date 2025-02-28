@@ -15,6 +15,19 @@ export class VehicleRoleModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["test", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.test.label",
+                type: "text",
+                config: {
+                    keyPath: "system.test"
+                }
+            }]
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of VehicleRoleModel
      *

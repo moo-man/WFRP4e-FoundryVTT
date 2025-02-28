@@ -35,7 +35,7 @@ export class SkillModel extends BaseItemModel {
         return new Map([
             ...Array.from(super.compendiumBrowserFilters),
             ["advanced", {
-                label: "WH.Models.skill.FIELDS.advanced.value.label",
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.advanced.value.label",
                 type: "set",
                 config: {
                     choices : game.wfrp4e.config.skillTypes,
@@ -51,7 +51,7 @@ export class SkillModel extends BaseItemModel {
                 }
             }],
             ["advanced", {
-                label: "WH.Models.skill.FIELDS.characteristic.value.label",
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.characteristic.value.label",
                 type: "set",
                 config: {
                     choices : game.wfrp4e.config.characteristics,

@@ -44,7 +44,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     return new Map([
       ...Array.from(super.compendiumBrowserFilters),
       ["armorType", {
-        label: "WH.Models.armour.FIELDS.armorType.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.armorType.value.label",
         type: "set",
         config: {
           choices: game.wfrp4e.config.armorTypes,

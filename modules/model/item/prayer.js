@@ -41,7 +41,7 @@ export class PrayerModel extends OvercastItemModel
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["prayerType", {
-          label: "WH.Models.prayer.FIELDS.type.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.type.value.label",
           type: "set",
           config: {
             choices : game.wfrp4e.config.prayerTypes,
@@ -49,35 +49,35 @@ export class PrayerModel extends OvercastItemModel
           }
         }],
         ["god", {
-          label: "WH.Models.prayer.FIELDS.god.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.god.value.label",
           type: "text",
           config: {
             keyPath: "system.god.value"
           }
         }],
         ["range", {
-          label: "WH.Models.prayer.FIELDS.range.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.range.value.label",
           type: "text",
           config: {
             keyPath: "system.range.value"
           }
         }],
         ["target", {
-          label: "WH.Models.prayer.FIELDS.target.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.value.label",
           type: "text",
           config: {
             keyPath: "system.target.value"
           }
         }],
         ["aoe", {
-          label: "WH.Models.prayer.FIELDS.target.aoe.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.aoe.label",
           type: "boolean",
           config: {
             keyPath: "system.target.aoe"
           }
         }],
         ["duration", {
-          label: "WH.Models.prayer.FIELDS.duration.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.value.label",
           type: "text",
           config: {
             keyPath: "system.duration.value"

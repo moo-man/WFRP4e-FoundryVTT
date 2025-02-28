@@ -26,7 +26,7 @@ export class TalentModel extends BaseItemModel {
         return new Map([
             ...Array.from(super.compendiumBrowserFilters),
             ["max", {
-                label: "WH.Models.talent.FIELDS.max.value.label",
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.max.value.label",
                 type: "set",
                 config: {
                     choices : game.wfrp4e.config.talentMax,
@@ -34,7 +34,7 @@ export class TalentModel extends BaseItemModel {
                 }
             }],
             ["tests", {
-                label: "WH.Models.talent.FIELDS.tests.value.label",
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.tests.value.label",
                 type: "text",
                 config: {
                     keyPath: "system.tests.value",

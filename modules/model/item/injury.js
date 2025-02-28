@@ -33,7 +33,7 @@ export class InjuryModel extends LocationalItemModel
         }
       }],
       ["permanent", {
-        label: "WH.Models.injury.FIELDS.duration.permanent.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.permanent.label",
         type: "boolean",
         config: {
           keyPath: "system.duration.permanent"

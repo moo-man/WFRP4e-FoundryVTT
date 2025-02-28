@@ -22,7 +22,7 @@ export class CriticalModel extends LocationalItemModel {
         return new Map([
             ...Array.from(super.compendiumBrowserFilters),
             ["wounds", {
-                label: "WH.Models.critical.FIELDS.wounds.value.label",
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.wounds.value.label",
                 type: "range",
                 config: {
                     keyPath: "system.wounds.value"

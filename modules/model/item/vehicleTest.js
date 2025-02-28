@@ -20,6 +20,34 @@ export class VehicleTestModel extends BaseItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["handling", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.handling.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.handling"
+                }
+            }],
+            ["rolesValue", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.roles.value.label",
+                type: "text",
+                config: {
+                    multiple: true,
+                    keyPath: "system.roles.value"
+                }
+            }],
+            ["rolesVital", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.roles.vital.label",
+                type: "text",
+                config: {
+                    keyPath: "system.roles.vital"
+                }
+            }]
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of VehicleTestModel
      *

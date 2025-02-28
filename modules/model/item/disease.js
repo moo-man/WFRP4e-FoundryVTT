@@ -45,7 +45,7 @@ export class DiseaseModel extends BaseItemModel {
     return new Map([
       ...Array.from(super.compendiumBrowserFilters),
       ["symptoms", {
-        label: "WH.Models.disease.FIELDS.symptoms.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.symptoms.value.label",
         type: "text",
         config: {
           keyPath: "system.symptoms.value",

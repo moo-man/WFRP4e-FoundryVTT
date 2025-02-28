@@ -62,7 +62,7 @@ export class SpellModel extends OvercastItemModel {
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["lore", {
-          label: "WH.Models.spell.FIELDS.lore.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.lore.value.label",
           type: "set",
           config: {
             blank: "None",
@@ -71,42 +71,42 @@ export class SpellModel extends OvercastItemModel {
           }
         }],
         ["range", {
-          label: "WH.Models.spell.FIELDS.range.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.range.value.label",
           type: "text",
           config: {
             keyPath: "system.range.value"
           }
         }],
         ["target", {
-          label: "WH.Models.spell.FIELDS.target.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.value.label",
           type: "text",
           config: {
             keyPath: "system.target.value"
           }
         }],
         ["aoe", {
-          label: "WH.Models.spell.FIELDS.target.aoe.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.aoe.label",
           type: "boolean",
           config: {
             keyPath: "system.target.aoe"
           }
         }],
         ["duration", {
-          label: "WH.Models.spell.FIELDS.duration.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.value.label",
           type: "text",
           config: {
             keyPath: "system.duration.value"
           }
         }],
         ["magicMissile", {
-          label: "WH.Models.spell.FIELDS.magicMissile.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.magicMissile.value.label",
           type: "boolean",
           config: {
             keyPath: "system.magicMissile.value",
           }
         }],
         ["ritual", {
-          label: "WH.Models.spell.FIELDS.ritual.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.ritual.value.label",
           type: "boolean",
           config: {
             keyPath: "system.ritual.value",

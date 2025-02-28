@@ -23,7 +23,7 @@ export class MutationModel extends BaseItemModel
       return new Map([
         ...Array.from(super.compendiumBrowserFilters),
         ["mutationType", {
-          label: "WH.Models.mutation.FIELDS.mutationType.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.mutationType.value.label",
           type: "set",
           config: {
             choices : game.wfrp4e.config.mutationTypes,
@@ -31,7 +31,7 @@ export class MutationModel extends BaseItemModel
           }
         }],
         ["mutationModifier", {
-          label: "WH.Models.skill.FIELDS.modifier.value.label",
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.modifier.value.label",
           type: "text",
           config: {
             keyPath: "system.modifier.value"

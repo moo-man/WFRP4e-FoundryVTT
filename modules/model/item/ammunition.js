@@ -40,7 +40,7 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
     return new Map([
       ...Array.from(super.compendiumBrowserFilters),
       ["ammunitionType", {
-        label: "WH.Models.ammunition.FIELDS.ammunitionType.value.label",
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.ammunitionType.value.label",
         type: "set",
         config: {
           choices: game.wfrp4e.config.ammunitionGroups,
