@@ -1,11 +1,13 @@
     .wfrp4e.actor.sheet.application:not(.no-theme) {
         --color-cream: #f0d9a3;
-        --color-grey4: #f1ede9;
-        --color-grey3: #b5aeac;
+        --color-grey5: #f1ede9;
+        --color-grey4: #b5aeac;
+        --color-grey3: #737373;
         --color-grey2: #464331c4;
         --color-grey1: black;
 
         --color-faded: #736953a6;
+        --color-faded-bg: #774e000f;
 
         --color-cool: #273444;
 
@@ -126,6 +128,7 @@
 
                 &.active {
                     background: none;
+                    @include shadowed(var(--color-warm), 5px);
                     color: var(--color-warm);
                 }
             }
@@ -164,6 +167,9 @@
                 label {
                     color: var(--color-grey2);
                 }
+                .advancement-indicator {
+                    font-size: var(--font-size-18);
+                }
             }
 
             td {
@@ -187,6 +193,21 @@
             }
 
    
+        }
+
+        .advancement-indicator {
+            color: var(--color-warm);
+        }
+
+        input:focus {
+            box-shadow: none;
+            border: 1px dotted var(--color-faded);
+            border-radius: 3px;
+            outline: none;  
+            &::selection {
+                background: var(--color-warm);
+            }
+            
         }
 
 
@@ -225,5 +246,108 @@
                     color: var(--color-grey1);
                 }
             }
+
+            input {
+                color: var(--color-grey1)
+            }
+
+            select {
+                border:1px solid var(--color-grey3);
+                height: 1.5rem;
+                align-self: center;
+                color: var(--color-grey1);
+                background: none;    
+                &:focus {
+                    outline: none;
+                }
+            }
         }
+
+        .skill-lists {
+            a {
+                color: var(--color-warm);
+            }
+        }
+
+        .form-group{
+            border-color: var(--color-faded);
+            label {
+                border-right: 1px solid var(--color-faded);
+                @include shadowed(#6b3a0f87);
+                color: var(--color-grey2);
+            }
+            input {
+                background: none;
+                color: var(--color-grey1);
+            }
+        }
+
+        .item-property-row {
+            a[data-action='toggleProperty'],
+            .property-icon {
+                border: 1px solid var(--color-faded);
+                color: var(--color-grey2);
+                background: var(--color-faded-bg);
+                border-radius: 3px;
+                @include shadowed(#6b3a0f2b, 3px)
+            }
+
+            a[data-action='toggleProperty'] {
+                height: 1.5rem;
+                line-height: 1.5rem;
+                padding: 0px 3px;
+            }
+        }
+
+        
+        .rollable {
+            .label {
+                color: var(--color-warm);
+            }
+            &:hover {
+                img {
+                    background: var(--color-warm);
+                    @include shadowed(var(--color-cream))
+                }
+            }
+        }
+
+        .ap-source {
+            color: var(--color-grey1);
+        }
+
+        section.tab[data-tab=combat] {
+
+            .ap-source {
+                color: var(--color-grey1);
+                @include shadowed(#964803d6);
+                border-radius: 10px;
+                background: none;
+                margin: 0px 3px;
+                height: 20px;
+                line-height: 20px;
+                align-self: center;
+
+                &.shield {
+                    @include shadowed(#716f6dd6);
+                    border-radius: 0px;
+                    border-bottom-left-radius: 10px;
+                    border-bottom-right-radius: 10px;
+                }
+
+                &.toughness {
+                    @include shadowed(#4d8239e8);
+                    border-top-left-radius: 9px;
+                    border-top-right-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                    border-bottom-right-radius: 9px;
+                }
+            }
+
+            .mount-section .mount-drop {
+                border-color: var(--color-warm);
+                color: var(--color-grey2);
+            }
+        }
+
     }

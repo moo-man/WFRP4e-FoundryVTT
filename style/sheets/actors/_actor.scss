@@ -140,8 +140,12 @@
     }
 
 
+    .attribute-row {
+        gap: 5px;
+    }
+
     .attribute-box {
-        margin: 5px 5px;
+        margin: 5px 0px;
 
         &.movement {
             flex: 2;

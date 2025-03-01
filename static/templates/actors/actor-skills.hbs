@@ -91,8 +91,8 @@
       <ol class="inventory-list save-scroll">
         {{#each items.skills.basic as |item i|}}
         <li class="item" data-id="{{item.id}}">
-          <div class="skill-name">
-            <a class="name skill-select">{{item.name}}</a>
+          <div class="list-name">
+            <a class="name">{{item.name}}</a>
             {{#if item.advances.complete}}
             <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
             {{else if item.advances.indicator}}
@@ -143,8 +143,8 @@
         <ol class="inventory-list save-scroll">
           {{#each items.skills.advanced as |item i|}}
           <li class="item skill-item" data-id="{{item.id}}">
-            <div class="skill-name">
-              <a class="name skill-select">{{item.name}}</a>
+            <div class="list-name">
+              <a class="name">{{item.name}}</a>
               {{#if item.advances.complete}}
               <a class="advancement-indicator" title="{{item.cost}} Exp" data-target="skill">&#10003;</a>
               {{else if item.advances.indicator}}
