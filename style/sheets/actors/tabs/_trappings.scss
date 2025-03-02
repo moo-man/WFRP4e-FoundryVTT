@@ -28,6 +28,10 @@
             height: 2rem;
             width: 2rem;
         }
+
+        a[data-action='toggleProperty'] {
+            margin-top: 3px;
+        }
     }
 
     .encumbrance-section {
@@ -74,13 +78,13 @@
             position: relative;
             &::before {
                 position: absolute;
-                left: -1rem;
+                left: -1.05rem;
                 top: 0rem;
                 content: "";
                 width: 1rem;
                 height: 14px;
                 border: 1px solid var(--container-lines);
-                border-radius: 0px 3px 0px;
+                border-radius: 0px 5px 0px;
                 border-top: none;
                 border-right: none;
             }

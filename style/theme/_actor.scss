@@ -30,6 +30,19 @@
             box-shadow: 0 0 $size $color inset;
         }
 
+        @mixin sheet-button()
+        {
+            box-shadow: inset 0px 1px 0px 0px #a6827e;
+            background: linear-gradient(to bottom, #21374afc 5%, #152833ab 100%);
+            border-radius: 3px;
+            border: 2px ridge #846109;
+            display: inline-block;
+            color: #ffffff;
+            font-family: CaslonPro;
+            font-size: var(--font-size-14);
+            text-shadow: 0px 1px 0px #4d3534;
+        }
+
         &:not(.minimized) {
             .window-header {
                 background: none;
@@ -95,7 +108,6 @@
 
 
         .sheet-header {
-
             .header-group {
                 height: 2.35rem;
                 input {
@@ -199,12 +211,17 @@
             color: var(--color-warm);
         }
 
+        select:focus,
         input:focus {
             box-shadow: none;
             border: 1px dotted var(--color-faded);
             border-radius: 3px;
             outline: none;  
             &::selection {
+                background: var(--color-warm);
+            }
+
+            option:hover {
                 background: var(--color-warm);
             }
             
@@ -235,6 +252,18 @@
             .list-header {
                 @include shadowed(#6b3a0f87);
                 color: var(--color-grey2);
+
+                .list-button {
+                    @include shadowed(#6b3a0f87);
+                    color: var(--color-grey2);
+                    border: 1px solid var(--color-faded);
+                    border-radius: 50%;
+                    flex: 0 0 1.3rem;
+                    height: 1.3rem;
+                    line-height: 1.3rem;
+                    text-align: center;
+                    margin: 0px 3px;
+                }
             }
 
             .list-content {
@@ -276,6 +305,7 @@
                 @include shadowed(#6b3a0f87);
                 color: var(--color-grey2);
             }
+            select,
             input {
                 background: none;
                 color: var(--color-grey1);
@@ -344,9 +374,137 @@
                 }
             }
 
-            .mount-section .mount-drop {
-                border-color: var(--color-warm);
+            .mount-section  {
+                .mounted {
+                    border-radius: 0px;
+                    border: 1px solid var(--color-faded);
+                    .mount-header {
+                        color: var(--color-grey2);
+                        border-radius: 0px;
+                        background: none;
+                        @include shadowed(#6b3a0f87);
+                        border-bottom: 1px solid var(--color-faded);
+                    }
+                    .mount-details {
+                        color: var(--color-grey1);
+                    }
+                }
+                
+                .mount-drop {
+                    border-color: var(--color-warm);
+                    color: var(--color-grey2);
+                }
+            }
+
+
+        }
+
+        section.tab[data-tab=effects]
+        {
+            .condition {
+                > :first-child {
+                    border-color: var(--color-faded);
+                    color: var(--color-grey2);
+                    @include shadowed();
+                }
+                .controls {
+                    border-left: 1px solid var(--color-faded);
+                    background: none;
+                    color: var(--color-grey1);
+                }
+            }
+        }
+
+        .sheet-effect-buttons {
+            height: 1.5rem;
+            button {
+                @include sheet-button();
+                height: 1.5rem;
+                padding: 0px 6px;
+                line-height: 1.5rem;
+            }
+        }
+
+        .encumbrance-section {
+            color: var(--color-grey1);
+            .header {
+                @include shadowed(#6b3a0f87);
+            }
+
+            .bar {
+                background: none;
+                @include shadowed(#3c7173);
+                &.partial {
+                    background: none;
+                    @include shadowed(#366129f2);
+                }
+
+                &.high {
+                    background: none;
+                    @include shadowed(#83530c);
+                }
+
+                &.max {
+                    background: none;
+                    @include shadowed(#8e1300f2);
+                }
+            }
+        }
+
+        .collapsed-rows
+        {
+            color: var(--color-grey1);
+        }
+
+        .container-contents {
+            .collapsed-rows,
+            .list-row
+            {
+                &::before {
+                    border-color: var(--color-warm);
+                }
+                &::after {
+                    border-color: var(--color-warm);
+                }
+    
+            }
+        }
+
+        .editor-section {
+            border: 1px solid var(--color-faded);
+            &:not(:first-child)
+            {
+                margin-top: 5px;
+            }
+            .header {
+                background: none;
+                @include shadowed(#6b3a0f87);
                 color: var(--color-grey2);
+                border: none;
+                border-bottom: 1px solid var(--color-faded);
+            }
+            .editor-content {
+                color: var(--color-grey1);
+                padding: 5px 5px;
+                p:first-child {
+                    margin-top: 0px;
+                }
+            }
+        }
+
+        fieldset {
+            legend {
+                color: var(--color-grey2);
+            }
+        }
+
+        section.tab[data-tab=notes] .experience-log {
+            .header {
+                @include shadowed(#6b3a0f87);
+                color: var(--color-grey2);
+                background: none;
+                border: 1px solid var(--color-faded);
+                border-bottom: none;
             }
         }
 

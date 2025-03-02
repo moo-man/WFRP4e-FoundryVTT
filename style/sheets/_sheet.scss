@@ -15,20 +15,24 @@
             margin-right: 0.5rem;
             gap: 3px;
             .condition {
-                border: 1px solid var(--condition-border);
-                background: var(--condition-label);
                 height: 2rem;
                 line-height: 2rem;
                 display : flex;
                 justify-content: space-between;
                 > :first-of-type {
+                    background: var(--condition-label);
+                    border: 1px solid var(--condition-border);
+                    border-right: none;
                     padding: 0px 5px;
+                    width: 100%;
                 }
                 .controls {
-                background: var(--condition-control-bg);
-                text-align: center;
-                font-size: var(--font-size-16);
-                flex: 0 0 2rem;
+                    background: var(--condition-control-bg);
+                    border: 1px solid var(--condition-border);
+                    border-left: none;
+                    text-align: center;
+                    font-size: var(--font-size-16);
+                    flex: 0 0 2rem;
                 }
             }
         }
