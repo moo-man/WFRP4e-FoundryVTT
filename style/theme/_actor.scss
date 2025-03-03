@@ -203,8 +203,22 @@
                     color: var(--color-grey1)
                 }
             }
+        }
 
-   
+        .characteristic-grid {
+            border-color: var(--color-faded);
+            .header {
+                @include shadowed();
+                border-color: var(--color-faded);
+                color: var(--color-grey2);
+                border-bottom: 1px solid var(--color-faded);
+            }
+            .value {
+                border-color: var(--color-faded);
+                input {
+                    color: var(--color-grey1);
+                }
+            }
         }
 
         .advancement-indicator {
@@ -346,6 +360,20 @@
             color: var(--color-grey1);
         }
 
+        .armour-section .attribute-box{
+            border: 1px solid var(--color-faded);
+            .label {
+                @include shadowed(#6b3a0f87);
+                border: none;
+                border-bottom: 1px solid var(--color-faded);
+            }
+            .field {
+                border: none;
+                padding-top: 2px 0px;
+            }
+        }
+
+        .armour-section,
         section.tab[data-tab=combat] {
 
             .ap-source {
@@ -506,6 +534,10 @@
                 border: 1px solid var(--color-faded);
                 border-bottom: none;
             }
+        }
+
+        .overview-content {
+            color: var(--color-grey1);
         }
 
     }
