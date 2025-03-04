@@ -1,0 +1,294 @@
+
+@mixin shadowed($color: #00000052, $size: 10px) {
+    box-shadow: 0 0 $size $color inset;
+}
+
+@mixin sheet-button()
+{
+    box-shadow: inset 0px 1px 0px 0px #a6827e;
+    background: linear-gradient(to bottom, #21374afc 5%, #152833ab 100%);
+    border-radius: 3px;
+    border: 2px ridge #846109;
+    display: inline-block;
+    color: #ffffff;
+    font-family: CaslonPro;
+    font-size: var(--font-size-14);
+    text-shadow: 0px 1px 0px #4d3534;
+}
+
+            
+.wfrp4e.sheet.application:not(.no-theme) {
+        --color-cream: #f0d9a3;
+        --color-grey5: #f1ede9;
+        --color-grey4: #b5aeac;
+        --color-grey3: #737373;
+        --color-grey2: #464331c4;
+        --color-grey1: black;
+
+        --color-faded: #736953a6;
+        --color-faded-bg: #774e000f;
+
+        --color-cool: #273444;
+
+        --color-warm: #4a0404;
+
+        --input-font: "CaslonPro";
+        --header-font: "CaslonAntique";
+
+        // Overrides
+        --attribute-input: none;
+        --attribute-border: #736953a6;
+        --list-header: none;
+        --list-header-border: #736953a6;
+        --list-row: #7b733b29;
+        --list-row-alternate: #9e856a0d;
+
+        &:not(.minimized) {
+            .window-header {
+                background: none;
+                padding-top: 0.5rem;
+                font-family: CaslonAntique;
+                font-size: var(--font-size-18);
+
+                >* {
+                    color: var(--color-cream);
+                    i {
+                        opacity: 0.9;
+                    }
+                }
+
+                button {
+                    &:hover {
+                        background: unset;
+                    }
+
+                    &.header-control {
+                        --button-size: 2rem;
+                        background-image: url(./ui/buttons/stamp.webp);
+                        background-size: contain;
+                        background-position: 0px -1px;
+                    }
+                }
+            }
+        }
+
+        .controls-dropdown {
+
+            &.collapsing,
+            &.expanding {
+                background: url(./ui/frames/context-menu.webp);
+                background-size: 100%;
+            }
+
+            background: none;
+            border: 1px solid;
+            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+            border-image-slice: 70 fill;
+            border-image-width: 100px;
+            border-image-outset: 0px 0px 0px 0px;
+            box-shadow: 5px 5px 10px rgb(0, 0, 0);
+        }
+
+        .sheet-header {
+            .header-group {
+                height: 2.35rem;
+                input {
+                    height: 1rem;
+                    color: var(--color-grey1);
+                    // font-family: var(--input-font);
+                    &:focus {
+                        outline: none;
+                    }
+                }
+
+                label {
+                    // font-family: var(--header-font);
+                    height: 1rem;
+                    border-color: var(--color-grey2);
+                    color: var(--color-grey2);
+                }
+            }
+        }
+
+        nav.sheet-tabs.tabs {
+            > a {
+                border-image: url(./ui/actor-sheet-tab-border.webp) 4 repeat;
+                border-image-width: 4px;
+                border-image-outset: 2px;
+                color: var(--color-cool);
+                height: 1.5rem;
+                line-height: 1.5rem;
+                padding: 0px;
+
+                &.active {
+                    background: none;
+                    @include shadowed(var(--color-warm), 5px);
+                    color: var(--color-warm);
+                }
+            }
+        }
+
+        select:focus,
+        input:focus {
+            box-shadow: none;
+            border: 1px dotted var(--color-faded);
+            border-radius: 3px;
+            outline: none;  
+            &::selection {
+                background: var(--color-warm);
+            }
+
+            option:hover {
+                background: var(--color-warm);
+            }
+            
+        }
+
+        .attribute-box {
+            .label {
+                @include shadowed();
+                color: var(--color-grey2);
+            }
+
+            .field {
+                a {
+                    color: var(--color-grey1);
+                }
+                select,
+                input {
+                    color: var(--color-grey1);
+                    &:read-only:not(select),
+                    &:disabled {
+                        color: var(--color-grey2);
+                    }
+                }
+            }
+        }
+
+        .sheet-list {
+            .list-header {
+                @include shadowed(#6b3a0f87);
+                color: var(--color-grey2);
+
+                .list-button {
+                    @include shadowed(#6b3a0f87);
+                    color: var(--color-grey2);
+                    border: 1px solid var(--color-faded);
+                    border-radius: 50%;
+                    flex: 0 0 1.3rem;
+                    height: 1.3rem;
+                    line-height: 1.3rem;
+                    text-align: center;
+                    margin: 0px 3px;
+                }
+            }
+
+            .list-content {
+                border: 1px solid var(--color-faded);
+                border-top: none;
+
+                .list-row {
+                    box-shadow: 0px 0px 1px inset black;
+                    color: var(--color-grey1);
+                }
+            }
+
+            input {
+                color: var(--color-grey1)
+            }
+
+            select {
+                border:1px solid var(--color-grey3);
+                height: 1.5rem;
+                align-self: center;
+                color: var(--color-grey1);
+                background: none;    
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        .form-group{
+            border-color: var(--color-faded);
+            label {
+                border-right: 1px solid var(--color-faded);
+                @include shadowed();
+                color: var(--color-grey2);
+            }
+            select,
+            input {
+                background: none;
+                color: var(--color-grey1);
+            }
+
+            .hint {
+                color: var(--color-grey1);
+                border-color: var(--color-faded);
+            }
+        }
+
+        input[type="checkbox"]::before
+        {
+            color: #d6d6d6;
+            border: 1px solid #736953a6;
+            border-left: none;
+            box-shadow: 0px 0px 10px inset black;
+            background: #352516;
+        }
+
+        section.tab[data-tab=effects]
+        {
+            .condition {
+                > :first-child {
+                    border-color: var(--color-faded);
+                    color: var(--color-grey2);
+                    @include shadowed();
+                }
+                .controls {
+                    border-left: 1px solid var(--color-faded);
+                    background: none;
+                    color: var(--color-grey1);
+                }
+            }
+        }
+
+        .sheet-effect-buttons {
+            height: 1.5rem;
+            button {
+                @include sheet-button();
+                height: 1.5rem;
+                padding: 0px 6px;
+                line-height: 1.5rem;
+            }
+        }
+
+        .editor-section {
+            border: 1px solid var(--color-faded);
+            &:not(:first-child)
+            {
+                margin-top: 5px;
+            }
+            .header {
+                background: none;
+                @include shadowed(#6b3a0f87);
+                color: var(--color-grey2);
+                border: none;
+                border-bottom: 1px solid var(--color-faded);
+            }
+            .editor-content {
+                color: var(--color-grey1);
+                padding: 5px 5px;
+                p:first-child {
+                    margin-top: 0px;
+                }
+            }
+        }
+
+        fieldset {
+            border-color: var(--color-faded);
+            legend {
+                color: var(--color-grey2);
+            }
+        }
+    }

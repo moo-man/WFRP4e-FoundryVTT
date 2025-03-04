@@ -22,7 +22,7 @@
         </div>
         <div class="header-row">    
             {{#unless hide.price}}
-            <div class="attribute-box">
+            <div class="attribute-box top-label">
                 <div class="label" style="grid-column: 1 / span 12"><label>{{localize "Price"}}</label></div>
                 <div class="field gc" style="grid-column: 1 / span 4"><input type="number" data-tooltip="{{localize 'NAME.GCPlural'}}" placeholder="{{localize "MARKET.Abbrev.GC"}}" name="system.price.gc" value="{{source.system.price.gc}}"></div>
                 <div class="field ss" style="grid-column: 5 / span 4"><input type="number" data-tooltip="{{localize 'NAME.SSPlural'}}" placeholder="{{localize "MARKET.Abbrev.SS"}}" name="system.price.ss" value="{{source.system.price.ss}}"></div>
@@ -30,7 +30,7 @@
             </div>
             {{/unless}}
             {{#unless hide.availability}}
-            <div class="attribute-box">
+            <div class="attribute-box top-label">
                 <div class="label" style="grid-column: 1 / span 12"><label>{{localize "Availability"}}</label></div>
                 <div class="field" style="grid-column: 1 / span 12"><select name="system.availability.value">{{selectOptions (config "availability") selected=source.system.availability.value}}</select></div>
             </div>

@@ -1,3 +1,5 @@
+@use "../../mixins/flex" as *;
+
 .wfrp4e.actor.sheet.application {
 
     --header-label-line : var(--color-cool-3);

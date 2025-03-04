@@ -20,12 +20,12 @@
         .field {
             height: 1.5rem;
             display: flex;
+            border-bottom: 1px solid var(--attribute-border);
             > * {
                 height: 100%;
                 line-height: 1.5rem;
                 flex: 1
             }
-            border-bottom: 1px solid var(--attribute-border);
         }
     }
 

@@ -1,0 +1,84 @@
+@use "./sheet" as *;
+
+.wfrp4e.item.sheet.application:not(.no-theme) 
+{
+    border: 1px solid;
+    border-image: url(./ui/item-sheet.webp) 4 repeat;
+    border-image-slice: 59;
+    border-image-width: 59px;
+    border-image-outset: 0px;
+    padding: 2rem;
+    background: none;
+    box-shadow: none;
+
+    .window-header {
+        background: none;
+        border: none;
+        padding-bottom: 20px;
+        .window-title {
+            visibility: hidden;
+        }
+    }
+
+    .window-content {
+        background: url(./ui/frames/parchment-texture.webp);
+        margin: -10px 26px 26px 26px;
+        box-shadow: 0px 0px 10px inset black;
+    }
+
+    .window-resize-handle {
+        right: 15px;
+        bottom: 30px;
+        background: none;
+        width: 20px;
+        height: 20px;
+    }
+
+    .header-row {
+        input[name="name"] {
+            color: var(--color-warm);
+            border: 1px solid transparent;
+            border-image: url(./ui/item-sheet-header.webp) repeat;
+            background: none;
+            border-image-slice: 5;
+            border-image-width: 4px;
+            border-image-outset: 0px;
+        }
+    }
+
+    .career-list {
+        label {
+            @include shadowed();
+            border-color: var(--color-faded);
+            color: var(--color-grey2);
+            background: none;
+            border-bottom: 1px solid var(--color-faded);
+        }
+
+        .characteristic {
+            border-color: var(--color-warm);
+            color: var(--color-grey1);
+            &.active {
+                background: var(--color-warm);
+                color: var(--color-cream);
+            }
+
+        }
+        .list-container {
+            select,
+            input {
+                background: none;
+                color: var(--color-warm);
+                border-color: var(--color-warm);
+                &.empty:not(:focus) {
+                    border-color: var(--color-faded);
+                }
+            }            
+            a[data-action="listDelete"] {
+                background: var(--color-warm);
+            }
+        }
+    }
+
+
+}

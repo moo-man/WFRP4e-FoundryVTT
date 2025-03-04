@@ -47,12 +47,6 @@
             padding: 0px 5px;
         }
 
-        .attribute-box:not(.single) {
-            .label {
-                border-bottom: 1px solid var(--attribute-border)
-            }
-        }
-
         .gc {
             input {
                 color: #FFD700;

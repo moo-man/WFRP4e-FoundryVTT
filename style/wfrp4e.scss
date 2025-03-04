@@ -1,8 +1,8 @@
-@import "./mixins/index";
-@import "./sheets/sheet";
-@import "./sheets/temp";
-@import "./sheets/light";
-@import "./sheets/actors/index";
-@import "./sheets/items/index";
-@import "./theme/index";
-@import "./foundry/journal";
+@use "./mixins/index" as mixins;
+@use "./sheets/sheet";
+@use "./sheets/temp";
+@use "./sheets/light";
+@use "./sheets/actors/index" as actors;
+@use "./sheets/items/index" as items;
+@use "./theme/index" as theme;
+@use "./foundry/journal";
