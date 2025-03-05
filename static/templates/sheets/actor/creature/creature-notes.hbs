@@ -1,35 +1,5 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
 
-    <div class="header-row">
-        <div class="header-group">
-            <input type="text" name="system.details.age.value" value="{{system.details.age.value}}">
-            <label>{{localize "Age"}}</label>
-        </div>
-        <div class="header-group">
-            <input type="text" name="system.details.height.value" value="{{system.details.height.value}}">
-            <label>{{localize "CharacterHeight"}}</label>
-        </div>
-        <div class="header-group">
-            <input type="text" name="system.details.weight.value" value="{{system.details.weight.value}}">
-            <label>{{localize "Weight"}}</label>
-        </div>
-        <div class="header-group">
-            <input type="text" name="system.details.haircolour.value" value="{{system.details.haircolour.value}}">
-            <label>{{localize "Hair Colour"}}</label>
-        </div>
-        <div class="header-group">
-            <input type="text" name="system.details.eyecolour.value" value="{{system.details.eyecolour.value}}">
-            <label>{{localize "Eye Colour"}}</label>
-        </div>
-    </div>
-    <div class="header-row">
-        <div class="header-group">
-            <input type="text" name="system.details.distinguishingmark.value"
-                value="{{system.details.distinguishingmark.value}}">
-            <label>{{localize "Distinguishing Mark"}}</label>
-        </div>
-    </div>
-
     {{#if (isGM)}}
     <div class="editor-section">
         <div class="header">{{localize "GM Notes"}}</div>
