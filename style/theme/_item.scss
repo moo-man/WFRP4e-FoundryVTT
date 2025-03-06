@@ -68,14 +68,18 @@
             select,
             input {
                 background: none;
-                color: var(--color-warm);
+                color: var(--color-grey1);
                 border-color: var(--color-warm);
+                &::placeholder {
+                    color: var(--color-grey1);
+                }
                 &.empty:not(:focus) {
                     border-color: var(--color-faded);
                 }
             }            
             a[data-action="listDelete"] {
                 background: var(--color-warm);
+                color: var(--color-cream);
             }
         }
     }

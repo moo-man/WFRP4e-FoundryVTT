@@ -17,6 +17,7 @@
 }
 
             
+.theme-light .wfrp4e.sheet.application:not(.no-theme),
 .wfrp4e.sheet.application:not(.no-theme) {
         --color-cream: #f0d9a3;
         --color-grey5: #f1ede9;
@@ -32,16 +33,39 @@
 
         --color-warm: #4a0404;
 
-        --input-font: "CaslonPro";
+        --primary-font: "CaslonPro";
         --header-font: "CaslonAntique";
 
         // Overrides
         --attribute-input: none;
+        --attribute-label: none;
         --attribute-border: #736953a6;
+        --attribute-locked-input: none;
+        --attribute-locked-border: none;
         --list-header: none;
         --list-header-border: #736953a6;
         --list-row: #7b733b29;
         --list-row-alternate: #9e856a0d;
+        --form-label: none;
+        --form-input: none;
+        --form-group-border : var(--color-faded);
+        --condition-label: none;
+        --condition-border: var(--color-faded);
+
+        &.classic-font
+        {
+            font-family: var(--primary-font);
+            
+            .tabs > a,
+            table th,
+            .row-label,
+            .form-group label,
+            .attribute-box .label {
+                font-family: var(--header-font);
+                font-size: var(--font-size-16);
+            }
+        }
+
 
         &:not(.minimized) {
             .window-header {
@@ -73,13 +97,6 @@
         }
 
         .controls-dropdown {
-
-            &.collapsing,
-            &.expanding {
-                background: url(./ui/frames/context-menu.webp);
-                background-size: 100%;
-            }
-
             background: none;
             border: 1px solid;
             border-image: url(./ui/frames/context-menu.webp) 4 repeat;
@@ -88,6 +105,13 @@
             border-image-outset: 0px 0px 0px 0px;
             box-shadow: 5px 5px 10px rgb(0, 0, 0);
         }
+
+            &.collapsing,
+            &.expanding {
+                background: url(./ui/frames/context-menu.webp);
+                background-size: 100%;
+            }
+
 
         .sheet-header {
             .header-group {
@@ -110,20 +134,26 @@
             }
         }
 
-        nav.sheet-tabs.tabs {
-            > a {
-                border-image: url(./ui/actor-sheet-tab-border.webp) 4 repeat;
-                border-image-width: 4px;
-                border-image-outset: 2px;
-                color: var(--color-cool);
-                height: 1.5rem;
-                line-height: 1.5rem;
-                padding: 0px;
+        nav.sheet-tabs {
 
-                &.active {
-                    background: none;
-                    @include shadowed(var(--color-warm), 5px);
-                    color: var(--color-warm);
+            border-top: none;
+            border-bottom: none;
+
+            &.tabs {
+                > a {
+                    border-image: url(./ui/actor-sheet-tab-border.webp) 4 repeat;
+                    border-image-width: 4px;
+                    border-image-outset: 2px;
+                    color: var(--color-cool);
+                    height: 1.5rem;
+                    line-height: 1.5rem;
+                    padding: 0px;
+
+                    &.active {
+                        background: none;
+                        @include shadowed(var(--color-warm), 5px);
+                        color: var(--color-warm);
+                    }
                 }
             }
         }
@@ -210,7 +240,6 @@
         }
 
         .form-group{
-            border-color: var(--color-faded);
             label {
                 border-right: 1px solid var(--color-faded);
                 @include shadowed();

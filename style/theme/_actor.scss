@@ -4,6 +4,7 @@
         
         // Overrides
         --characteristic-input: none;
+        --characteristic-total: none;
 
         .window-content {
             border: 1px solid;
@@ -30,6 +31,9 @@
             tr {
                 td:first-of-type {
                     @include shadowed();
+                    &.row-label {
+                        border-left: 1px solid var(--color-faded);
+                    }
                 }
                 &:last-of-type {
                     > td:not(:first-of-type) {
