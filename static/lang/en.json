@@ -2448,6 +2448,27 @@
                     }
                 }
             }
+        },
+
+        "Theme" : {
+            "Config" : "WFRP4e Theme Configuration",
+            "ConfigButton" : "Theme Configuration",
+            "ConfigHint" : "Enable or disable the styling provided by the system.",
+            "FIELDS" : {
+                "actor.enabled.label" : "Enable Theme",
+                "item.enabled.label" : "Enable Theme",
+                "journal.enabled.label" : "Enable Theme",
+                "foundry.enabled.label" : "Enable Theme",
+
+                "actor.font.label" : "Font",
+                "item.font.label" : "Font",
+                "journal.font.label" : "Font",
+                "foundry.font.label" : "Font"
+            },
+            "Font" : {
+                "Classic" : "Classic",
+                "Readable" : "Readable"
+            }
         }
       }
 }

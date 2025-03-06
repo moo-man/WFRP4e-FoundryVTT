@@ -2,6 +2,7 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
+import WFRP4eThemeConfig from "../apps/theme.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -24,6 +25,17 @@ export default function() {
       default: 0
     });
 
+    
+    game.settings.registerMenu("wfrp4e", "themeConfig", {
+      name: "WH.Theme.Config",
+      label : "WH.Theme.ConfigButton",
+      hint : "WH.Theme.ConfigHint",
+      scope: "user",
+      config: true,
+      type: WFRP4eThemeConfig
+    });
+
+
     game.settings.registerMenu("wfrp4e", "homebrew", {
       name: "WFRP4e House Rules",
       label: "WFRP4e Homebrew",
@@ -39,6 +51,13 @@ export default function() {
     type: TableSettings,
     restricted: true
 })
+
+    game.settings.register("wfrp4e", "theme", {
+      name: "Theme",
+      scope: "client",
+      config: false,
+      type: WFRP4eThemeConfig.schema
+    });
 
     game.settings.register("wfrp4e", "disableTheme", {
       name: "SETTINGS.DisableTheme",

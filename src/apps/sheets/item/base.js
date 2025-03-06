@@ -44,6 +44,35 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     return context;
   }
 
+  async _onFirstRender(context, options)
+  {
+      await super._onFirstRender(context, options);
+
+      this.setTheme();
+  }
+
+  setTheme(theme = game.settings.get("wfrp4e", "theme"))
+  {
+    if (!theme.item.enabled)
+    {
+      this.element.classList.add("no-theme");
+      this.element.classList.remove("classic-font");
+    }
+    else 
+    {
+      this.element.classList.remove("no-theme");
+
+      if (theme.item.font == "classic")
+      {
+        this.element.classList.add("classic-font");
+      }
+      else
+      {
+        this.element.classList.remove("classic-font");
+      }
+    }
+  }
+
   static TABS = {
     description: {
       id: "description",
