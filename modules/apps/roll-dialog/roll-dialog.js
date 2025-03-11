@@ -207,53 +207,47 @@ export default class RollDialog extends WarhammerRollDialog {
    * All tests use the same chatOptions, but use the template member defined in each dialog class
    */
     _setupChatOptions() {
+        let token = this.actor.token || this.actor.getActiveTokens()[0] || this.actor.prototypeToken;
         let chatOptions = {
             speaker: {
-                alias: this.actor.token?.name || this.actor.prototypeToken.name,
+                alias: token.name,
+                token: token.id,
+                scene: token.parent?.id,
                 actor: this.actor.id,
             },
             title: this.options.title,
             template: this.chatTemplate,
-            flags: { img: this.actor.prototypeToken.randomImg ? this.img : this.actor.prototypeToken.texture.src }
-            // img to be displayed next to the name on the test card - if it's a wildcard img, use the actor image
         }
 
         // If the test is coming from a token sheet
-        if (this.actor.token) {
-        chatOptions.speaker.alias = this.actor.token.name; // Use the token name instead of the actor name
-        chatOptions.speaker.token = this.actor.token.id;
-        chatOptions.speaker.scene = canvas.scene.id
-        chatOptions.flags.img = this.actor.token.texture.src; // Use the token image instead of the actor image
+        if (this.actor.token) 
+        {
+            chatOptions.speaker.alias = this.actor.token.name; // Use the token name instead of the actor name
+            chatOptions.speaker.token = this.actor.token.id;
+            chatOptions.speaker.scene = canvas.scene.id
 
-        if (this.actor.token.hidden) {
-            chatOptions.speaker.alias = "???"
-            chatOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
-        }
+            if (this.actor.token.hidden) 
+            {
+                chatOptions.speaker.alias = "???"
+            }
         }
         else // If a linked actor - use the currently selected token's data if the actor id matches
         {
-        let speaker = ChatMessage.getSpeaker()
-        if (speaker.actor == this.actor.id) 
-        {
-            let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
-            chatOptions.speaker.alias = speaker.alias
-            chatOptions.speaker.token = speaker.token
-            chatOptions.speaker.scene = speaker.scene
-            chatOptions.flags.img = token ? token.document.texture.src : chatOptions.flags.img
-            if (token?.document.hidden) {
-            chatOptions.speaker.alias = "???"
-            chatOptions.flags.img = "systems/wfrp4e/tokens/unknown.png"
+            let speaker = ChatMessage.getSpeaker()
+            if (speaker.actor == this.actor.id) 
+            {
+                let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
+                chatOptions.speaker.alias = speaker.alias
+                chatOptions.speaker.token = speaker.token
+                chatOptions.speaker.scene = speaker.scene
+                if (token?.document.hidden) 
+                {
+                    chatOptions.speaker.alias = "???"
+                }
             }
         }
-        }
 
-        if (this.isMounted && this.mount) {
-            chatOptions.flags.mountedImg = this.mount.prototypeToken.texture.src;
-            chatOptions.flags.mountedName = this.mount.prototypeToken.name;
-        }
 
-        if (VideoHelper.hasVideoExtension(chatOptions.flags.img))
-        game.video.createThumbnail(chatOptions.flags.img, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
 
         //Suppresses roll sound if the test has it's own sound associated
         foundry.utils.mergeObject(chatOptions,

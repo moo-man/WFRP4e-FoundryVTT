@@ -1236,6 +1236,7 @@ export default class TestWFRP extends WarhammerTestBase{
   get message() {
     return game.messages.get(this.context.messageId)
   }
+
   get isOpposed() {
     return this.context.opposedMessageIds.length > 0
   }
