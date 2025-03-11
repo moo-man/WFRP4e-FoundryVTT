@@ -125,9 +125,9 @@ export default class TravelDistanceWFRP4e {
    /**
     * 
     */
-   static handleTravelClick( event ) {
-    let fromTown = $(event.currentTarget).attr("data-fromtown");
-    let toTown = $(event.currentTarget).attr("data-totown");
+   static handleTravelClick( event, target ) {
+    let fromTown = target.dataset.fromtown;
+    let toTown = target.dataset.totown;
     TravelDistanceWFRP4e.displayTravelDistance( fromTown, toTown);
    }
 }

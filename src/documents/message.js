@@ -23,7 +23,7 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     async renderHTML(options)
     {
         let html = await super.renderHTML(options);
-        GenericActions.addEventListeners(html);
+        GenericActions.addEventListeners(html, this);
         return html;
     }
 

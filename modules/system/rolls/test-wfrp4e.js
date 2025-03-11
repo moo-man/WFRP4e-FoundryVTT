@@ -453,7 +453,7 @@ export default class TestWFRP extends WarhammerTestBase{
         }
       }
       catch (e) {
-        warhammer.utility.log("Error appyling homebrew mooCriticalMitigation: " + e)
+        warhammer.utility.log("Error applying homebrew mooCriticalMitigation: " + e)
       }
     }
     //@/HOUSE

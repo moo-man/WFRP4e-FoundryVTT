@@ -546,33 +546,33 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event  click event
    */
-  static async handleTableClick(event) {
-    let modifier = parseInt($(event.currentTarget).attr("data-modifier")) || 0;
-    let messageId= $(event.currentTarget).parents(".message").attr("data-message-id");
+  static async handleTableClick(event, target) {
+    let modifier = parseInt(target.dataset.modifier) || 0;
+    let messageId= this.id;
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
     if (event.button == 0) {
       let clickText = event.target.text || event.target.textContent;
       if (clickText.trim() == game.i18n.localize("ROLL.CritCast")) {
-        html = game.wfrp4e.tables.criticalCastMenu($(event.currentTarget).attr("data-table"));
+        html = game.wfrp4e.tables.criticalCastMenu(target.dataset.table);
       }
 
       else if (clickText.trim() == game.i18n.localize("ROLL.TotalPower"))
         html = game.wfrp4e.tables.restrictedCriticalCastMenu();
 
       // Not really a table but whatever
-      else if ($(event.currentTarget).attr("data-table") == "misfire") {
-        let damage = $(event.currentTarget).attr("data-damage")
+      else if (target.dataset.table == "misfire") {
+        let damage = target.dataset.damage
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
       else {
-        html = await game.wfrp4e.tables.formatChatRoll($(event.currentTarget).attr("data-table"),
+        html = await game.wfrp4e.tables.formatChatRoll(target.dataset.table,
           {
             modifier: modifier,
             showRoll: true,
             messageId
-          }, $(event.currentTarget).attr("data-column"));
+          }, target.dataset.column);
       }
 
       chatOptions["content"] = html;
@@ -590,8 +590,8 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event click event
    */
-  static handleConditionClick(event) {
-    let cond = $(event.currentTarget).attr("data-cond")
+  static handleConditionClick(event, target) {
+    let cond = target.dataset.cond;
     if (!cond)
       cond = event.target.text.trim();
     if (!isNaN(cond.split(" ").pop())) // check if the condition level is specified
@@ -612,8 +612,8 @@ export default class WFRP_Utility {
    *
    * @param {Object} event click event
    */
-  static handlePropertyClick(event) {
-    let prop = event.target.text.trim();
+  static handlePropertyClick(event, target) {
+    let prop = target.text.trim();
 
     // If property rating is present, remove it
     if (!isNaN(prop.split(" ").pop()))
@@ -634,10 +634,10 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event click event
    */
-  static handleSymptomClick(event) {
-    let symptom = $(event.currentTarget).attr("data-symptom")
+  static handleSymptomClick(event, target) {
+    let symptom = target.dataset.symptom;
     if (!symptom)
-      symptom = event.target.text;
+      symptom = target.text;
     WFRP_Utility.postSymptom(symptom)
   }
 
@@ -646,10 +646,10 @@ export default class WFRP_Utility {
    * 
    * @param {Object} event clicke event
    */
-  static async handleRollClick(event) {
-    let roll = $(event.currentTarget).attr("data-roll")
+  static async handleRollClick(event, target) {
+    let roll = target.dataset.roll;
     if (!roll)
-      roll = event.target.text.trim();
+      roll = target.text.trim();
     let rollMode = game.settings.get("core", "rollMode");
     (await new Roll(roll).roll()).toMessage(
       {
@@ -664,16 +664,16 @@ export default class WFRP_Utility {
  * 
  * @param {Object} event clicke event
  */
-  static handlePayClick(event) {
-    let payString = $(event.currentTarget).attr("data-pay")
+  static handlePayClick(event, target) {
+    let payString = target.dataset.pay;
     if (game.user.isGM)
       MarketWFRP4e.generatePayCard(payString);
     else
       MarketWFRP4e.handlePlayerPayment({payString});
   }
 
-  static handleCreditClick(event) {
-    let creditString = $(event.currentTarget).attr("data-credit")
+  static handleCreditClick(event, target) {
+    let creditString = target.dataset.credit;
     let amt = creditString.split(" ")[0]
     let option = creditString.split(" ")[1]
     if (game.user.isGM)
@@ -681,8 +681,8 @@ export default class WFRP_Utility {
 
   }
 
-  static handleCorruptionClick(event) {
-    return this.postCorruptionTest($(event.currentTarget).attr("data-strength"));
+  static handleCorruptionClick(event, target) {
+    return this.postCorruptionTest(target.dataset.strength);
   }
 
   static postCorruptionTest(strength, chatData={}) {
@@ -692,9 +692,8 @@ export default class WFRP_Utility {
   }
 
 
-  static handleFearClick(event) {
-    let target = $(event.currentTarget)
-    return this.postFear(target.attr("data-value"), target.attr("data-name"));
+  static handleFearClick(event, target) {
+    return this.postFear(target.dataset.value, target.dataset.name);
   }
 
   static postFear(value = 0, name = undefined) {
@@ -708,14 +707,12 @@ export default class WFRP_Utility {
     })
   }
 
-  static handleTerrorClick(event) {
-    let target = $(event.currentTarget)
-    return this.postTerror(target.attr("data-value"), target.attr("data-name"));
+  static handleTerrorClick(event, target) {
+    return this.postTerror(target.dataset.value, target.dataset.name);
   }
 
-  static handleExpClick(event) {
-    let target = $(event.currentTarget)
-    return this.postExp(target.attr("data-amount"), target.attr("data-reason"));
+  static handleExpClick(event, target) {
+    return this.postExp(target.dataset.amount, target.dataset.reason);
   }
 
   static postTerror(value = 1, name = undefined) {

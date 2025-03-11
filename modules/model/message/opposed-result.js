@@ -50,7 +50,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
     { 
         return foundry.utils.mergeObject(super.actions, {
             applyDamage : this.onApplyDamage,
-            appylHack : this.onApplyHack
+            applyHack : this.onApplyHack
         });
     }
 

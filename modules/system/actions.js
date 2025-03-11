@@ -20,12 +20,14 @@ export default class GenericActions
         clickTalent : this.onClickTalent
     }
 
-    static addEventListeners(html)
+    static addEventListeners(html, document)
     {
-        html.querySelectorAll(["data-action"]).forEach(element => {
-            if (this.actions[element.dataset.action])
+        html.addEventListener("click", ev => {
+            let element = ev.target.closest("[data-action]");
+            let action = this.actions[element.dataset.action];
+            if (action)
             {
-                element.addEventListener("click", this.actions[element.dataset.action])
+                action.bind(document)(ev, element);
             }
         })
     }
