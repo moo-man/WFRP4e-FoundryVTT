@@ -241,6 +241,8 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.documentClass = ChatMessageWFRP;
   CONFIG.RollTable.documentClass = WarhammerRollTable;
   CONFIG.ActiveEffect.legacyTransferral = false;
+
+  CONFIG.calendar = calendar();
 });
 
 registerHooks()
