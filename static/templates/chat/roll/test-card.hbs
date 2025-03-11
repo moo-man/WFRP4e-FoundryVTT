@@ -1,5 +1,5 @@
  
-        <div class = "chat-buttons">
+        <div class = "message-controls">
             <a class= "chat-button-player" title ='{{localize "CHAT.ContextualMenu"}}'><i class="fas fa-lightbulb"></i></a>
             <a class = "edit-toggle chat-button-gm" title ='{{localize "CHAT.EditTest"}}'><i class="fas fa-edit"></i></a>
             <a class = "opposed-toggle chat-button-gm" title='{{localize "CHAT.OpposedTest"}}'><i class="fas fa-exchange-alt"></i></a>
@@ -7,47 +7,25 @@
             <a class="test-breakdown" data-tooltip="{{test.result.breakdown.formatted.test}}" data-tooltip-direction="LEFT" ><i class="fa-solid fa-circle-info"></i></a>
             {{/if}}
         </div>
-        <div class="card-content test-data" data-actor-id="{{actorId}}" data-loc = "{{test.result.hitloc.roll}}" data-SL = "{{test.result.SL}}" data-roll = "{{test.result.roll}}" data-target = "{{test.result.target}}">
-            <b>{{title}}</b>
+        <div class="test-title">
+            {{title}}
         </div>
     
-        <div class="card-content hide-option display-toggle" >
-            <b>{{localize "Roll"}}</b>: 
-            {{#if test.isCritical}}
-            <span class="critical-roll display-toggle">
-            {{/if}}
-            {{#if test.isFumble}}
-            <span class="fumble-roll display-toggle">
-            {{/if}}
-            {{test.result.roll}}</span>
-            vs {{test.result.target}}
+        <div class="hide-option comparison">
+            <span class="{{#if test.isCritical}}critical{{/if}} {{#if test.isFumble}}fumble{{/if}}">{{test.result.roll}}</span>
+            <span>vs</span>
+            <span>{{test.result.target}}</span>
+        </div>
+        
+        <div class="sl">
+            <div class="sl-container">
+               {{test.result.SL}} 
+            </div>
         </div>
 
-        <div class="card-content hide-option display-toggle"  style = "display: none;">
-            <b>{{localize "Roll"}}</b>: 
-            <input class="card-edit" type="text" data-edit-type = "roll" value = "{{test.result.roll}}">
-            vs
-            <input class="card-edit" type="text" data-edit-type = "target" value = "{{test.result.target}}">
-        </div>
-        
-        <div class="card-content display-toggle">
-           <b>{{localize "SuccessLevels"}}</b>: {{test.result.SL}} 
-           {{#if test.doesDamage}} 
-            <span class = "card-damage">
-                {{{test.DamageString}}}
-            <a class="damage-breakdown"  style="opacity: 0.5" data-tooltip="{{test.result.breakdown.formatted.damage}}" data-tooltip-direction="LEFT" ><i class="fa-solid fa-circle-info"></i></a>
-            </span>
-            {{/if}}
-        </div>
-        <div class="card-content display-toggle " style = "display : none;">
-            <b>{{localize "SuccessLevels"}}</b>: <input class="card-edit" type="text" data-edit-type = "SL" value = "{{test.result.SL}}"> 
-            {{#if test.result.damage}} 
-            <span title="{{test.result.diceDamage.formula}}" class = "card-damage">({{{test.result.damage}}} {{localize "Damage"}})</span>
-            {{/if}}
-         </div>
-        
-        <div class="card-content" roll-description = "{{description}}">
-            <b>{{localize "Description"}}</b>: {{test.result.description}}
+        <div class="description">
+            <span>
+            <strong>{{test.result.description}}</strong>
 
             {{#each test.result.tables}}
             - <a class="table-click {{#if this.nulled}}nulled{{/if}} {{this.class}}" data-column="{{this.column}}" style="{{this.style}}" data-table="{{this.key}}" data-modifier="{{this.modifier}}"><i class="fas fa-list"></i> {{this.label}} {{#if this.modifier}}({{numberFormat this.modifier sign=true}}){{/if}}</a>
@@ -57,32 +35,35 @@
             {{#if test.result.misfire}}
             - <a class ="table-click fumble-roll" data-damage="{{test.result.misfireDamage}}" data-table = "misfire"><i class="fas fa-list"></i> {{test.result.misfire}}</a>
             {{/if}}
+            </span>
         </div>
+
+        {{#if test.doesDamage}} 
+        <div class = "damage">
+            <span>
+                <strong>{{localize "Damage"}}</strong>: 
+                {{{test.DamageString}}}
+                <a class="damage-breakdown"  style="opacity: 0.5" data-tooltip="{{test.result.breakdown.formatted.damage}}" data-tooltip-direction="LEFT" ><i class="fa-solid fa-circle-info"></i></a>
+            </span>
+        </div>
+        {{/if}}
     
         {{#if test.result.hitloc}}
-        <div class="card-content" roll-description = "{{description}}">
-            <b>{{localize "ROLL.HitLocation"}}</b>: {{test.result.hitloc.description}}
-            <input class="card-edit display-toggle" style = "display : none;" type="text" data-edit-type = "hitloc" value = "{{test.result.hitloc.roll}}">
+        <div>
+            <span><b>{{localize "ROLL.HitLocation"}}</b>: {{test.result.hitloc.description}}</span>
         </div>
         {{/if}}
 
         {{#if test.otherText}}
             {{#if test.result.woundsHealed}}
-            <div class="card-content wounds-healed-drag">
+            <div class="wounds-healed-drag">
             {{else}}
-            <div class="card-content">
+            <div>
             {{/if}}
-            {{{test.otherText}}}
+            <span>{{{test.otherText}}}</span>
             </div>
         {{/if}}
 
 
-        {{#each test.targetEffects as |effect e|}}
-        <a class="apply-target" data-uuid={{effect.uuid}} data-path="{{effect.flags.wfrp4e.path}}"><i class="fa-solid fa-crosshairs"></i> {{localize "CHAT.Apply"}} {{effect.name}}</a>
-        {{/each}}
-
-        
-        {{#each test.areaEffects as |effect e|}}
-        <a class="place-area" data-uuid={{effect.uuid}}><i class="fa-solid fa-ruler-combined"></i> {{localize "CHAT.Place"}} {{effect.name}}</a>
-        {{/each}}
+        {{> effectButtons test}}
 

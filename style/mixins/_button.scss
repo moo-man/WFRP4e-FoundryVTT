@@ -1,0 +1,35 @@
+@mixin foundry-button()
+{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0 0.5rem;
+    background: rgba(0 0 0 / 10%);
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #111;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-14);
+    text-decoration: none;
+    cursor: var(--cursor-pointer);
+
+    &:hover {
+        background: var(--color-warm-2);
+        color: var(--color-light-1);
+        border-color: var(--color-light-3);
+        transition: background-color 0.5s, border-color 0.5s;
+    }
+}
+
+@mixin styled-button()
+{
+    box-shadow: inset 0px 1px 0px 0px #a6827e;
+    background: linear-gradient(to bottom, #21374afc 5%, #152833ab 100%);
+    border-radius: 3px;
+    border: 2px ridge #846109;
+    display: inline-block;
+    color: #ffffff;
+    font-size: var(--font-size-14);
+    text-shadow: 0px 1px 0px #4d3534;
+}

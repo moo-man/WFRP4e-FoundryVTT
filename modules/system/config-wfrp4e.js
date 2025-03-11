@@ -1,5 +1,4 @@
 const WFRP4E = {}
-CONFIG.ChatMessage.template = "systems/wfrp4e/templates/chat/chat-message.hbs"
 
 WFRP4E.creditOptions = {
     SPLIT: "split",
@@ -138,8 +137,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Table\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("table-click")
+            a.classList.add("action-link")
             let values = match[1].split(",");
+            a.dataset.action = "clickTable"
             a.dataset.table = values[0];
             a.dataset.modifier = values[1] || 0;
             a.innerHTML = `<i class="fas fa-list"></i>${(game.wfrp4e.tables.findTable(match[1])?.name && !match[2]) ? game.wfrp4e.tables.findTable(match[1])?.name : match[2]}`
@@ -150,8 +150,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Symptom\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("symptom-tag")
+            a.classList.add("action-link")
             a.dataset.symptom = match[1]
+            a.dataset.action = "clickSymptom"
             let id = match[1]
             let label = match[2]
             a.innerHTML = `<i class="fas fa-user-injured"></i>${label ? label : id}`
@@ -162,8 +163,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Condition\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("condition-chat")
+            a.classList.add("action-link")
             a.dataset.cond = match[1]
+            a.dataset.action = "clickCondition"
             let id = match[1]
             let label = match[2]
             a.innerHTML = `<i class="fas fa-user-injured"></i>${label ? label : id}`
@@ -174,8 +176,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Property\[(.+?)](?:{(.+?)})?/gm,
         enricher : (match) => {
             const a = document.createElement("a");
-            a.classList.add("property-chat");
+            a.classList.add("action-link");
             a.dataset.cond = match[1];
+            a.dataset.action = "clickProperty"
             let id = match[1];
             let label = match[2];
             a.innerHTML = `<i class="fas fa-wrench"></i>${label ? label : id}`;
@@ -186,8 +189,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Pay\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("pay-link")
+            a.classList.add("action-link")
             a.dataset.pay = match[1]
+            a.dataset.action = "clickPay"
             let id = match[1]
             let label = match[2]
             a.innerHTML = `<i class="fas fa-coins"></i>${label ? label : id}`
@@ -198,8 +202,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Credit\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("credit-link")
+            a.classList.add("action-link")
             a.dataset.credit = match[1]
+            a.dataset.action = "clickCredit"
             let id = match[1]
             let label = match[2]
             a.innerHTML = `<i class="fas fa-coins"></i>${label ? label : id}`
@@ -210,11 +215,12 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         pattern : /@Corruption\[(.+?)\](?:{(.+?)})?/gm,
         enricher : (match, options) => {
             const a = document.createElement("a")
-            a.classList.add("corruption-link")
+            a.classList.add("action-link")
             a.dataset.strength = match[1]
+            a.dataset.action = "clickCorruption"
             let id = match[1]
             let label = match[2]
-            a.innerHTML = `<img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none">${label ? label : id}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/chaos.svg" style="border:none">${label ? label : id}`
             return a
         }
     },
@@ -223,10 +229,11 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             let values = match[1].split(",")
             const a = document.createElement("a")
-            a.classList.add("fear-link")
+            a.classList.add("action-link")
+            a.dataset.action = "clickFear"
             a.dataset.value = values[0]
             a.dataset.name = values[1] || ""
-            a.innerHTML = `<img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${game.i18n.localize("WFRP4E.ConditionName.Fear")} ${values[0]}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/fear.svg" style="border:none"> ${game.i18n.localize("WFRP4E.ConditionName.Fear")} ${values[0]}`
             return a
         }
     },
@@ -235,10 +242,11 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             let values = match[1].split(",")
             const a = document.createElement("a")
-            a.classList.add("terror-link")
+            a.classList.add("action-link")
+            a.dataset.action = "clickTerror"
             a.dataset.value = values[0]
             a.dataset.name = values[1] || ""
-            a.innerHTML = `<img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${game.i18n.localize("NAME.Terror")} ${values[0]}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/terror.svg" style="border:none"> ${game.i18n.localize("NAME.Terror")} ${values[0]}`
             return a
         }
     },
@@ -247,8 +255,9 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             let values = match[1].split(",")
             const a = document.createElement("a")
-            a.classList.add("exp-link")
+            a.classList.add("action-link")
             a.dataset.amount = values[0]
+            a.dataset.action = "clickExp"
             a.dataset.reason= values[1] || ""
             let label = match[2]
             a.innerHTML = `<i class="fas fa-plus"></i> ${ label ? label : (values[1] || values[0])}</a>`

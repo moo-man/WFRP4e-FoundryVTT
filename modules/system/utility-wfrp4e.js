@@ -540,39 +540,6 @@ export default class WFRP_Utility {
     return difficulties[difficultyIndex]
   }
 
-  /**
-   * Converts custom entity to clickable html element.
-   * 
-   * @param {String} match Entire string being converted (@Roll["1d8"])
-   * @param {String} entityType Custom entity type - Roll, Table, etc
-   * @param {String} id Input given in the custom link "1d8" above
-   * @param {String} name Name given @Table["minormis"]{name}
-   */
-  static _replaceCustomLink(match, entityType, id, name) {
-    let ids = id.split(",") // only used by fear/terror/exp for multiple arguments
-    switch (entityType) {
-      case "Roll":
-        return `<a class="chat-roll" data-roll="${ids[0]}"><i class='fas fa-dice'></i> ${name ? name : id}</a>`
-      case "Table":
-        return `<a class = "table-click" data-table="${ids[0]}"><i class="fas fa-list"></i> ${(game.wfrp4e.tables.findTable(id)?.name && !name) ? game.wfrp4e.tables.findTable(id)?.name : name}</a>`
-      case "Symptom":
-        return `<a class = "symptom-tag" data-symptom="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
-      case "Condition":
-        return `<a class = "condition-chat" data-cond="${ids[0]}"><i class='fas fa-user-injured'></i> ${name ? name : id}</a>`
-      case "Pay":
-        return `<a class = "pay-link" data-pay="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
-      case "Credit":
-        return `<a class = "credit-link" data-credit="${ids[0]}"><i class="fas fa-coins"></i> ${name ? name : id}</a>`
-      case "Corruption":
-        return `<a class = "corruption-link" data-strength="${ids[0]}"><img src="systems/wfrp4e/ui/chaos.svg" height=15px width=15px style="border:none"> ${name ? name : id}</a>`
-      case "Fear":
-        return `<a class = "fear-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/fear.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
-      case "Terror":
-        return `<a class = "terror-link" data-value="${ids[0]}" data-name="${ids[1] || ""}"><img src="systems/wfrp4e/ui/terror.svg" height=15px width=15px style="border:none"> ${entityType} ${ids[0]}</a>`
-      case "Exp":
-        return `<a class = "exp-link" data-amount="${ids[0]}" data-reason="${ids[1] || ""}"><i class="fas fa-plus"></i> ${name ? name : (ids[1] || ids[0])}</a>`
-    }
-  }
 
   /**
    * Collects data from the table click event and sends it to game.wfrp4e.tables to be rolled.

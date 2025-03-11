@@ -3,32 +3,12 @@ import NameGenWfrp from "../apps/name-gen.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 import ChatWFRP from "../system/chat-wfrp4e.js";
-import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 import OpposedHandler from "../system/opposed-handler.js";
 
 
 export default function() {
-
-  // Activate chat listeners defined in chat-wfrp4e.js
-  Hooks.on('renderChatLog', (log, html, data) => {
-    ChatWFRP.chatListeners(html)
-  });
-
-
-  // Add Apply Condition buttons
-  Hooks.on("preCreateChatMessage", (msg) => {
-    msg.updateSource({"content" : ChatWFRP.addEffectButtons(msg.content)})
-  })
-
-  
-  Hooks.on("createChatMessage", (msg) => {
-    let test = msg.system.test;
-    if (test)
-    {
-      test.postTestGM(msg)
-    }
-  })
 
 
 
@@ -274,7 +254,7 @@ export default function() {
 
     // Travel commands
     else if (command === "/travel") {
-      TravelDistanceWfrp4e.displayTravelDistance( commands[1], commands[2] );
+      TravelDistanceWFRP4e.displayTravelDistance( commands[1], commands[2] );
       return false;
     }
 

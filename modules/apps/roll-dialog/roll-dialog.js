@@ -64,8 +64,7 @@ export default class RollDialog extends WarhammerRollDialog {
         this.close();
         if (canvas.scene && !this.options.skipTargets)
         {
-            game.user.updateTokenTargets([]);
-            game.user.broadcastActivity({targets: []});
+            game.canvas.tokens.setTargets([])
         }
         return test;
     }

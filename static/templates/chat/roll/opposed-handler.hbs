@@ -1,0 +1,14 @@
+<div class ="opposed-message">
+    {{log this}}
+            {{{localize "ROLL.Targeting" attacker=attackerName defender=defenderName}}}
+          </div>
+          <div class = "opposed-tokens">
+          <a class="attacker {{#if (eq winner "attacker")}}winner{{else if (eq winner "defender")}}loser{{/if}}" data-action="clickOpposedImg" data-side="attacker"><img src="{{attackerImg}}" width="50" height="50"/></a>
+          <a class="defender {{#if (eq winner "defender")}}winner{{else if (eq winner "attacker")}}loser{{/if}}" data-action="clickOpposedImg" data-side="defender"><img src="{{defenderImg}}" width="50" height="50"/></a>
+          </div>
+          <div class="opposed-options">
+            {{#each opposedOptions}}
+                <a class="chat-button" data-action="clickOpposedResponse" data-item-id="{{this.id}}" data-tooltip="{{this.tooltip}}"><i class="fa-solid {{this.icon}}"></i></a>
+            {{/each}}
+          </div>
+</div>

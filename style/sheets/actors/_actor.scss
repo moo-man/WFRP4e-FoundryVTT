@@ -113,11 +113,12 @@
                 width: 3rem;
                 padding: 0px 0.3rem;
                 text-align: left;
+                border-left: none;
             }
             &:last-child {
                 border-right: none;
             }
-            
+
             padding: 0px 0px;
         }
         input {
@@ -129,6 +130,9 @@
         }
 
         .table-header {
+            th {
+                line-height: 1.2rem;
+            }
             th div {
                 position: relative;
                 .advancement-indicator {

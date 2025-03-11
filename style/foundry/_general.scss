@@ -1,0 +1,20 @@
+@use "../mixins/index" as *;
+
+body {
+    .action-link {
+        @include content-link;
+        img {
+            display: inline;
+            height: 1rem;
+            width: 1rem;
+            margin-bottom: -0.20rem;
+            margin-right: 0.1rem;
+        }
+        &.critical {
+            color: green;
+        }
+        &.fumble {
+            color: darkred;
+        }
+    }
+}

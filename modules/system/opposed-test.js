@@ -4,22 +4,23 @@ import WFRP_Utility from "./utility-wfrp4e.js";
 
 
 export default class OpposedTest {
-  constructor(attackerTest = undefined, 
-              defenderTest = undefined, 
-              opposeResult = {modifiers: {
-                attacker: {
-                  target: 0,
-                  SL: 0
-                },
-                defender: {
-                  target: 0,
-                  SL: 0
-                },
-                message: [] }
-              }) {
+  constructor(attackerTest = undefined, defenderTest = undefined, opposeResult = {
+      modifiers: {
+        attacker: {
+          target: 0,
+          SL: 0
+        },
+        defender: {
+          target: 0,
+          SL: 0
+        },
+        message: []
+      }
+    }) {
+      
     this.data = {
-      attackerTestData : attackerTest?.data,
-      defenderTestData : defenderTest?.data,
+      attackerTestData: attackerTest?.data,
+      defenderTestData: defenderTest?.data,
       opposeResult
     }
 

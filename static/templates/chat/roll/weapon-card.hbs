@@ -5,7 +5,7 @@
 
     {{#if test.item.Qualities.length}}
     <div class="card-content" >
-        <span><b>{{localize "Qualities"}}</b>: </span>
+        <span><strong>{{localize "Qualities"}}</strong>: </span>
         {{#each test.item.Qualities as |quality q|}}
         <a class ="item-property">{{quality}} </a>
         {{/each}}
@@ -14,22 +14,23 @@
 
     {{#if test.item.Flaws.length}}
     <div class="card-content" >
-            <span><b>{{localize "Flaws"}}</b>: </span>
+            <span><strong>{{localize "Flaws"}}</strong>: 
             {{#each test.item.Flaws as |flaw f|}}
             <a class ="item-property">{{flaw}} </a>
             {{/each}}
+            </span>
         </div>
     {{/if}}
 
     {{#if test.item.properties.special}}
     <div class="card-content hide-option" >
-            <span><b>{{localize "Special"}}</b>: {{{test.item.properties.special}}}</span>
+            <span><strong>{{localize "Special"}}</strong>: {{{test.item.properties.special}}}</span>
         </div>
     {{/if}}
 
     {{#if test.item.properties.specialAmmo}}
     <div class="card-content hide-option" >
-            <span><b>{{localize "Special Ammo"}}</b>: {{{test.item.properties.specialAmmo}}}</span>
+            <span><strong>{{localize "Special Ammo"}}</strong>: {{{test.item.properties.specialAmmo}}}</span>
         </div>
     {{/if}}
 

@@ -8,6 +8,21 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         return TestWFRP.recreate(this.testData)   
     }
 
+    static get actions() 
+    { 
+        return foundry.utils.mergeObject(super.actions, {
+            overcastClick : this.onOvercastClick,
+            overcastReset : this.onOvercastReset,
+            moveVortex : this.onMoveVortex
+        });
+    }
+
+    get canEdit()
+    {
+      let msg = this.parent
+      return msg.isOwner || msg.isAuthor;
+    }
+
     static get contextMenuOptions()
     {
         let test = this.test;
@@ -125,4 +140,81 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         }
     ]
     }
+  static async onPlaceAreaEffect(event) {
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError")
+    
+    let effectUuid = event.currentTarget.dataset.uuid;
+    let test = this.test
+    let radius;
+    if (test?.result.overcast?.usage.target)
+    {
+      radius = test.result.overcast.usage.target.current;
+
+      if (test.spell)
+      {
+        radius /= 2; // Spells define their diameter, not radius
+      }
+    }
+
+    let effect = await fromUuid(effectUuid)
+    let effectData = effect.convertToApplied(test);
+    if (!(await effect.runPreApplyScript({effectData})))
+    {
+        return;
+    }
+    let template = await AreaTemplate.fromEffect(effectUuid, messageId, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
+    await template.drawPreview(event);
+  }
+  
+      // Respond to overcast button clicks
+  static onOvercastClick(event) {
+    event.preventDefault();
+    let msg = this.parent
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError")
+
+    let test = msg.system.test
+    let overcastChoice = event.currentTarget.dataset.overcast;
+    // Set overcast and rerender card
+    test._overcast(overcastChoice)
+    
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
+    }
+    //@/HOUSE
+
+    
+  }
+
+  // Button to reset the overcasts
+  static onOvercastReset(event) {
+    event.preventDefault();
+    let msg = this.parent
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError")
+
+    let test = this.test
+    // Reset overcast and rerender card
+    test._overcastReset()
+        
+    //@HOUSE
+    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    {
+      game.wfrp4e.utility.logHomebrew("mooOvercasting")
+    }
+    //@/HOUSE
+  }
+
+  static onMoveVortex(event)
+  {
+    let msg = this.parent;
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError")
+    let test = this.test
+    test.moveVortex();
+  }
+
 }

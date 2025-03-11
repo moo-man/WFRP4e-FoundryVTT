@@ -1,3 +1,5 @@
+@use "../mixins/index" as *;
+
     @font-face {
         font-family: "CaslonAntique";
         src: url('./fonts/CaslonAntique.ttf');
@@ -26,13 +28,40 @@
     }
 
     :root {
+        :not(.no-theme)
+        {
+            --color-cream: #f0d9a3;
+            --color-grey5: #f1ede9;
+            --color-grey4: #b5aeac;
+            --color-grey3: #737373;
+            --color-grey2: #464331c4;
+            --color-grey1: black;
 
-        --header-font: CaslonAntique;
-        --type-font: CaslonPro
+            --color-faded: #736953a6;
+            --color-faded-bg: #774e000f;
+
+            --color-cool: #273444;
+
+            --color-warm: #4a0404;
+
+            --primary-font: "CaslonPro";
+            --header-font: "CaslonAntique";
+        }
     }
 
     body:not(.no-theme) {
         background: url(./ui/background.webp) repeat;
+
+        &.classic-font {
+            .message-sender,
+            #chat {
+                font-family: var(--primary-font);
+            }
+        }
+
+        #sidebar-tabs {
+            padding-right: 22px;
+        }
 
         #sidebar-content {
             background: url(./ui/sidebar.webp) repeat;
@@ -47,17 +76,15 @@
             background: url(./ui/frames/bookshelf-texture.webp);
         }
 
-        .chat-form {
-            textarea {
-                background: url(./ui/frames/parchment-texture.webp) repeat;
-                border: 1px solid black;
-                border-image: url(./ui/chat-form-border.webp) 10 repeat;
-                border-image-width: 10px;
-                border-image-outset: 0px 0px;
-                padding: 15px;
-                box-shadow: inset 0 0 40px #000000;
-                color: black;
-            }
+        .action-link,
+        .content-link {
+            border-radius: 2px;
+            border: 1px solid #b9935e99;
+            white-space: nowrap;
+            word-break: break-all;
+            box-shadow: inset 0px 0px 4px #b98132;
+            background: #9e57001f;
+            color: black;
         }
 
         .ui-control {
@@ -107,18 +134,6 @@
             }
         }
 
-        .chat-log .message {
-
-            // border: 1px solid transparent;
-            // border-image: url(./ui/frames/chat-message-border.webp) 21 repeat;
-            // border-image-width: 10px;
-            // border-image-outset: 8px;
-            // border-radius: 0px;
-            // background: url(./ui/frames/parchment-texture.webp) repeat;
-            // color: black;
-            // margin: 20px 10px;
-        }
-
         #context-menu {
             background: none;
             border: 1px solid;
@@ -127,6 +142,7 @@
             border-image-width: 100px;
             border-image-outset: 0px 0px 0px 0px;
             box-shadow: 5px 5px 10px rgb(0, 0, 0);
+            color: var(--color-cream);
         }
 
         #tooltip {

@@ -10,6 +10,38 @@
     padding: 2rem;
     background: none;
     box-shadow: none;
+    &.weapon,
+    &.career {
+        border-image-source: url(./ui/item-sheet-red.webp);
+    }
+
+    &.disease {
+        border-image-source: url(./ui/item-sheet-green.webp);
+    }
+
+    &.critical,
+    &.psychology,
+    &.mutation,
+    &.injury {
+        border-image-source: url(./ui/item-sheet-black.webp);
+    }
+
+    &.prayer {
+        border-image-source: url(./ui/item-sheet-white.webp);
+    }
+
+    &.skill {
+        border-image-source: url(./ui/item-sheet-yellow.webp);
+    }
+
+    &.spell {
+        border-image-source: url(./ui/item-sheet-purple.webp);
+    }
+
+    &.trait,
+    &.talent {
+        border-image-source: url(./ui/item-sheet-blue.webp);
+    }
 
     .window-header {
         background: none;

@@ -11,9 +11,13 @@
             border-image: url(./ui/frames/actor-sheet-v2.webp) 4 repeat;
             border-image-slice: 250 fill;
             border-image-width: 250px;
-            border-image-outset: 37px 10px 0px 10px;
+            border-image-outset: 37px 1px 5px 1px;
 
-            padding: 2rem;
+            padding: 40px;
+        }
+
+        nav.sheet-tabs {
+            margin-top: 2px;
         }
 
 

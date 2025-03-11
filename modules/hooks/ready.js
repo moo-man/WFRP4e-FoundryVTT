@@ -5,9 +5,17 @@ import MooHouseRules from "../system/moo-house.js"
 export default function () {
   Hooks.on("ready", async () => {
 
-    if (game.settings.get("wfrp4e", "disableTheme"))
+    let theme = game.settings.get("wfrp4e", "theme").foundry;
+    if (!theme.enabled)
     {
       document.body.classList.add("no-theme")
+    }
+    else if (theme.font == "classic")
+    {
+      if (theme.font == "classic")
+      {
+        document.body.classList.add("classic-font");
+      }
     }
 
     SocketHandlers.register.bind(SocketHandlers)();
@@ -41,20 +49,6 @@ export default function () {
       ui.notifications.notify(game.i18n.localize("AutoFillAdvantageDisabled"), {permanent : true})
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
-
-    const body = $("body");
-    body.on("dragstart", "a.condition-chat", WFRP_Utility._onDragConditionLink)
-
-    // if (game.modules.get("about-time") && game.modules.get("about-time").active && game.user.isUniqueGM)
-    //   game.Gametime.doEvery(GM{hours:24}, () => {
-    //     game.actors.contents.filter(a => a.hasPlayerOwner).forEach(a => {
-    //       a.decrementDiseases()
-    //       a.decrementInjuries()
-    //     })
-    //   })
-
-
-
 
     const MIGRATION_VERSION = 10;
     let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))

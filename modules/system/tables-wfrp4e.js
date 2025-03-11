@@ -424,11 +424,11 @@ export default class WFRP_Tables {
       if (tableObject.columns && !columnsAdded.includes(key))
       {
         columnsAdded.push(key)
-        tableMenu += `<a data-table='${key}' class='table-click'><i class="fas fa-list"></i> <code>${key}</code></a> - ${tableObject.name}<br>`
+        tableMenu += `<a data-table='${key}' class='action-link' data-action="clickTable" ><i class="fas fa-list"></i> <code>${key}</code></a> - ${tableObject.name}<br>`
       }
       // If no columns, just list tables
       else if (tableObject && !tableObject.columns)
-        tableMenu += `<a data-table='${key}' class='table-click'><i class="fas fa-list"></i> <code>${key}</code></a> - ${table.name}<br>`
+        tableMenu += `<a data-table='${key}' class='action-link' data-action="clickTable" ><i class="fas fa-list"></i> <code>${key}</code></a> - ${table.name}<br>`
     }
     return {result : tableMenu};
   }
@@ -436,7 +436,7 @@ export default class WFRP_Tables {
   // When critical casting, there are few options available, one could be a critical wound on a location, so offer a clickable link.
   static criticalCastMenu(crittable) {
     return `${game.i18n.localize("CHAT.ChooseFrom")}:<ul>
-      <li><b>${game.i18n.localize("ROLL.CritCast")}</b>: ${game.i18n.localize("CHAT.CritCast")} <a class=table-click data-table=${crittable}><i class="fas fa-list"></i> ${game.i18n.localize("Critical Wound")}</a></li>
+      <li><b>${game.i18n.localize("ROLL.CritCast")}</b>: ${game.i18n.localize("CHAT.CritCast")} <a class="action-link"  data-action="clickTable" data-table=${crittable}><i class="fas fa-list"></i> ${game.i18n.localize("Critical Wound")}</a></li>
       <li><b>${game.i18n.localize("ROLL.TotalPower")}</b>: ${game.i18n.localize("CHAT.TotalPower")}</li>
       <li><b>${game.i18n.localize("ROLL.UnstoppableForce")}</b>: ${game.i18n.localize("CHAT.UnstoppableForce")}</li>
       </ul`;
@@ -456,7 +456,7 @@ export default class WFRP_Tables {
 
     let tableObject = this.findTable(table);
     for (let c of tableObject.columns)
-      prompt += `<div><a class = "table-click" data-table="${table}" data-column = "${c.getFlag("wfrp4e", "column")}"><i class="fas fa-list"></i> ${c.name}</a></div>`
+      prompt += `<div><a class = "action-link" data-action="clickTable"  data-table="${table}" data-column = "${c.getFlag("wfrp4e", "column")}"><i class="fas fa-list"></i> ${c.name}</a></div>`
 
     return prompt;
   }

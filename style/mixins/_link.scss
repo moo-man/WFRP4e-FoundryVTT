@@ -1,0 +1,17 @@
+@mixin content-link()
+{
+    background: #ddd;
+    border: 1px solid #444;
+    border-radius: 2px;
+    color: #222;
+    margin: -1px 0;
+    padding: 1px 4px 0;
+    white-space: nowrap;
+    word-break: break-all;
+
+    > i {
+        color: var(--color-dark-6);
+        font-size: 0.8em;
+        margin-right: 0.25em;
+    }
+}

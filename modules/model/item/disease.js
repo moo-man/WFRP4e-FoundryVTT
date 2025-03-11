@@ -82,7 +82,7 @@ export class DiseaseModel extends BaseItemModel {
     data.properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
     data.properties.push(`<b>${game.i18n.localize("Incubation")}:</b> ${this.incubation.value} ${this.incubation.unit}`);
     data.properties.push(`<b>${game.i18n.localize("Duration")}:</b> ${this.duration.value} ${this.duration.unit}`);
-    data.properties = data.properties.concat(this.parent.effects.map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.name.trim() + "</a>").join(", "));
+    data.properties = data.properties.concat(this.parent.effects.map(i => i = "<a class='clickSymptom' data-action='action-link'><i class='fas fa-user-injured'></i> " + i.name.trim() + "</a>").join(", "));
 
     if (this.permanent.value)
       data.properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);
@@ -95,7 +95,7 @@ export class DiseaseModel extends BaseItemModel {
     properties.push(`<b>${game.i18n.localize("Contraction")}:</b> ${this.contraction.value}`);
     properties.push(`<b>${game.i18n.localize("Incubation")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${this.incubation.value}</a>`);
     properties.push(`<b>${game.i18n.localize("Duration")}:</b> <a class = 'chat-roll'><i class='fas fa-dice'></i> ${this.duration.value}</a>`);
-    properties.push(`<b>${game.i18n.localize("Symptoms")}:</b> ${(this.symptoms.value.split(",").map(i => i = "<a class ='symptom-tag'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>")).join(", ")}`);
+    properties.push(`<b>${game.i18n.localize("Symptoms")}:</b> ${(this.symptoms.value.split(",").map(i => i = "<a class='clickSymptom' data-action='action-link'><i class='fas fa-user-injured'></i> " + i.trim() + "</a>")).join(", ")}`);
 
     if (this.permanent.value)
       properties.push(`<b>${game.i18n.localize("Permanent")}:</b> ${this.permanent.value}`);

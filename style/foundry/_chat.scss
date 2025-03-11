@@ -1,0 +1,125 @@
+@use "../mixins/index" as *;
+
+.chat-log {
+    .message {
+
+        .message-header {
+            align-items: center;
+            
+            .message-token {
+                margin: -5px;
+                margin-right: 0.5rem;
+                display: flex;
+                flex: 0 0 50px;
+                &.mounted {
+                    flex: 0 0 100px;
+                }
+                img {
+                    height: 50px;
+                    width: 50px;
+                }
+                &.mounted {
+                    img {
+                        &:last-of-type {
+                            margin-left: -25px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .chat-button {
+            @include foundry-button;
+        }
+
+        .opposed-options {
+            display: flex;
+            justify-content: right;
+            gap: 0.5rem;
+            padding-right: 4px;
+            margin-top: 0.5rem;
+            > a {
+                height: 1.5rem;
+                line-height: 1.5rem;
+                font-size: var(--font-size-12)
+            }   
+        }
+
+        .opposed-message {
+            text-align: center;
+        }
+        .opposed-tokens {
+                display: flex;
+                justify-content: space-around;
+                img {
+                    border: 2px dotted black;
+                    border-radius: 50%;
+                    padding: 3px;
+                }
+
+                .winner img {
+                    border-color: green;
+                }
+                .loser img {
+                    border-color: red;
+                }
+        }
+
+        .wfrp4e {
+            position: relative;
+        }
+        .message-controls {
+            position: absolute;
+            right: 0px;
+            top: 2rem;
+            display: none;
+        }
+
+        .test-title {
+            @include gradient-border();
+            text-align: center;
+            font-size: var(--font-size-18);
+            font-weight: bold;
+        }
+
+        .comparison {
+            display: flex;
+            justify-content: center;
+            margin: 0.5rem 0;
+            > span {
+                flex: 0 0 2rem;
+                text-align: center;
+            }
+            > span:first-of-type{
+                flex: 1;
+                text-align: right;
+            }
+            >span:last-of-type
+            {
+                flex: 1;
+                text-align: left;
+            }
+            
+        }
+
+        .sl {
+            .sl-container {
+                margin: 0 auto;
+                height: 3rem;
+                width: 3rem;
+                line-height: 3rem;
+                font-size: var(--font-size-18);
+                text-align: center;
+                box-shadow: 0 0 5px black;
+                // background: rgba(0, 0, 0, 0.1);
+                border: 1px solid black;
+                border-radius: 10px;
+            }
+        }
+
+        .description {
+            margin: 0.5rem 0;
+            text-align: center;
+        }    
+    }
+}

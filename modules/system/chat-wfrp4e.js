@@ -7,7 +7,7 @@
  */
 
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
-import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
 
@@ -17,88 +17,13 @@ import TradeManager from "./trade/trade-manager.js";
 
 export default class ChatWFRP {
 
-
-  // If content includes "@Condition[...]" add a button to apply that effect
-  // Optionally provide a set of conditions
-  static addEffectButtons(content, conditions = [])
-  {
-    // Don't add buttons if already added, or from posted items
-    if (content.includes("apply-conditions") || content.includes("post-item"))
-    {
-      return content;
-    }
-
-    let regex = /@Condition\[(.+?)\]/gm
-
-    let matches = Array.from(content.matchAll(regex));
-
-    conditions = conditions.concat(matches.map(m => m[1].toLowerCase())).filter(i => game.wfrp4e.config.conditions[i])
-
-    // Dedup
-    conditions = conditions.filter((c, i) => conditions.indexOf(c) == i)
-
-    if (conditions.length)
-    {
-      let html = `<div class="apply-conditions">`
-      conditions.forEach(c => 
-          html += `<a class="chat-button apply-condition" data-cond="${c}">${game.i18n.format("CHAT.ApplyCondition", {condition: game.wfrp4e.config.conditions[c]})}</a>`
-      )
-
-      html += `</div>`
-      content += html;
-    }
-    return content
-  }
-
   /**
    * Activate event listeners using the chat log html.
    * @param html {HTML}  Chat log html
    */
   static async chatListeners(html) {
-    // item lookup tag looks for an item based on the location attribute (compendium), then posts that item to chat.
-
-    // Lookp function uses specialized skill and talent lookup functions that improve searches based on specializations
-    html.on("click", ".talent-lookup", async ev => {
-      WFRP_Utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
-    })
-
-    html.on("click", ".skill-lookup", async ev => {
-      WFRP_Utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
-    })
-
-    // If draggable skill/talent, right click to open sheet
-    html.on("mousedown", ".talent-drag", async ev => {
-      if (ev.button == 2)
-        WFRP_Utility.findTalent(ev.target.text).then(talent => talent.sheet.render(true));
-    })
-    html.on("mousedown", ".skill-drag", async ev => {
-      if (ev.button == 2)
-        WFRP_Utility.findSkill(ev.target.text).then(skill => skill.sheet.render(true));
-    })
 
 
-
-    html.on("click", ".symptom-tag", WFRP_Utility.handleSymptomClick.bind(WFRP_Utility))
-    html.on("click", ".condition-chat", WFRP_Utility.handleConditionClick.bind(WFRP_Utility))
-    html.on("click", ".property-chat", WFRP_Utility.handlePropertyClick.bind(WFRP_Utility))
-    html.on('mousedown', '.table-click', WFRP_Utility.handleTableClick.bind(WFRP_Utility))
-    html.on('mousedown', '.pay-link', WFRP_Utility.handlePayClick.bind(WFRP_Utility))
-    html.on('mousedown', '.credit-link', WFRP_Utility.handleCreditClick.bind(WFRP_Utility))
-    html.on('mousedown', '.corruption-link', WFRP_Utility.handleCorruptionClick.bind(WFRP_Utility))
-    html.on('mousedown', '.fear-link', WFRP_Utility.handleFearClick.bind(WFRP_Utility))
-    html.on('mousedown', '.terror-link', WFRP_Utility.handleTerrorClick.bind(WFRP_Utility))
-    html.on('mousedown', '.exp-link', WFRP_Utility.handleExpClick.bind(WFRP_Utility))
-    html.on('mousedown', '.travel-click', TravelDistanceWfrp4e.handleTravelClick.bind(TravelDistanceWfrp4e))
-    html.on('click', '.trade-cargo-click', TradeManager.manageTrade.bind(TradeManager));
-    html.on('click', '.trade-buy-click', TradeManager.buyCargo.bind(TradeManager));
-
-    html.on('change', '.card-edit', this._onCardEdit.bind(this))
-    html.on('click', '.opposed-toggle', OpposedHandler.opposedClicked.bind(OpposedHandler))
-    html.on("mousedown", '.overcast-button', this._onOvercastButtonClick.bind(this))
-    html.on("mousedown", '.overcast-reset', this._onOvercastResetClicked.bind(this))
-    html.on("click", '.vortex-movement', this._onMoveVortex.bind(this))
-    html.on("click", '.unopposed', this._onUnopposedButtonClicked.bind(this))
-    html.on("click", '.oppose', this._onOpposedButtonClicked.bind(this))
     html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
     html.on("click", ".haggle", this._onHaggleClicked.bind(this))
     html.on("click", ".corrupt-button", this._onCorruptButtonClicked.bind(this))
@@ -106,12 +31,7 @@ export default class ChatWFRP {
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
     html.on("click", ".experience-button", this._onExpButtonClicked.bind(this))
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
-    html.on("click", ".apply-target", WarhammerChatListeners.onApplyTargetEffect)
-    html.on("click", ".place-area", this._onPlaceAreaEffect.bind(this))
-    html.on("click", ".attacker, .defender", this._onOpposedImgClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
-    html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
-    html.on("click", ".apply-hack", this._onApplyHackClick.bind(this))
     html.on("click", ".crew-test", this._onCrewTestClick.bind(this))
 
     // Respond to template button clicks
@@ -132,155 +52,9 @@ export default class ChatWFRP {
     });
 
 
-    // Change card to edit mode
-    html.on('click', '.edit-toggle', ev => {
-      ev.preventDefault();
-      this.toggleEditable(ev.currentTarget)
-    });
-
-  }
-
-  static _onApplyDamageClick(ev)
-  {
-    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.system.opposedTest;
-
-    if (!opposedTest.defenderTest.actor.isOwner)
-      return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
-
-    opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-      .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
-  }
-
-  static async _onApplyHackClick(ev)
-  {
-    let message = game.messages.get($(ev.currentTarget).parents(".message").attr("data-message-id"))
-    let opposedTest = message.system.opposedTest;
-
-    if (!opposedTest.defenderTest.actor.isOwner)
-      return ui.notifications.error("ErrorHackPermission", {localize : true})
-
-    let loc = opposedTest.result.hitloc.value
-    let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
-    if (armour.length)
-    {
-      let chosen = await ItemDialog.create(armour, 1, "Choose Armour to damage");
-      if (chosen[0])
-      {
-        chosen[0].system.damageItem(1, [loc])
-        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Hack)</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
-      }
-    }
-    else 
-    {
-      return ui.notifications.error("ErrorNoArmourToDamage", {localize : true})
-    }
   }
 
 
-  // Respond to editing chat cards - take all inputs and call the same function used with the data filled out
-  static _onCardEdit(ev) {
-    let button = $(ev.currentTarget),
-      messageId = button.parents('.message').attr("data-message-id"),
-      message = game.messages.get(messageId);
-
-    let test = message.system.test
-    test.context.edited = true;
-
-    test.context.previousResult = foundry.utils.duplicate(test.result);
-
-    test.preData[button.attr("data-edit-type")] = parseInt(ev.target.value)
-
-    if (button.attr("data-edit-type") == "hitloc") // If changing hitloc, keep old value for roll
-      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
-    else // If not changing hitloc, use old value for hitloc
-      test.preData.hitloc = $(message.content).find(".card-content.test-data").attr("data-loc")
-
-    if (button.attr("data-edit-type") == "SL") // If changing SL, keep both roll and hitloc
-    {
-      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
-      test.preData.slBonus = 0;
-      test.preData.successBonus = 0;
-    }
-
-    if (button.attr("data-edit-type") == "target") // If changing target, keep both roll and hitloc
-      test.preData.roll = $(message.content).find(".card-content.test-data").attr("data-roll")
-
-
-    // Send message as third argument (rerenderMessage) so that the message will be updated instead of rendering a new one
-
-    test.roll();
-  }
-
-  /**
-   * Toggles a chat card from to edit mode - switches to using <input>
-   * 
-   * @param {Object} html  chat card html
-   */
-  static toggleEditable(html) {
-    let elementsToToggle = $(html).parents(".chat-card").find(".display-toggle")
-    if (!elementsToToggle.length)
-      elementsToToggle = $(html).find(".display-toggle")
-
-    for (let elem of elementsToToggle) {
-      if (elem.style.display == "none")
-        elem.style.display = ""
-      else
-        elem.style.display = "none"
-    }
-  }
-
-  // Respond to overcast button clicks
-  static _onOvercastButtonClick(event) {
-    event.preventDefault();
-    let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    if (!msg.isOwner && !msg.isAuthor)
-      return ui.notifications.error("CHAT.EditError")
-
-    let test = msg.system.test
-    let overcastChoice = event.currentTarget.dataset.overcast;
-    // Set overcast and rerender card
-    test._overcast(overcastChoice)
-    
-    //@HOUSE
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
-    {
-      game.wfrp4e.utility.logHomebrew("mooOvercasting")
-    }
-    //@/HOUSE
-
-    
-  }
-
-  // Button to reset the overcasts
-  static _onOvercastResetClicked(event) {
-    event.preventDefault();
-    let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    if (!msg.isOwner && !msg.isAuthor)
-      return ui.notifications.error("CHAT.EditError")
-
-    let test = msg.system.test
-    // Reset overcast and rerender card
-    test._overcastReset()
-        
-    //@HOUSE
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
-    {
-      game.wfrp4e.utility.logHomebrew("mooOvercasting")
-    }
-    //@/HOUSE
-  }
-
-  
-  static _onMoveVortex(event)
-  {
-    let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    if (!msg.isOwner && !msg.isAuthor)
-      return ui.notifications.error("CHAT.EditError")
-    let test = msg.system.test
-    test.moveVortex();
-
-  }
 
   static async _onCrewTestClick(event)
   {
@@ -300,22 +74,6 @@ export default class ChatWFRP {
         role.system.roll(chosenActor, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest, crewTestMessage : messageId, roleVital : vital})
       }
     }
-  }
-
-  // Proceed with an opposed test as unopposed
-  static _onUnopposedButtonClicked(event) {
-    event.preventDefault()
-    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).system.opposedHandler;
-    oppose.resolveUnopposed();
-  }
-
-  static _onOpposedButtonClicked(event)
-  {
-    let id = event.currentTarget.dataset.itemId;
-    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let oppose = game.messages.get(messageId).system.opposedHandler;
-    oppose.resolveOpposed(id);
   }
 
   // Click on botton related to the market/pay system
@@ -429,8 +187,7 @@ export default class ChatWFRP {
 
     let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) { 
-      game.user.updateTokenTargets([]);
-      game.user.broadcastActivity({targets: []});
+      game.canvas.tokens.setTargets([])
     }
 
 
@@ -440,8 +197,7 @@ export default class ChatWFRP {
       targets.forEach(t => {
         t.actor.applyFear(value, name)
         if (canvas.scene) {
-          game.user.updateTokenTargets([]);
-          game.user.broadcastActivity({ targets: [] });
+          game.canvas.tokens.setTargets([])
         }
       })
     }
@@ -458,8 +214,7 @@ export default class ChatWFRP {
     
     let targets = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i)))
     if (canvas.scene) {
-      game.user.updateTokenTargets([]);      
-      game.user.broadcastActivity({ targets: [] });
+      game.canvas.tokens.setTargets([])
     }
 
     if (game.user.isGM) {
@@ -502,8 +257,7 @@ export default class ChatWFRP {
       })
       if (canvas.scene)
       { 
-        game.user.updateTokenTargets([]);
-        game.user.broadcastActivity({ targets: [] });
+        game.canvas.tokens.setTargets([])
       }
     }
     else {
@@ -538,51 +292,10 @@ export default class ChatWFRP {
       await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: msgId, updateData: conditionResult });
   }
 
-  static async _onPlaceAreaEffect(event) {
-    let messageId = $(event.currentTarget).parents('.message').attr("data-message-id");
-    let effectUuid = event.currentTarget.dataset.uuid;
-
-    let test = game.messages.get(messageId).system.test;
-    let radius;
-    if (test?.result.overcast?.usage.target)
-    {
-      radius = test.result.overcast.usage.target.current;
-
-      if (test.spell)
-      {
-        radius /= 2; // Spells define their diameter, not radius
-      }
-    }
-
-    let effect = await fromUuid(effectUuid)
-    let effectData = effect.convertToApplied(test);
-    if (!(await effect.runPreApplyScript({effectData})))
-    {
-        return;
-    }
-    let template = await AreaTemplate.fromEffect(effectUuid, messageId, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
-    await template.drawPreview(event);
-  }
-
-  static _onOpposedImgClick(event) {
-    let msg = game.messages.get($(event.currentTarget).parents(".message").attr("data-message-id"))
-    let oppose = msg.system.opposedHandler;
-    let speaker
-
-    if ($(event.currentTarget).hasClass("attacker"))
-      speaker = oppose.attacker
-    else if ($(event.currentTarget).hasClass("defender"))
-      speaker = oppose.defender
-
-    speaker.sheet.render(true)
-
-  }
-
   static _onApplyCondition(event) {
     let actors = canvas.tokens.controlled.concat(Array.from(game.user.targets).filter(i => !canvas.tokens.controlled.includes(i))).map(a => a.actor);
     if (canvas.scene) { 
-      game.user.updateTokenTargets([]);
-      game.user.broadcastActivity({targets: []});
+      game.canvas.tokens.setTargets([])
     }
     
     if (actors.length == 0)

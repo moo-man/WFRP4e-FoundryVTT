@@ -1,40 +1,13 @@
 
+@use "../mixins/index" as *;
+
 @mixin shadowed($color: #00000052, $size: 10px) {
     box-shadow: 0 0 $size $color inset;
 }
-
-@mixin sheet-button()
-{
-    box-shadow: inset 0px 1px 0px 0px #a6827e;
-    background: linear-gradient(to bottom, #21374afc 5%, #152833ab 100%);
-    border-radius: 3px;
-    border: 2px ridge #846109;
-    display: inline-block;
-    color: #ffffff;
-    font-family: CaslonPro;
-    font-size: var(--font-size-14);
-    text-shadow: 0px 1px 0px #4d3534;
-}
-
             
 .theme-light .wfrp4e.sheet.application:not(.no-theme),
 .wfrp4e.sheet.application:not(.no-theme) {
-        --color-cream: #f0d9a3;
-        --color-grey5: #f1ede9;
-        --color-grey4: #b5aeac;
-        --color-grey3: #737373;
-        --color-grey2: #464331c4;
-        --color-grey1: black;
 
-        --color-faded: #736953a6;
-        --color-faded-bg: #774e000f;
-
-        --color-cool: #273444;
-
-        --color-warm: #4a0404;
-
-        --primary-font: "CaslonPro";
-        --header-font: "CaslonAntique";
 
         // Overrides
         --attribute-input: none;
@@ -285,7 +258,7 @@
         .sheet-effect-buttons {
             height: 1.5rem;
             button {
-                @include sheet-button();
+                @include styled-button();
                 height: 1.5rem;
                 padding: 0px 6px;
                 line-height: 1.5rem;

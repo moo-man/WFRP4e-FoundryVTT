@@ -850,26 +850,26 @@ export default class ActorWFRP4e extends WarhammerActor
       let critAmnt = game.settings.get("wfrp4e", "uiaCritsMod")
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
         let critModifier = (Math.abs(newWounds)) * critAmnt;
-        updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
       else if (game.settings.get("wfrp4e", "mooCritModifiers")) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         if (critModifier)
-          updateMsg += `<br><a class ="table-click critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
         else
-          updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
       }
       //@/HOUSE
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus && !game.settings.get("wfrp4e", "uiaCrits"))
-        updateMsg += `<br><a class ="table-click critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
-        updateMsg += `<br><a class ="table-click critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
     if (hack)
     {
-      updateMsg += `<br><a class="apply-hack chat-button">${game.i18n.localize('CHAT.ApplyHack')}</a>`
+      updateMsg += `<br><button data-action="applyHack">${game.i18n.localize('CHAT.ApplyHack')}</button>`
     }
 
     if (newWounds <= 0)

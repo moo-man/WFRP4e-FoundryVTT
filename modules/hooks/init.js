@@ -1,5 +1,5 @@
 import NameGenWfrp from "../apps/name-gen.js";
-import TravelDistanceWfrp4e from "../apps/travel-distance-wfrp4e.js";
+import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import HomebrewSettings from "../apps/homebrew-settings.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
@@ -15,7 +15,7 @@ export default function() {
    */
   Hooks.once("init", () => {
 
-    TravelDistanceWfrp4e.loadTravelData();
+    TravelDistanceWFRP4e.loadTravelData();
 
     game.settings.register("wfrp4e", "systemMigrationVersion", {
       name: "System Migration Version",
@@ -30,6 +30,7 @@ export default function() {
       name: "WH.Theme.Config",
       label : "WH.Theme.ConfigButton",
       hint : "WH.Theme.ConfigHint",
+      icon: "fa-solid fa-table-layout",
       scope: "user",
       config: true,
       type: WFRP4eThemeConfig
@@ -38,16 +39,18 @@ export default function() {
 
     game.settings.registerMenu("wfrp4e", "homebrew", {
       name: "WFRP4e House Rules",
-      label: "WFRP4e Homebrew",
+      label: "Configure Homebrew",
       hint: "Settings for common homebrew/house rules",
+      icon: "fa-solid fa-gears",
       type: HomebrewSettings,
       restricted: true
   })
 
   game.settings.registerMenu("wfrp4e", "tableSettings", {
     name: "WFRP4e Table Settings",
-    label: "WFRP4e Table Settings",
+    label: "Configure Table Settings",
     hint: "Configure which tables to roll on when multiple of the same key exist.",
+    icon: "fa-solid fa-list",
     type: TableSettings,
     restricted: true
 })
@@ -57,16 +60,6 @@ export default function() {
       scope: "client",
       config: false,
       type: WFRP4eThemeConfig.schema
-    });
-
-    game.settings.register("wfrp4e", "disableTheme", {
-      name: "SETTINGS.DisableTheme",
-      hint: "SETTINGS.DisableThemeHint",
-      scope: "world",
-      config: true,
-      default: false,
-      type: Boolean,
-      onChange : rule => rule ? document.body.classList.add("no-theme") : document.body.classList.remove("no-theme")
     });
 
     // Register initiative rule

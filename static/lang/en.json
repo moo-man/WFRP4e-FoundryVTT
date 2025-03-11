@@ -1615,7 +1615,7 @@
     "OPPOSED.Ward" : "<b>Ward</b>: Hit Ignored (Rolled {roll})",
     "OPPOSED.WardRoll" : "<b>Ward Roll</b>: {roll}",
 
-    "CHATOPT.ApplyDamage": "Apply damage",
+    "CHATOPT.ApplyDamage": "Apply Damage",
     "CHATOPT.ApplyDamageNoAP": "Apply Damage (Ignore AP)",
     "CHATOPT.ApplyDamageNoTB": "Apply Damage (Ignore TB)",
     "CHATOPT.ApplyDamageNoTBAP": "Apply Damage (Ignore TB and AP)",
@@ -2452,7 +2452,7 @@
 
         "Theme" : {
             "Config" : "WFRP4e Theme Configuration",
-            "ConfigButton" : "Theme Configuration",
+            "ConfigButton" : "Configure Theme",
             "ConfigHint" : "Enable or disable the styling provided by the system.",
             "FIELDS" : {
                 "actor.enabled.label" : "Enable Theme",

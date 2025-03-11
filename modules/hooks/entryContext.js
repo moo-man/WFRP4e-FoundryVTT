@@ -270,8 +270,7 @@ export default function () {
           let test = message.system.test;
           let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
           if (canvas.scene) { 
-            game.user.updateTokenTargets([]);
-            game.user.broadcastActivity({targets: []});
+            game.canvas.tokens.setTargets([])
           }
 
           test.context.targets = test.context.targets.concat(targets)

@@ -114,6 +114,28 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
     Array.from(foundry.applications.instances).map(i => i[1]).filter(i => i instanceof WarhammerActorSheetV2 || i instanceof WarhammerItemSheetV2).forEach(sheet => {
       sheet.setTheme(this.#setting);
     })
+
+    if (this.#setting.foundry.enabled)
+    {
+      document.body.classList.remove("no-theme")
+
+      if (this.#setting.foundry.font == "classic")
+      {
+        document.body.classList.add("classic-font")
+      }
+      else
+      {
+        document.body.classList.remove("classic-font")
+      }
+    }
+    else
+    {
+      document.body.classList.add("no-theme")
+      document.body.classList.remove("classic-font")
+    }
+
+    
+
   }
 
   /**

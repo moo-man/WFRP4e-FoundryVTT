@@ -1,5 +1,6 @@
 import WFRP_Utility from "./utility-wfrp4e.js";
 import OpposedTest from "./opposed-test.js";
+import { OpposedTestMessage } from "../model/message/opposed-result.js";
 
 /**
  * Represents an opposed test. This object is stored in the "targeting" messages and is used as a central manager of a single opposed test.
@@ -9,7 +10,8 @@ import OpposedTest from "./opposed-test.js";
  **/
 export default class OpposedHandler {
 
-  constructor(data = {}) {
+  constructor(data = {}, message) 
+  {
     this.data = {
       messageId: data.messageId,
       attackerMessageId: data.attackerMessageId,
@@ -19,10 +21,12 @@ export default class OpposedHandler {
       options: data.options || {},
       unopposed: data.unopposed
     }
+
+    this._message = message;
   }
 
   get message() {
-    return game.messages.get(this.data.messageId);
+    return this._message || game.messages.get(this.data.messageId);
   }
 
   get resultMessage() {
@@ -77,7 +81,7 @@ export default class OpposedHandler {
 
   async startOppose(targetToken) {
     this.data.targetSpeakerData = targetToken.actor.speakerData(targetToken)
-    await this.renderOpposedStart();
+    await this.renderMessage();
     await this._addOpposeFlagsToDefender(targetToken);
     return this.message?.id
   }
@@ -107,10 +111,10 @@ export default class OpposedHandler {
     await this.opposedTest.evaluate();
     this.formatOpposedResult();
     await this.renderOpposedResult()
-    await this.colorWinnerAndLoser()
+    await this.renderMessage()
   }
 
-  async renderOpposedStart() {
+  async renderMessage() {
     let attacker = game.canvas.tokens.get(this.attackerTest.context.chatOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
     let defender
 
@@ -120,19 +124,16 @@ export default class OpposedHandler {
     else if (this.defenderTest)
       defender = WFRP_Utility.getToken(this.defenderTest.context.speaker) || this.defender.prototypeToken;
 
-    let defenderImg = defender ? `<a class = "defender"><img src="${defender.texture.src}" width="50" height="50"/></a>` : `<a class = "defender"><img width="50" height="50"/></a>`
 
-    let content =
-        `<div class ="opposed-message">
-            ${game.i18n.format("ROLL.Targeting", {attacker: ((attacker.hidden) ? "???" : attacker.name), defender: defender ? defender.name : "???"})}
-          </div>
-          <div class = "opposed-tokens">
-          <a class = "attacker"><img src="${((attacker.hidden) ? "systems/wfrp4e/tokens/unknown.png" : attacker.texture.src)}" width="50" height="50"/></a>
-          ${defenderImg}
-          </div>
-          <div class="opposed-options">
-            ${this.getOpposedOptions(defender?.actor)}
-          </div>`
+    let attackerName = (attacker.hidden) ? "???" : attacker.name
+    let attackerImg = (attacker.hidden) ? "systems/wfrp4e/tokens/unknown.png" : attacker.texture.src;
+
+    let defenderName = defender ? defender.name : "???";
+    let defenderImg = defender ? defender.texture.src : "systems/wfrp4e/tokens/unknown.png"
+
+    let winner = this.resultMessage?.system.opposedTest?.result?.winner;
+
+    let content = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-handler.hbs", {attackerName, attackerImg, defenderName, defenderImg, winner, opposedOptions : this.getOpposedOptions(defender?.actor)});
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
     if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
@@ -146,6 +147,7 @@ export default class OpposedHandler {
         speaker: { alias: game.i18n.localize("CHAT.OpposedTest") },
         whisper: this.options.whisper,
         blind: this.options.blind,
+        author : getActiveDocumentOwner(defender?.actor)?.id,
         system : {
           opposedData : this.data
         }
@@ -166,11 +168,14 @@ export default class OpposedHandler {
 
   getOpposedOptions(actor)
   {
-    let unopposed = `<a class="unopposed" data-tooltip="${game.i18n.localize("Unopposed")}"><i class="fas fa-arrow-down"></i></a>`;
-    let weapon;
-    let offhand;
-    let trait
-    let dodge = `<a class="oppose" data-item-id="dodge" data-tooltip="${game.i18n.localize("NAME.Dodge")}"><i class="fas fa-reply"></i></a>`;
+    if (!actor)
+    {
+      return [];
+    }
+    let options = [
+      { id : "unopposed", tooltip : game.i18n.localize("Unopposed"), icon : "fa-arrow-down" },
+      { id : "dodge", tooltip : game.i18n.localize("Dodge"), icon : "fa-reply" },
+    ]
 
     if (actor)
     {
@@ -181,19 +186,19 @@ export default class OpposedHandler {
 
       if (mainWeapon)
       {
-        weapon = `<a class="oppose" data-item-id="${mainWeapon.id}" data-tooltip="${mainWeapon.name}"><i class="fa-solid fa-sword"></i></a>`
+        options.push({id : mainWeapon.id, tooltip : mainWeapon.name, icon : "fa-sword"});
       }
       if (offhandWeapon)
       {
-        offhand = `<a class="oppose" data-item-id="${offhandWeapon.id}" data-tooltip="${game.i18n.localize("SHEET.Offhand") + ` (${offhandWeapon.name})`}"><i class="fa-solid fa-shield"></i></a>`
+        options.push({id : offhandWeapon.id, tooltip : offhandWeapon.name, icon : "fa-shield"});
       }
       if (firstTrait)
       {
-        trait = `<a class="oppose" data-item-id="${firstTrait.id}" data-tooltip="${firstTrait.DisplayName}"><i class="fa-solid fa-paw-claws"></i></a>`
+        options.push({id : firstTrait.id, tooltip : firstTrait.DisplayName, icon : "fa-paw-claws"});
       }
     }
 
-    return [dodge, trait, weapon, offhand, unopposed].filter(i => i).join("")
+    return options;
   }
 
   async updateMessageData() {
@@ -208,25 +213,10 @@ export default class OpposedHandler {
 
 
 
-  async renderOpposedResult() {
-    let opposeData = this.opposedTest.data
-    let opposeResult = this.opposedTest.result
-    let options = this.options;
-    opposeResult.hideData = true;
-    let html = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", opposeResult)
-    let chatOptions = {
-      user: game.user.id,
-      type : "opposed",
-      content: html,
-      system : {
-        opposedTestData: opposeData,
-        handlerId: this.message.id,
-      },
-      whisper: options.whisper,
-      blind: options.blind,
-    }
-    let msg = await ChatMessage.create(chatOptions);
-    this.data.resultMessageId = msg.id;
+  async renderOpposedResult() 
+  {
+    let message = await OpposedTestMessage.create(this.opposedTest, this.options, this)  
+    this.data.resultMessageId = message.id;
     await this.updateMessageData();
   }
 
@@ -297,36 +287,6 @@ export default class OpposedHandler {
     }
   }
 
-  /**
- * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
- * to evaluate if necessary.
- * 
- * @param {Object} event Click event for opposed button click
- */
-  static async opposedClicked(event) {
-    let button = $(event.currentTarget),
-      messageId = button.parents('.message').attr("data-message-id"),
-      message = game.messages.get(messageId);
-
-    if (game.wfrp4e.oppose && !game.wfrp4e.oppose.attackerMessage) {
-      delete game.wfrp4e.oppose;
-    }
-
-    // Opposition already exists - click was defender
-    if (game.wfrp4e.oppose) {
-      await game.wfrp4e.oppose.setDefender(message);
-      await game.wfrp4e.oppose.renderOpposedStart() // Rerender opposed start with new message
-      await game.wfrp4e.oppose.computeOpposeResult();
-      delete game.wfrp4e.oppose;
-    }
-    // No opposition - click was attacker
-    else {
-      game.wfrp4e.oppose = new OpposedHandler()
-      await game.wfrp4e.oppose.setAttacker(message);
-      await game.wfrp4e.oppose.renderOpposedStart()
-    }
-  }
-
 
   async resolveUnopposed() {
     this.data.unopposed = true;
@@ -339,7 +299,11 @@ export default class OpposedHandler {
     if (this.defender)
     {
       let test;
-      if (id == "dodge")
+      if (id == "unopposed")
+      {
+        return this.resolveUnopposed();
+      }
+      else if (id == "dodge")
       {
         test = await this.defender.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true})
       }
@@ -349,23 +313,5 @@ export default class OpposedHandler {
       }
       test?.roll();
     }
-  }
-  // Update starting message with result
-  static async updateOpposedMessage(damageConfirmation, messageId) {
-    let resultMessage = game.messages.get(messageId)
-    let rollMode = resultMessage.rollMode;
-
-    let msg = $(resultMessage.content).append(`<div>${damageConfirmation}</div>`);
-
-    msg.find(".apply-damage").remove();
-
-    let newCard = {
-      user: game.user.id,
-      rollMode: rollMode,
-      hideData: true,
-      content: msg.html()
-    }
-    
-    await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: messageId, updateData: newCard });
   }
 }

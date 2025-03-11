@@ -5,7 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * WIP
  * This class contains functions and helpers related to the market and Pay system
  */
-export default class TravelDistanceWfrp4e {
+export default class TravelDistanceWFRP4e {
     /**
     * This method load the travel data from the internal JSON file
     */
@@ -128,6 +128,6 @@ export default class TravelDistanceWfrp4e {
    static handleTravelClick( event ) {
     let fromTown = $(event.currentTarget).attr("data-fromtown");
     let toTown = $(event.currentTarget).attr("data-totown");
-    TravelDistanceWfrp4e.displayTravelDistance( fromTown, toTown);
+    TravelDistanceWFRP4e.displayTravelDistance( fromTown, toTown);
    }
 }

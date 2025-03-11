@@ -6,7 +6,7 @@ if (game.user.isGM && game.user.targets.size)
   game.user.targets.forEach(t => {
     t.actor.applyTerror(value, name)
   })
-  game.user.updateTokenTargets([]);
+  game.canvas.tokens.setTargets([])
 }
 else 
 {

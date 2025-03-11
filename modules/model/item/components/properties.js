@@ -241,6 +241,7 @@ const PropertiesMixin = (cls) => class extends cls
         if (effectData)
         {
             let type = game.wfrp4e.utility.qualityList()[property.name] ? "qualities" : "flaws"
+            effectData.img = document.img;
             setProperty(effectData, "flags.wfrp4e", {value : property.value, path : `system.properties.${type}.${property.name}.effect`});
             return new CONFIG.ActiveEffect.documentClass(effectData, {parent : document});
         }
