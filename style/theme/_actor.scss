@@ -210,8 +210,10 @@
         
         .encumbrance-section {
             color: var(--color-grey1);
+            border-color: var(--color-faded);
             .header {
                 @include shadowed(#6b3a0f87);
+                border-color: var(--color-faded);
             }
 
             .bar {

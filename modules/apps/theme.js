@@ -115,27 +115,33 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
       sheet.setTheme(this.#setting);
     })
 
-    if (this.#setting.foundry.enabled)
-    {
-      document.body.classList.remove("no-theme")
+    Array.from(foundry.applications.instances).map(i => i[1]).filter(i => i instanceof JournalEntrySheet).forEach(sheet => {
+      this.setThemeOnElement(sheet.element, this.#setting.journal);
+    })
 
-      if (this.#setting.foundry.font == "classic")
+    this.setThemeOnElement(document.body, this.#setting.foundry);
+  }
+
+  setThemeOnElement(element, theme)
+  {
+    if (theme.enabled)
+    {
+      element.classList.remove("no-theme")
+
+      if (theme.font == "classic")
       {
-        document.body.classList.add("classic-font")
+        element.classList.add("classic-font")
       }
       else
       {
-        document.body.classList.remove("classic-font")
+        element.classList.remove("classic-font")
       }
     }
     else
     {
-      document.body.classList.add("no-theme")
-      document.body.classList.remove("classic-font")
+      element.classList.add("no-theme")
+      element.classList.remove("classic-font")
     }
-
-    
-
   }
 
   /**
