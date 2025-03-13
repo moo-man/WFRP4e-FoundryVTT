@@ -48,7 +48,11 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
       enabled: new foundry.data.fields.BooleanField({ initial: true }),
       font: new foundry.data.fields.StringField({ required: true, initial: "classic", choices: { "classic": "WH.Theme.Font.Classic", "readable": "WH.Theme.Font.Readable" } })
     }),
-    foundry: new foundry.data.fields.SchemaField({
+    sidebar: new foundry.data.fields.SchemaField({
+      enabled: new foundry.data.fields.BooleanField({ initial: true }),
+      font: new foundry.data.fields.StringField({ required: true, initial: "classic", choices: { "classic": "WH.Theme.Font.Classic", "readable": "WH.Theme.Font.Readable" } })
+    }),
+    apps: new foundry.data.fields.SchemaField({
       enabled: new foundry.data.fields.BooleanField({ initial: true }),
       font: new foundry.data.fields.StringField({ required: true, initial: "classic", choices: { "classic": "WH.Theme.Font.Classic", "readable": "WH.Theme.Font.Readable" } })
     }),
@@ -115,11 +119,13 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
       sheet.setTheme(this.#setting);
     })
 
-    Array.from(foundry.applications.instances).map(i => i[1]).filter(i => i instanceof JournalEntrySheet).forEach(sheet => {
+    Array.from(foundry.applications.instances).map(i => i[1]).filter(i => i.element.classList.contains("journal-sheet")).forEach(sheet => {
       this.setThemeOnElement(sheet.element, this.#setting.journal);
     })
 
-    this.setThemeOnElement(document.body, this.#setting.foundry);
+    this.setThemeOnElement(ui.sidebar.element, this.#setting.sidebar);
+    
+    this.setThemeOnElement(document.body, this.#setting.apps);
   }
 
   setThemeOnElement(element, theme)

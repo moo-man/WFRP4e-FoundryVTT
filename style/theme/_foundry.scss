@@ -43,21 +43,33 @@
 
             --color-cool: #273444;
 
+            --color-form-border: #5d513e;
+            --color-form-input: #352516;
+
             --color-warm: #4a0404;
+            --color-warm-half: rgba(74, 4, 4, 0.5);
+
+            --color-dark-blue: #0a1829d9;
 
             --primary-font: "CaslonPro";
             --header-font: "CaslonAntique";
         }
     }
 
-    body:not(.no-theme) {
-        background: url(./ui/background.webp) repeat;
 
+    #sidebar:not(.no-theme)
+    {
         &.classic-font {
+
+            .compendium-name strong,
+            .directory-list .directory-item .folder-header,
+            .directory-list .directory-item.entry,
             .message-sender,
             #chat {
                 font-family: var(--primary-font);
             }
+
+
         }
 
         #sidebar-tabs {
@@ -77,22 +89,6 @@
             background: url(./ui/frames/bookshelf-texture.webp);
         }
 
-        .inline-roll,
-        .action-link,
-        .content-link {
-            border-radius: 2px;
-            border: 1px solid #b9935e99;
-            white-space: nowrap;
-            word-break: break-all;
-            box-shadow: inset 0px 0px 4px #b98132;
-            background: #9e57001f;
-            color: black;
-
-            &.broken {
-                background: rgba(255, 0, 0, 0.05);
-                border: 1px dashed red;
-            }
-        }
 
         .ui-control {
             background: url(./ui/sidebar_button-background_cyan.webp) repeat;
@@ -111,12 +107,7 @@
         #settings,
         .action-buttons {
             button {
-                border: 1px solid black;
-                border-image: url(./ui/footer-button.webp) 10 repeat;
-                border-image-width: 4px;
-                border-image-outset: 0px;
-                box-shadow: 4px 4px 1px #00000085;
-                background: url(./ui/sidebar_button-background_red.webp) repeat;
+                @include wfrp-button;
             }
         }
 
@@ -131,6 +122,43 @@
             }
         }
 
+
+        .directory-list .directory-item {
+
+            .folder-header,
+            &.entry {
+                border: 3px groove #564d3a;
+                // Use gradient to make sure transition is smooth
+            }
+
+            &.entry {
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%);
+                // background: rgba(0, 0, 0, 0.5);
+                text-shadow: 1px 1px 2px black;
+
+                &:hover {
+                    transition: background-color 0.3s;
+                    background: linear-gradient(90deg, var(--color-warm-half) 0%, rgba(0, 0, 0, 0.5) 100%);
+                }
+            }
+        }
+
+        .compendium-directory {
+            
+            .compendium-name strong 
+            {
+                background: none;
+            }
+            .header-banner img 
+            {
+                opacity: 1;
+            }
+        }
+    }
+
+    body:not(.no-theme) {
+        background: url(./ui/background.webp) repeat;
+
         #context-menu {
             background: none;
             border: 1px solid;
@@ -140,6 +168,7 @@
             border-image-outset: 0px 0px 0px 0px;
             box-shadow: 5px 5px 10px rgb(0, 0, 0);
             color: var(--color-cream);
+            outline: none;
         }
 
         #tooltip {
@@ -176,5 +205,54 @@
             border-image-outset: 76px 0px 76px 0px;
             border-radius: 0px;
             box-shadow: 3px 4px 11px #000;
+        }
+
+        // Apps
+        
+        &.theme-dark .application:not(.journal-entry,.actor,.item) {
+
+            .window-header {
+                    border-image: url(./ui/frames/window-app-header-blank.webp) 5 repeat;
+                    border-image-slice: 19 21 19 21 fill;
+                    border-image-width: 19px 21px 21px 21px;
+                    border-image-outset: 0px;
+                }
+        
+                @include window-header();
+
+
+            background: url(./ui/frames/window-app-background-bookshelf.webp);
+
+            .window-content {
+                box-shadow: 0 0 10px inset black;
+                padding: 1.25rem;
+                border-width: 10px;
+                border-image: url(./ui/window-app-dialog-content.webp) repeat;
+                border-image-slice: 10 13 13 13;
+                border-image-width: 10px 13px 13px 13px;
+            }
+
+            nav.sheet-tabs {
+                border: none;
+                > a
+                {
+
+                color: #d6d6d6;
+                line-height: normal;
+                border: 3px double #564d3a;
+                background: var(--color-dark-blue);
+                padding: 0.25rem;
+                &.active {
+                    background: var(--color-warm);
+                }
+                }
+            }
+
+            .form-footer {
+                button {
+                    @include wfrp-button;
+                    color: var(--color-cream);
+                }
+            }
         }
     }

@@ -5,16 +5,28 @@ import MooHouseRules from "../system/moo-house.js"
 export default function () {
   Hooks.on("ready", async () => {
 
-    let theme = game.settings.get("wfrp4e", "theme").foundry;
-    if (!theme.enabled)
+    let theme = game.settings.get("wfrp4e", "theme");
+    if (!theme.apps.enabled)
     {
       document.body.classList.add("no-theme")
     }
-    else if (theme.font == "classic")
+    else if (theme.apps.font == "classic")
     {
-      if (theme.font == "classic")
+      if (theme.apps.font == "classic")
       {
         document.body.classList.add("classic-font");
+      }
+    }
+
+    if (!theme.sidebar.enabled)
+    {
+      ui.sidebar.element.classList.add("no-theme")
+    }
+    else if (theme.sidebar.font == "classic")
+    {
+      if (theme.sidebar.font == "classic")
+      {
+        ui.sidebar.element.classList.add("classic-font");
       }
     }
 

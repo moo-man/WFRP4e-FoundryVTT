@@ -2458,12 +2458,14 @@
                 "actor.enabled.label" : "Enable Theme",
                 "item.enabled.label" : "Enable Theme",
                 "journal.enabled.label" : "Enable Theme",
-                "foundry.enabled.label" : "Enable Theme",
+                "sidebar.enabled.label" : "Enable Theme",
+                "apps.enabled.label" : "Enable Theme",
 
                 "actor.font.label" : "Font",
                 "item.font.label" : "Font",
                 "journal.font.label" : "Font",
-                "foundry.font.label" : "Font"
+                "sidebar.font.label" : "Font",
+                "apps.font.label" : "Font"
             },
             "Font" : {
                 "Classic" : "Classic",

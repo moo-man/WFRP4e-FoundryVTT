@@ -61,6 +61,39 @@
     }
 }
 
+@mixin links() {
+    
+    .inline-roll,
+    .action-link,
+    .content-link {
+        border-radius: 2px;
+        border: 1px solid #b9935e99;
+        white-space: nowrap;
+        word-break: break-all;
+        box-shadow: inset 0px 0px 4px #b98132;
+        background: #9e57001f;
+        color: black;
+
+        > i {
+            color: #666;
+        }
+
+        &.broken {
+            background: rgba(255, 0, 0, 0.05);
+            border: 1px dashed red;
+        }
+    }
+}
+
+@mixin wfrp-button {
+    border: 1px solid black;
+    border-image: url(./ui/footer-button.webp) 10 repeat;
+    border-image-width: 4px;
+    border-image-outset: 0px;
+    box-shadow: 4px 4px 1px #00000085;
+    background: url(./ui/sidebar_button-background_red.webp) repeat;
+}
+
 @mixin h1 {
     margin: 0.5em 0 0.5em;
     font-size: 2.2em;
@@ -122,6 +155,8 @@
 
 
 @mixin editor-text() {
+    @include links;
+
     h1 {
         @include h1;
     }
@@ -180,8 +215,6 @@
 
     blockquote {
         margin: 0.5em 0 0.5em 5px;
-        padding: 0 0 0 10px;
-        border-left: 3px ridge #825d4b87;
         em {
             font-style: normal;
         }

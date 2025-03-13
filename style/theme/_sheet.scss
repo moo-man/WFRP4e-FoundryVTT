@@ -241,9 +241,9 @@
                 border-bottom: 1px solid var(--color-faded);
             }
             .editor-content {
-                @include editor-text();
-                color: var(--color-grey1);
                 padding: 5px 5px;
+                color: var(--color-grey1);
+                @include editor-text();
                 p:first-child {
                     margin-top: 0px;
                 }
