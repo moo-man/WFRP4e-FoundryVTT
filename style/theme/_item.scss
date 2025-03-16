@@ -1,4 +1,5 @@
 @use "./sheet" as *;
+@use "./mixins" as *;
 
 .wfrp4e.item.sheet.application:not(.no-theme) 
 {
@@ -64,6 +65,18 @@
         background: none;
         width: 20px;
         height: 20px;
+    }
+
+    .sheet-header {
+        img {
+            width: 80px;
+            height: 80px;
+
+            &.img-border {
+                border-color: var(--color-faded);
+            }
+
+        }
     }
 
     .header-row {

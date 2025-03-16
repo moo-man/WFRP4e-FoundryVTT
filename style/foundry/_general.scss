@@ -3,6 +3,7 @@
 body {
     .action-link {
         @include content-link;
+
         img {
             display: inline;
             height: 1rem;
@@ -10,11 +11,67 @@ body {
             margin-bottom: -0.20rem;
             margin-right: 0.1rem;
         }
+
         &.critical {
             color: green;
         }
+
         &.fumble {
             color: darkred;
+        }
+    }
+
+    .combat-sidebar {
+        .advantage-groups {
+            display: flex;
+            flex: unset;
+            justify-content: center;
+            text-align: center;
+            border: 1px solid var(--color-cool-4);
+        }
+
+        .advantage-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            line-height: 2rem;
+
+            label {
+                background: none;
+            }
+
+            input {
+                box-shadow: 0 0 6px #000 inset;
+                background: var(--color-cool-4);
+                text-align: center;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+    }
+
+    #interface.theme-light {
+        .combat-sidebar {
+            .advantage-groups {
+                border-color: transparent
+            }
+
+            .advantage-group {
+                margin: 0px 5px;
+
+                label {
+                    color: var(--color-text-primary);
+                    background: none;
+                }
+
+                input {
+                    box-shadow: none;
+                    background: rgba(0, 0, 0, 0.1);
+                    color: var(--color-text-primary);
+                }
+            }
         }
     }
 }

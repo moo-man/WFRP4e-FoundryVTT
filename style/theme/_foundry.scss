@@ -46,6 +46,8 @@
             --color-form-border: #5d513e;
             --color-form-input: #352516;
 
+            --color-element-border: #564d3a;
+
             --color-warm: #4a0404;
             --color-warm-half: rgba(74, 4, 4, 0.5);
 
@@ -57,18 +59,29 @@
     }
 
 
-    #sidebar:not(.no-theme)
+
+    // Interface is any static application, so sidebar, ui controls, etc.
+    // Sidebar is a separate Theme Config setting, so don't include that either
+    // Also if the light theme is used, do not style
+    #interface:not(.theme-light) #sidebar:not(.no-theme)
     {
         &.classic-font {
 
+            #chat,
+            button:not(.icon),
             .compendium-name strong,
             .directory-list .directory-item .folder-header,
             .directory-list .directory-item.entry,
-            .message-sender,
-            #chat {
+            .sidebar-tab,
+            .message-sender {
                 font-family: var(--primary-font);
             }
 
+            button {
+                span {
+                    height: 100%;
+                }
+            }
 
         }
 
@@ -91,19 +104,9 @@
 
 
         .ui-control {
-            background: url(./ui/sidebar_button-background_cyan.webp) repeat;
-            border: 1px solid black;
-            border-image: url(./ui/footer-button.webp) 10 repeat;
-            border-image-width: 4px;
-            border-image-outset: 0px;
-
-            &[aria-pressed='true'],
-            &.active {
-                // color: var(--color-warm-1);
-                box-shadow: inset 0 0 10px var(--color-warm-1);
-               background: url(./ui/sidebar_button-background_red.webp) repeat;
-            }
+            @include wfrp-button-sm;
         }
+
         #settings,
         .action-buttons {
             button {
@@ -122,12 +125,18 @@
             }
         }
 
+        .combat-sidebar {
+            .combat-control-lg {
+                @include wfrp-button;
+            }
+        }
+
 
         .directory-list .directory-item {
 
             .folder-header,
             &.entry {
-                border: 3px groove #564d3a;
+                border: 3px groove var(--color-element-border);
                 // Use gradient to make sure transition is smooth
             }
 
@@ -143,73 +152,139 @@
             }
         }
 
-        .compendium-directory {
-            
-            .compendium-name strong 
-            {
+        .settings-sidebar {
+            h4.divider {
+                font-family: var(--header-font);
+            }
+
+            .info {
+                background: #290a0ad9;
+                border: 1px solid var(--color-form-border);
+                border-top: none;
+                box-shadow: 0px 0px 20px inset black;
+                margin: -1rem -1rem;
+                padding: 1rem;
+            }
+        }
+    }
+
+
+    // Extra styling for popped out sidebars
+    body:not(.theme-light):not(.no-theme) {
+        .sidebar-tab {
+
+            .compendium-name strong {
                 background: none;
             }
-            .header-banner img 
-            {
+
+            .header-banner img {
                 opacity: 1;
+            }
+
+            &.classic-font {
+
+                button:not(.icon),
+                .compendium-name strong,
+                .directory-list .directory-item .folder-header,
+                .directory-list .directory-item.entry {
+                    font-family: var(--primary-font);
+                }
             }
         }
     }
 
     body:not(.no-theme) {
         background: url(./ui/background.webp) repeat;
+        
+        .combat-sidebar {
 
-        #context-menu {
-            background: none;
-            border: 1px solid;
-            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
-            border-image-slice: 30 fill;
-            border-image-width: 100px;
-            border-image-outset: 0px 0px 0px 0px;
-            box-shadow: 5px 5px 10px rgb(0, 0, 0);
-            color: var(--color-cream);
-            outline: none;
-        }
-
-        #tooltip {
-            background: none;
-            border: 1px solid;
-            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
-            border-image-slice: 30 fill;
-            border-image-width: 100px;
-            border-image-outset: 0px 0px 0px 0px;
-            box-shadow: 5px 5px 10px rgb(0, 0, 0);
-        }
-
-
-
-        #players {
-            gap: 26px;
-
-            #players-active {
-                border: 1px solid transparent;
-                border-image: url(./ui/players-border.webp) 21 repeat;
-                border-image-slice: 23 19 23 19;
-                border-image-width: 23px 19px 23px 19px;
-                border-image-outset: 22px 17px 16px 14px;
-                border-radius: 0px;
-                box-shadow: inset 0 0 10px #000000;
+            .advantage-groups {
+                border: 3px double var(--color-element-border);
+                .advantage-group {
+                    box-shadow: 0 0 6px #000 inset;
+                    line-height: 30px;
+                    background: #290a0ad9;
+                    &:first-child {
+                        border-right : 1px solid var(--color-element-border);
+                    }
+                    input {
+                        box-shadow: 0 0 6px #000 inset;
+                        background: #00000038;
+                        border: 1px solid var(--color-element-border);
+                        border-right: none;
+                        border-left: none;
+                        border-bottom: none;
+                        border-radius: 0px;
+                        color: #CCC;
+                    }
+                }
+            }
+            .combat-control-lg {
+                @include wfrp-button;
             }
         }
 
-        #menu {
-            border: 1px solid transparent;
-            border-image: url(./ui/menu-border.webp) 21 repeat;
-            border-image-slice: 78 4 81 4;
-            border-image-width: 80px 6px 80px 6px;
-            border-image-outset: 76px 0px 76px 0px;
-            border-radius: 0px;
-            box-shadow: 3px 4px 11px #000;
-        }
+        #interface:not(.theme-light) {
+            .ui-control {
+                @include wfrp-button-sm;
+            }
 
-        // Apps
+            #context-menu {
+                background: none;
+                border: 1px solid;
+                border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+                border-image-slice: 30 fill;
+                border-image-width: 100px;
+                border-image-outset: 0px 0px 0px 0px;
+                box-shadow: 5px 5px 10px rgb(0, 0, 0);
+                color: var(--color-cream);
+                outline: none;
+            }
+    
+            #tooltip {
+                background: none;
+                border: 1px solid;
+                border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+                border-image-slice: 30 fill;
+                border-image-width: 100px;
+                border-image-outset: 0px 0px 0px 0px;
+                box-shadow: 5px 5px 10px rgb(0, 0, 0);
+            }
+
+            #players {
+                gap: 26px;
+    
+                #players-active {
+                    border: 1px solid transparent;
+                    border-image: url(./ui/players-border.webp) 21 repeat;
+                    border-image-slice: 23 19 23 19;
+                    border-image-width: 23px 19px 23px 19px;
+                    border-image-outset: 22px 17px 16px 14px;
+                    border-radius: 0px;
+                    box-shadow: inset 0 0 10px #000000;
+                }
+            }
+    
+            #menu {
+                border: 1px solid transparent;
+                border-image: url(./ui/menu-border.webp) 21 repeat;
+                border-image-slice: 78 4 81 4;
+                border-image-width: 80px 6px 80px 6px;
+                border-image-outset: 76px 0px 76px 0px;
+                border-radius: 0px;
+                box-shadow: 3px 4px 11px #000;
+            }
+        }
         
+
+        // All general apps - if dark theme is used, add basic theming (avoid journal, actor, or items)
         &.theme-dark .application:not(.journal-entry,.actor,.item) {
+
+            &.standard-form {
+                .window-content {
+                    margin-top: -1rem; // offset gap
+                }
+            }
 
             .window-header {
                     border-image: url(./ui/frames/window-app-header-blank.webp) 5 repeat;
@@ -222,6 +297,10 @@
 
 
             background: url(./ui/frames/window-app-background-bookshelf.webp);
+
+            input[type='search'] {
+                @include search();
+            }
 
             .window-content {
                 box-shadow: 0 0 10px inset black;
@@ -239,7 +318,7 @@
 
                 color: #d6d6d6;
                 line-height: normal;
-                border: 3px double #564d3a;
+                border: 3px double var(--color-element-border);
                 background: var(--color-dark-blue);
                 padding: 0.25rem;
                 &.active {
@@ -247,6 +326,16 @@
                 }
                 }
             }
+
+                
+            &.active-effect-config .script-list {
+                .script {
+                    border: 1px solid var(--color-form-border);
+                    background: #080808;
+                    border-radius: 0px;
+                }
+            }
+
 
             .form-footer {
                 button {

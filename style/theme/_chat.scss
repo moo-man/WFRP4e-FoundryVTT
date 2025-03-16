@@ -2,7 +2,7 @@
 @use "./mixins" as *;
 
 
-#sidebar:not(.no-theme) {
+#interface:not(.theme-light) #sidebar:not(.no-theme) {
     @include links;
 
     .chat-form {

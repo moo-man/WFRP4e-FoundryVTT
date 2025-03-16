@@ -1,10 +1,6 @@
 
 @use "../mixins/index" as *;
 @use "./mixins" as *;
-
-@mixin shadowed($color: #00000052, $size: 10px) {
-    box-shadow: 0 0 $size $color inset;
-}
             
 .theme-light .wfrp4e.sheet.application:not(.no-theme),
 .wfrp4e.sheet.application:not(.no-theme) {
@@ -30,6 +26,10 @@
         {
             font-family: var(--primary-font);
             
+            button:not(.icon) {
+                font-family: var(--primary-font);
+            }
+
             .tabs > a,
             table th,
             .row-label,

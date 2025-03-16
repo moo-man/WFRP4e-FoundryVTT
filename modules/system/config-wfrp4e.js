@@ -2608,6 +2608,14 @@ WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
 WFRP4E.rollModes = CONFIG.Dice.rollModes;
 
 WFRP4E.transferDocumentTypes = defaultWarhammerConfig.transferDocumentTypes;
+
+WFRP4E.badgeInfo = defaultWarhammerConfig.badgeInfo;
+
+WFRP4E.badgeInfo.img = "systems/wfrp4e/ui/badge.webp";
+WFRP4E.badgeInfo.notes = "https://github.com/moo-man/WFRP4e-FoundryVTT/releases";
+WFRP4E.badgeInfo.issues = "https://github.com/moo-man/WFRP4e-FoundryVTT/issues";
+WFRP4E.badgeInfo.wiki = "https://moo-man.github.io/WFRP4e-FoundryVTT/pages/home.html";
+
 // To migrate
 // "invoke => manual"
 // "oneTime" => "immediate"

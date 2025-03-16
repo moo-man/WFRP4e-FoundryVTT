@@ -63,7 +63,7 @@ export default function() {
   Hooks.on("renderCombatTracker", (app, html, options) => {
     warhammer.utility.replacePopoutTokens(app.element); // Combat tracker shows tokens, replace popout versions with normal
 
-    if (game.settings.get("wfrp4e", "useGroupAdvantage"))
+    if (game.settings.get("wfrp4e", "useGroupAdvantage") && !html.querySelector(".advantage-groups"))
     {
       let advantage = game.settings.get("wfrp4e", "groupAdvantageValues")
       let element = 
@@ -92,7 +92,7 @@ export default function() {
         WFRP_Utility.updateGroupAdvantage({[`${group}`] : value})
       })
 
-      element.insertAfter(html.find(".combat-tracker-header"))
+      element.insertAfter(html.querySelector(".combat-tracker-header"))
     }
   })
 }

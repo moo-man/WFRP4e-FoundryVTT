@@ -14,6 +14,7 @@
         {{formGroup fields.journal.fields.enabled value=setting.journal.enabled localize=true}}
         {{formGroup fields.journal.fields.font value=setting.journal.font localize=true disabled=(not setting.journal.enabled)}}
     </fieldset>
+    <p class="hint"><strong>Note</strong>: Light theme takes precedence over the settings below. If the themes below are enabled, dark theme must be used. See <strong>Configure Interface</strong> in the Core settings.</p>
     <fieldset>
         <legend>Sidebar</legend>
         {{formGroup fields.sidebar.fields.enabled value=setting.sidebar.enabled localize=true}}

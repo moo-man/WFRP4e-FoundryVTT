@@ -91,6 +91,11 @@
             //     mask-image: linear-gradient(270deg, black 100%, transparent 0%);
             // }
         }
+        .action-buttons {
+            button {
+                @include wfrp-button;
+            }
+        }
     }
 
     .journal-header {
@@ -137,6 +142,20 @@
 
     .journal-page-content {
         @include editor-text;
+
+    }
+
+    .edit-container button {
+        @include shadowed(#6b3a0f2b, 10px);
+        background: var(--color-faded-bg);
+        border-color : var(--color-faded);
+        color : var(--color-warm);
+
+        &:hover {
+            color: var(--color-cream);
+            background-color: var(--color-warm);
+            border-color: var(--color-cream);
+        }
     }
 
 }
