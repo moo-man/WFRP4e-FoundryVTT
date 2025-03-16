@@ -721,6 +721,15 @@ export default function() {
       type: Object
     });
 
+    game.settings.register("wfrp4e", "targetReset", {
+      name: "SETTINGS.TargetReset",
+      hint: "SETTINGS.TargetResetHint",
+      scope: "client",
+      config: true,
+      default: true,
+      type: Boolean
+    });
+
     // Pre-load templates
     loadTemplates([
       "systems/wfrp4e/templates/actors/character/character-main.hbs",

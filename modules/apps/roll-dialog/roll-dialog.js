@@ -62,7 +62,7 @@ export default class RollDialog extends WarhammerRollDialog {
             this.resolve(test);
         }
         this.close();
-        if (canvas.scene && !this.options.skipTargets)
+        if (canvas.scene && !this.options.skipTargets && game.settings.get("wfrp4e", "targetReset"))
         {
             game.user.updateTokenTargets([]);
             game.user.broadcastActivity({targets: []});
