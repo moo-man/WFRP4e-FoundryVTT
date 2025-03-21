@@ -60,6 +60,22 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         return schema;
     }
 
+    /** @override */
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+          ["weaponGroup", {
+              label: this.LOCALIZATION_PREFIXES + ".FIELDS.weaponGroup.value.label",
+              type: "set",
+              config: {
+                  choices: game.wfrp4e.config.weaponGroups,
+                  keyPath: "system.weaponGroup.value"
+              }
+          }],
+          ...this.compendiumBrowserPropertiesFilter("weapon"),
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of VehicleRoleModel
      *

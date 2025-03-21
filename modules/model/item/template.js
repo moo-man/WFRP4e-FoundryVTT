@@ -51,8 +51,101 @@ export class TemplateModel extends BaseItemModel
         return schema;
     }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["prefix", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.alterName.pre.label",
+        type: "text",
+        config: {
+          keyPath: "system.alterName.pre"
+        }
+      }],
+      ["suffix", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.alterName.post.label",
+        type: "text",
+        config: {
+          keyPath: "system.alterName.post"
+        }
+      }],
+      ["characteristics", {
+        label: "Characteristics",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.characteristics,
+          keyPath: "system.characteristics",
+          valueGetter: (data) => {
+            return Object.entries(data.system.characteristics).reduce((acc, [k, v]) => {
+              if (v) acc.push(k);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["skills", {
+        label: "Skills",
+        type: "text",
+        config: {
+          keyPath: "system.skills",
+          valueGetter: (data) => {
+            return Object.entries(data.system.skills.list).reduce((acc, [k, v]) => {
+              if (v.advances) acc.push(v.name);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["talents", {
+        label: "Talents",
+        type: "text",
+        config: {
+          keyPath: "system.talents",
+          valueGetter: (data) => {
+            return Object.entries(data.system.talents.list).reduce((acc, [k, v]) => {
+              acc.push(v.name);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["lores", {
+        label: "Lore",
+        type: "set",
+        config: {
+          blank: "*",
+          choices: game.wfrp4e.config.magicLores,
+          keyPath: "system.lores",
+          valueGetter: (data) => {
+            const loreList = Object.entries(game.wfrp4e.config.magicLores);
+            const templateLores = Object.entries(data.system.lores.list)
+              .reduce((acc, [k, v]) => {
+                if (v.name === '*') {
+                  loreList.forEach(([k, n]) => acc.add(k));
+                  acc.add('');
+
+                  return acc;
+                }
+
+                const lore = loreList.find(([k, n]) => n === v.name);
+                if (lore)
+                  acc.add(lore[0]);
+
+                return acc;
+              }, new Set());
+
+            return Array.from(templateLores);
+          },
+          multiple: true
+        }
+      }],
+    ]);
+  }
+
     /**
-     * Used to identify an Item as one being a child or instance of TraitModel
+     * Used to identify an Item as one being a child or instance of TemplateModel
      *
      * @final
      * @returns {boolean}

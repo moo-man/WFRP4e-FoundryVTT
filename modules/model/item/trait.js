@@ -40,6 +40,43 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["category", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.category.label",
+          type: "set",
+          config: {
+            choices: {standard: game.i18n.localize("ITEM.Standard"), vehicle: game.i18n.localize("SPEC.Vehicle")},
+            keyPath: "system.category"
+          }
+        }],
+        ["rollable", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.rollable.value",
+          }
+        }],
+        ["doesDamage", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.damage.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.rollable.damage",
+          }
+        }],
+        ["rollCharacteristic", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.rollable.rollCharacteristic.label",
+          type: "set",
+          config: {
+            keyPath: "system.rollable.rollCharacteristic",
+            choices : game.wfrp4e.config.characteristics
+          }
+        }],
+        ...this.compendiumBrowserPropertiesFilter(),
+      ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of TraitModel
      *

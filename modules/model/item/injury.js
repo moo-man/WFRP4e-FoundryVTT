@@ -22,6 +22,26 @@ export class InjuryModel extends LocationalItemModel
     return schema;
   }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["penalty", {
+        label: "Penalty",
+        type: "text",
+        config: {
+          keyPath: "system.penalty.value"
+        }
+      }],
+      ["permanent", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.permanent.label",
+        type: "boolean",
+        config: {
+          keyPath: "system.duration.permanent"
+        }
+      }]
+    ]);
+  }
+
   /**
    * Used to identify an Item as one being a child or instance of InjuryModel
    *

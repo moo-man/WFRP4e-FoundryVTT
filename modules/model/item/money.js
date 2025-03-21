@@ -17,6 +17,18 @@ export class MoneyModel extends PhysicalItemModel
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["coinValue", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.coinValue.value.label",
+          type: "range",
+          config: {
+            keyPath: "system.coinValue.value"
+          }
+        }],
+      ]);
+    }
 
   /**
    * Used to identify an Item as one being a child or instance of MoneyModel
