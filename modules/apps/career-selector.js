@@ -41,9 +41,19 @@ export default class CareerSelector extends FormApplication {
 
     async loadCareers() {
         this.careers = []
-        this.careers = await warhammer.utility.findAllItems("career", game.i18n.localize("CAREER.Loading"))
-        this.careers = this.careers.sort((a, b) => a.careergroup.value > b.careergroup.value ? 1 : -1)
-        this.careers = this.careers.filter(i => (i.compendium && !i.compendium.private) || i.ownership > 2)
+        this.careers = await warhammer.utility.findAllItems("career", game.i18n.localize("CAREER.Loading"), true, ["system.careergroup.value", "system.level.value", "system.class.value"])
+        this.careers = this.careers.sort((a, b) => a.system.careergroup.value > b.system.careergroup.value ? 1 : -1)
+        this.careers = this.careers.filter(i => 
+        {
+            if (game.user.isGM)
+            {
+                return true;
+            }
+            
+            let {collection} = foundry.utils.parseUuid(i.uuid);
+
+            return ((collection.metadata && collection.visible) || i.testUserPermission?.(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER))
+        })
     }
 
     sortCareers() {
@@ -57,17 +67,17 @@ export default class CareerSelector extends FormApplication {
         this.careers.forEach((tier, i) => {
             try {
 
-                let data = { link: tier.link, level: tier.level.value, img: tier.img, name: tier.name, index: i }
+                let data = {level: tier.system.level.value, img: tier.img, name: tier.name, index: i }
                 let type = "outOfClass"
-                if (this.currentCareer && this.currentCareer.class.value == tier.class.value)
+                if (this.currentCareer && this.currentCareer.system.class.value == tier.system.class.value)
                     type = "inClass"
 
-                if (careerList[type][tier.careergroup.value]?.length) {
-                    if (!careerList[type][tier.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
-                        careerList[type][tier.careergroup.value].push(data)
+                if (careerList[type][tier.system.careergroup.value]?.length) {
+                    if (!careerList[type][tier.system.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
+                        careerList[type][tier.system.careergroup.value].push(data)
                 }
                 else
-                    careerList[type][tier.careergroup.value] = [data]
+                    careerList[type][tier.system.careergroup.value] = [data]
             }
             catch (e) {
                 ui.notifications.error(`Error when displaying ${tier.name}: ${e}`)
@@ -83,7 +93,7 @@ export default class CareerSelector extends FormApplication {
     }
 
     async _updateObject(event, formData) {
-        await this.object.createEmbeddedDocuments("Item", [this.selectedCareer.toObject()])
+        await this.object.createEmbeddedDocuments("Item", [(await fromUuid(this.selectedCareer.uuid)).toObject()])
         let experience = foundry.utils.duplicate(this.object.details.experience)
         experience.spent += parseInt(formData.exp);
         experience.log = this.object.system.addToExpLog(formData.exp, `${game.i18n.format("LOG.CareerChange", { career: this.selectedCareer.name })}`, experience.spent, undefined);
@@ -104,7 +114,7 @@ export default class CareerSelector extends FormApplication {
 
 
 
-        if (this.selectedCareer.class.value != this.currentCareer.class.value) {
+        if (this.selectedCareer.system.class.value != this.currentCareer.system.class.value) {
             exp += 100
             reasons.push(game.i18n.localize("CAREER.DifferentClass"))
         }
@@ -128,13 +138,13 @@ export default class CareerSelector extends FormApplication {
                     $(this).removeClass("active")
                 })
                 $(ev.currentTarget).toggleClass("active")
-                this.selectedCareer = this.careers[Number($(ev.currentTarget).attr("data-index"))]
+                this.selectedCareer = this.careers[Number(ev.currentTarget.dataset.index)]
                 let { exp, tooltip } = this.calculateMoveExp()
                 input.value = exp
                 input.setAttribute("title", tooltip)
             }
             else if (ev.button == 2) {
-                this.careers[Number($(ev.currentTarget).attr("data-index"))].sheet.render(true)
+                fromUuid(this.careers[Number(ev.currentTarget.dataset.index)].uuid).then(i => i.sheet.render(true));
             }
         })
     }

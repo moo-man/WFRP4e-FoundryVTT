@@ -1292,6 +1292,20 @@ export default class ActorWFRP4e extends WarhammerActor
     return (await this.update({ "flags.-=oppose": null }));
   }
 
+  /**
+   * 
+   * @inheritdoc
+   * @param {object} config Configuration for embedding behavior.
+   * @param {string} config.token Use token image instead of actor image
+   * @param {string} config.image Set false to have no image 
+   * @param {string} config.float Set to right or left to float that direction instead of centered
+   * @param {string} config.heading Set to h1, h2, h3, etc. Default p
+   * @param {string} config.size height/width for image 
+   * @param {string} config.noToc Set to true to prevent heading from showing in journal TOC
+   * @param {string} config.description Set to true to include the actor's description
+   * @param {string} config.style Customized styling for entitre embed block
+   * @param {string} config.label Label for actor link 
+   */
   async toEmbed(config, options={})
   {
     let html = "";
@@ -1300,8 +1314,19 @@ export default class ActorWFRP4e extends WarhammerActor
     {
         image = this.prototypeToken.texture.src;
     }
-    html += `<div class="journal-image centered" ><img src="${image}" width="200" height="200"></div>`
-    html += `<p style="text-align:center">@UUID[${this.uuid}]{${config.label || this.name}}</p>`
+
+    if (config.image != false)
+    {
+      let imageAlignment = "centered"
+      if (config.float)
+      {
+        imageAlignment = `float-${config.float}`;
+      }
+      html += `<div class="journal-image ${imageAlignment}" ><img src="${image}" width="${config.size || 200}" height="${config.size || 200}"></div>`
+    }
+    let heading = config.heading ? config.heading : `p style="text-align:center"`
+    let noToc = config.noToc ? "no-toc" : ""
+    html += `<${heading} class="${noToc}">@UUID[${this.uuid}]{${config.label || this.name}}</${heading}>`
     if (config.description)
     {
         if (game.user.isGM)
@@ -1309,6 +1334,10 @@ export default class ActorWFRP4e extends WarhammerActor
             html += this.system.details.gmnotes.value || ""
         }
         html += this.system.details.biography.value || ""
+    }
+    if (options.relativeTo)
+    {    
+      html = html.replaceAll(new RegExp(`<.>@UUID\\[${options.relativeTo.uuid}\\].+?<\/.>`, "gm"), "");
     }
     return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true}))[0];
   }

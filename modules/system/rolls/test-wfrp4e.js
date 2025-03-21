@@ -385,11 +385,11 @@ export default class TestWFRP extends WarhammerTestBase{
     let roll = this.result.roll
     // If hit location is being ussed, we can assume we should lookup critical hits
     if (this.preData.hitLocation) {
-      if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
+      if (this.isCriticalFumble == "fumble") {
         this.result.color_red = true;
         this.result.fumble = game.i18n.localize("Fumble");
       }
-      else if (roll <= target && roll % 11 == 0) {
+      else if (this.isCriticalFumble == "critical") {
         this.result.color_green = true;
         this.result.critical = game.i18n.localize("Critical");
       }
@@ -397,16 +397,34 @@ export default class TestWFRP extends WarhammerTestBase{
 
     // If optional rule of criticals/fumbles on all tessts - assign Astounding Success/Failure accordingly
     if (game.settings.get("wfrp4e", "criticalsFumblesOnAllTests") && !this.preData.hitLocation) {
-      if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99) {
+      if (this.isCriticalFumble == "fumble") {
         this.result.color_red = true;
         this.result.description = game.i18n.localize("ROLL.AstoundingFailure")
       }
-      else if (roll <= target && roll % 11 == 0) {
+      else if (this.isCriticalFumble == "critical") {
         this.result.color_green = true;
         this.result.description = game.i18n.localize("ROLL.AstoundingSuccess")
       }
     }
     return this.result
+  }
+
+  get isCriticalFumble()
+  {
+    let roll = this.result.roll;
+    let target = this.result.target;
+    if ((roll > target && roll % 11 == 0) || roll == 100 || roll == 99)
+    {
+      return "fumble"
+    }
+    else if (roll <= target && roll % 11 == 0)
+    {
+      return "critical"
+    }
+    else 
+    {
+      return "";
+    }
   }
 
   computeTables()
