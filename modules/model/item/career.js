@@ -58,6 +58,101 @@ export class CareerModel extends BaseItemModel
     return true;
   }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      // @todo type='set' and choices?
+      ["careergroup", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.careergroup.value.label",
+        type: "text",
+        config: {
+          keyPath: "system.careergroup.value"
+        }
+      }],
+      // @todo type='set' and choices?
+      ["class", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.class.value.label",
+        type: "text",
+        config: {
+          keyPath: "system.class.value"
+        }
+      }],
+      ["level", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.level.value.label",
+        type: "set",
+        config: {
+          choices: {1: 1, 2: 2, 3: 3, 4: 4},
+          keyPath: "system.level.value"
+        }
+      }],
+      ["statusStanding", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.status.standing.label",
+        type: "range",
+        config: {
+          keyPath: "system.status.standing"
+        }
+      }],
+      ["statusTier", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.status.tier.label",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.statusTiers,
+          keyPath: "system.status.tier"
+        }
+      }],
+      ["characteristics", {
+        label: "Characteristics",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.characteristics,
+          keyPath: "system.characteristics",
+          valueGetter: (data) => {
+            if (foundry.utils.getType(data.system.characteristics) === "Array")
+              return data.system.characteristics;
+
+            return Object.entries(data.system.characteristics).reduce((acc, [k, v]) => {
+              if (v) acc.push(k);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["skills", {
+        label: "Skills",
+        type: "text",
+        config: {
+          keyPath: "system.skills",
+          multiple: true
+        }
+      }],
+      ["talents", {
+        label: "Talents",
+        type: "text",
+        config: {
+          keyPath: "system.talents",
+          multiple: true
+        }
+      }],
+      ["trappings", {
+        label: "Trappings",
+        type: "text",
+        config: {
+          keyPath: "system.trappings",
+          multiple: true
+        }
+      }],
+      ["incomeSkill", {
+        label: "Income",
+        type: "text",
+        config: {
+          keyPath: "system.incomeSkill",
+          multiple: true
+        }
+      }],
+    ]);
+  }
+
 
     async _onCreate(data, options, user)
     {

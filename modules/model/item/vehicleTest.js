@@ -5,6 +5,11 @@ let fields = foundry.data.fields;
 
 export class VehicleTestModel extends BaseItemModel {
     static LOCALIZATION_PREFIXES = ["WH.Models.vehicleTest"];
+
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+        isVehicle: true
+    }, {inplace: false}));
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.roles = new fields.SchemaField({
@@ -13,6 +18,34 @@ export class VehicleTestModel extends BaseItemModel {
         });
         schema.handling = new fields.BooleanField({})
         return schema;
+    }
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["handling", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.handling.label",
+                type: "boolean",
+                config: {
+                    keyPath: "system.handling"
+                }
+            }],
+            ["rolesValue", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.roles.value.label",
+                type: "text",
+                config: {
+                    multiple: true,
+                    keyPath: "system.roles.value"
+                }
+            }],
+            ["rolesVital", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.roles.vital.label",
+                type: "text",
+                config: {
+                    keyPath: "system.roles.vital"
+                }
+            }]
+        ]);
     }
 
     /**

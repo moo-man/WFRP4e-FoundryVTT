@@ -24,6 +24,26 @@ export class ContainerModel extends EquippableItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["wearable", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.wearable.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.wearable.value"
+          }
+        }],
+        ["carries", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.carries.value.label",
+          type: "range",
+          config: {
+            keyPath: "system.carries.value"
+          }
+        }],
+      ]);
+    }
+
   /**
    * Used to identify an Item as one being a child or instance of ContainerModel
    *
