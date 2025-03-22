@@ -127,12 +127,12 @@ export default class ActorWFRP4e extends WarhammerActor
         .map(t => t.actor)
         .filter(actor => actor)
         .reduce((prev, current) => prev.concat(current.getScripts("dialog", (s) => s.options?.targeter)), []) // Retrieve targets' targeter dialog effects
-        .concat(this?.getScripts("dialog", (s) => !s.options?.targeter) // Don't use our own targeter dialog effects
+        .concat(this?.getScripts("dialog", (s) => !s.options?.targeter && !s.options?.defending) // Don't use our own targeter dialog effects
         ))) || [];
     }
     else 
     {
-      dialogData.data.scripts = this?.getScripts("dialog", (s) => !s.options?.targeter) // Don't use our own targeter dialog effects
+      dialogData.data.scripts = this?.getScripts("dialog", (s) => !s.options?.targeter && !s.options?.defending) // Don't use our own targeter dialog effects
     }
 
 

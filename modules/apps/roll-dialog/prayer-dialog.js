@@ -32,8 +32,9 @@ export default class PrayerDialog extends SkillDialog {
         data.skill = data.actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
         data.characteristic = data.skill?.system.characteristic.key || "fel";
 
-        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog"), data.skill?.getScripts("dialog") || [])
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog").filter(s => !s.options.defending), data.skill?.getScripts("dialog").filter(s => !s.options.defending) || [])
+        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
+        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
 
 
         return new Promise(resolve => {
