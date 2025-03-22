@@ -58,6 +58,71 @@ export class SpellModel extends OvercastItemModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["lore", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.lore.value.label",
+          type: "set",
+          config: {
+            blank: "None",
+            choices : game.wfrp4e.config.magicLores,
+            keyPath: "system.lore.value"
+          }
+        }],
+        ["range", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.range.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.range.value"
+          }
+        }],
+        ["target", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.target.value"
+          }
+        }],
+        ["aoe", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.target.aoe.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.target.aoe"
+          }
+        }],
+        ["duration", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.duration.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.duration.value"
+          }
+        }],
+        ["magicMissile", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.magicMissile.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.magicMissile.value",
+          }
+        }],
+        ["ritual", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.ritual.value.label",
+          type: "boolean",
+          config: {
+            keyPath: "system.ritual.value",
+          }
+        }],
+        ["doesDamage", {
+          label: "SHEET.DoesDamage",
+          type: "boolean",
+          config: {
+            keyPath: "system.damage",
+            valueGetter: (data) => !!data.system.damage?.value?.length || !!data.system.damage?.dice?.length,
+          }
+        }],
+      ]);
+    }
+
     async _preUpdate(data, options, user)
     {
       await super._preUpdate(data, options, user)

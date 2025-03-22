@@ -13,6 +13,10 @@ let fields = foundry.data.fields;
 export class StandardActorModel extends BaseActorModel {
     static preventItemTypes = ["vehicleMod", "vehicleRole", "vehicleTest"];
 
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+        isStandard: true
+    }, {inplace: false}));
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);
@@ -21,6 +25,12 @@ export class StandardActorModel extends BaseActorModel {
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ...Array.from(StandardDetailsModel.compendiumBrowserDetailsFilters),
+        ]);
+    }
 
     async _preCreate(data, options, user) {
         await super._preCreate(data, options, user);

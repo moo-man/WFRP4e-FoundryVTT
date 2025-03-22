@@ -2,7 +2,7 @@ if (this.actor.system.details.experience.current < 100) {
   return this.script.notification(game.i18n.localize("SCRIPT.NotEnoughXP"))
 }
 
-let traits = await warhammer.utility.findAllItems("trait");
+let traits = await warhammer.utility.findAllItems("trait", null, true);
 traits = traits.filter(t => t.name.includes("Companion Trait"));
 
 let items = await ItemDialog.create(traits);

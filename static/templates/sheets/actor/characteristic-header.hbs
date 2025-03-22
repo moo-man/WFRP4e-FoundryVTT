@@ -1,23 +1,23 @@
 <div class="sheet-header">
-    <div class="header-row">
-        <div class="header-group flex3">
+    <div class="detail-row">
+        <div class="detail-group flex3">
             <input type="text" name="name" value="{{actor.name}}">
             <label>{{localize "Name"}}</label>
         </div>
-        <div class="header-group">
+        <div class="detail-group">
             <input type="text" data-action="editSpecies" value="{{actor.Species}}">
             <label>{{localize "Species"}}</label>
         </div>
-        <div class="header-group">
+        <div class="detail-group">
             <input type="text" name="system.details.gender.value" value="{{system.details.gender.value}}">
             <label>{{localize "Gender"}}</label>
             </div>
     </div>
     <div style="display: flex; align-items: center">
         <img data-action="editImage" src="{{actor.img}}">
-        <div class="header-rows">
+        <div class="detail-rows">
 
-        <div class="header-row">
+        <div class="detail-row">
 
         <div class="characteristic-grid">
                 {{#each system.characteristics}}
@@ -33,7 +33,7 @@
         </div>
 
         </div>
-        <div class="header-row">
+        <div class="detail-row">
             <div class="attribute-row flexrow">
                 <div class="attribute-box movement">
                     <div class="field" style="grid-column: 1 / span 4"><input type="text"

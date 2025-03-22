@@ -29,6 +29,25 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         schema.god = new fields.SchemaField({
             value: new fields.StringField({label : game.i18n.localize("Blessed By")})
         });
+
+        schema.age = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.height = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.weight = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.haircolour = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.eyecolour = new fields.SchemaField({
+            value: new fields.StringField()
+        });
+        schema.distinguishingmark = new fields.SchemaField({
+            value: new fields.StringField()
+        });
         schema.status = new fields.SchemaField({
             value: new fields.StringField(),
             standing: new fields.StringField(),
@@ -40,6 +59,33 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         });
         schema.mainHand = new fields.StringField({initial : "r"})
         return schema;
+    }
+
+    static get compendiumBrowserDetailsFilters() {
+        return new Map([
+            ["species", {
+                label: "Species",
+                type: "text",
+                config: {
+                    keyPath: "system.details.species.value"
+                }
+            }],
+            ["size", {
+                label: "Size",
+                type: "set",
+                config: {
+                    choices: game.wfrp4e.config.actorSizes,
+                    keyPath: "system.details.size.value"
+                }
+            }],
+            ["move", {
+                label: "Move",
+                type: "range",
+                config: {
+                    keyPath: "system.details.move.value"
+                }
+            }],
+        ]);
     }
 }
 
@@ -72,24 +118,6 @@ export class CharacterDetailsModel extends StandardDetailsModel {
             value: new fields.StringField()
         });
         schema.careerlevel = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.age = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.height = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.weight = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.haircolour = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.eyecolour = new fields.SchemaField({
-            value: new fields.StringField()
-        });
-        schema.distinguishingmark = new fields.SchemaField({
             value: new fields.StringField()
         });
         schema.starsign = new fields.SchemaField({
@@ -152,6 +180,64 @@ export class VehicleDetailsModel extends foundry.abstract.DataModel {
             value: new fields.StringField()
         });
         return schema;
+    }
+
+    static get compendiumBrowserVehicleDetailsFilters() {
+        return new Map([
+            ["move", {
+                label: "Move",
+                type: "range",
+                config: {
+                    keyPath: "system.details.move.value"
+                }
+            }],
+            ["sail", {
+                label: "VEHICLE.Sail",
+                type: "boolean",
+                config: {
+                    keyPath: "system.details.move.sail.enabled"
+                }
+            }],
+            ["oars", {
+                label: "VEHICLE.Oars",
+                type: "boolean",
+                config: {
+                    keyPath: "system.details.move.oars.enabled"
+                }
+            }],
+            ["price", {
+                label: "Price",
+                type: "range",
+                config: {
+                    text: true,
+                    keyPath: "system.details.price.gc"
+                }
+            }],
+            ["availability", {
+                label: "Availability",
+                type: "set",
+                config: {
+                    keyPath: "system.details.availability.value",
+                    choices: game.wfrp4e.config.availability
+                }
+            }],
+            ["size", {
+                label: "Size",
+                type: "set",
+                config: {
+                    choices: game.wfrp4e.config.actorSizes,
+                    keyPath: "system.details.size.value"
+                }
+            }],
+            ["length", {
+                label: "Length",
+                type: "range",
+                config: {
+                    choices: game.wfrp4e.config.actorSizes,
+                    keyPath: "system.details.length.value"
+                }
+            }],
+        ]);
     }
 
     computeSize()

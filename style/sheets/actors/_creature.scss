@@ -5,8 +5,8 @@
         img {
             margin-right: 5px;
         }
-        .header-rows {
-            .header-row {
+        .detail-rows {
+            .detail-row {
                 margin: 3px 0px;
             }
         }
@@ -42,12 +42,12 @@
         .field {
             height: 1.5rem;
             display: flex;
+            border-bottom: 1px solid var(--attribute-border);
             > * {
                 height: 100%;
                 line-height: 1.5rem;
                 flex: 1
             }
-            border-bottom: 1px solid var(--attribute-border);
         }
     }
 

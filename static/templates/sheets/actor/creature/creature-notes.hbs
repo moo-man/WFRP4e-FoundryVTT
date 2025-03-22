@@ -1,17 +1,20 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+
     {{#if (isGM)}}
-        <div class="editor-section">
-            <div class="header">{{localize "GM Notes"}}</div>
-            {{formInput fields.details.fields.gmnotes.fields.value value=source.system.details.gmnotes.value enriched=enriched.system.details.gmnotes.value toggled=true}}
-        </div>
+    <div class="editor-section">
+        <div class="header">{{localize "GM Notes"}}</div>
+        {{formInput fields.details.fields.gmnotes.fields.value value=source.system.details.gmnotes.value
+        enriched=enriched.system.details.gmnotes.value toggled=true}}
+    </div>
     {{/if}}
 
     <div class="editor-section">
         <div class="header">{{localize "Biography"}}</div>
-        {{formInput fields.details.fields.biography.fields.value value=source.system.details.biography.value enriched=enriched.system.details.biography.value toggled=true}}
+        {{formInput fields.details.fields.biography.fields.value value=source.system.details.biography.value
+        enriched=enriched.system.details.biography.value toggled=true}}
     </div>
 
-        <div class="sheet-list traits">
+    <div class="sheet-list traits">
         <div class="list-header row-content">
             <div class="list-name">{{localize "Traits"}}</div>
             <div class="list-controls">
@@ -22,48 +25,52 @@
         </div>
         <div class="list-content">
             {{#each items.trait}}
-                <div class="list-row {{#if this.system.disabled}}inactive{{/if}}" data-uuid="{{this.uuid}}">
-                    <div class="row-content">
-                        <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
-                            <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest" data-type="trait"{{/if}}>
-                            <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
-                        </div>
-                        <div class="list-controls">
-                            {{#if this.system.disabled}}
-                                <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i class="fa-regular fa-circle"></i></a>
-                            {{else}}
-                                <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i class="fa-regular fa-circle-check"></i></a>
-                            {{/if}}
-                            <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
-                        </div>
+            <div class="list-row {{#if this.system.disabled}}inactive{{/if}}" data-uuid="{{this.uuid}}">
+                <div class="row-content">
+                    <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
+                        <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest"
+                            data-type="trait" {{/if}}>
+                        <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if
+                            this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
                     </div>
-                    {{> sheetButtons document=this}}
-                    <div class="dropdown-content collapsed">
-
+                    <div class="list-controls">
+                        {{#if this.system.disabled}}
+                        <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i
+                                class="fa-regular fa-circle"></i></a>
+                        {{else}}
+                        <a class="list-control" data-action="toggleProperty" data-path="system.disabled"><i
+                                class="fa-regular fa-circle-check"></i></a>
+                        {{/if}}
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
                     </div>
                 </div>
+                {{> sheetButtons document=this}}
+                <div class="dropdown-content collapsed">
+
+                </div>
+            </div>
             {{/each}}
         </div>
     </div>
-        {{#if items.template.length}}
-        <div class="sheet-list condensed">
-            <div class="list-header row-content">
-                <div class="list-name">{{localize "SHEET.AppliedTemplates"}}</div>
-            </div>
-            <div class="list-content">
-                {{#each items.template}}
-                    <div class="list-row" data-uuid="{{this.uuid}}">
-                        <div class="row-content">
-                            <div class="list-name">
-                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
-                            </div>
-                            <div class="list-controls">
-                                <a class="list-control" data-action="deleteEmbedded"><i class="fa-regular fa-xmark"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                {{/each}}
-            </div>
+    {{#if items.template.length}}
+    <div class="sheet-list condensed">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "SHEET.AppliedTemplates"}}</div>
         </div>
+        <div class="list-content">
+            {{#each items.template}}
+            <div class="list-row" data-uuid="{{this.uuid}}">
+                <div class="row-content">
+                    <div class="list-name">
+                        <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                    </div>
+                    <div class="list-controls">
+                        <a class="list-control" data-action="deleteEmbedded"><i class="fa-regular fa-xmark"></i></a>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
     {{/if}}
 </section>

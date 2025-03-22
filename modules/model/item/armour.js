@@ -40,6 +40,43 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     return schema;
   }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["armorType", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.armorType.value.label",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.armorTypes,
+          keyPath: "system.armorType.value"
+        }
+      }],
+      ["location", {
+        label: "Location",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.locations,
+          keyPath: "system.AP",
+          valueGetter: (data) => Object.entries(data.system.AP).reduce((acc, [k, v]) => {
+            if (!!v) acc.push(k);
+            return acc;
+          }, []),
+          multiple: true
+        }
+      }],
+      ["ap", {
+        label: "AP",
+        type: "range",
+        config: {
+          keyPath: "system.AP",
+          valueGetter: (data) => Object.entries(data.system.AP)
+            .reduce((acc, [k, v]) => Math.max(acc, v), 0),
+        }
+      }],
+      ...this.compendiumBrowserPropertiesFilter("armor"),
+    ]);
+  }
+
   async _preUpdate(data, options, user)
   {
     await super._preUpdate(data, options, user);
