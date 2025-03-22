@@ -280,14 +280,16 @@
                     class="far fa-circle"></i></a>
               {{/if}}
             {{/if}}
-            <div class="form-group">
-              <label class="label-text">{{localize 'SHEET.OtherCost'}}</label>
-              <div class="input-box">
-                  <input class="input-text" placeholder="{{localize "SHEET.OtherCostPlaceholder"}}" data-dtype="String" type="text"
-                    name="system.overcast.valuePerOvercast.cost"
-                    value="{{system.overcast.valuePerOvercast.cost}}" />
+            {{#if (settings "useWoMOvercast")}}
+              <div class="form-group">
+                <label class="label-text">{{localize 'SHEET.OtherCost'}}</label>
+                <div class="input-box">
+                    <input class="input-text" placeholder="{{localize "SHEET.OtherCostPlaceholder"}}" data-dtype="String" type="text"
+                      name="system.overcast.valuePerOvercast.cost"
+                      value="{{system.overcast.valuePerOvercast.cost}}" />
+                </div>
               </div>
-            </div>
+            {{/if}}
           </div>
         {{/if}}
       {{/if}}
