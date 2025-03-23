@@ -1151,7 +1151,7 @@ export default class ActorWFRP4e extends WarhammerActor
       if (effect.id == "unconscious")
         await this.addCondition("prone")
 
-      foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
+      foundry.utils.mergeObject(effect, mergeData);
 
       if (effect.system.condition.numbered)
       {
@@ -1326,7 +1326,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     let heading = config.heading ? config.heading : `p style="text-align:center"`
     let noToc = config.noToc ? "no-toc" : ""
-    html += `<${heading} class="${noToc}">@UUID[${this.uuid}]{${config.label || this.name}}</${heading}>`
+    html += `<${heading} class="${noToc}">@UUID[${this.uuid}]{${config.label || this.name}}</${heading.split(" ")[0]}>`
     if (config.description)
     {
         if (game.user.isGM)
@@ -1337,9 +1337,9 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     if (options.relativeTo)
     {    
-      html = html.replaceAll(new RegExp(`<.>@UUID\\[${options.relativeTo.uuid}\\].+?<\/.>`, "gm"), "");
+      html = html.replaceAll(new RegExp(`<.{1,2}>@UUID\\[${options.relativeTo.uuid}.+?\\].+?<\/.>`, "gm"), "");
     }
-    return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true}))[0];
+    return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true, secrets : options.secrets}))[0];
   }
 
   get itemTags() {

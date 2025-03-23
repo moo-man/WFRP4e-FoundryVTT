@@ -1,0 +1,1 @@
+if (!this.actor.has("Blessing of Might","prayer")) this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.KSDrXcieyRc37YI7", this.effect)
