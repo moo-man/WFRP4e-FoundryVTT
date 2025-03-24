@@ -2152,6 +2152,9 @@
             },
             "mutation" : {
                 "FIELDS" : {
+                    "modifier.value": {
+                        "label": "Modifier"
+                    },
                     "mutationType.value" : {
                         "label" : "Mutation Type"
                     }
@@ -2420,6 +2423,18 @@
                     "special" : {
                         "value" : {
                             "label" : "Special"
+                        }
+                    }
+                }
+            },
+            "template" : {
+                "FIELDS" : {
+                    "alterName": {
+                        "pre": {
+                            "label": "Alter Name Prefix"
+                        },
+                        "post": {
+                            "label": "Alter Name Suffix"
                         }
                     }
                 }
