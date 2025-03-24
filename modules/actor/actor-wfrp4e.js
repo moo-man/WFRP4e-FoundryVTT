@@ -699,9 +699,10 @@ export default class ActorWFRP4e extends WarhammerActor
 
 
     // Not really a comprehensive fix 
-    if (modifiers.ap.shield && penetrating)
+    if (modifiers.ap.shield && penetrating && !game.settings.get("wfrp4e", "mooPenetrating"))
     {
         modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Penetrating", {ignored: modifiers.ap.shield, item: "Shield"}))
+        modifiers.ap.ignored += modifiers.ap.shield;
         modifiers.ap.shield = 0;
     }
     

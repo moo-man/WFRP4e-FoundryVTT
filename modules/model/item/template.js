@@ -30,13 +30,13 @@ export class TemplateModel extends BaseItemModel
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
           group : new fields.NumberField({nullable : true}),
-          specialisations : new fields.NumberField({nullable : true})
+          specialisations : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.talents = ListModel.createListModel(new fields.SchemaField({
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
-          group : new fields.NumberField({nullable : true})
+          group : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.lores = ListModel.createListModel(new fields.SchemaField({
