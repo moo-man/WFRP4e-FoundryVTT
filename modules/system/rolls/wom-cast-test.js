@@ -206,12 +206,12 @@ export default class WomCastTest extends CastTest {
 
           if (overcastType == "other") {
             if (overcastData.valuePerOvercast.cost) {
-              otherCost = parseInt(eval(overcastData.valuePerOvercast.cost
+              let otherCost = parseInt(eval(overcastData.valuePerOvercast.cost
                               .replace("{{current}}", overcastData.usage["other"].current)
                               .replace("{{count}}", overcastData.usage["other"].count)));
               overcastData.usage[overcastType].available = overcastData.available >= otherCost
             } else {
-              overcastData.usage[overcastType].available = overcastData.available >= overcastType[overcastType][0].cost
+              overcastData.usage[overcastType].available = overcastData.available >= overCastTable.other[0].cost
             }
           }
           else if(overcastType == "target" && overcastData.usage.target.AoE) {
