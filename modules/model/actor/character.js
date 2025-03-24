@@ -176,13 +176,14 @@ export class CharacterModel extends StandardActorModel {
         return this.parent.itemTags["career"].find(c => c.current.value)
     }
     
-    awardExp(amount, reason, message=null) 
+    awardExp(amount, reason, message=null, suppressChat=false) 
     {
       let experience = foundry.utils.duplicate(this.details.experience)
       experience.total += amount
       experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
       this.parent.update({ "system.details.experience": experience }, {fromMessage : message});
-      ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
+      if (!suppressChat) 
+        ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
     }
 
     addToExpLog(amount, reason, newSpent, newTotal) 
