@@ -57,7 +57,7 @@ export class VehiclePassengersModel extends ListModel {
             return passengers[0].actor;    
         }
 
-        return (await ItemDialog.create(passengers.map(i => i.actor), 1, game.i18n.localize("DIALOG.ChooseActor")))[0]
+        return (await ItemDialog.create(passengers.map(i => i.actor), 1, {text: game.i18n.localize("DIALOG.ChoosePassenger"), title: game.i18n.localize("SECTION.Passengers")}))[0]
 
     }
 
@@ -74,11 +74,6 @@ export class VehiclePassengersModel extends ListModel {
     add(actor)
     {
         return {[this.schema.fields.list.fieldPath] : this.list.concat({id : actor.id, count : 1})};
-    }
-
-    remove(id)
-    {
-        return {[this.schema.fields.list.fieldPath] : this.list.filter(i => i.id != id)};
     }
 
     edit(id, data)

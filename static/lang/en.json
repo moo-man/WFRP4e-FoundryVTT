@@ -799,7 +799,7 @@
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
     "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",
     "DIALOG.ItemDialog" : "Item Dialog",
-    "DIALOG.ChooseActor" : "Choose the Actor to perform Test",
+    "DIALOG.ChoosePassenger" : "Choose Passenger",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -1461,6 +1461,8 @@
     "SHEET.Target" : "Target",
     "SHEET.ToggleEffect" : "Toggle Effect",
     "SHEET.Additional" : "Additional",
+    "SHEET.OtherCost": "Other Cost",
+    "SHEET.OtherCostPlaceholder": "formula or number",
     "SHEET.ApplyEffect" : "Apply {effect}",
     "SHEET.InvokeEffect" : "Invoke {effect}",
     "SHEET.ExpChange" : "Spent / Total Change",
@@ -1877,7 +1879,7 @@
     "Minutes": "minutes",
     "Seconds": "seconds",
     "Treatment": "Treatment",
-    "Rounds": "rounds",
+    "Round": "round",
 
     "Morrslieb - Currently On ": "Morrslieb - Currently On ",
     "Morrslieb - Currently Off": "Morrslieb - Currently Off",
@@ -2150,6 +2152,9 @@
             },
             "mutation" : {
                 "FIELDS" : {
+                    "modifier.value": {
+                        "label": "Modifier"
+                    },
                     "mutationType.value" : {
                         "label" : "Mutation Type"
                     }
@@ -2418,6 +2423,18 @@
                     "special" : {
                         "value" : {
                             "label" : "Special"
+                        }
+                    }
+                }
+            },
+            "template" : {
+                "FIELDS" : {
+                    "alterName": {
+                        "pre": {
+                            "label": "Alter Name Prefix"
+                        },
+                        "post": {
+                            "label": "Alter Name Suffix"
                         }
                     }
                 }

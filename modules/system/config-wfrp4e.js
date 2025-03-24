@@ -996,29 +996,57 @@ WFRP4E.availabilityTable = {
     }
 }
 
-WFRP4E.overCastTable = {
-  range: [
-    {cost: 1, value: 2},
-    {cost: 4, value: 3},
-    {cost: 16, value: 4}],
-  target: [
-    {cost: 1, value: 1},
-    {cost: 4, value: 2},
-    {cost: 16, value: 3}],
-  AoE: [
-    {cost: 3, value: 2},
-    {cost: 18, value: 3}],
-  duration: [
-    {cost: 2, value: 2},
-    {cost: 6, value: 3}],
-  damage: [
-    {cost: 1, value: 1},
-    {cost: 1, value: 2},
-    {cost: 1, value: 3},
-    {cost: 2, value: 4},
-    {cost: 3, value: 5},
-    {cost: 5, value: 6},
-    {cost: 8, value: 7}]
+WFRP4E.overCastTablesPerWind = {
+    "default": {
+        range: [
+            {cost: 1, value: 2},
+            {cost: 4, value: 3},
+            {cost: 16, value: 4}],
+        target: [
+            {cost: 1, value: 1},
+            {cost: 4, value: 2},
+            {cost: 16, value: 3}],
+        AoE: [
+            {cost: 3, value: 2},
+            {cost: 18, value: 3}],
+        duration: [
+            {cost: 2, value: 2},
+            {cost: 6, value: 3}],
+        damage: [
+            {cost: 1, value: 1},
+            {cost: 1, value: 2},
+            {cost: 1, value: 3},
+            {cost: 2, value: 4},
+            {cost: 3, value: 5},
+            {cost: 5, value: 6},
+            {cost: 8, value: 7}],
+        other: [
+            {cost: 2, value: 1},
+            {cost: 2, value: 2},
+            {cost: 2, value: 3},
+            {cost: 2, value: 4},
+            {cost: 2, value: 5},
+            {cost: 2, value: 6},
+            {cost: 2, value: 7},
+            {cost: 2, value: 8},
+            {cost: 2, value: 9},
+            {cost: 2, value: 10},
+            {cost: 2, value: 11},
+            {cost: 2, value: 12},
+            {cost: 2, value: 13},
+            {cost: 2, value: 14},
+            {cost: 2, value: 15},
+            {cost: 2, value: 16},
+            {cost: 2, value: 17},
+            {cost: 2, value: 18},
+            {cost: 2, value: 19},
+            {cost: 2, value: 20}
+        ]
+    }
+}
+
+WFRP4E.overCastTable = function(wind) {
+    return WFRP4E.overCastTablesPerWind[wind] || WFRP4E.overCastTablesPerWind["default"]
 }
 
 WFRP4E.species = {};
@@ -1095,7 +1123,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-lustria" : "Lustria",
     "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
     "wfrp4e-ua3" : "Ubersreik Adventures III",
-    "wfrp4e-tribes" : "Tribes & Tribulations"
+    "wfrp4e-tribes" : "Tribes & Tribulations",
+    "wfrp4e-owb3" : "Places & Perils"
 }
 
 WFRP4E.trade = { 
@@ -1798,6 +1827,12 @@ WFRP4E.PrepareSystemItems = function() {
                     }
                 ]
             }
+        },
+        "invisible" : {
+            name: "Invisible",
+            img: "icons/svg/invisible.svg",
+            statuses: ["invisible"],
+            system: {}
         }
     })
 

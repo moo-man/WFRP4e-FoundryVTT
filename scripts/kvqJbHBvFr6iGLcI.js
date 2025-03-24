@@ -1,0 +1,1 @@
+this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.3wCtgMDNnu8MFmyk",null,[{"system.specification.value":"Poison"}])

@@ -32,10 +32,12 @@ export default class CharacteristicDialog extends RollDialog {
 
         if (options.reload)
         {
-            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog"));
+            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
         }
 
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
+
+        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
 
         return new Promise(resolve => {
             let dlg = new this(data, fields, options, resolve)

@@ -101,7 +101,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 
   //#endregion
 
-  _getContetMenuOptions()
+  _getContextMenuOptions()
   { 
     return [
       {

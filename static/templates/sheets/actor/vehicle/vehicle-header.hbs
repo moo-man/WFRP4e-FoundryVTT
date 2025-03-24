@@ -1,0 +1,69 @@
+<div class="sheet-header">
+    <div class="detail-row">
+        <div class="detail-group">
+            <input type="text" name="name" value="{{actor.name}}">
+            <label>{{localize "Name"}}</label>
+        </div>
+    </div>
+    <div style="display: flex; align-items: center">
+        <img data-action="editImage" src="{{actor.img}}">
+        <div class="detail-rows">
+
+            <div class="detail-row">
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered"><a data-action="configureMove">{{localize "Move"}} <i class="fas fa-cog"></i></a></label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><div class="value">{{{system.details.move.display}}}</div></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered"><a data-action="rollCharacteristic">{{localize "Toughness"}} <i class="fa-solid fa-dice"></i></a></label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><input type="number" name="system.characteristics.t.initial" value="{{system.characteristics.t.initial}}"></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div>
+                    <div class="field" style="grid-column: 7 / span 6"><input type="number" name="system.status.wounds.max" value="{{system.status.wounds.max}}"></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Critical Wounds"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.criticalWounds.value" value="{{system.status.criticalWounds.value}}"></div>
+                    <div class="field" style="grid-column: 7 / span 6"><input type="number" name="system.status.criticalWounds.max" value="{{system.status.criticalWounds.max}}"></div>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Length"}} ({{localize "VEHICLE.yd"}})</label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><input name="system.details.length.value" type="number" value="{{system.details.length.value}}"></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Encumbrance"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><input name="system.status.encumbrance.initial" type="number" value="{{system.status.encumbrance.initial}}"></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Carries"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><input name="system.status.carries.max" type="number" value="{{system.status.carries.max}}"></div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Availability"}}</label></div>
+                    <div class="field" style="grid-column: 1 / span 12">
+                        <select name="system.details.availability.value">
+                            {{selectOptions (config "availability") selected=system.details.availability.value}}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="attribute-box top-label">
+                    <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Cost"}} ({{localize "MARKET.Abbrev.GC"}})</label></div>
+                    <div class="field" style="grid-column: 1 / span 12"><input name="system.details.price.gc" type="number" value="{{system.details.price.gc}}"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

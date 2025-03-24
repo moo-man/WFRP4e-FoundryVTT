@@ -164,6 +164,8 @@ npm run pack
 
 - [Tribes & Tribulations](https://foundryvtt.com/packages/wfrp4e-tribes/) - Provides details on a number of these belligerent and spiteful creatures: Goblins, Orcs, Black Orcs, Hobgoblins, Snotlings, Ogres, and Trolls. Each specific tribe receives its own chapter, demonstrating the variety of Orc and Goblin warbands that plague the Old World and beyond.
 
+- [Places & Perils](https://foundryvtt.com/packages/wfrp4e-owb3/) - Contains seven more titles previously released as short PDF only options that will help expand your WFRP adventures, this time focused on various locations and people.
+
 **Unofficial**
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!

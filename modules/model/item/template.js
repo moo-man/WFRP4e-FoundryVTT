@@ -30,13 +30,13 @@ export class TemplateModel extends BaseItemModel
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
           group : new fields.NumberField({nullable : true}),
-          specialisations : new fields.NumberField({nullable : true})
+          specialisations : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.talents = ListModel.createListModel(new fields.SchemaField({
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
-          group : new fields.NumberField({nullable : true})
+          group : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.lores = ListModel.createListModel(new fields.SchemaField({
@@ -240,7 +240,7 @@ export class TemplateModel extends BaseItemModel
 
     if (this.lores.list.length)
     {
-      let spells = await warhammer.utility.findAllItems("spell", "Loading Spells");
+      let spells = (await warhammer.utility.findAllItems("spell", "Loading Spells", true, ["system.lore.value"])).sort((a, b) => a.name > b.name ? 1 : -1);
       for(let lore of this.lores.list)
       {
         if (lore.name == "*")
@@ -252,7 +252,7 @@ export class TemplateModel extends BaseItemModel
           return lore.name == spellLore;
         })
 
-        items = items.concat((await ItemDialog.create(filtered, lore.number, {title : this.parent.name, text : `Select ${lore.number}`})) || []);
+        items = items.concat((await ItemDialog.create(filtered, lore.number, {title : this.parent.name, text : `Select ${lore.number}`, indexed : true})) || []);
       }
     }
 
