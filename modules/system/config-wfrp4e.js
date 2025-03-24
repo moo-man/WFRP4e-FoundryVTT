@@ -1123,7 +1123,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-lustria" : "Lustria",
     "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
     "wfrp4e-ua3" : "Ubersreik Adventures III",
-    "wfrp4e-tribes" : "Tribes & Tribulations"
+    "wfrp4e-tribes" : "Tribes & Tribulations",
+    "wfrp4e-owb3" : "Places & Perils"
 }
 
 WFRP4E.trade = { 
@@ -1826,6 +1827,12 @@ WFRP4E.PrepareSystemItems = function() {
                     }
                 ]
             }
+        },
+        "invisible" : {
+            name: "Invisible",
+            img: "icons/svg/invisible.svg",
+            statuses: ["invisible"],
+            system: {}
         }
     })
 

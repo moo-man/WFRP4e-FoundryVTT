@@ -213,6 +213,8 @@ export default class OpposedHandler {
     let opposeResult = this.opposedTest.result
     let options = this.options;
     opposeResult.hideData = true;
+    opposeResult.showDualWielding = opposeResult.winner == "attacker" && this.attackerTest.result.canDualWield
+
     let html = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", opposeResult)
     let chatOptions = {
       user: game.user.id,

@@ -52,6 +52,7 @@ export default class WeaponTest extends AttackTest {
   {
     await super.computeResult()
     this.computeMisfire();
+    this.computeDualWielder();
   }
 
 
@@ -88,7 +89,6 @@ export default class WeaponTest extends AttackTest {
     await super.postTest()
 
     await this.handleAmmo();
-    await this.handleDualWielder();
 
   }
 
@@ -119,30 +119,9 @@ export default class WeaponTest extends AttackTest {
     }
   }
 
-  async handleDualWielder() 
+  computeDualWielder() 
   {
-    if (this.preData.dualWielding && !this.context.edited) {
-      let offHandData = foundry.utils.duplicate(this.preData)
-
-      if (!this.actor.hasSystemEffect("dualwielder"))
-        await this.actor.addSystemEffect("dualwielder")
-
-      if (this.succeeded) {
-        let offhandWeapon = this.actor.itemTags["weapon"].find(w => w.offhand.value);
-        if (this.result.roll % 11 == 0 || this.result.roll == 100)
-          delete offHandData.roll
-        else {
-          let offhandRoll = this.result.roll.toString();
-          if (offhandRoll.length == 1)
-            offhandRoll = offhandRoll[0] + "0"
-          else
-            offhandRoll = offhandRoll[1] + offhandRoll[0]
-          offHandData.roll = Number(offhandRoll);
-        }
-
-        this.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll }).then(test => test.roll());
-      }
-    }
+    this.result.canDualWield = !this.weapon.system.offhand.value && this.actor.has(game.i18n.localize("NAME.DualWielder"), "talent") && !this.actor.noOffhand && !this.context.edited;
   }
 
   computeMisfire() {

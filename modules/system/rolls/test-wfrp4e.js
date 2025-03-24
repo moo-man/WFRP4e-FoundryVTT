@@ -464,8 +464,7 @@ export default class TestWFRP extends WarhammerTestBase{
         if (target) {
           let AP = target.status.armour[this.result.hitloc.result].value
           if (AP) {
-            this.result.critModifier = -10 * AP
-            this.result.critical += ` (${this.result.critModifier})`
+            this.result.tables.critical.modifier = -10 * AP
             this.result.other.push(`Critical Mitigation: Damage AP on target's ${this.result.hitloc.description}`)
           }
         }

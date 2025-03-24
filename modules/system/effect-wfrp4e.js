@@ -113,7 +113,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
             else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
             effect.duration.seconds = duration * 60 * 60 * 24
     
-            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Rounds")))
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Round")))
             effect.duration.rounds = duration;
         }
 

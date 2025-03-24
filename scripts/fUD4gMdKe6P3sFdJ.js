@@ -1,0 +1,1 @@
+this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.Zh68gzYMLW8vZgVo", this.effect)

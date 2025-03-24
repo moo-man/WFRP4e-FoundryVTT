@@ -1,0 +1,1 @@
+args.fields.modifier -= 15

@@ -44,7 +44,6 @@ This trigger runs when another Actor applies damage (via opposed test) to this A
 `args.abort` - Set this to a string value to abort the process (with the string being the message shown in chat)
 
 
-
 ## Examples
 
 ### Ignore Non-magical Damage

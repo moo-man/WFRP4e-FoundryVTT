@@ -1,44 +1,5 @@
 <h2 class="note-section label">{{localize "Notes"}}</h2>
 
-<div class="row">
-  <div id="field-age" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.age.value" type="text"
-      value="{{system.details.age.value}}" placeholder="{{localize 'Age'}}" />
-    <span class="label-details">{{localize "Age"}}<span>
-  </div>
-
-  <div id="field-height" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.height.value" type="text"
-      value="{{system.details.height.value}}" placeholder="{{localize 'CharacterHeight'}}" />
-    <span class="label-details">{{localize "CharacterHeight"}}</span>
-  </div>
-
-  <div id="field-weight" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.weight.value" type="text"
-      value="{{system.details.weight.value}}" placeholder="{{localize 'Weight'}}" />
-    <span class="label-details">{{localize "Weight"}}</span>
-  </div>
-
-  <div id="field-haircolour" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.haircolour.value" type="text"
-      value="{{system.details.haircolour.value}}" placeholder="{{localize 'Hair Colour'}}" />
-    <span class="label-details">{{localize "Hair Colour"}}</span>
-  </div>
-  <div id="field-eyecolour" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.eyecolour.value" type="text"
-      value="{{system.details.eyecolour.value}}" placeholder="{{localize 'Eye Colour'}}" />
-    <span class="label-details">{{localize "Eye Colour"}}</span>
-  </div>
-</div>
-<div class="row">
-  <div id="field-distinguishingmark" class="item">
-    <input class="input-details" style="box-shadow: none !important;" name="system.details.distinguishingmark.value"
-      type="text" value="{{system.details.distinguishingmark.value}}"
-      placeholder="{{localize 'Distinguishing Mark'}}" />
-    <span class="label-details">{{localize "Distinguishing Mark"}}</span>
-  </div>
-</div>
-
 <div class="note-section biography">
   {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror"
   button=true owner=owner editable=editable}}
