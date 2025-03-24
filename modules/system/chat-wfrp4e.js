@@ -113,6 +113,7 @@ export default class ChatWFRP {
     html.on("click", ".apply-damage", this._onApplyDamageClick.bind(this))
     html.on("click", ".apply-hack", this._onApplyHackClick.bind(this))
     html.on("click", ".crew-test", this._onCrewTestClick.bind(this))
+    html.on("click", ".dual-wielder", this._onRollDualWielder.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {
@@ -300,6 +301,50 @@ export default class ChatWFRP {
         role.system.roll(chosenActor, {appendTitle : ` - ${vital ? game.i18n.localize("CHAT.CrewTestVital") : game.i18n.localize("CHAT.CrewTest")}`, skipTargets : true, crewTest, crewTestMessage : messageId, roleVital : vital})
       }
     }
+  }
+
+  static async _onRollDualWielder(event)
+  {
+    let messageId = ($(event.currentTarget).parents('.message').attr("data-message-id"));
+    let attackerTest = game.messages.get(messageId)?.system.opposedTest.attackerTest;
+
+    let offHandData = foundry.utils.duplicate(attackerTest.preData)
+
+    if (!attackerTest.actor.hasSystemEffect("dualwielder")) 
+    {
+      await attackerTest.actor.addSystemEffect("dualwielder")
+    }
+
+    let targets = null;
+    if (game.user.targets.size)
+    {
+      targets = Array.from(game.user.targets)
+    }
+    else 
+    {
+      targets = attackerTest.targetTokens.map(i => i.object);
+      ui.notifications.info("No Targets - Directing offhand attack at the same target as the primary attack")
+    }
+
+    let offhandWeapon = attackerTest.actor.itemTags["weapon"].find(w => w.offhand.value);
+    if (attackerTest.result.roll % 11 == 0 || attackerTest.result.roll == 100) {
+      delete offHandData.roll
+    }
+    else 
+    {
+      let offhandRoll = attackerTest.result.roll.toString();
+      if (offhandRoll.length == 1)
+      {
+        offhandRoll = offhandRoll[0] + "0"
+      }
+      else
+      {
+        offhandRoll = offhandRoll[1] + offhandRoll[0]
+      }
+      offHandData.roll = Number(offhandRoll);
+    }
+
+    attackerTest.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll, targets}).then(test => test.roll());
   }
 
   // Proceed with an opposed test as unopposed

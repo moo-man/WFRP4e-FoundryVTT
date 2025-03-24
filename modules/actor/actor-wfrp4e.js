@@ -122,7 +122,8 @@ export default class ActorWFRP4e extends WarhammerActor
     dialogData.data.scripts = [];
     if (!dialogData.options.skipTargets)
     {
-      dialogData.data.targets = Array.from(game.user.targets);
+      dialogData.data.targets = game.user.targets.size ? Array.from(game.user.targets) : (dialogData.options.targets || []);
+      delete dialogData.options.targets;
       dialogData.data.scripts = foundry.utils.deepClone((dialogData.data.targets 
         .map(t => t.actor)
         .filter(actor => actor)
