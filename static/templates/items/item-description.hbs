@@ -1,7 +1,0 @@
-<div class="tab description active" data-tab="description">
-  {{editor enrichment.system.description.value target="system.description.value" engine="prosemirror" button=true owner=owner editable=editable}}
-  {{#if (isGM)}}
-    <h2 class="note-section label">{{localize "GM Notes"}}</h2>
-    {{editor enrichment.system.gmdescription.value target="system.gmdescription.value" engine="prosemirror" button=true owner=owner editable=editable}}
-  {{/if}}
-</div>
