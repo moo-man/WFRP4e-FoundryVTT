@@ -50,7 +50,8 @@ export class OpposedTestMessage extends WarhammerMessageModel
     { 
         return foundry.utils.mergeObject(super.actions, {
             applyDamage : this.onApplyDamage,
-            applyHack : this.onApplyHack
+            applyHack : this.onApplyHack,
+            applyHack : this.onRollDualWielder
         });
     }
 
@@ -87,6 +88,49 @@ export class OpposedTestMessage extends WarhammerMessageModel
       {
         return ui.notifications.error("ErrorNoArmourToDamage", {localize : true})
       }
+    }
+
+    static async onRollDualWielder(event)
+    {
+      let attackerTest = this.opposedTest.attackerTest;
+  
+      let offHandData = foundry.utils.duplicate(attackerTest.preData)
+  
+      if (!attackerTest.actor.hasSystemEffect("dualwielder")) 
+      {
+        await attackerTest.actor.addSystemEffect("dualwielder")
+      }
+  
+      let targets = null;
+      if (game.user.targets.size)
+      {
+        targets = Array.from(game.user.targets)
+      }
+      else 
+      {
+        targets = attackerTest.targetTokens.map(i => i.object);
+        ui.notifications.info("No Targets - Directing offhand attack at the same target as the primary attack")
+      }
+  
+      let offhandWeapon = attackerTest.actor.itemTags["weapon"].find(w => w.offhand.value);
+      if (attackerTest.result.roll % 11 == 0 || attackerTest.result.roll == 100) {
+        delete offHandData.roll
+      }
+      else 
+      {
+        let offhandRoll = attackerTest.result.roll.toString();
+        if (offhandRoll.length == 1)
+        {
+          offhandRoll = offhandRoll[0] + "0"
+        }
+        else
+        {
+          offhandRoll = offhandRoll[1] + offhandRoll[0]
+        }
+        offHandData.roll = Number(offhandRoll);
+      }
+  
+      attackerTest.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll, targets}).then(test => test.roll());
     }
 
     // Update starting message with result

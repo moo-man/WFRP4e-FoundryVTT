@@ -172,6 +172,7 @@ export default class OpposedTest {
       if (attackerSL > defenderSL || (attackerSL === defenderSL && (attackerTest.target > defenderTest.target || (attackerTest.outcome == "success" && defenderTest.context.unopposed)))) {
         opposeResult.winner = "attacker"
         opposeResult.differenceSL = attackerSL - defenderSL;
+        opposeResult.showDualWielding = attackerTest.result.canDualWield
 
         // If Damage is a numerical value
         if (Number.isNumeric(attackerTest.damage)) {
