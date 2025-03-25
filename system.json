@@ -63,15 +63,15 @@
     "requires": [{
       "id": "warhammer-lib",
       "type": "module",
-      "manifest": "https://raw.githubusercontent.com/moo-man/WarhammerLibrary-FVTT/1.5.0/module.json",
+      "manifest": "https://raw.githubusercontent.com/moo-man/WarhammerLibrary-FVTT/2.0.0/module.json",
       "compatibility": {
-        "minimum" : "1.5.0",
-        "verified": "1.5.0"
+        "minimum" : "2.0.0",
+        "verified": "2.0.0"
       }
     }]
   },
   "socket": true,
   "manifest" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/latest/download/system.json",
-  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/8.4.1/wfrp4e.zip",
+  "download" :  "https://github.com/moo-man/WFRP4e-FoundryVTT/releases/download/9.0.0/wfrp4e.zip",
   "url" : "https://github.com/moo-man/WFRP4e-FoundryVTT"
 }

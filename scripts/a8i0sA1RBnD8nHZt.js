@@ -1,5 +1,5 @@
 let caster = this.effect.sourceActor
-let targetedItem = this.actor.items.get(this.effect.flags.wfrp4e.itemTargets[0])
+let targetedItem = this.effect.system.itemTargets[0];
 
 let qualities = foundry.utils.deepClone(game.wfrp4e.config.itemQualities);
 let flaws = foundry.utils.deepClone(game.wfrp4e.config.itemFlaws);

@@ -217,7 +217,6 @@ export default class OpposedHandler {
   {
     let message = await OpposedTestMessage.create(this.opposedTest, this.options, this)  
     this.data.resultMessageId = message.id;
-    await this.updateMessageData();
   }
 
   formatOpposedResult() {

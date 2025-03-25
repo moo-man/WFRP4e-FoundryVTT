@@ -1,0 +1,1 @@
+if (!this.actor.has("Second Sight","talent")) this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.OEjUvJKi0xmBwbS2", this.effect)

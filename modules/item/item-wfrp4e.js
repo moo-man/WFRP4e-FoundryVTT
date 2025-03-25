@@ -192,7 +192,7 @@ export default class ItemWfrp4e extends WarhammerItem
         
       effect["statuses"] = [effect.id];
 
-      foundry.utils.mergeObject(effect, mergeData, {overwrite: false});
+      foundry.utils.mergeObject(effect, mergeData);
 
       delete effect.id
       return this.createEmbeddedDocuments("ActiveEffect", [effect], {condition: true})

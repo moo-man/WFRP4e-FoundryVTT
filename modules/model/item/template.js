@@ -30,13 +30,13 @@ export class TemplateModel extends BaseItemModel
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
           group : new fields.NumberField({nullable : true}),
-          specialisations : new fields.NumberField({nullable : true})
+          specialisations : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.talents = ListModel.createListModel(new fields.SchemaField({
           name : new fields.StringField({}),
           advances : new fields.NumberField({}),
-          group : new fields.NumberField({nullable : true})
+          group : new fields.NumberField({nullable : true, required: false, blank: true})
         }))
 
         schema.lores = ListModel.createListModel(new fields.SchemaField({
@@ -51,8 +51,101 @@ export class TemplateModel extends BaseItemModel
         return schema;
     }
 
+  static get compendiumBrowserFilters() {
+    return new Map([
+      ...Array.from(super.compendiumBrowserFilters),
+      ["prefix", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.alterName.pre.label",
+        type: "text",
+        config: {
+          keyPath: "system.alterName.pre"
+        }
+      }],
+      ["suffix", {
+        label: this.LOCALIZATION_PREFIXES + ".FIELDS.alterName.post.label",
+        type: "text",
+        config: {
+          keyPath: "system.alterName.post"
+        }
+      }],
+      ["characteristics", {
+        label: "Characteristics",
+        type: "set",
+        config: {
+          choices: game.wfrp4e.config.characteristics,
+          keyPath: "system.characteristics",
+          valueGetter: (data) => {
+            return Object.entries(data.system.characteristics).reduce((acc, [k, v]) => {
+              if (v) acc.push(k);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["skills", {
+        label: "Skills",
+        type: "text",
+        config: {
+          keyPath: "system.skills",
+          valueGetter: (data) => {
+            return Object.entries(data.system.skills.list).reduce((acc, [k, v]) => {
+              if (v.advances) acc.push(v.name);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["talents", {
+        label: "Talents",
+        type: "text",
+        config: {
+          keyPath: "system.talents",
+          valueGetter: (data) => {
+            return Object.entries(data.system.talents.list).reduce((acc, [k, v]) => {
+              acc.push(v.name);
+              return acc;
+            }, [])
+          },
+          multiple: true
+        }
+      }],
+      ["lores", {
+        label: "Lore",
+        type: "set",
+        config: {
+          blank: "*",
+          choices: game.wfrp4e.config.magicLores,
+          keyPath: "system.lores",
+          valueGetter: (data) => {
+            const loreList = Object.entries(game.wfrp4e.config.magicLores);
+            const templateLores = Object.entries(data.system.lores.list)
+              .reduce((acc, [k, v]) => {
+                if (v.name === '*') {
+                  loreList.forEach(([k, n]) => acc.add(k));
+                  acc.add('');
+
+                  return acc;
+                }
+
+                const lore = loreList.find(([k, n]) => n === v.name);
+                if (lore)
+                  acc.add(lore[0]);
+
+                return acc;
+              }, new Set());
+
+            return Array.from(templateLores);
+          },
+          multiple: true
+        }
+      }],
+    ]);
+  }
+
     /**
-     * Used to identify an Item as one being a child or instance of TraitModel
+     * Used to identify an Item as one being a child or instance of TemplateModel
      *
      * @final
      * @returns {boolean}
@@ -147,7 +240,7 @@ export class TemplateModel extends BaseItemModel
 
     if (this.lores.list.length)
     {
-      let spells = await warhammer.utility.findAllItems("spell", "Loading Spells");
+      let spells = (await warhammer.utility.findAllItems("spell", "Loading Spells", true, ["system.lore.value"])).sort((a, b) => a.name > b.name ? 1 : -1);
       for(let lore of this.lores.list)
       {
         if (lore.name == "*")
@@ -159,7 +252,7 @@ export class TemplateModel extends BaseItemModel
           return lore.name == spellLore;
         })
 
-        items = items.concat((await ItemDialog.create(filtered, lore.number, {title : this.parent.name, text : `Select ${lore.number}`})) || []);
+        items = items.concat((await ItemDialog.create(filtered, lore.number, {title : this.parent.name, text : `Select ${lore.number}`, indexed : true})) || []);
       }
     }
 

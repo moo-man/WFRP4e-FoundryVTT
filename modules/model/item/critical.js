@@ -17,6 +17,20 @@ export class CriticalModel extends LocationalItemModel {
         return schema;
     }
 
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["wounds", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.wounds.value.label",
+                type: "range",
+                config: {
+                    keyPath: "system.wounds.value"
+                }
+            }]
+        ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of CriticalModel
      *
@@ -41,10 +55,6 @@ export class CriticalModel extends LocationalItemModel {
                 {
                     ui.notifications.notify(`${this.wounds.value} ${game.i18n.localize("CHAT.CriticalWoundsApplied")} ${actor.name}`)
                     newWounds = actor.status.wounds.value - appliedWounds;
-                    if (newWounds < 0) 
-                    {
-                        newWounds = 0;
-                    }
                 } 
                 else if (this.wounds.value.toLowerCase() == "death") 
                 {
@@ -56,7 +66,7 @@ export class CriticalModel extends LocationalItemModel {
                     minorInfections.push(actor.name)
                     game.combat.setFlag("wfrp4e", "minorInfections", null).then(c => game.combat.setFlag("wfrp4e", "minorInfections", minorInfections))
                 }
-                if (newWounds)
+                if (!isNaN(newWounds))
                 {
                     actor.update({ "system.status.wounds.value": newWounds });
                 }

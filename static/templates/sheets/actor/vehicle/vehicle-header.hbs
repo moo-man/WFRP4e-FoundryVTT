@@ -1,15 +1,15 @@
 <div class="sheet-header">
-    <div class="header-row">
-        <div class="header-group">
+    <div class="detail-row">
+        <div class="detail-group">
             <input type="text" name="name" value="{{actor.name}}">
             <label>{{localize "Name"}}</label>
         </div>
     </div>
     <div style="display: flex; align-items: center">
         <img data-action="editImage" data-edit="img" src="{{actor.img}}">
-        <div class="header-rows">
+        <div class="detail-rows">
 
-            <div class="header-row">
+            <div class="detail-row">
                 <div class="attribute-box top-label">
                     <div class="label" style="grid-column: 1 / span 12"><label class="centered"><a data-action="configureMove">{{localize "Move"}} <i class="fas fa-cog"></i></a></label></div>
                     <div class="field" style="grid-column: 1 / span 12"><div class="value">{{{system.details.move.display}}}</div></div>
@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            <div class="header-row">
+            <div class="detail-row">
                 <div class="attribute-box top-label">
                     <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Length"}} ({{localize "VEHICLE.yd"}})</label></div>
                     <div class="field" style="grid-column: 1 / span 12"><input name="system.details.length.value" type="number" value="{{system.details.length.value}}"></div>

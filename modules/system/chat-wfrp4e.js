@@ -33,6 +33,7 @@ export default class ChatWFRP {
     html.on("click", ".condition-script", this._onConditionScriptClick.bind(this))
     html.on("click", ".apply-condition", this._onApplyCondition.bind(this));
     html.on("click", ".crew-test", this._onCrewTestClick.bind(this))
+    html.on("click", ".dual-wielder", this._onRollDualWielder.bind(this))
 
     // Respond to template button clicks
     html.on("click", '.aoe-template', event => {

@@ -1,4 +1,4 @@
-let spells = await warhammer.utility.findAllItems("spell", "Loading Spells")
+let spells = await warhammer.utility.findAllItems("spell", "Loading Spells", true, ["system.lore.value"])
 
 let text = (await game.wfrp4e.tables.rollTable("random-caster", {hideDSN: true})).result
 
@@ -14,7 +14,7 @@ if (spellsWithLore.length > 0)
     let spellsWithLore = spells.filter(i => game.wfrp4e.config.magicLores[i.system.lore.value] == lore)
     let selectedSpell = spellsWithLore[Math.floor(CONFIG.Dice.randomUniform() * spellsWithLore.length)]
     this.script.notification(selectedSpell.name);
-    this.actor.createEmbeddedDocuments("Item", [selectedSpell])
+    this.actor.createEmbeddedDocuments("Item", [(await fromUuid(selectedSpell)).toObject()])
 }
 else
 {

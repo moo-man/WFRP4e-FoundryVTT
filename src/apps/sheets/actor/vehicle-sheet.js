@@ -118,36 +118,6 @@ export default class ActorSheetWFRP4eVehicleV2 extends BaseWFRP4eActorSheet
     this.actor.update(this.actor.system.passengers.add(document))
   }
 
-  _getContetMenuOptions()
-  { 
-    return super._getContetMenuOptions().concat(
-      [
-      {
-        name: "Split",
-        icon: '<i class="fa-solid fa-split"></i>',
-        condition: li => {
-          let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
-          if (uuid && !uuid.includes("Compendium"))
-          {
-            let doc = fromUuidSync(uuid);
-            return doc?.documentName == "Item" && doc.system.isPhysical; // Can only split physical items
-          }
-          else return false;
-        },
-        callback: async li => 
-        {
-            let uuid = li.data("uuid") || li.parents("[data-uuid]")?.data("uuid")
-            if (uuid)
-            {
-              let doc = fromUuidSync(uuid);
-              let amt = await ValueDialog.create({title : game.i18n.localize("SHEET.SplitTitle"), text : game.i18n.localize("SHEET.SplitPrompt")})
-              doc.system.split(amt);
-            }
-        }
-      }
-      ])
-  }
-
   static _onPassengerClick(ev) {
     let id = this._getId(ev)
     this.actor.system.passengers.get(id)?.actor?.sheet.render(true);

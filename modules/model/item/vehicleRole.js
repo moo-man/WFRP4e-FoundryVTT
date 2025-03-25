@@ -4,10 +4,28 @@ let fields = foundry.data.fields;
 
 export class VehicleRoleModel extends BaseItemModel {
     static LOCALIZATION_PREFIXES = ["WH.Models.vehicleRole"];
+
+    static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
+        isVehicle: true
+    }, {inplace: false}));
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.test = new fields.StringField();
         return schema;
+    }
+
+    static get compendiumBrowserFilters() {
+        return new Map([
+            ...Array.from(super.compendiumBrowserFilters),
+            ["test", {
+                label: this.LOCALIZATION_PREFIXES + ".FIELDS.test.label",
+                type: "text",
+                config: {
+                    keyPath: "system.test"
+                }
+            }]
+        ]);
     }
 
     /**

@@ -1,4 +1,4 @@
-if (args.test.preData.skillName?.includes(game.i18n.localize("NAME.Language")) || args.test instanceof CastTest)
+if (args.test.preData.skillName?.includes(game.i18n.localize("NAME.Language")) || args.test instanceof game.wfrp4e.rolls.CastTest)
 {
 	if (parseInt(args.test.result.SL) > 0 || args.test.succeeded)
 	{

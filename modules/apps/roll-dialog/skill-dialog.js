@@ -56,14 +56,15 @@ export default class SkillDialog extends CharacteristicDialog {
 
         if (data.skill.id != "unknown")
         {
-            data.scripts = data.scripts.concat(data.skill?.getScripts("dialog"))
+            data.scripts = data.scripts.concat(data.skill?.getScripts("dialog").filter(s => !s.options.defending))
         }
         if (options.reload)
         {
-            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog"));
+            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
         }
 
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog") || [])
+        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
+        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
 
         return new Promise(resolve => {
             let dlg = new this(data, fields, options, resolve)

@@ -19,6 +19,27 @@ export class MutationModel extends BaseItemModel
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["mutationType", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.mutationType.value.label",
+          type: "set",
+          config: {
+            choices : game.wfrp4e.config.mutationTypes,
+            keyPath: "system.mutationType.value"
+          }
+        }],
+        ["mutationModifier", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.modifier.value.label",
+          type: "text",
+          config: {
+            keyPath: "system.modifier.value"
+          }
+        }]
+      ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of MutationModel
      *

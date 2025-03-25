@@ -10,25 +10,26 @@ export default class WomCastTest extends CastTest {
     this.result.overcasts = Math.max(0, slOver) + (this.result.totalPower ? parseInt(Math.floor(this.result.roll / 10)) : 0);    
     this.result.overcast.total = this.result.overcasts;
     this.result.overcast.available = this.result.overcasts;
+    let overCastTable = game.wfrp4e.config.overCastTable(this.spell.lore.value);
 
     // Since SL is spent by overcasts, need to keep track of original
     this.result.overcast.originalSL = Number(this.result.SL) 
 
     if (this.result.overcast.usage.range) {
-      this.result.overcast.usage.range.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.range[0].cost
+      this.result.overcast.usage.range.available = this.result.overcast.available >= overCastTable.range[0].cost
     }
     if (this.result.overcast.usage.target) {
       if(this.result.overcast.usage.target.AoE) {
-        this.result.overcast.usage.target.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.AoE[0].cost
+        this.result.overcast.usage.target.available = this.result.overcast.available >= overCastTable.AoE[0].cost
       } else {
-        this.result.overcast.usage.target.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.target[0].cost
+        this.result.overcast.usage.target.available = this.result.overcast.available >= overCastTable.target[0].cost
       }
     }
     if (this.result.overcast.usage.duration) {
-      this.result.overcast.usage.duration.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.duration[0].cost
+      this.result.overcast.usage.duration.available = this.result.overcast.available >= overCastTable.duration[0].cost
     }
     if (this.result.overcast.usage.damage) {
-      this.result.overcast.usage.damage.available = this.result.overcast.available >= game.wfrp4e.config.overCastTable.damage[0].cost
+      this.result.overcast.usage.damage.available = this.result.overcast.available >= overCastTable.damage[0].cost
     }
     if (this.result.overcast.usage.other) {
       this.result.overcast.usage.other.available = this.result.overcast.available >= 2
@@ -38,6 +39,7 @@ export default class WomCastTest extends CastTest {
   async calculateDamage() {
     let damageBreakdown = this.result.breakdown.damage;
     this.result.additionalDamage = this.preData.additionalDamage || 0
+    let overCastTable = game.wfrp4e.config.overCastTable(this.spell.lore.value);
     // Calculate Damage if the this.item has it specified and succeeded in casting
     try {
       if (this.item.Damage && this.result.castOutcome == "success") {
@@ -45,7 +47,7 @@ export default class WomCastTest extends CastTest {
         damageBreakdown.base = `${this.item.Damage} (${game.i18n.localize("Spell")})`
 
         if (this.result.overcast.usage.damage && this.result.overcast.usage.damage.count > 0) {
-          let overcastDamage = game.wfrp4e.config.overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
+          let overcastDamage = overCastTable.damage[this.result.overcast.usage.damage.count - 1].value
           this.result.additionalDamage += overcastDamage
           damageBreakdown.other.push({label : game.i18n.localize("Overcast"), value : overcastDamage});
           this.result.damage += this.result.additionalDamage
@@ -71,6 +73,9 @@ export default class WomCastTest extends CastTest {
     if (!game.settings.get("wfrp4e", "useWoMOvercast")) {
       await super._overcast(choice);
     } else {
+      const overCastTable = game.wfrp4e.config.overCastTable(this.spell.lore.value);
+
+      let otherCost = overCastTable.other[0].cost
       const overcastData = this.result.overcast
 
       if (!overcastData.available)
@@ -79,9 +84,7 @@ export default class WomCastTest extends CastTest {
       if (typeof overcastData.usage[choice].initial != "number")
         return overcastData
 
-      const overCastTable = game.wfrp4e.config.overCastTable;
       const count = overcastData.usage[choice].count;
-
 
       // If no table entry, or costs more than SL available, do nothing
       // AoE is separate column from target, so must be tested separately 
@@ -89,11 +92,16 @@ export default class WomCastTest extends CastTest {
         if (!overCastTable["AoE"][count] || overCastTable["AoE"][count].cost > overcastData.available) {
           return overcastData;
         }
-      } 
-      // Other options are not in the table, so assume cost is 2 per original rules
+      }
       else if (choice == "other") {
-        if (2 > overcastData.available)
+        if (overcastData.valuePerOvercast.cost) {
+          otherCost = parseInt(eval(overcastData.valuePerOvercast.cost
+                          .replace("{{current}}", overcastData.usage[choice].current)
+                          .replace("{{count}}", overcastData.usage[choice].count)));
+        }
+        if (otherCost > overcastData.available) {
           return overcastData
+        }
       }
       else {
         if (!overCastTable[choice][count] || overCastTable[choice][count].cost > overcastData.available) {
@@ -146,7 +154,7 @@ export default class WomCastTest extends CastTest {
         overcastData.available = overcastData.available - overCastTable["AoE"][count].cost
       } 
       else if (choice == "other") {
-        overcastData.available = overcastData.available - 2
+        overcastData.available = overcastData.available - otherCost
       }
       else {
         overcastData.available = overcastData.available - overCastTable[choice][count].cost
@@ -188,6 +196,7 @@ export default class WomCastTest extends CastTest {
     } else {
       let overcastData = this.result.overcast
       overcastData.available = overcastData.total;
+      let overCastTable = game.wfrp4e.config.overCastTable(this.spell.lore.value);
 
       // For each usage option, set count to 0, reset current value to initial, and check availability
       for (let overcastType in overcastData.usage) {
@@ -196,13 +205,20 @@ export default class WomCastTest extends CastTest {
           overcastData.usage[overcastType].current = overcastData.usage[overcastType].initial
 
           if (overcastType == "other") {
-            overcastData.usage[overcastType].available = overcastData.available >= 2
+            if (overcastData.valuePerOvercast.cost) {
+              let otherCost = parseInt(eval(overcastData.valuePerOvercast.cost
+                              .replace("{{current}}", overcastData.usage["other"].current)
+                              .replace("{{count}}", overcastData.usage["other"].count)));
+              overcastData.usage[overcastType].available = overcastData.available >= otherCost
+            } else {
+              overcastData.usage[overcastType].available = overcastData.available >= overCastTable.other[0].cost
+            }
           }
           else if(overcastType == "target" && overcastData.usage.target.AoE) {
-            overcastData.usage[overcastType].available = overcastData.available >= game.wfrp4e.config.overCastTable.AoE[0].cost
+            overcastData.usage[overcastType].available = overcastData.available >= overCastTable.AoE[0].cost
           } 
           else {
-            overcastData.usage[overcastType].available = overcastData.available >= game.wfrp4e.config.overCastTable[overcastType][0].cost
+            overcastData.usage[overcastType].available = overcastData.available >= overCastTable[overcastType][0].cost
           }
         }
       }

@@ -22,6 +22,20 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
         return schema;
     }
 
+    static get compendiumBrowserFilters() {
+      return new Map([
+        ...Array.from(super.compendiumBrowserFilters),
+        ["trappingType", {
+          label: this.LOCALIZATION_PREFIXES + ".FIELDS.trappingType.value.label",
+          type: "set",
+          config: {
+            choices : game.wfrp4e.config.trappingTypes,
+            keyPath: "system.trappingType.value"
+          }
+        }]
+      ]);
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of TrappingModel
      *
