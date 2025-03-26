@@ -1,6 +1,6 @@
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import ItemWfrp4e from "../../item/item-wfrp4e.js";
-import { ChargenStage } from "./stage";
+import { ChargenStage } from "./stage.js";
 
 export class TrappingStage extends ChargenStage {
   journalId = "Compendium.wfrp4e-core.journals.JournalEntry.IQ0PgoJihQltCBUU.JournalEntryPage.hQipqLYlbBEjJEWL"
