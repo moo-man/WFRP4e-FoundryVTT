@@ -1,4 +1,4 @@
-import GenericActions from "../../modules/system/actions";
+import GenericActions from "../system/actions";
 
 export default class ChatMessageWFRP extends WarhammerChatMessage 
 {

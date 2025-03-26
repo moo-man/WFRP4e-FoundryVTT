@@ -1,6 +1,4 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
-import ItemWfrp4e from "../item/item-wfrp4e.js";
-import PropertiesMixin from "../model/item/components/properties.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
 

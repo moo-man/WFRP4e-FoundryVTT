@@ -1,4 +1,3 @@
-import ItemWfrp4e from "../item/item-wfrp4e.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 export default class StatBlockParser extends FormApplication {
@@ -304,7 +303,7 @@ export default class StatBlockParser extends FormApplication {
     
                 let trappingItem = await WFRP_Utility.findItem(trapping, game.wfrp4e.config.trappingItems)
                 if (!trappingItem) {
-                    trappingItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.model.Item.trapping })
+                    trappingItem = new Item.implementation({ img: "systems/wfrp4e/icons/blank.png", name: trapping, type: "trapping", data: game.model.Item.trapping })
                     trappingItem.updateSource({"trappingType.value" : "misc"})
                 }
                 trappings.push(trappingItem.toObject())

@@ -1,8 +1,8 @@
-import WFRP_Audio from "../../../../modules/system/audio-wfrp4e";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
+import WFRP_Audio from "../../system/audio-wfrp4e";
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class ActorSheetWFRP4eCreatureV2 extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eCreature extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["creature"],

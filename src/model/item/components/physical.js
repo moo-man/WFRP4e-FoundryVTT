@@ -174,7 +174,7 @@ export class PhysicalItemModel extends BaseItemModel
      *
      * @param {number} amount by how much should the quantity be reduced?
      *
-     * @returns {Promise<ItemWfrp4e>}
+     * @returns {Promise<ItemWFRP4e>}
      */
     async reduceQuantity(amount = 1) {
         return await this.parent.update({"system.quantity.value": this.quantity.value - amount});

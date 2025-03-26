@@ -1,5 +1,5 @@
-import ItemProperties from "../../../../modules/apps/item-properties";
-import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
+import ItemProperties from "../../apps/item-properties";
+import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 
 export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 {

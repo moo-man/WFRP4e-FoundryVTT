@@ -1,7 +1,7 @@
-import WFRP_Audio from "../../../../modules/system/audio-wfrp4e";
+import WFRP_Audio from "../../system/audio-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class ActorSheetWFRP4eNPCV2 extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eNPC extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["npc"],

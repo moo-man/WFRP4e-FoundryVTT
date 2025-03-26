@@ -1,4 +1,3 @@
-import WFRP_Utility from "../../../../system/utility-wfrp4e";
 
 let fields = foundry.data.fields;
 

@@ -5,7 +5,7 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
  * @mixes WarhammerItem
  * @category - Documents
  */
-export default class ItemWfrp4e extends WarhammerItem
+export default class ItemWFRP4e extends WarhammerItem
 {
   async _preCreate(data, options, user) {
     let migration = game.wfrp4e.migration.migrateItemData(this)

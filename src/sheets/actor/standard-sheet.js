@@ -1,5 +1,5 @@
-import Advancement from "../../../../modules/system/advancement";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
+import Advancement from "../../system/advancement";
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import BaseWFRP4eActorSheet from "./base";
 
 export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet

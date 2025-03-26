@@ -1,9 +1,9 @@
-import CareerSelector from "../../../../modules/apps/career-selector";
-import Advancement from "../../../../modules/system/advancement";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
+import CareerSelector from "../../apps/career-selector";
+import Advancement from "../../system/advancement";
+import WFRP_Utility from "../../system/utility-wfrp4e";
 import StandardWFRP4eActorSheet from "./standard-sheet";
 
-export default class ActorSheetWFRP4eCharacterV2 extends StandardWFRP4eActorSheet
+export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
 {
     static DEFAULT_OPTIONS = {
         classes: ["character"],

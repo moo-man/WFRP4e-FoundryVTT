@@ -1,110 +1,108 @@
 
 // Import Modules
-import ActorSheetWFRP4e from "./modules/actor/sheet/actor-sheet.js"
-import ActorSheetWFRP4eCharacter from "./modules/actor/sheet/character-sheet.js";
-import ActorSheetWFRP4eNPC from "./modules/actor/sheet/npc-sheet.js";
-import ActorSheetWFRP4eCreature from "./modules/actor/sheet/creature-sheet.js";
-import ActorSheetWFRP4eVehicle from "./modules/actor/sheet/vehicle-sheet.js";
-import ItemSheetWfrp4e from "./modules/item/item-sheet.js";
-import ActorWFRP4e from "./modules/actor/actor-wfrp4e.js";
-import ItemWfrp4e from "./modules/item/item-wfrp4e.js";
-import registerHooks from "./modules/system/hooks.js"
-import CharGenWfrp4e from "./modules/apps/chargen/char-gen.js"
-import MarketWFRP4e from "./modules/apps/market-wfrp4e.js";
-import NameGenWfrp from "./modules/apps/name-gen.js";
-import StatBlockParser from "./modules/apps/stat-parser.js";
-import BrowserWfrp4e from "./modules/apps/wfrp-browser.js";
-import WFRP_Audio from "./modules/system/audio-wfrp4e.js";
-import WFRP4E from "./modules/system/config-wfrp4e.js"
-import ChatWFRP from "./modules/system/chat-wfrp4e.js";
-import WFRP_Tables from "./modules/system/tables-wfrp4e.js";
-import WFRP_Utility from "./modules/system/utility-wfrp4e.js";
-import ActorSettings from "./modules/apps/actor-settings.js";
-import WFRPActiveEffectConfig from "./modules/apps/effect-config.js";
-import Migration from "./modules/system/migrations.js";
-import HomebrewSettings from "./modules/apps/homebrew-settings.js"
-import CareerSelector from "./modules/apps/career-selector.js"
-import TagManager from "./modules/system/tag-manager.js";
-import ItemProperties from "./modules/apps/item-properties.js"
-import TestWFRP from "./modules/system/rolls/test-wfrp4e.js";
-import CharacteristicTest from "./modules/system/rolls/characteristic-test.js";
-import SkillTest from "./modules/system/rolls/skill-test.js";
-import WeaponTest from "./modules/system/rolls/weapon-test.js";
-import CastTest from "./modules/system/rolls/cast-test.js";
-import WomCastTest from "./modules/system/rolls/wom-cast-test.js";
-import ChannelTest from "./modules/system/rolls/channel-test.js";
-import PrayerTest from "./modules/system/rolls/prayer-test.js";
-import TraitTest from "./modules/system/rolls/trait-test.js";
-import { WFRPJournalTextPageSheet } from "./modules/system/journal-sheet.js";
-import { ChargenStage } from "./modules/apps/chargen/stage.js";
-import { CharacterModel } from "./modules/model/actor/character.js";
-import { VehicleModel } from "./modules/model/actor/vehicle.js";
-import { NPCModel } from "./modules/model/actor/npc.js";
-import { CreatureModel } from "./modules/model/actor/creature.js";
-import { AmmunitionModel } from "./modules/model/item/ammunition.js";
-import { ArmourModel } from "./modules/model/item/armour.js";
-import { CareerModel } from "./modules/model/item/career.js";
-import { ContainerModel } from "./modules/model/item/container.js";
-import { CriticalModel } from "./modules/model/item/critical.js";
-import { DiseaseModel } from "./modules/model/item/disease.js";
-import { InjuryModel } from "./modules/model/item/injury.js";
-import { MoneyModel } from "./modules/model/item/money.js";
-import { MutationModel } from "./modules/model/item/mutation.js";
-import { PrayerModel } from "./modules/model/item/prayer.js";
-import { PsychologyModel } from "./modules/model/item/psychology.js";
-import { TalentModel } from "./modules/model/item/talent.js";
-import { TrappingModel } from "./modules/model/item/trapping.js";
-import { SkillModel } from "./modules/model/item/skill.js";
-import { SpellModel } from "./modules/model/item/spell.js";
-import { TraitModel } from "./modules/model/item/trait.js";
-import { WeaponModel } from "./modules/model/item/weapon.js";
-import { ExtendedTestModel } from "./modules/model/item/extendedTest.js";
-import { VehicleModModel } from "./modules/model/item/vehicleMod.js";
-import { CargoModel } from "./modules/model/item/cargo.js";
-import WFRP4eActiveEffectConfig from "./modules/apps/effect-config.js";
-import ActiveEffectWFRP4e from "./modules/system/effect-wfrp4e.js";
+import ActorSheetWFRP4eCharacter from "./src/sheets/actor/character-sheet.js";
+import ActorSheetWFRP4eNPC from "./src/sheets/actor/npc-sheet.js";
+import ActorSheetWFRP4eCreature from "./src/sheets/actor/creature-sheet.js";
+import ActorSheetWFRP4eVehicle from "./src/sheets/actor/vehicle-sheet.js";
+import ActorWFRP4e from "./src/documents/actor.js";
+import registerHooks from "./src/system/hooks.js"
+import CharGenWfrp4e from "./src/apps/chargen/char-gen.js"
+import MarketWFRP4e from "./src/apps/market-wfrp4e.js";
+import NameGenWfrp from "./src/apps/name-gen.js";
+import StatBlockParser from "./src/apps/stat-parser.js";
+import BrowserWfrp4e from "./src/apps/wfrp-browser.js";
+import WFRP_Audio from "./src/system/audio-wfrp4e.js";
+import WFRP4E from "./src/system/config-wfrp4e.js"
+import ChatWFRP from "./src/system/chat-wfrp4e.js";
+import WFRP_Tables from "./src/system/tables-wfrp4e.js";
+import WFRP_Utility from "./src/system/utility-wfrp4e.js";
+import ActorSettings from "./src/apps/actor-settings.js";
+import WFRPActiveEffectConfig from "./src/apps/effect-config.js";
+import Migration from "./src/system/migrations.js";
+import HomebrewSettings from "./src/apps/homebrew-settings.js"
+import CareerSelector from "./src/apps/career-selector.js"
+import TagManager from "./src/system/tag-manager.js";
+import ItemProperties from "./src/apps/item-properties.js"
+import TestWFRP from "./src/system/rolls/test-wfrp4e.js";
+import CharacteristicTest from "./src/system/rolls/characteristic-test.js";
+import SkillTest from "./src/system/rolls/skill-test.js";
+import WeaponTest from "./src/system/rolls/weapon-test.js";
+import CastTest from "./src/system/rolls/cast-test.js";
+import WomCastTest from "./src/system/rolls/wom-cast-test.js";
+import ChannelTest from "./src/system/rolls/channel-test.js";
+import PrayerTest from "./src/system/rolls/prayer-test.js";
+import TraitTest from "./src/system/rolls/trait-test.js";
+import { WFRPJournalTextPageSheet } from "./src/system/journal-sheet.js";
+import { ChargenStage } from "./src/apps/chargen/stage.js";
+import { CharacterModel } from "./src/model/actor/character.js";
+import { VehicleModel } from "./src/model/actor/vehicle.js";
+import { NPCModel } from "./src/model/actor/npc.js";
+import { CreatureModel } from "./src/model/actor/creature.js";
+import { AmmunitionModel } from "./src/model/item/ammunition.js";
+import { ArmourModel } from "./src/model/item/armour.js";
+import { CareerModel } from "./src/model/item/career.js";
+import { ContainerModel } from "./src/model/item/container.js";
+import { CriticalModel } from "./src/model/item/critical.js";
+import { DiseaseModel } from "./src/model/item/disease.js";
+import { InjuryModel } from "./src/model/item/injury.js";
+import { MoneyModel } from "./src/model/item/money.js";
+import { MutationModel } from "./src/model/item/mutation.js";
+import { PrayerModel } from "./src/model/item/prayer.js";
+import { PsychologyModel } from "./src/model/item/psychology.js";
+import { TalentModel } from "./src/model/item/talent.js";
+import { TrappingModel } from "./src/model/item/trapping.js";
+import { SkillModel } from "./src/model/item/skill.js";
+import { SpellModel } from "./src/model/item/spell.js";
+import { TraitModel } from "./src/model/item/trait.js";
+import { WeaponModel } from "./src/model/item/weapon.js";
+import { ExtendedTestModel } from "./src/model/item/extendedTest.js";
+import { VehicleModModel } from "./src/model/item/vehicleMod.js";
+import { CargoModel } from "./src/model/item/cargo.js";
+import WFRP4eActiveEffectConfig from "./src/apps/effect-config.js";
+import ActiveEffectWFRP4e from "./src/system/effect-wfrp4e.js";
 import loadScripts from "./loadScripts.js"
-import { VehicleRoleModel } from "./modules/model/item/vehicleRole.js";
-import { VehicleTestModel } from "./modules/model/item/vehicleTest.js";
-import TradeManager from "./modules/system/trade/trade-manager.js";
-import { WFRP4eActiveEffectModel } from "./modules/model/effect/effect.js";
-import socketHandlers from "./modules/system/socket-handlers.js";
-import { WFRPTestMessageModel } from "./modules/model/message/test.js";
-import { OpposedTestMessage } from "./modules/model/message/opposed-result.js";
-import { OpposedHandlerMessage } from "./modules/model/message/oppose-handler.js";
-import  OpposedHandler from "./modules/system/opposed-handler.js";
-import CombatHelpersWFRP from "./modules/system/combat.js";
-import ActorSheetWFRP4eCharacterV2 from "./src/apps/sheets/actor/character-sheet.js";
-import { GenericAspectModel } from "./modules/model/item/generic.js";
-import ActorSheetWFRP4eNPCV2 from "./src/apps/sheets/actor/npc-sheet.js";
-import ActorSheetWFRP4eCreatureV2 from "./src/apps/sheets/actor/creature-sheet.js";
-import TalentSheet from "./src/apps/sheets/item/talent-sheet.js";
-import MutationSheet from "./src/apps/sheets/item/mutation-sheet.js";
-import CriticalSheet from "./src/apps/sheets/item/critical-sheet.js";
-import InjurySheet from "./src/apps/sheets/item/injury-sheet.js";
-import AmmunitionSheet from "./src/apps/sheets/item/ammunition-sheet.js";
-import SkillSheet from "./src/apps/sheets/item/skill-sheet.js";
-import ArmourSheet from "./src/apps/sheets/item/armour-sheet.js";
-import CareerSheet from "./src/apps/sheets/item/career-sheet.js";
-import CargoSheet from "./src/apps/sheets/item/cargo.js";
-import ContainerSheet from "./src/apps/sheets/item/container-sheet.js";
-import ExtendedTestSheet from "./src/apps/sheets/item/extendedTest-sheet.js";
-import DiseaseSheet from "./src/apps/sheets/item/disease-sheet.js";
-import MoneySheet from "./src/apps/sheets/item/money.js";
-import PrayerSheet from "./src/apps/sheets/item/prayer-sheet.js";
-import PsychologySheet from "./src/apps/sheets/item/psychology-sheet.js";
-import SpellSheet from "./src/apps/sheets/item/spell-sheet.js";
-import TraitSheet from "./src/apps/sheets/item/trait-sheet.js";
-import TrappingSheet from "./src/apps/sheets/item/trapping-sheet.js";
-import VehicleModSheet from "./src/apps/sheets/item/vehicleMod-sheet.js";
-import VehicleRoleSheet from "./src/apps/sheets/item/vehicleRole-sheet.js";
-import VehicleTestSheet from "./src/apps/sheets/item/vehicleTest-sheet.js";
-import WeaponSheet from "./src/apps/sheets/item/weapon-sheet.js";
-import { TemplateModel } from "./modules/model/item/template.js";
-import TemplateSheet from "./src/apps/sheets/item/template-sheet.js";
-import ActorSheetWFRP4eVehicleV2 from "./src/apps/sheets/actor/vehicle-sheet.js";
+import { VehicleRoleModel } from "./src/model/item/vehicleRole.js";
+import { VehicleTestModel } from "./src/model/item/vehicleTest.js";
+import TradeManager from "./src/system/trade/trade-manager.js";
+import { WFRP4eActiveEffectModel } from "./src/model/effect/effect.js";
+import socketHandlers from "./src/system/socket-handlers.js";
+import { WFRPTestMessageModel } from "./src/model/message/test.js";
+import { OpposedTestMessage } from "./src/model/message/opposed-result.js";
+import { OpposedHandlerMessage } from "./src/model/message/oppose-handler.js";
+import  OpposedHandler from "./src/system/opposed-handler.js";
+import CombatHelpersWFRP from "./src/system/combat.js";
+import ActorSheetWFRP4eCharacterV2 from "./src/sheets/actor/character-sheet.js";
+import { GenericAspectModel } from "./src/model/item/generic.js";
+import ActorSheetWFRP4eNPCV2 from "./src/sheets/actor/npc-sheet.js";
+import ActorSheetWFRP4eCreatureV2 from "./src/sheets/actor/creature-sheet.js";
+import TalentSheet from "./src/sheets/item/talent-sheet.js";
+import MutationSheet from "./src/sheets/item/mutation-sheet.js";
+import CriticalSheet from "./src/sheets/item/critical-sheet.js";
+import InjurySheet from "./src/sheets/item/injury-sheet.js";
+import AmmunitionSheet from "./src/sheets/item/ammunition-sheet.js";
+import SkillSheet from "./src/sheets/item/skill-sheet.js";
+import ArmourSheet from "./src/sheets/item/armour-sheet.js";
+import CareerSheet from "./src/sheets/item/career-sheet.js";
+import CargoSheet from "./src/sheets/item/cargo.js";
+import ContainerSheet from "./src/sheets/item/container-sheet.js";
+import ExtendedTestSheet from "./src/sheets/item/extendedTest-sheet.js";
+import DiseaseSheet from "./src/sheets/item/disease-sheet.js";
+import MoneySheet from "./src/sheets/item/money.js";
+import PrayerSheet from "./src/sheets/item/prayer-sheet.js";
+import PsychologySheet from "./src/sheets/item/psychology-sheet.js";
+import SpellSheet from "./src/sheets/item/spell-sheet.js";
+import TraitSheet from "./src/sheets/item/trait-sheet.js";
+import TrappingSheet from "./src/sheets/item/trapping-sheet.js";
+import VehicleModSheet from "./src/sheets/item/vehicleMod-sheet.js";
+import VehicleRoleSheet from "./src/sheets/item/vehicleRole-sheet.js";
+import VehicleTestSheet from "./src/sheets/item/vehicleTest-sheet.js";
+import WeaponSheet from "./src/sheets/item/weapon-sheet.js";
+import { TemplateModel } from "./src/model/item/template.js";
+import TemplateSheet from "./src/sheets/item/template-sheet.js";
+import ActorSheetWFRP4eVehicleV2 from "./src/sheets/actor/vehicle-sheet.js";
 import ChatMessageWFRP from "./src/documents/message.js";
 import calendar from "./src/system/calendar.js";
+import ItemWFRP4e from "./src/documents/item.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -188,12 +186,10 @@ Hooks.once("init", function () {
 
   game.wfrp4e = {
     apps: {
-      ActorSheetWFRP4e,
       ActorSheetWFRP4eCharacter,
       ActorSheetWFRP4eCreature,
       ActorSheetWFRP4eNPC,
       ActorSheetWFRP4eVehicle,
-      ItemSheetWfrp4e,
       CharGenWfrp4e,
       StatBlockParser,
       BrowserWfrp4e,
@@ -206,7 +202,7 @@ Hooks.once("init", function () {
     },
     documents: {
       ActorWFRP4e,
-      ItemWfrp4e,
+      ItemWFRP4e,
       GenericAspectModel
     },
     rolls : {
@@ -236,7 +232,7 @@ Hooks.once("init", function () {
   CombatHelpersWFRP.registerHelpers();
 
   CONFIG.Actor.documentClass = ActorWFRP4e;
-  CONFIG.Item.documentClass = ItemWfrp4e;
+  CONFIG.Item.documentClass = ItemWFRP4e;
   CONFIG.ActiveEffect.documentClass = ActiveEffectWFRP4e;
   CONFIG.ChatMessage.documentClass = ChatMessageWFRP;
   CONFIG.RollTable.documentClass = WarhammerRollTable;

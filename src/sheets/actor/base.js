@@ -1,7 +1,6 @@
-import ActorSettings from "../../../../modules/apps/actor-settings";
-import MarketWFRP4e from "../../../../modules/apps/market-wfrp4e";
-import ActiveEffectWFRP4e from "../../../../modules/system/effect-wfrp4e";
-import WFRP_Utility from "../../../../modules/system/utility-wfrp4e";
+import WFRP_Utility from "../../system/utility-wfrp4e";
+import ActorSettings from "../../apps/actor-settings";
+import MarketWFRP4e from "../../apps/market-wfrp4e";
 
 export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 {
@@ -481,7 +480,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   _getConditionData(context) {
     try {
-      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffectWFRP4e(e));
+      let conditions = foundry.utils.duplicate(game.wfrp4e.config.statusEffects).map(e => new ActiveEffect.implementation(e));
       let currentConditions = this.actor.effects.filter(e => e.isCondition);
       delete conditions.splice(conditions.length - 1, 1)
 

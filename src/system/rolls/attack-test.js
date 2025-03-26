@@ -1,6 +1,4 @@
 import TestWFRP from "./test-wfrp4e.js"
-import ItemWfrp4e from "../../item/item-wfrp4e.js";
-import WFRP_Utility from "../utility-wfrp4e.js";
 
 export default class AttackTest extends TestWFRP {
 

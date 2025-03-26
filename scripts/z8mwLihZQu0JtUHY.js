@@ -33,11 +33,11 @@ for (let ch in characteristics)
 for (let item of specialItems) {
     let newItem
     if (item.type == "weapon") {
-        newItem = new ItemWfrp4e({ name: item.name, type: item.type, system: { equipped: true, damage: {value: item.damage}}  })
+        newItem = new ItemWFRP4e({ name: item.name, type: item.type, system: { equipped: true, damage: {value: item.damage}}  })
     } else if (item.type == "trapping") {
-        newItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: item.name, type: item.type, system: { worn: true, trappingType: { value: item.trappingType}  } } )
+        newItem = new ItemWFRP4e({ img: "systems/wfrp4e/icons/blank.png", name: item.name, type: item.type, system: { worn: true, trappingType: { value: item.trappingType}  } } )
     } else {
-        newItem = new ItemWfrp4e({ img: "systems/wfrp4e/icons/blank.png", name: item.name, type: item.type  })
+        newItem = new ItemWFRP4e({ img: "systems/wfrp4e/icons/blank.png", name: item.name, type: item.type  })
     }
     items.push(newItem.toObject())
 }
