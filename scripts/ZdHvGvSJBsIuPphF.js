@@ -1,1 +1,1 @@
-return !args.data.dualWieldingOption
+return !args.data.dualWieldingOption && !args.options.dualWieldOffhand
