@@ -2,11 +2,12 @@
 @use "./mixins" as *;
 
 
+#interface:not(.theme-light) #chat-notifications:not(.no-theme),
 #interface:not(.theme-light) #sidebar:not(.no-theme) {
     @include links;
 
-    .chat-form {
-        textarea {
+    #chat-message,
+    .chat-form textarea {
             background: url(./ui/frames/parchment-texture.webp) repeat;
             border: 1px solid black;
             border-image: url(./ui/chat-form-border.webp) 10 repeat;
@@ -15,9 +16,9 @@
             padding: 15px;
             box-shadow: inset 0 0 40px #000000;
             color: black;
-        }
     }
 
+    .chat-message,
     .chat-log .message {
         border: 1px solid;
         border-image: url(./ui/frames/chat-message-border.webp) 21 repeat;

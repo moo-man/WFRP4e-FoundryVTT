@@ -14,10 +14,11 @@
             }
 
             button {
+                outline: none;
+                box-shadow: none;
                 &:hover {
                     background: unset;
                 }
-
                 &.header-control {
                     --button-size: 2rem;
                     background-image: url(./ui/buttons/stamp.webp);

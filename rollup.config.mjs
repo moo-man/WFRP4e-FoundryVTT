@@ -11,7 +11,7 @@ let systemPath = getSystemPath(manifest.id)
 
 console.log("Bundling to " + systemPath)
 export default {
-    input: [`${manifest.id}.js`, `./style/${manifest.id}.scss`],
+    input: [`src/${manifest.id}.js`, `./style/${manifest.id}.scss`],
     output: {
         dir : systemPath
         // file : path.join(systemPath, `${manifest.id}.js`)
