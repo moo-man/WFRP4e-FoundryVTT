@@ -1207,7 +1207,8 @@
       "base",
       "test",
       "handler",
-      "opposed"
+      "opposed",
+      "item"
     ]
   }
 }

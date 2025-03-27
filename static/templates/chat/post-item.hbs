@@ -1,29 +1,39 @@
-<div class="wfrp4e post-item" data-transfer="{{transfer}}">
-    <h3><b>{{name}}</b></h3>
+
+<div class="post-item {{#if (eq postQuantity 0)}}disabled inactive{{/if}}">
+    <h4>{{item.name}}</h4>
     {{#if img}}
-    <img src="{{img}}" title="{{name}}" />
+    <img src="{{img}}"/>
     {{/if}}
 
-    <div class="card-content">{{{system.description.value}}}</div>
+    <div class="card-content">{{{item.system.description.value}}}</div>
 
+    {{#if item.system.quantity}}
+    <span><strong>{{localize "Quantity"}}</strong>: {{item.system.quantity.value}}</span><br>
+    {{/if}}
     {{#each properties as |property p|}}
     <span>{{{property}}}</span><br>
     {{/each}}
-    {{#if hasPrice}}
-
-    <span class="haggle-buttons" title="{{localize 'CHAT.HaggleHint'}}">
+    {{#if item.system.price}}
+    <span class="haggle-buttons gm-only" title="{{localize 'CHAT.HaggleHint'}}">
         <span><b>{{localize "CHAT.Haggle"}}</b>:</span>
-        <a class="haggle" data-type="up"><i class="fas fa-caret-up"></i></a>
-        <a class="haggle" data-type="down"><i class="fas fa-caret-down"></i></a>
+        <a class="haggle" data-action="haggle" data-type="up"><i class="fas fa-caret-up"></i></a>
+        <a class="haggle" data-action="haggle" data-type="down"><i class="fas fa-caret-down"></i></a>
     </span>
-
-    <span class="chat-card-button-area">
-        <a class='chat-card-button market-button' data-button='rollAvailability' data-rarity="{{system.availability.value}}" data-name="{{name}}">{{localize "MARKET.RollForAvailability"}}</a>
-        <a class='chat-card-button market-button' data-button='payItem' data-pay="{{system.price.gc}}{{localize 'MARKET.Abbrev.GC'}}{{system.price.ss}}{{localize 'MARKET.Abbrev.SS'}}{{system.price.bp}}{{localize 'MARKET.Abbrev.BP'}},{{name}}">{{localize "MARKET.PayForItem"}}</a>
-    </span>
-    {{/if}}
-
-    {{#if showQuantity}}
-        <b>{{localize "Post Quantity"}}: </b> <span class="postQuantity">{{postQuantity}}</span>
     {{/if}}
 </div>
+{{#if (gte postQuantity 0)}}
+    <p><strong>{{localize "Post Quantity"}}</strong>: {{postQuantity}}</p>
+{{/if}}
+
+{{#if retrievedBy}}
+<p><strong>Retrieved By: </strong> {{retrievedBy}}</p>
+{{/if}}
+
+{{#if item.system.price}}
+    <div class="flex-row">
+        {{#if item.system.availability}}
+        <a class='chat-button' data-action='rollAvailability'>{{localize "MARKET.RollForAvailability"}}</a>
+        {{/if}}
+        <a class='chat-button' data-action='pay'>{{localize "MARKET.PayForItem"}}</a>
+    </div>
+{{/if}}

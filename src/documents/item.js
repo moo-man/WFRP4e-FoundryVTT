@@ -1,3 +1,4 @@
+import { PostedItemMessageModel } from "../model/message/posted-item.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
@@ -26,6 +27,11 @@ export default class ItemWFRP4e extends WarhammerItem
 
   async _onCreate(data, options, user)
   {
+
+    if (game.user.isUniqueGM && options.fromMessage && this.actor)
+    {
+      game.messages.get(options.fromMessage)?.system.decrementQuantity(this.actor.name)
+    }
     if (game.user.id != user)
     {
         return;
@@ -242,114 +248,9 @@ export default class ItemWFRP4e extends WarhammerItem
    * the image if it exists, as well as setting flags so drag+drop works.
    * 
    */
-  async postItem(quantity, mergeData={}) {
-    const properties = this.system.chatData();
-    let postedItem = foundry.utils.mergeObject(this.toObject(), mergeData)
-    let chatData = foundry.utils.duplicate(postedItem);
-    chatData["properties"] = properties
-
-    //Check if the posted item should have availability/pay buttons
-    chatData.hasPrice = "price" in chatData.system && this.type != "cargo";
-    if (chatData.hasPrice) {
-      if (!chatData.system.price.gc || isNaN(chatData.system.price.gc || 0))
-        chatData.system.price.gc = 0;
-      if (!chatData.system.price.ss || isNaN(chatData.system.price.ss || 0))
-        chatData.system.price.ss = 0;
-      if (!chatData.system.price.bp || isNaN(chatData.system.price.bp))
-        chatData.system.price.bp = 0;
-    }
-
-    let dialogResult;
-    if (quantity == undefined && (this.type == "weapon" || this.type == "armour" || this.type == "ammunition" || this.type == "container" || this.type == "money" || this.type == "trapping")) {
-      dialogResult = await new Promise((resolve, reject) => {
-        new Dialog({
-          content:
-            `<p>${game.i18n.localize("DIALOG.EnterQuantity")}</p>
-          <div class="form-group">
-            <label> ${game.i18n.localize("DIALOG.PostQuantity")}</label>
-            <input style="width:100px" name="post-quantity" type="number" value="1"/>
-          </div>
-          <div class="form-group">
-          <label> ${game.i18n.localize("DIALOG.ItemQuantity")}</label>
-          <input style="width:100px" name="item-quantity" type="number" value="${this.quantity.value}"/>
-        </div>
-        <p>${game.i18n.localize("DIALOG.QuantityHint")}</p>
-          `,
-          title: game.i18n.localize("DIALOG.PostQuantity"),
-          buttons: {
-            post: {
-              label: game.i18n.localize("Post"),
-              callback: (dlg) => {
-                resolve({
-                  post: dlg.find('[name="post-quantity"]').val(),
-                  qty: dlg.find('[name="item-quantity"]').val()
-                })
-              }
-            },
-            inf: {
-              label: game.i18n.localize("Infinite"),
-              callback: (dlg) => {
-                resolve({ post: "inf", qty: dlg.find('[name="item-quantity"]').val() })
-              }
-            },
-          }
-        }).render(true)
-      })
-
-      if (dialogResult.post != "inf" && (!Number.isNumeric(dialogResult.post) || parseInt(dialogResult.post) <= 0))
-        return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
-
-      if (dialogResult.qty != "inf" && (!Number.isNumeric(dialogResult.qty) || parseInt(dialogResult.qty) < 0))
-        return ui.notifications.error(game.i18n.localize("CHAT.PostError"))
-
-
-      let totalQtyPosted = (dialogResult.post * dialogResult.qty)
-      if (Number.isNumeric(totalQtyPosted)) {
-        if (this.isOwned) {
-          if (this.quantity.value < totalQtyPosted) {
-            return ui.notifications.notify(game.i18n.format("CHAT.PostMoreThanHave"))
-          }
-          else {
-            ui.notifications.notify(game.i18n.format("CHAT.PostQuantityReduced", { num: totalQtyPosted }));
-            this.update({ "system.quantity.value": this.quantity.value - totalQtyPosted })
-          }
-        }
-      }
-
-
-      if (dialogResult.post != "inf")
-        chatData.showQuantity = true
-
-      chatData.postQuantity = dialogResult.post;
-      postedItem.system.quantity.value = dialogResult.qty
-      chatData.system.quantity.value = dialogResult.qty
-    }
-    else if (quantity > 0) {
-      chatData.postQuantity = quantity;
-      chatData.showQuantity = true;
-    }
-
-    // if (dialogResult.post != "inf" && isNaN(dialogResult.post * dialogResult.qty))
-    //   return
-
-
-    // Don't post any image for the item (which would leave a large gap) if the default image is used
-    if (chatData.img.includes("/blank.png"))
-      chatData.img = null;
-
-    renderTemplate('systems/wfrp4e/templates/chat/post-item.hbs', chatData).then(html => {
-      let chatOptions = WFRP_Utility.chatDataSetup(html)
-
-      // Setup drag and drop data
-      chatOptions["flags.transfer"] = JSON.stringify(
-        {
-          type: "Item",
-          data: postedItem,
-        })
-      chatOptions["flags.postQuantity"] = chatData.postQuantity;
-      chatOptions["flags.recreationData"] = chatData;
-      ChatMessage.create(chatOptions)
-    });
+  async postItem(quantity, mergeData={}) 
+  {
+    PostedItemMessageModel.create(this, quantity, mergeData);
   }
 
   //#endregion

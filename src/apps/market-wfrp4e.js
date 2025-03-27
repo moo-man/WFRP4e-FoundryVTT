@@ -237,6 +237,7 @@ export default class MarketWFRP4e {
           await actor.createEmbeddedDocuments("Item", [itemData])
           ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: itemData.name, actor: actor.name }))
         }
+        return true;
       }
     } else {
       ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));

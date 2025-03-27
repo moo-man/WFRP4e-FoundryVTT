@@ -25,7 +25,6 @@ export default class ChatWFRP {
 
 
     html.on("click", '.market-button', this._onMarketButtonClicked.bind(this))
-    html.on("click", ".haggle", this._onHaggleClicked.bind(this))
     html.on("click", ".corrupt-button", this._onCorruptButtonClicked.bind(this))
     html.on("click", ".fear-button", this._onFearButtonClicked.bind(this))
     html.on("click", ".terror-button", this._onTerrorButtonClicked.bind(this))
@@ -136,33 +135,6 @@ export default class ChatWFRP {
         MarketWFRP4e.testForAvailability(options);
         break;
     }
-  }
-
-
-  static _onHaggleClicked(event) {
-    let html = $(event.currentTarget).parents(".message")
-    let msg = game.messages.get(html.attr("data-message-id"))
-    let multiplier = $(event.currentTarget).attr("data-type") == "up" ? 1 : -1
-    let payString = html.find("[data-button=payItem]").attr("data-pay")
-    let originalPayString = payString
-    if (!msg.getFlag("wfrp4e", "originalPrice"))
-      msg.setFlag("wfrp4e", "originalPrice", payString)
-    else
-      originalPayString = msg.getFlag("wfrp4e", "originalPrice")
-
-    let originalAmount = MarketWFRP4e.parseMoneyTransactionString(originalPayString)
-    let currentAmount = MarketWFRP4e.parseMoneyTransactionString(payString)
-
-    let originalBPAmount = originalAmount.gc * 240 + originalAmount.ss * 12 + originalAmount.bp
-    let bpAmount = currentAmount.gc * 240 + currentAmount.ss * 12 + currentAmount.bp
-    bpAmount += Math.round((originalBPAmount * .1)) * multiplier
-
-    let newAmount = MarketWFRP4e.makeSomeChange(bpAmount, 0)
-    let newPayString = MarketWFRP4e.amountToString(newAmount)
-    html.find("[data-button=payItem]")[0].setAttribute("data-pay", newPayString)
-    let newContent = html.find(".message-content").html()
-    newContent = newContent.replace(`${currentAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${currentAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${currentAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`, `${newAmount.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}, ${newAmount.ss} ${game.i18n.localize("MARKET.Abbrev.SS")}, ${newAmount.bp} ${game.i18n.localize("MARKET.Abbrev.BP")}`)
-    msg.update({ content: newContent })
   }
 
   static _onCorruptButtonClicked(event) {

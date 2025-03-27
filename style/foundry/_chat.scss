@@ -120,6 +120,32 @@
         .description {
             margin: 0.5rem 0;
             text-align: center;
-        }    
+        }   
+        
+        
+        .post-item {
+            &.inactive {
+                opacity : 0.5;
+            }
+            border: 2px dashed black;
+            padding: 0.5rem;
+            margin: 0.5rem 0px;
+            border-radius: 10px;
+            transition: box-shadow 0.5s;
+            h4 {
+                text-align: center;
+                @include gradient-border;
+            }
+            img {
+                margin: auto;
+                height: 64px;
+                width: 64px;
+                margin-bottom: 0.5rem;
+            }
+            &:hover {
+                box-shadow: 0px 0px 5px inset black;
+                cursor: grab;
+            }
+        }
     }
 }

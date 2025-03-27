@@ -308,7 +308,6 @@ export default function() {
     // Hide chat card edit buttons from non-gms
     if (!game.user.isGM) {
       html.find(".chat-button-gm").remove();
-      html.find(".haggle-buttons").remove();
       // Hide these if actor is not owned by the player
       if (!app.speaker.actor || (app.speaker.actor && !game.actors.get(app.speaker.actor).isOwner))
       {
@@ -331,65 +330,6 @@ export default function() {
     if (html.hasClass("blind") && !game.user.isGM) {
       html.find(".message-header").remove(); // Remove header so Foundry does not attempt to update its timestamp
       html.html("").css("display", "none");
-    }
-
-    // Add drag and drop functonality to posted items
-    let postedItem = html.find(".post-item")[0]
-    if (postedItem) {
-      postedItem.setAttribute("draggable", true);
-      postedItem.classList.add("draggable");
-
-      postedItem.addEventListener('dragstart', ev => {
-        if (app.flags.postQuantity == "inf" || app.flags.postQuantity == undefined)
-          return ev.dataTransfer.setData("text/plain", app.flags.transfer);
-
-        if (game.user.isGM)
-        {
-          ev.dataTransfer.setData("text/plain", app.flags.transfer);
-          let newQuantity = app.flags.postQuantity - 1
-          let recreateData = app.flags.recreationData
-          recreateData.postQuantity = newQuantity;
-          renderTemplate("systems/wfrp4e/templates/chat/post-item.hbs", recreateData).then(html => {
-            app.update({ "flags.postQuantity": newQuantity, content : TextEditor.enrichHTML(html) })
-            if (newQuantity <= 0)
-              app.delete();
-          })
-
-        }
-        else
-        {
-          let newQuantity = app.flags.postQuantity - 1
-
-          if (app.flags.postQuantity)
-            ev.dataTransfer.setData("text/plain", app.flags.transfer);
-
-
-          if (newQuantity == 0) {
-            game.socket.emit("system.wfrp4e", {
-              type: "deleteMessage",
-              payload: {
-                "id": app.id
-              }
-            })
-            return false
-          }
-          else {
-            ev.dataTransfer.setData("text/plain", app.flags.transfer);
-            let recreateData = app.flags.recreationData
-            recreateData.postQuantity = newQuantity;
-            renderTemplate("systems/wfrp4e/templates/chat/post-item.hbs", recreateData).then(html => {
-
-              game.socket.emit("system.wfrp4e", {
-                type: "updateMsg",
-                payload: {
-                  "id": app.id,
-                  "updateData": { "flags.postQuantity": newQuantity, content: TextEditor.enrichHTML(html) }
-                }
-              })
-            })
-          }
-        }
-      })
     }
 
     // Add drag and drop to character generation results
