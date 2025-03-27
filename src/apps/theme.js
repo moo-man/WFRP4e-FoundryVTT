@@ -124,6 +124,8 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
     })
 
     this.setThemeOnElement(ui.sidebar.element, this.#setting.sidebar);
+    // Consider chat notifications to be part of sidebar
+    this.setThemeOnElement(document.body.querySelector("#chat-notifications"), this.#setting.sidebar);
     
     this.setThemeOnElement(document.body, this.#setting.apps);
   }

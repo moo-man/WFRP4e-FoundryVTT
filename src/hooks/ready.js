@@ -21,12 +21,14 @@ export default function () {
     if (!theme.sidebar.enabled)
     {
       ui.sidebar.element.classList.add("no-theme")
+      document.body.querySelector("#chat-notifications").classList.add("no-theme")
     }
     else if (theme.sidebar.font == "classic")
     {
       if (theme.sidebar.font == "classic")
       {
         ui.sidebar.element.classList.add("classic-font");
+        document.body.querySelector("#chat-notifications").classList.add("classic-font")
       }
     }
 
