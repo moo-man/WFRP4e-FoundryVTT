@@ -33,43 +33,5 @@
     </div>
   </div>
 
-  <div class="form-group custom-select" {{#if tooltips.difficulty}}data-tooltip="{{tooltips.difficulty}}" data-tooltip-direction="LEFT"{{/if}}>
-    <label>{{localize "Difficulty"}}</label>
-    <select name="difficulty">
-        {{#select fields.difficulty}}
-        {{#each (config "difficultyLabels")}}
-          <option value="{{@key}}">{{this}}</option>
-        {{/each}}
-        {{/select}}
-    </select>
-  </div>
-
-  {{{subTemplate}}}
-
-{{#if data.hitLoc}}
-  <div class="form-group custom-select">
-    <label>{{localize "ROLL.HitLocation"}}</label>
-    <select name="hitLocation">
-      {{#select fields.hitLocation}}
-        <option value="roll">{{localize "Roll"}}</option>
-        <option value="none">{{localize "None"}}</option>
-        {{#each data.hitLocationTable as |loc key|}}
-          <option value="{{key}}">{{loc}}</option>
-        {{/each}}
-    {{/select}}
-    </select>
-  </div>
-  {{/if}}
-
-  <div class="form-group custom-select">
-    <label>{{localize "DIALOG.RollMode"}}</label>
-    <select name="rollMode">
-      {{#select fields.rollMode}}
-        {{#each (config "rollModes")}}
-          <option value="{{@key}}">{{localize this.label}}</option>
-        {{/each}}
-      {{/select}}
-    </select>
-  </div>
   <button type="submit">{{localize "Roll"}}</button>
 </form>

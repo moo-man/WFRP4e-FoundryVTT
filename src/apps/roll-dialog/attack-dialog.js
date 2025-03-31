@@ -2,12 +2,6 @@ import SkillDialog from "./skill-dialog";
 
 export default class AttackDialog extends SkillDialog  
 {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["weapon-roll-dialog"]);
-        return options;
-    }
-
     get attackType() {
         return this.item.attackType;
     }
@@ -29,8 +23,6 @@ export default class AttackDialog extends SkillDialog
             this.tooltips.add("modifier", 10, game.i18n.localize('Charging'))
           }
         }
-        
-        let properties = this.item.properties;
     }
 
     _computeDefending(attacker) 

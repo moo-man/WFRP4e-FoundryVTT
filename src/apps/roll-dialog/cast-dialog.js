@@ -1,4 +1,4 @@
-import CastTest from "../../system/rolls/cast-test";
+import CharacteristicDialog from "./characteristic-dialog";
 import SkillDialog from "./skill-dialog";
 
 export default class CastDialog extends SkillDialog {
@@ -23,31 +23,31 @@ export default class CastDialog extends SkillDialog {
       return this.item;
     }
 
-    static async setup(fields={}, data={}, options={})
+
+    static async setupData(spell, actor, context={}, options={})
     {
-        let spell = data.spell
-        options.title = options.title || game.i18n.localize("CastingTest") + " - " + spell.name;
-        options.title += options.appendTitle || "";
+        let skill = spell.skillToUse;
+        let characteristic = skill?.system?.characteristic?.key || "int";
+        
+        context.title = context.title || game.i18n.localize("CastingTest") + " - " + spell.name;
+        context.title += context.appendTitle || "";
 
-        data.skill = spell.skillToUse;
-        data.characteristic = data.skill?.system?.characteristic?.key || "int";
+        let dialogData;
+        if (skill)
+        {   
+            dialogData = await super.setupData(skill, actor, context, options);
+        }
+        else
+        {
+            dialogData = await CharacteristicDialog.setupData(characteristic, actor, context, options);
+        }
 
-        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").filter(s => !s.options.defending), data.skill?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
+        let data = dialogData.data;
+        data.spell = spell;
 
-
-        return new Promise(resolve => {
-            let dlg = new this(data, fields, options, resolve)
-            if (options.bypass)
-            {
-                dlg.bypass()
-            }
-            else 
-            {
-                dlg.render(true);
-            }
-        })
+        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").filter(s => !s.options.defending))
+    
+        return dialogData;
     }
 
     _getSubmissionData()

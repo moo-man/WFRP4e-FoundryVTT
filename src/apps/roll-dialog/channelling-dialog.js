@@ -23,41 +23,45 @@ export default class ChannellingDialog extends SkillDialog {
       return this.item;
     }
 
-    static async setup(fields={}, data={}, options={})
+    static async setupData(spell, actor, context={}, options={})
     {
-        let spell = data.spell
-        options.title = options.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
-        options.title += options.appendTitle || "";
 
+        let skill;
         if (spell.system.wind && spell.system.wind.value) 
         {
-            data.skill = data.actor.itemTags["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
+            skill = actor.itemTags["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
         }
         else if (spell.system.lore.value == "witchcraft")
         {
-            data.skill = data.actor.itemTags["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
+            skill = actor.itemTags["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
         }
         else 
         {
-            data.skill = data.actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
+            skill = actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
         }
-        data.characteristic = data.skill?.system.characteristic.key || "wp";
 
-        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").filter(s => !s.options.defending), data.skill?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
+        if (!skill)
+        {
+            skill = {
+                name : `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[spell.system.lore.value]})`,
+                id : "unknown",
+                system : {
+                    characteristic : {
+                        value : "wp"
+                    }
+                }
+            }
+        }
+                
+        context.title = context.title || game.i18n.localize("ChannellingTest") + " - " + spell.name;
+        context.title += context.appendTitle || "";
 
-        return new Promise(resolve => {
-            let dlg = new this(data, fields, options, resolve)
-            if (options.bypass)
-            {
-                dlg.bypass()
-            }
-            else 
-            {
-                dlg.render(true);
-            }
-        })
+        let dialogData = await super.setupData(skill, actor, context, options);
+        let data = dialogData.data;
+        data.spell = spell;
+        data.scripts = data.scripts.concat(spell.getScripts("dialog").filter(s => !s.options.defending))
+
+        return dialogData;
     }
 
     _getSubmissionData()

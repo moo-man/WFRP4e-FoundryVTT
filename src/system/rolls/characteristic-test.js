@@ -12,6 +12,11 @@ export default class CharacteristicTest extends TestWFRP {
     this.computeTargetNumber();
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
     this.data.result.target = this.item.value
     super.computeTargetNumber();

@@ -8,6 +8,14 @@ import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
 import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
 import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import ActiveEffectWFRP4e from "../system/effect-wfrp4e.js";
+import CharacteristicTest from "../system/rolls/characteristic-test.js";
+import SkillTest from "../system/rolls/skill-test.js";
+import WeaponTest from "../system/rolls/weapon-test.js";
+import TraitTest from "../system/rolls/trait-test.js";
+import PrayerTest from "../system/rolls/prayer-test.js";
+import ChannelTest from "../system/rolls/channel-test.js";
+import CastTest from "../system/rolls/cast-test.js";
+import WomCastTest from "../system/rolls/wom-cast-test.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -113,76 +121,8 @@ export default class ActorWFRP4e extends WarhammerActor
 
   //#region Rolling
 
-  // Shared setup data for all different dialogs
-  // Each dialog also has its own "setup" function
-  _setupTest(dialogData, dialogClass)
-  {
-    dialogData.data.actor = this;
-    dialogData.data.targets = [];
-    dialogData.data.scripts = [];
-    if (!dialogData.options.skipTargets)
-    {
-      dialogData.data.targets = game.user.targets.size ? Array.from(game.user.targets) : (dialogData.options.targets || []);
-      delete dialogData.options.targets;
-      dialogData.data.scripts = foundry.utils.deepClone((dialogData.data.targets 
-        .map(t => t.actor)
-        .filter(actor => actor)
-        .reduce((prev, current) => prev.concat(current.getScripts("dialog", (s) => s.options?.targeter)), []) // Retrieve targets' targeter dialog effects
-        .concat(this?.getScripts("dialog", (s) => !s.options?.targeter && !s.options?.defending) // Don't use our own targeter dialog effects
-        ))) || [];
-    }
-    else 
-    {
-      dialogData.data.scripts = this?.getScripts("dialog", (s) => !s.options?.targeter && !s.options?.defending) // Don't use our own targeter dialog effects
-    }
-
-
-
-
-    dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
-
-    if (dialogData.options.context) {
-      if (typeof dialogData.options.context.general === "string")
-        dialogData.options.context.general = [dialogData.options.context.general]
-      if (typeof dialogData.options.context.success === "string")
-        dialogData.options.context.success = [dialogData.options.context.success]
-      if (typeof dialogData.options.context.failure === "string")
-        dialogData.options.context.failure = [dialogData.options.context.failure]
-    }
-
-    if (dialogData.data.hitLoc)
-    {
-      dialogData.fields.hitLocation = dialogData.fields.hitLocation || "roll", // Default a WS or BS test to have hit location if not specified;
-      dialogData.data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(dialogData.data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-    }
-    else 
-    {
-      dialogData.fields.hitLocation = "none"
-    }
-
-    return dialogClass.setup(dialogData.fields, dialogData.data, dialogData.options)
-  }
-
-  /**
-   * Setup a Characteristic Test.
-   *
-   * Characteristics tests are the simplest test, all that needs considering is the target number of the
-   * characteristic being tested, and any modifiers the user enters.
-   *
-   * @param {String} characteristicId     The characteristic id (e.g. "ws") - id's can be found in config.js
-   *
-   */
-  async setupCharacteristic(characteristic, options = {}) {
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        characteristic,
-        hitLoc : (characteristic == "ws" || characteristic == "bs") && !options.reload
-      },    
-      options : options || {}         // Application/optional properties
-    }
-    // TODO: handle abort
-    return this._setupTest(dialogData, CharacteristicDialog)
+  async setupCharacteristic(characteristic, context = {}) {
+    return this._setupTest(CharacteristicDialog, CharacteristicTest, characteristic, context, false)
   }
 
   /**
@@ -195,7 +135,7 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} skill    The skill item being tested. Skill items contain the advancements and the base characteristic, see template.json for more information.
    * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
-  async setupSkill(skill, options = {}) {
+  async setupSkill(skill, context = {}) {
     if (typeof (skill) === "string") {
       let skillName = skill
       skill = this.itemTags["skill"].find(sk => sk.name == skill)
@@ -205,27 +145,15 @@ export default class ActorWFRP4e extends WarhammerActor
         skill = {
           name : skillName,
           id : "unknown",
-          characteristic : {
-            key : ""
+          system : {
+            characteristic : {
+              value : ""
+            }
           }
         }
       }
     }
-
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        skill,
-        hitLoc : ((skill.characteristic.key == "ws" ||
-                  skill.characteristic.key == "bs" ||
-                  skill.name.includes(game.i18n.localize("NAME.Melee")) ||
-                  skill.name.includes(game.i18n.localize("NAME.Ranged")))
-                  && !options.reload)
-      },    
-      options : options || {}         // Application/optional properties
-    }
-
-    return this._setupTest(dialogData, SkillDialog)
+    return this._setupTest(SkillDialog, SkillTest, skill, context, false)
   }
 
   /**
@@ -238,17 +166,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} weapon   The weapon Item being used.
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
-  async setupWeapon(weapon, options = {}) {
+  async setupWeapon(weapon, context = {}) {
 
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        weapon,
-        hitLoc : true
-      },    
-      options : options || {}         // Application/optional properties
-    }
-    return this._setupTest(dialogData, WeaponDialog)
+    return this._setupTest(WeaponDialog, WeaponTest, weapon, context, false)
   }
 
 
@@ -262,17 +182,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} spell    The spell Item being Casted. The spell item has information like CN, lore, and current ingredient ID
    *
    */
-  async setupCast(spell, options = {}) {
+  async setupCast(spell, context = {}) {
 
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        spell,
-        hitLoc : !!spell.system.damage.value
-      },    
-      options : options || {}         // Application/optional properties
-    }
-    return this._setupTest(dialogData, CastDialog)
+    return this._setupTest(CastDialog, game.settings.get("wfrp4e", "useWoMOvercast") ? WomCastTest : CastTest, spell, context, false)
   }
 
   /**
@@ -286,17 +198,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * This spell SL will then be updated accordingly.
    *
    */
-  async setupChannell(spell, options = {}) {
-
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        spell,
-        hitLoc : false
-      },    
-      options : options || {}         // Application/optional properties
-    }
-    return this._setupTest(dialogData, ChannellingDialog)
+  async setupChannell(spell, context = {}) 
+  {
+    return this._setupTest(ChannellingDialog, ChannelTest, spell, context, false)
   }
 
   /**
@@ -309,17 +213,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} prayer    The prayer Item being used, compared to spells, not much information
    * from the prayer itself is needed.
    */
-  async setupPrayer(prayer, options = {}) {
-
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        prayer,
-        hitLoc : (prayer.damage.value || prayer.damage.dice || prayer.damage.addSL)
-      },    
-      options : options || {}         // Application/optional properties
-    }
-    return this._setupTest(dialogData, PrayerDialog)
+  async setupPrayer(prayer, context = {}) 
+  {
+    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, false)
   }
 
   /**
@@ -332,19 +228,9 @@ export default class ActorWFRP4e extends WarhammerActor
    *
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
-  async setupTrait(trait, options = {}) {
-
-    let dialogData = {
-      fields : options.fields || {},  // Fields are data properties in the dialog template
-      data : {                  // Data is internal dialog data
-        trait,
-        hitLoc : (trait.system.rollable.rollCharacteristic == "ws" || trait.system.rollable.rollCharacteristic == "bs")
-      },    
-      options : options || {}         // Application/optional properties
-    }
-
-    return this._setupTest(dialogData, TraitDialog) 
-    //   deadeyeShot : this.has(game.i18n.localize("NAME.DeadeyeShot"), "talent") && weapon.attackType == "ranged"
+  async setupTrait(trait, context = {}) 
+  {
+    return this._setupTest(TraitDialog, TraitTest, trait, context, false)
   }
 
   setupItem(id, options={})
@@ -366,7 +252,7 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
 
-  async setupExtendedTest(item, options = {}) {
+  async setupExtendedTest(item, context = {}) {
 
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
@@ -413,37 +299,37 @@ export default class ActorWFRP4e extends WarhammerActor
    * Deprecated - only used for compatibility with existing effects
    * As shown in the functions, just call `roll()` on the test object to compute the tests
    */
-  async basicTest(test, options = {}) {
+  async basicTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
-  async weaponTest(test, options = {}) {
+  async weaponTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll();
     return test;
   }
-  async castTest(test, options = {}) {
+  async castTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
-  async channelTest(test, options = {}) {
+  async channelTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
-  async prayerTest(test, options = {}) {
+  async prayerTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()
     return test;
   }
-  async traitTest(test, options = {}) {
+  async traitTest(test, context = {}) {
     if (test.testData)
       return ui.notifications.warn(game.i18n.localize("WARNING.ActorTest"))
     await test.roll()

@@ -18,6 +18,10 @@
             color: black;
     }
 
+    .chat-message 
+    {
+        box-shadow: 0 0 15px black;
+    }
     .chat-message,
     .chat-log .message {
         border: 1px solid;

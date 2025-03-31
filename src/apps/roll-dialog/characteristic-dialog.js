@@ -2,16 +2,7 @@ import CharacteristicTest from "../../system/rolls/characteristic-test";
 import RollDialog from "./roll-dialog";
 
 export default class CharacteristicDialog extends RollDialog {
-
-    testClass = CharacteristicTest
     chatTemplate = "systems/wfrp4e/templates/chat/roll/characteristic-card.hbs"
-
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["characteristic-roll-dialog"]);
-        return options;
-    }
-
     get item()
     {
       return this.characteristic
@@ -23,24 +14,34 @@ export default class CharacteristicDialog extends RollDialog {
     }
 
 
-    static async setup(fields={}, data={}, options={})
+    static async setupData(characteristic, actor, context={}, options={})
     {
-        // let {data, fields} = this._baseDialogData(actor, options);
+        let dialogData = this._baseDialogData(actor, context);
 
-        options.title = options.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[data.characteristic]});
-        options.title += options.appendTitle || "";
+        context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
+        context.title += context.appendTitle || "";
 
-        if (options.reload)
+        foundry.utils.mergeObject(dialogData, {data : {characteristic}, fields : context.fields});
+
+        let data = dialogData.data;
+        
+        data.hitloc = (characteristic == "ws" || characteristic == "bs") && !dialogData.context.reload
+        
+        if (dialogData.context.reload)
         {
-            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
+            data.scripts = data.scripts.concat(context.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
         }
-
+            
         data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-
         data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
+        
+        data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
 
+        return dialogData;
+        // TODO handle bypass
+        /**
         return new Promise(resolve => {
-            let dlg = new this(data, fields, options, resolve)
+            let dlg = new this(data, fields, context, options, resolve)
             if (options.bypass)
             {
                 dlg.bypass()
@@ -49,9 +50,15 @@ export default class CharacteristicDialog extends RollDialog {
             {
                 dlg.render(true);
             }
-        })
+        })*/
     }
 
+    async _prepareContext(options)
+    {
+        let context = await super._prepareContext(options);
+        // context.data.hitLoc = ["ws", "bs"].includes(context.data.characteristic)
+        return context;
+    }
     
     _getSubmissionData()
     {
@@ -64,7 +71,7 @@ export default class CharacteristicDialog extends RollDialog {
     computeFields() {
         super.computeFields();
 
-        if (this.options.dodge && this.actor.isMounted) {
+        if (this.context.dodge && this.actor.isMounted) {
             this.fields.modifier -= 20
             this.tooltips.add("modifier", -20, game.i18n.localize("EFFECT.DodgeMount"));
         }
@@ -74,7 +81,7 @@ export default class CharacteristicDialog extends RollDialog {
     _computeDefending(attacker)
     {
         if (attacker.test.item.properties?.flaws.slow) {
-            if (!game.settings.get("wfrp4e", "mooQualities") || this.options.dodge) 
+            if (!game.settings.get("wfrp4e", "mooQualities") || this.context.dodge) 
             {
                 this.fields.slBonus += 1
                 this.tooltips.add("slBonus", 1, game.i18n.localize('CHAT.TestModifiers.SlowDefend'));
@@ -86,14 +93,14 @@ export default class CharacteristicDialog extends RollDialog {
     _defaultDifficulty() 
     {
         let difficulty = super._defaultDifficulty();
-        if (this.options.corruption || this.options.mutate)
+        if (this.context.corruption || this.context.mutate)
         {
-            difficulty = "challenging"
+            difficulty = "challenging";
         }
 
-        if (this.options.rest || this.options.income)
+        if (this.context.rest || this.context.income)
         {
-            difficulty =  "average"
+            difficulty =  "average";
         }
         return difficulty;
     }

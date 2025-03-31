@@ -12,6 +12,11 @@ export default class SkillTest extends TestWFRP {
     this.computeTargetNumber();
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
 
     // If unknown skill, defer until later, once skill is found

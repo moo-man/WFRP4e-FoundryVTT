@@ -12,6 +12,11 @@ export default class TraitTest extends AttackTest {
     this.computeTargetNumber();
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
 
     try {

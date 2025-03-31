@@ -1,4 +1,4 @@
-export default class RollDialog extends WarhammerRollDialog {
+export default class RollDialog extends WarhammerRollDialogV2 {
 
     get tooltipConfig() 
     {
@@ -26,69 +26,83 @@ export default class RollDialog extends WarhammerRollDialog {
             }
         }
     }
+    
+    static PARTS = {
+        fields : {
+            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        modifiers : {
+            template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        extra : {
+            template : "systems/wfrp4e/templates/dialog/v2/extra-dialog.hbs",
+        },
+        footer : {
+            template : "templates/generic/form-footer.hbs"
+        }
+    };
 
-    testClass = null;
 
-    get template() 
-    {
-      return "systems/wfrp4e/templates/dialog/base-dialog.hbs";
-    }
-
-
-    /**
-     * @override
-     * Overide submit to handle creating the test with testClass
-     * 
-     * @param {Event|null} ev Triggering Event
-     * @returns 
-     */
-    submit(ev) 
-    {
-        ev?.preventDefault();
-        ev?.stopPropagation();
+    // /**
+    //  * @override
+    //  * Overide submit to handle creating the test with testClass
+    //  * 
+    //  * @param {Event|null} ev Triggering Event
+    //  * @returns 
+    //  */
+    // static submit(ev) 
+    // {
+    //     ev?.preventDefault();
+    //     ev?.stopPropagation();
         
-        for(let script of this.data.scripts)
-        {
-            if (script.isActive)
-            {
-                script.submission(this);
-            }
-        }
+    //     for(let script of this.data.scripts)
+    //     {
+    //         if (script.isActive)
+    //         {
+    //             script.submission(this);
+    //         }
+    //     }
 
-        let test = new this.testClass(this._getSubmissionData(), this.actor)
+    //     let test = new this.testClass(this._getSubmissionData(), this.actor)
         
-        if (this.resolve)
-        {
-            this.resolve(test);
-        }
-        this.close();
-        if (canvas.scene && !this.options.skipTargets)
-        {
-            game.canvas.tokens.setTargets([])
-        }
-        return test;
-    }
+    //     if (this.resolve)
+    //     {
+    //         this.resolve(test);
+    //     }
+    //     this.close();
+    //     if (canvas.scene && !this.options.skipTargets)
+    //     {
+    //         game.canvas.tokens.setTargets([])
+    //     }
+    //     return test;
+    // }
 
-    async bypass()
+    // async bypass()
+    // {
+    //     let data = await super.bypass();
+        
+    //     let test = new this.testClass(data, this.actor)
+    //     if (this.resolve)
+    //     {
+    //         this.resolve(test);
+    //     }
+    // }
+
+    get title()
     {
-        let data = await super.bypass();
-        
-        let test = new this.testClass(data, this.actor)
-        if (this.resolve)
-        {
-            this.resolve(test);
-        }
+        return this.context.title;
     }
 
     _getSubmissionData()
     {
-        if (!this.testClass)
-        {
-            throw new Error("Only subclasses of RollDialog can be submitted")
-        }
-        this.data.context = {};
+        // if (!this.testClass)
+        // {
+        //     throw new Error("Only subclasses of RollDialog can be submitted")
+        // }
         let data = super._getSubmissionData();
-        data.breakdown = data.context.breakdown;
+
         data.chatOptions = this._setupChatOptions()
         data.chatOptions.rollMode = data.rollMode;
 
@@ -145,9 +159,11 @@ export default class RollDialog extends WarhammerRollDialog {
 
     }
 
-    activateListeners(html) {
-        super.activateListeners(html);
-        html.find("[name='advantage']").change(this._onAdvantageChanged.bind(this));
+    async _onRender(options) 
+    {
+        await super._onRender(options);
+
+        this.element.querySelector("[name='advantage']").addEventListener("change", this._onAdvantageChanged.bind(this))
     }
 
     _onFieldChange(ev) 
@@ -257,6 +273,44 @@ export default class RollDialog extends WarhammerRollDialog {
         }, {overwrite : false})
 
         return chatOptions
+    }
+
+    /**
+  * Creates the basic data that generally all dialogs use, such as formatting the speaker data and handling dialog scirpts
+  * @param {Actor} actor Actor performing the test
+  * @param {object} context Additional contextual flags for dialog, usually used by scripts
+  * @returns {object} Basic dialog data shared by all types of dialogs
+  */
+    static _baseDialogData(actor, context) 
+    {
+        let dialogData = super._baseDialogData(actor, context)
+
+
+        dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
+        dialogData.data.speaker = CONFIG.ChatMessage.documentClass.getSpeaker({ actor });
+        if (actor && !actor?.token) {
+            // getSpeaker retrieves tokens even if this sheet isn't a token's sheet
+            delete dialogData.data.speaker.scene;
+        }
+
+        if (dialogData.context.result) {
+            if (typeof dialogData.context.result.general === "string")
+                dialogData.context.result.general = [dialogData.context.result.general]
+            if (typeof dialogData.context.result.success === "string")
+                dialogData.context.result.success = [dialogData.context.result.success]
+            if (typeof dialogData.context.result.failure === "string")
+                dialogData.context.result.failure = [dialogData.context.result.failure]
+        }
+
+        if (dialogData.data.hitLoc) {
+            dialogData.fields.hitLocation = dialogData.fields.hitLocation || "roll", // Default a WS or BS test to have hit location if not specified;
+                dialogData.data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(dialogData.data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
+        }
+        else {
+            dialogData.fields.hitLocation = "none"
+        }
+
+        return dialogData;
     }
 
     static getDefendingScripts(actor)

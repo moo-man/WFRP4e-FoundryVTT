@@ -10,7 +10,6 @@ export default class TestWFRP extends WarhammerTestBase{
       data = {}
     this.data = {
       preData: {
-        title: data.title,
         SL: data.SL,
         roll: data.roll,
         target: data.target,
@@ -23,7 +22,7 @@ export default class TestWFRP extends WarhammerTestBase{
         characteristic : data.characteristic,
         item: data.item,
         diceDamage: data.diceDamage,
-        options: data.options || {},
+        options: data.context || {},
         other: data.other || [],
         canReverse: data.canReverse || false,
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
@@ -41,6 +40,7 @@ export default class TestWFRP extends WarhammerTestBase{
         reroll: false,
         edited: false,
         speaker: data.speaker,
+        title : data.context?.title,
         targets: data.targets,
         chatOptions: data.chatOptions,
         unopposed : data.unopposed,
@@ -838,10 +838,8 @@ export default class TestWFRP extends WarhammerTestBase{
       messageData.sound = undefined;
 
     let templateData = {
-      title: messageData.title,
       test: this,
       hideData: game.user.isGM,
-
     }
 
 

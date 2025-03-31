@@ -1,7 +1,8 @@
 {{#if data.chargingOption}}
   <div class="form-group">
-    <label title=>{{localize "DIALOG.Charging"}}
-      <input type="checkbox" name="charging" data-dtype="Boolean" {{checked fields.charging}} />
-    </label>
+    <label>{{ localize "DIALOG.Charging"}}</label>
+    <div class="form-fields">
+      <input type="checkbox" name="charging" {{checked fields.charging}} />
+    </div>
   </div>
 {{/if}}

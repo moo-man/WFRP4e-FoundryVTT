@@ -16,6 +16,11 @@ export default class ChannelTest extends TestWFRP {
     this.computeTargetNumber();
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
     let skill = this.actor.items.get(this.preData.skill);
     if (!skill)

@@ -3,16 +3,8 @@ import CharacteristicDialog from "./characteristic-dialog";
 
 export default class SkillDialog extends CharacteristicDialog {
 
-    subTemplate = "systems/wfrp4e/templates/dialog/skill-dialog.hbs";
     chatTemplate = "systems/wfrp4e/templates/chat/roll/skill-card.hbs"
-
-    testClass = SkillTest
-
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["skill-roll-dialog"]);
-        return options;
-    }
+    subTemplate = "systems/wfrp4e/templates/dialog/skill-dialog.hbs";
 
     get item()
     {
@@ -29,61 +21,48 @@ export default class SkillDialog extends CharacteristicDialog {
       return this.data.skill;
     }
 
-    static async setup(fields={}, data={}, options={})
+    static async setupData(skill, actor, context={}, options={})
     {
-        let skill = data.skill
-        options.title = options.title || game.i18n.format("SkillTest", {skill: data.skill.name});
-        options.title += options.appendTitle || "";
-
-        if (data.skill.name == game.i18n.localize("NAME.Dodge"))    
+        let characteristic;
+        if (skill.id == "unknown")
         {
-            options.dodge = true;
-        }
-
-        data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-        data.characteristic = skill.characteristic.key;
-
-        if (skill.id == "unknown" && !data.characteristic)
-        {
-            let compendiumSkill = await game.wfrp4e.utility.findSkill(skill.name);
-            if (compendiumSkill)
+            try 
             {
-                data.characteristic = compendiumSkill.characteristic.value;
+                let compendiumSkill = await game.wfrp4e.utility.findSkill(skill.name);
+                if (compendiumSkill)
+                {
+                    characteristic = compendiumSkill.system.characteristic.value;
+                }
+            }
+            catch(e)
+            {
+                characteristic = skill.system.characteristic.value;
             }
         }
-
-            
-
-        if (data.skill.id != "unknown")
+        else 
         {
-            data.scripts = data.scripts.concat(data.skill?.getScripts("dialog").filter(s => !s.options.defending))
-        }
-        if (options.reload)
-        {
-            data.scripts = data.scripts.concat(options.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
+            characteristic = skill.system.characteristic.value;
         }
 
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
+        context.title = context.title || game.i18n.format("SkillTest", {skill: skill.name});
+        context.title += context.appendTitle || "";
 
-        return new Promise(resolve => {
-            let dlg = new this(data, fields, options, resolve)
-            if (options.bypass)
-            {
-                dlg.bypass()
-            }
-            else 
-            {
-                dlg.render(true);
-            }
-        })
-    }
+        let dialogData = await super.setupData(characteristic, actor, context, options)
+        dialogData.fields.characteristic = characteristic;
+        foundry.utils.mergeObject(dialogData.data, {skill});
 
-    async getData() 
-    {
-        let context = await super.getData();
-        context.data.hitLoc = ["ws", "bs"].includes(context.data.characteristic)
-        return context;
+        
+        if (skill.id != "unknown")
+        {
+            dialogData.data.scripts = dialogData.data.scripts.concat(skill?.getScripts("dialog").filter(s => !s.options.defending))
+        }
+
+        if (skill.name == game.i18n.localize("NAME.Dodge"))    
+        {
+            dialogData.context.dodge = true;
+        }
+    
+        return dialogData;
     }
 
     _getSubmissionData()
@@ -97,6 +76,10 @@ export default class SkillDialog extends CharacteristicDialog {
 
     computeFields()
     {
+        // While in a characteristic dialog, the characteristic is considered internal data
+        // in a skill dialog, there's a field to change the characteristic used, so it's a field
+        // Make sure the internal characteristic value matches the selected field value
+        this.data.characteristic = this.fields.characteristic;
         super.computeFields();   
         this._computeArmour()
     }
@@ -149,7 +132,7 @@ export default class SkillDialog extends CharacteristicDialog {
         let breakdown = super.createBreakdown();
         if (this.skill?.system)
         {
-            let skillValue = (this.skill?.system.advances.value + this.skill?.system.modifier.value) || 0
+            let skillValue = (this.skill?.system.advances?.value + this.skill?.system.modifier?.value) || 0
             if (skillValue)
             {
                 breakdown.skill = `${this.skill.name} ${HandlebarsHelpers.numberFormat(skillValue, {hash :{sign: true}})}`
@@ -158,14 +141,11 @@ export default class SkillDialog extends CharacteristicDialog {
         return breakdown;
     }
 
-    activateListeners(html)
+    _defaultFields() 
     {
-        super.activateListeners(html)
-
-        html.find(".change-characteristic").change(ev => {
-            this.data.characteristic = ev.currentTarget.value;
-            this.render(true);
-        })
+        return mergeObject({
+            characteristic : "ws",
+        }, super._defaultFields());
     }
 
     // Backwards compatibility for effects

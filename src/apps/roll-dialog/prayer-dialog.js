@@ -23,31 +23,33 @@ export default class PrayerDialog extends SkillDialog {
       return this.item;
     }
 
-    static async setup(fields={}, data={}, options={})
+    static async setupData(prayer, actor, context={}, options={})
     {
-        let prayer = data.prayer
-        options.title = options.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
-        options.title += options.appendTitle || "";
+        let skill = actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
 
-        data.skill = data.actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
-        data.characteristic = data.skill?.system.characteristic.key || "fel";
-
-        data.scripts = data.scripts.concat(data.prayer?.getScripts("dialog").filter(s => !s.options.defending), data.skill?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-        data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
-
-
-        return new Promise(resolve => {
-            let dlg = new this(data, fields, options, resolve)
-            if (options.bypass)
-            {
-                dlg.bypass()
+        if (!skill)
+        {
+            skill = {
+                name : game.i18n.localize("NAME.Pray"),
+                id : "unknown",
+                system : {
+                    characteristic : {
+                        value : "fel"
+                    }
+                }
             }
-            else 
-            {
-                dlg.render(true);
-            }
-        })
+        }
+        
+        context.title = context.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
+        context.title += context.appendTitle || "";
+        
+        let dialogData = await super.setupData(skill, actor, context, options);
+        let data = dialogData.data;
+
+        data.prayer = prayer
+
+        data.scripts = data.scripts.concat(prayer.getScripts("dialog").filter(s => !s.options.defending))
+        return dialogData;
     }
 
     _getSubmissionData()

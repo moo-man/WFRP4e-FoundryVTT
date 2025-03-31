@@ -478,7 +478,7 @@ export default class WFRP_Utility {
    */
   static getSpeaker(speaker) {
     let actor = game.actors.get(speaker.actor);
-    if (speaker.token)
+    if (speaker.token && speaker.scene)
       actor = game.scenes.get(speaker.scene).tokens.get(speaker.token).actor
     return actor
   }

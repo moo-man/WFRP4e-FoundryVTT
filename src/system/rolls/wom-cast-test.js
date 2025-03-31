@@ -2,6 +2,11 @@ import CastTest from "./cast-test.js"
 
 export default class WomCastTest extends CastTest {
 
+
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
   // WoM overcasts need to check availability per usage option
   // Look at each usage's first option and see if the cost can be paid
   // If not, it is not available

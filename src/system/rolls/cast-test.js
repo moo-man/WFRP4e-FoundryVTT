@@ -18,6 +18,11 @@ export default class CastTest extends TestWFRP {
     this.computeTargetNumber();
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
 
       let skill = this.item.system.getSkillToUse(this.actor);

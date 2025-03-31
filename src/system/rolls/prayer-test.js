@@ -10,6 +10,11 @@ export default class PrayerTest extends TestWFRP {
 
   }
 
+  static fromData(...args)
+  {
+    return new this(...args);
+  }
+
   computeTargetNumber() {
     let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)

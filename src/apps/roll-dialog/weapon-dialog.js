@@ -1,5 +1,6 @@
 import WeaponTest from "../../system/rolls/weapon-test";
 import AttackDialog from "./attack-dialog";
+import CharacteristicDialog from "./characteristic-dialog";
 import SkillDialog from "./skill-dialog";
 
 export default class WeaponDialog extends AttackDialog {
@@ -7,14 +8,6 @@ export default class WeaponDialog extends AttackDialog {
 
     subTemplate = "systems/wfrp4e/templates/dialog/weapon-dialog.hbs";
     chatTemplate = "systems/wfrp4e/templates/chat/roll/weapon-card.hbs"
-    testClass = WeaponTest;
-
-
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["weapon-roll-dialog"]);
-        return options;
-    }
 
     get item()
     {
@@ -26,81 +19,79 @@ export default class WeaponDialog extends AttackDialog {
       return this.item;
     }
 
-    static async setup(fields={}, data={}, options={})
+    static async setupData(weapon, actor, context={}, options={})
     {
-        if (!data.weapon.id)
-        {
-            data.weapon = new CONFIG.Item.documentClass(data.weapon, { parent: data.actor })
-        }
-        let weapon = data.weapon;
-        data.skill = weapon.system.getSkillToUse(data.actor);
-        data.characteristic = data.skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
+      if (!weapon.id) 
+      {
+        weapon = new CONFIG.Item.documentClass(weapon, { parent: actor })
+      }
+      let skill = weapon.system.getSkillToUse(actor);
+      let characteristic = skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
+      
+      context.title = context.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
+      context.title += context.appendTitle || "";
+      
+      let dialogData;
+      if (skill)
+      {
+        dialogData = await super.setupData(skill, actor, context, options)
+      }
+      else 
+      {
+        dialogData = await CharacteristicDialog.setupData(characteristic, actor, context, options)
+      }
+      let data = dialogData.data;
+      data.weapon = weapon;
+      data.hitloc = true;
 
-        options.title = options.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
-        options.title += options.appendTitle || "";
-
-      if (weapon.attackType == "ranged") {
+      if (weapon.attackType == "ranged") 
+      {
         // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
         // skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
-        if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) {
+        if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) 
+        {
           // Check to see if they have ammo if appropriate
-          if (options.ammo)
-            data.ammo = options.ammo.find(a => a.id == weapon.currentAmmo.value)
+          if (context.ammo)
+            data.ammo = context.ammo.find(a => a.id == weapon.currentAmmo.value)
           if (!data.ammo)
-            data.ammo = data.actor.items.get(weapon.currentAmmo.value)
-  
+            data.ammo = actor.items.get(weapon.currentAmmo.value)
+
           if (!data.ammo || !weapon.currentAmmo.value || data.ammo.quantity.value == 0) {
             AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
             ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
             return
           }
-  
+
         }
-        else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) {
+        else if (weapon.consumesAmmo.value && weapon.quantity.value == 0) 
+        {
           // If this executes, it means it uses its own quantity for ammo (e.g. throwing), which it has none of
           AudioPlayer.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
           ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
           return;
         }
-        else {
+        else 
+        {
           // If this executes, it means it uses its own quantity for ammo (e.g. throwing)
           data.ammo = weapon;
         }
-  
-  
-        if (weapon.loading && !weapon.loaded.value) {
-          await data.actor.rollReloadTest(weapon)
+
+
+        if (weapon.loading && !weapon.loaded.value) 
+        {
+          await actor.rollReloadTest(weapon)
           ui.notifications.notify(game.i18n.localize("ErrorNotLoaded"))
           return ({ abort: true })
         }
       }
 
-      if (weapon.attackType == "melee")
-      {
+      if (weapon.attackType == "melee") {
         data.chargingOption = true;
       }
-      
-      data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-      data.dualWieldingOption = !weapon.system.offhand.value && data.actor.has(game.i18n.localize("NAME.DualWielder"), "talent") && !data.actor.noOffhand
+      data.dualWieldingOption = !weapon.system.offhand.value && actor.has(game.i18n.localize("NAME.DualWielder"), "talent") && !actor.noOffhand
 
-      data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog").filter(s => !s.options.defending), data.skill?.getScripts("dialog").filter(s => !s.options.defending) || []);
-      data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
-      data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
-
-
-      return new Promise(resolve => {
-        let dlg = new this(data, fields, options, resolve)
-        if (options.bypass)
-        {
-            dlg.bypass()
-        }
-        else 
-        {
-            dlg.render(true);
-        }
-    })
-  }
-
+      return dialogData;
+    }
 
   _getSubmissionData()
   {

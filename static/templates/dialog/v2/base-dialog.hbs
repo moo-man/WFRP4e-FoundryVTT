@@ -1,0 +1,26 @@
+<div>
+  <div class="form-group">
+    <label>{{localize "Advantage"}}</label>
+    <input type="number" name="advantage" value="{{data.actor.system.status.advantage.value}}" />
+  </div>
+
+  <div class="form-group" {{#if tooltips.modifier}}data-tooltip="{{tooltips.modifier}}" data-tooltip-direction="LEFT"
+    {{/if}}>
+    <label>{{localize "Modifier"}}</label>
+    <input type="number" name="modifier" value="{{fields.modifier}}" />
+  </div>
+
+  <div class="form-group" {{#if tooltips.slBonus}}data-tooltip="{{tooltips.slBonus}}" data-tooltip-direction="LEFT"
+    {{/if}}>
+    <label>{{localize "DIALOG.SLBonus"}}</label>
+    <input type="number" name="slBonus" value="{{fields.slBonus}}" />
+
+  </div>
+
+  <div class="form-group" {{#if tooltips.successBonus}}data-tooltip="{{tooltips.successBonus}}"
+    data-tooltip-direction="LEFT" {{/if}}>
+    <label title="{{localize 'DIALOG.SuccessBonusTT'}}">{{localize "DIALOG.SuccessBonus"}}</label>
+    <input type="number" name="successBonus" value="{{fields.successBonus}}" />
+  </div>
+
+</div>
