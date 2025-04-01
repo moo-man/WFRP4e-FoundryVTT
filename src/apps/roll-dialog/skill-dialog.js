@@ -4,7 +4,6 @@ import CharacteristicDialog from "./characteristic-dialog";
 export default class SkillDialog extends CharacteristicDialog {
 
     chatTemplate = "systems/wfrp4e/templates/chat/roll/skill-card.hbs"
-    subTemplate = "systems/wfrp4e/templates/dialog/skill-dialog.hbs";
 
     get item()
     {
@@ -20,6 +19,23 @@ export default class SkillDialog extends CharacteristicDialog {
     {
       return this.data.skill;
     }
+
+    static PARTS = {
+        fields : {
+            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        modifiers : {
+            template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        specific : {
+            template : "systems/wfrp4e/templates/dialog/v2/skill-dialog.hbs",
+        },
+        footer : {
+            template : "templates/generic/form-footer.hbs"
+        }
+    };
 
     static async setupData(skill, actor, context={}, options={})
     {

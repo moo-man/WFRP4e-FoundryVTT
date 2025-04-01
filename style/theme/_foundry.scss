@@ -134,6 +134,7 @@
         }
 
         #chat,
+        .chat-button,
         button:not(.icon),
         .compendium-name strong,
         .directory-list .directory-item .folder-header,
@@ -247,7 +248,7 @@ body:not(.theme-light):not(.no-theme) {
         }
 
         &.classic-font {
-
+            .chat-button,
             button:not(.icon),
             .compendium-name strong,
             .directory-list .directory-item .folder-header,

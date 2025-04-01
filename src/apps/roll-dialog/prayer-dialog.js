@@ -4,7 +4,6 @@ import SkillDialog from "./skill-dialog";
 export default class PrayerDialog extends SkillDialog {
 
     testClass = PrayerTest
-    subTemplate = ""
     chatTemplate = "systems/wfrp4e/templates/chat/roll/prayer-card.hbs"
 
     static get defaultOptions() {

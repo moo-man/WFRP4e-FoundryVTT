@@ -3,7 +3,6 @@ import SkillDialog from "./skill-dialog";
 
 export default class CastDialog extends SkillDialog {
 
-    subTemplate = "systems/wfrp4e/templates/dialog/spell-dialog.hbs";
     testClass = game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest
     chatTemplate = "systems/wfrp4e/templates/chat/roll/spell-card.hbs"
 
@@ -22,6 +21,25 @@ export default class CastDialog extends SkillDialog {
     {
       return this.item;
     }
+
+    
+    static PARTS = {
+        fields : {
+            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        modifiers : {
+            template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        specific : {
+            template : "systems/wfrp4e/templates/dialog/v2/spell-dialog.hbs",
+        },
+        footer : {
+            template : "templates/generic/form-footer.hbs"
+        }
+    };
+
 
 
     static async setupData(spell, actor, context={}, options={})

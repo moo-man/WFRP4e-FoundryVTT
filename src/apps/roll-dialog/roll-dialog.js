@@ -36,8 +36,8 @@ export default class RollDialog extends WarhammerRollDialogV2 {
             template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
             container : {id : "base", classes : ["dialog-base"]}
         },
-        extra : {
-            template : "systems/wfrp4e/templates/dialog/v2/extra-dialog.hbs",
+        specific : {
+            template : "systems/wfrp4e/templates/dialog/v2/default-dialog.hbs",
         },
         footer : {
             template : "templates/generic/form-footer.hbs"
@@ -301,15 +301,7 @@ export default class RollDialog extends WarhammerRollDialogV2 {
             if (typeof dialogData.context.result.failure === "string")
                 dialogData.context.result.failure = [dialogData.context.result.failure]
         }
-
-        if (dialogData.data.hitLoc) {
-            dialogData.fields.hitLocation = dialogData.fields.hitLocation || "roll", // Default a WS or BS test to have hit location if not specified;
-                dialogData.data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(dialogData.data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
-        }
-        else {
-            dialogData.fields.hitLocation = "none"
-        }
-
+        
         return dialogData;
     }
 

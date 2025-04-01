@@ -3,7 +3,6 @@ import SkillDialog from "./skill-dialog";
 
 export default class ChannellingDialog extends SkillDialog {
 
-    subTemplate = "systems/wfrp4e/templates/dialog/channel-dialog.hbs";
     chatTemplate = "systems/wfrp4e/templates/chat/roll/channel-card.hbs"
     testClass = ChannelTest
 
@@ -22,6 +21,23 @@ export default class ChannellingDialog extends SkillDialog {
     {
       return this.item;
     }
+
+    static PARTS = {
+        fields : {
+            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        modifiers : {
+            template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
+            container : {id : "base", classes : ["dialog-base"]}
+        },
+        specific : {
+            template : "systems/wfrp4e/templates/dialog/v2/channel-dialog.hbs",
+        },
+        footer : {
+            template : "templates/generic/form-footer.hbs"
+        }
+    };
 
     static async setupData(spell, actor, context={}, options={})
     {

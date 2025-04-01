@@ -1,0 +1,49 @@
+<div>
+  <div class="form-group" {{#if tooltips.difficulty}}data-tooltip="{{tooltips.difficulty}}"
+    data-tooltip-direction="LEFT" {{/if}}>
+    <label>{{localize "Difficulty"}}</label>
+    <div class="form-fields">
+      <select name="difficulty">
+        {{selectOptions (config "difficultyLabels") selected=fields.difficulty}}
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label data-tooltip="DIALOG.MalignantInfTT">{{localize "DIALOG.MalignantInf"}}</label>
+    <div class="form-fields">
+      <input type="checkbox" name="malignantInfluence" {{checked fields.malignantInfluence}} />
+    </div>
+  </div>
+
+  {{#if (settings "unofficialgrimoire")}}
+    <div class="form-group">
+      <label data-tooltip="DIALOG.UseIngredientTooltip">{{localize "DIALOG.UseIngredient"}}</label>
+      <div class="form-fields">
+        <select name="ingredientMode">
+          {{#select fields.ingredientMode}}
+            <option value="none">{{localize "IngredientNone"}}</option>
+            <option value="power">{{localize "IngredientPower"}}</option>
+            <option value="control">{{localize "IngredientControl"}}</option>
+          {{/select}}
+        </select>
+      </div>
+    </div>
+  {{/if}}
+
+  <div class="form-group">
+    <label data-tooltip="DIALOG.ChannelUntilReadyToolTip">{{localize "DIALOG.ChannelUntilReady"}}</label>
+    <div class="form-fields">
+      <input type="checkbox" name="channelUntilSuccess" {{checked fields.channelUntilSuccess}} />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "DIALOG.RollMode"}}</label>
+    <div class="form-fields">
+      <select name="rollMode">
+        {{selectOptions (config "rollModes") labelAttr="label" localize=true selected=fields.rollMode}}
+      </select>
+    </div>
+  </div>
+</div>

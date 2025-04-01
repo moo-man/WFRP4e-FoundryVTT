@@ -35,7 +35,15 @@ export default class CharacteristicDialog extends RollDialog {
         data.scripts = data.scripts.concat(data.actor.system.vehicle?.getScripts("dialog").filter(s => !s.options.defending) || [])
         data.scripts = data.scripts.concat(this.getDefendingScripts(data.actor));
         
-        data.hitLocationTable = game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc");
+        if (data.hitloc)
+        {
+            dialogData.fields.hitLocation = dialogData.fields.hitLocation || "roll";
+            data.hitLocationTable = foundry.utils.mergeObject({none : game.i18n.localize("None"), roll : game.i18n.localize("Roll")}, game.wfrp4e.tables.getHitLocTable(data.targets[0]?.actor?.details?.hitLocationTable?.value || "hitloc"));
+        }
+        else
+        {
+            dialogData.fields.hitLocation = "none";
+        }
 
         return dialogData;
         // TODO handle bypass
