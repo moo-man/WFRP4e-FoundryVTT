@@ -3,11 +3,13 @@ let fields = foundry.data.fields;
 
 export class VehiclePassengersModel extends ListModel {
 
-    static listSchema = new fields.SchemaField({
-        id : new fields.StringField(),
-        count : new fields.NumberField({min : 0}),
-        roleIds : new fields.ArrayField(new fields.DocumentIdField())
-    })
+    static get listSchema() {
+        return new fields.SchemaField({
+            id : new fields.StringField(),
+            count : new fields.NumberField({min : 0}),
+            roleIds : new fields.ArrayField(new fields.DocumentIdField())
+        });
+    }
 
     compute(roles)
     {

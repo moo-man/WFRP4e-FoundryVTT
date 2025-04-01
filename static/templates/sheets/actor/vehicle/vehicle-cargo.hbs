@@ -14,14 +14,19 @@
         </div>
 
         <div class="status">{{system.status.encumbrance.message}}</div>
+        {{log this}}
         {{#if system.status.encumbrance.overEncumbered}}
             <div class="bar max" style="width:100%"></div>
         {{else}}
-            {{#if system.status.encumbrance.pct}}
-                <div class="bar partial" data-tooltip="{{system.status.encumbrance.modMsg}}" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
-            {{/if}}
-            {{#if system.status.encumbrance.carryPct}}
-                <div class="bar none" data-tooltip="{{system.status.encumbrance.carryMsg}}" style="width:{{system.status.encumbrance.carryPct}}%"></div>
+            {{#if (or system.status.encumbrance.pct system.status.encumbrance.carryPct)}}
+                {{#if system.status.encumbrance.pct}}
+                    <div class="bar partial" data-tooltip="{{system.status.encumbrance.modMsg}}" style="width:{{pct system.status.encumbrance.current system.status.encumbrance.max}}%"></div>
+                {{/if}}
+                {{#if system.status.encumbrance.carryPct}}
+                    <div class="bar none" data-tooltip="{{system.status.encumbrance.carryMsg}}" style="width:{{system.status.encumbrance.carryPct}}%"></div>
+                {{/if}}
+            {{else}}
+                    <div class="bar none" style="width:0%"></div>
             {{/if}}
         {{/if}}
 
