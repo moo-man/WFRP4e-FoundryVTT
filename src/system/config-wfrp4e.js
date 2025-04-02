@@ -220,7 +220,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
             a.dataset.action = "clickCorruption"
             let id = match[1]
             let label = match[2]
-            a.innerHTML = `<img src="systems/wfrp4e/ui/chaos.svg" style="border:none">${label ? label : id}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/misc/chaos.svg" style="border:none">${label ? label : id}`
             return a
         }
     },
@@ -233,7 +233,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
             a.dataset.action = "clickFear"
             a.dataset.value = values[0]
             a.dataset.name = values[1] || ""
-            a.innerHTML = `<img src="systems/wfrp4e/ui/fear.svg" style="border:none"> ${game.i18n.localize("WFRP4E.ConditionName.Fear")} ${values[0]}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/misc/fear.svg" style="border:none"> ${game.i18n.localize("WFRP4E.ConditionName.Fear")} ${values[0]}`
             return a
         }
     },
@@ -246,7 +246,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
             a.dataset.action = "clickTerror"
             a.dataset.value = values[0]
             a.dataset.name = values[1] || ""
-            a.innerHTML = `<img src="systems/wfrp4e/ui/terror.svg" style="border:none"> ${game.i18n.localize("NAME.Terror")} ${values[0]}`
+            a.innerHTML = `<img src="systems/wfrp4e/ui/misc/terror.svg" style="border:none"> ${game.i18n.localize("NAME.Terror")} ${values[0]}`
             return a
         }
     },

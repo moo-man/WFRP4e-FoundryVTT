@@ -244,6 +244,8 @@ Hooks.once("init", function () {
 
   CONFIG.cursors.default = "systems/wfrp4e/ui/cursors/normal.png"
   CONFIG.cursors["default-down"] = "systems/wfrp4e/ui/cursors/normal.png"
+  CONFIG.cursors.pointer = "systems/wfrp4e/ui/cursors/active.png"
+  CONFIG.cursors["pointer-down"] = "systems/wfrp4e/ui/cursors/active.png"
 });
 
 registerHooks()

@@ -156,7 +156,7 @@
     }
 
     #sidebar-content {
-        background: url(./ui/sidebar.webp) repeat;
+        background: url(./ui/backgrounds/sidebar.webp) repeat;
         box-shadow: 0 0 10px #000;
     }
 
@@ -165,7 +165,7 @@
     }
 
     .sidebar-tab.sidebar-popout {
-        background: url(./ui/frames/bookshelf-texture.webp);
+        background: url(./ui/backgrounds/bookshelf-texture.webp);
     }
 
 
@@ -183,7 +183,7 @@
     .sidebar-tab {
 
         .inline-control {
-            background: url(./ui/stamp.webp) repeat;
+            background: url(./ui/buttons/button-stamp.webp) repeat;
         }
 
         input[type='search'] {
@@ -260,7 +260,7 @@ body:not(.theme-light):not(.no-theme) {
 }
 
 body:not(.no-theme) {
-    background: url(./ui/background.webp) repeat;
+    background: url(./ui/backgrounds/background.webp) repeat;
 
     .combat-sidebar {
 
@@ -302,7 +302,7 @@ body:not(.no-theme) {
         #context-menu {
             background: none;
             border: 1px solid;
-            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+            border-image: url(./ui/backgrounds/context-menu.webp) 4 repeat;
             border-image-slice: 30 fill;
             border-image-width: 100px;
             border-image-outset: 0px 0px 0px 0px;
@@ -314,7 +314,7 @@ body:not(.no-theme) {
         #tooltip {
             background: none;
             border: 1px solid;
-            border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+            border-image: url(./ui/backgrounds/context-menu.webp) 4 repeat;
             border-image-slice: 30 fill;
             border-image-width: 100px;
             border-image-outset: 0px 0px 0px 0px;
@@ -326,7 +326,7 @@ body:not(.no-theme) {
 
             #players-active {
                 border: 1px solid transparent;
-                border-image: url(./ui/players-border.webp) 21 repeat;
+                border-image: url(./ui/borders/players-border.webp) 21 repeat;
                 border-image-slice: 23 19 23 19;
                 border-image-width: 23px 19px 23px 19px;
                 border-image-outset: 22px 17px 16px 14px;
@@ -337,7 +337,7 @@ body:not(.no-theme) {
 
         #menu {
             border: 1px solid transparent;
-            border-image: url(./ui/menu-border.webp) 21 repeat;
+            border-image: url(./ui/borders/menu-border.webp) 21 repeat;
             border-image-slice: 78 4 81 4;
             border-image-width: 80px 6px 80px 6px;
             border-image-outset: 76px 0px 76px 0px;
@@ -357,7 +357,7 @@ body:not(.no-theme) {
         }
 
         .window-header {
-            border-image: url(./ui/frames/window-app-header-blank.webp) 5 repeat;
+            border-image: url(./ui/borders/app-header.webp) 5 repeat;
             border-image-slice: 19 21 19 21 fill;
             border-image-width: 19px 21px 21px 21px;
             border-image-outset: 0px;
@@ -366,7 +366,7 @@ body:not(.no-theme) {
         @include window-header();
 
 
-        background: url(./ui/frames/window-app-background-bookshelf.webp);
+        background: url(./ui/backgrounds/bookshelf-background.webp);
 
         input[type='search'] {
             @include search();
@@ -376,7 +376,7 @@ body:not(.no-theme) {
             box-shadow: 0 0 10px inset black;
             padding: 1.25rem;
             border-width: 10px;
-            border-image: url(./ui/window-app-dialog-content.webp) repeat;
+            border-image: url(./ui/borders/app-header.webp) repeat;
             border-image-slice: 10 13 13 13;
             border-image-width: 10px 13px 13px 13px;
         }

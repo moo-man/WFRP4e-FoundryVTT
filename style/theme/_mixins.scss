@@ -21,7 +21,7 @@
                 }
                 &.header-control {
                     --button-size: 2rem;
-                    background-image: url(./ui/buttons/stamp.webp);
+                    background-image: url(./ui/buttons/button-stamp.webp);
                     background-size: contain;
                     background-position: 0px -1px;
                 }
@@ -32,7 +32,7 @@
     .controls-dropdown {
         background: none;
         border: 1px solid;
-        border-image: url(./ui/frames/context-menu.webp) 4 repeat;
+        border-image: url(./ui/backgrounds/context-menu.webp) 4 repeat;
         border-image-slice: 70 fill;
         border-image-width: 100px;
         border-image-outset: 0px 0px 0px 0px;
@@ -40,7 +40,7 @@
 
         &.collapsing,
         &.expanding {
-            background: url(./ui/frames/context-menu.webp);
+            background: url(./ui/backgrounds/context-menu.webp);
             background-size: 100%;
         }
 
@@ -49,9 +49,9 @@
 }
 
 @mixin search() {
-    background: url(./ui/frames/parchment-texture.webp);
+    background: url(./ui/backgrounds/parchment-texture.webp);
     border: 2px groove var(--color-element-border);
-    border-image: url(./ui/chat-controls-border.webp) 4 repeat;
+    border-image: url(./ui/borders/search-border.webp) 4 repeat;
     border-image-width: 4px;
     border-image-outset: 1px;
     box-shadow: inset 0 0 10px #000000;
@@ -97,17 +97,17 @@
 
 @mixin wfrp-button {
     border: 1px solid black;
-    border-image: url(./ui/footer-button.webp) 10 repeat;
+    border-image: url(./ui/borders/footer-button.webp) 10 repeat;
     border-image-width: 4px;
     border-image-outset: 0px;
     box-shadow: 4px 4px 1px #00000085;
-    background: url(./ui/sidebar_button-background_red.webp) repeat;
+    background: url(./ui/buttons/button-wide-red.webp) repeat;
 }
 
 @mixin wfrp-button-sm {
-    background: url(./ui/sidebar_button-background_cyan.webp) repeat;
+    background: url(./ui/buttons/button-wide-cyan.webp) repeat;
     border: 1px solid black;
-    border-image: url(./ui/footer-button.webp) 10 repeat;
+    border-image: url(./ui/borders/footer-button.webp) 10 repeat;
     border-image-width: 4px;
     border-image-outset: 0px;
 
@@ -115,7 +115,7 @@
     &.active {
         // color: var(--color-warm-1);
         box-shadow: inset 0 0 10px var(--color-warm-1);
-       background: url(./ui/sidebar_button-background_red.webp) repeat;
+       background: url(./ui/buttons/button-wide-red.webp) repeat;
     }
 }
 
@@ -260,14 +260,28 @@
 
     section.secret.hook 
     {
-        background: url(./ui/hook-background.webp);
+        background: url(./ui/backgrounds/hook-background.webp);
         background-repeat: repeat;
         background-size: contain;
         border: 25px solid transparent;
-        border-image: url(./ui/hook-border.webp);
+        border-image: url(./ui/borders/hook-border.webp);
         border-image-slice: 45 43 40 45;
         background-clip: content-box;
         padding: 0px;
+
+        button.reveal {
+            display: none;
+        }
+
+        &:not(.no-image)::before {
+            background-image: url(./ui/misc/hook.webp);
+            background-size: 73px 43px;
+            content: "";
+            width: 73px;
+            height: 43px;
+            float: right;
+            margin-left: -43px;
+        }
     }
 
     ul li::marker{

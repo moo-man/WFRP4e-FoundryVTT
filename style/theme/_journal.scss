@@ -14,7 +14,7 @@
     }
 
     .window-header {
-        border-image: url(./ui/frames/window-app-header-blank.webp) 5 repeat;
+        border-image: url(./ui/borders/dialog-border.webp) 5 repeat;
         border-image-slice: 19 21 19 21 fill;
         border-image-width: 19px 21px 21px 21px;
         border-image-outset: 0px;
@@ -23,9 +23,9 @@
     @include window-header();
 
     .window-content {
-        background: url(./ui/frames/window-app-background-bookshelf.webp);
+        background: url(./ui/backgrounds/bookshelf-background.webp.webp);
         border-width: 10px;
-        border-image: url(./ui/window-app-dialog-content.webp) repeat;
+        border-image: url(./ui/borders/dialog-border.webp) repeat;
         border-image-slice: 10 13 13 13;
         border-image-width: 10px 13px 13px 13px;
 
@@ -33,9 +33,9 @@
 
     .journal-entry-content 
     {
-        background: url(./ui/frames/parchment-texture.webp);
+        background: url(./ui/backgrounds/parchment-texture.webp);
         border: 10px solid transparent;
-        border-image: url(./ui/frames/window-app-journal-sheet-content.webp) repeat;
+        border-image: url(./ui/backgrounds/journal-sheet-content.webp) repeat;
         border-image-slice: 25;
         border-image-width: 25px;
     }
@@ -50,7 +50,7 @@
         }
 
         .inline-control {
-            background: url(./ui/buttons/combat-button-background.webp);
+            background: url(./ui/buttons/button-round.webp);
             background-repeat: no-repeat;
             background-position: -1px -2px;
             flex: 0 0 30px;
@@ -101,7 +101,7 @@
     .journal-header {
         .title {
             border: 1px solid transparent;
-            border-image: url(./ui/item-sheet-header.webp) repeat;
+            border-image: url(./ui/borders/item-sheet-header.webp) repeat;
             border-image-slice: 5;
             border-image-width: 4px;
             border-image-outset: 0px;

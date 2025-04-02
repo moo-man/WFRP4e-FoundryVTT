@@ -8,9 +8,9 @@
 
     #chat-message,
     .chat-form textarea {
-            background: url(./ui/frames/parchment-texture.webp) repeat;
+            background: url(./ui/backgrounds/parchment-texture.webp) repeat;
             border: 1px solid black;
-            border-image: url(./ui/chat-form-border.webp) 10 repeat;
+            border-image: url(./ui/borders/chat-form-border.webp) 10 repeat;
             border-image-width: 10px;
             border-image-outset: 0px 0px;
             padding: 15px;
@@ -25,10 +25,10 @@
     .chat-message,
     .chat-log .message {
         border: 1px solid;
-        border-image: url(./ui/frames/chat-message-border.webp) 21 repeat;
+        border-image: url(./ui/backgrounds/chat-message-border.webp) 21 repeat;
         border-image-width: 12px;
         border-image-slice: 12;
-        background-image: url(./ui/frames/parchment-texture.webp);
+        background-image: url(./ui/backgrounds/parchment-texture.webp);
         border-image-outset: 8px;
         border-radius: 0px;
         margin: 1.5rem 1rem;

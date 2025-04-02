@@ -4,7 +4,7 @@
 .wfrp4e.item.sheet.application:not(.no-theme) 
 {
     border: 1px solid;
-    border-image: url(./ui/item-sheet.webp) 4 repeat;
+    border-image: url(./ui/backgrounds/item-sheet.webp) 4 repeat;
     border-image-slice: 59;
     border-image-width: 59px;
     border-image-outset: 0px;
@@ -13,35 +13,35 @@
     box-shadow: none;
     &.weapon,
     &.career {
-        border-image-source: url(./ui/item-sheet-red.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-red.webp);
     }
 
     &.disease {
-        border-image-source: url(./ui/item-sheet-green.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-green.webp);
     }
 
     &.critical,
     &.psychology,
     &.mutation,
     &.injury {
-        border-image-source: url(./ui/item-sheet-black.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-black.webp);
     }
 
     &.prayer {
-        border-image-source: url(./ui/item-sheet-white.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-white.webp);
     }
 
     &.skill {
-        border-image-source: url(./ui/item-sheet-yellow.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-yellow.webp);
     }
 
     &.spell {
-        border-image-source: url(./ui/item-sheet-purple.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-purple.webp);
     }
 
     &.trait,
     &.talent {
-        border-image-source: url(./ui/item-sheet-blue.webp);
+        border-image-source: url(./ui/backgrounds/item-sheet-blue.webp);
     }
 
     .window-header {
@@ -54,7 +54,7 @@
     }
 
     .window-content {
-        background: url(./ui/frames/parchment-texture.webp);
+        background: url(./ui/backgrounds/parchment-texture.webp);
         margin: -10px 26px 26px 26px;
         box-shadow: 0px 0px 10px inset black;
     }
@@ -83,7 +83,7 @@
         input[name="name"] {
             color: var(--color-warm);
             border: 1px solid transparent;
-            border-image: url(./ui/item-sheet-header.webp) repeat;
+            border-image: url(./ui/borders/item-sheet-header.webp) repeat;
             background: none;
             border-image-slice: 5;
             border-image-width: 4px;
