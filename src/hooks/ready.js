@@ -38,23 +38,6 @@ export default function () {
       get: function () { return game.user.id == game.users.activeGM.id }
     })
 
-    //***** Change cursor styles if the setting is enabled *****
-
-    if (game.settings.get('wfrp4e', 'customCursor')) {
-      warhammer.utility.log('Using custom cursor', true)
-      if (await srcExists("systems/wfrp4e/ui/cursors/pointer.png")) {
-        let link = document.createElement('link');
-        link.setAttribute('rel', 'stylesheet')
-        link.type = 'text/css'
-        link.href = 'systems/wfrp4e/css/cursor.css'
-
-        document.head.appendChild(link);
-      }
-      else {
-        warhammer.utility.log('No custom cursor found', true)
-      }
-    }
-
     // Automatically disable Auto Fill Advantage if group advantage is enabled
     if (game.settings.get("wfrp4e", "useGroupAdvantage") && 
       game.user.isGM && 

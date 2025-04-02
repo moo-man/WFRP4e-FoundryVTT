@@ -241,6 +241,9 @@ Hooks.once("init", function () {
   CONFIG.ActiveEffect.legacyTransferral = false;
 
   CONFIG.calendar = calendar();
+
+  CONFIG.cursors.default = "systems/wfrp4e/ui/cursors/normal.png"
+  CONFIG.cursors["default-down"] = "systems/wfrp4e/ui/cursors/normal.png"
 });
 
 registerHooks()
