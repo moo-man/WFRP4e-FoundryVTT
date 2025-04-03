@@ -1,0 +1,51 @@
+@use "./mixins" as *;
+
+body:not(.no-theme) {
+
+    &.classic-font {
+
+        .warhammer.application
+        {
+            &.roll-dialog-v2 {
+                font-family: var(--primary-font);
+                button[type="submit"] {
+                    font-family: var(--header-font);
+                    font-size: var(--font-size-20)
+                }
+            }
+        }
+    }
+
+    .warhammer.application {
+
+        &.roll-dialog-v2 {
+            @include wfrp-form;
+
+            --modifier-bg : var(--color-warm);
+
+            .dialog-modifiers {
+                label {
+                    display:block;
+                    color: #d6d6d6;
+                    border: 1px solid #5d513e;
+                    border-bottom: none;
+                    background: #080808;
+                    width: 100%;
+                    height: 2rem;
+                    line-height: 2rem;
+                }
+
+                .modifier-list {
+                    color: #000000;
+                    border: 1px solid #736953a6;
+                    border-radius: 0px;
+                    box-shadow: 0px 0px 10px inset black;
+                    background: url(./ui/backgrounds/parchment-texture.webp);
+                    li.active {
+                            color: var(--color-cream)
+                    }
+                }
+            }
+        }
+    }
+}

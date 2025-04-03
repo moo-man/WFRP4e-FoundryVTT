@@ -45,7 +45,7 @@ export default class TestWFRP extends WarhammerTestBase{
         chatOptions: data.chatOptions,
         unopposed : data.unopposed,
         defending : data.defending,
-        breakdown : foundry.utils.mergeObject({damage : {other : []}}, data.breakdown),
+        breakdown : foundry.utils.mergeObject({damage : {other : []}}, data.context?.breakdown || {}),
 
         messageId: data.messageId,
         opposedMessageIds : data.opposedMessageIds || [],

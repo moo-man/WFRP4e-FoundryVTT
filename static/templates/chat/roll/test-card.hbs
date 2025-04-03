@@ -1,13 +1,4 @@
- 
-        <div class = "message-controls">
-            <a class= "chat-button-player" title ='{{localize "CHAT.ContextualMenu"}}'><i class="fas fa-lightbulb"></i></a>
-            <a class = "edit-toggle chat-button-gm" title ='{{localize "CHAT.EditTest"}}'><i class="fas fa-edit"></i></a>
-            <a class = "opposed-toggle chat-button-gm" title='{{localize "CHAT.OpposedTest"}}'><i class="fas fa-exchange-alt"></i></a>
-            {{#if test.result.breakdown.formatted}}
-            <a class="test-breakdown" data-tooltip="{{test.result.breakdown.formatted.test}}" data-tooltip-direction="LEFT" ><i class="fa-solid fa-circle-info"></i></a>
-            {{/if}}
-        </div>
-        <div class="test-title">
+        <div class="test-title" data-tooltip="{{test.result.breakdown.formatted.test}}" data-tooltip-direction="LEFT" >
             {{test.context.title}}
         </div>
     

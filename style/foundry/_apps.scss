@@ -1,0 +1,24 @@
+.warhammer.application {
+    &.roll-dialog-v2 {
+        .window-title {
+            text-align: center;
+        }
+        .dialog-base {
+            .form-group {
+                .form-fields { 
+                    width: 3rem;
+                    flex: 0 0 3rem
+                };
+            }
+
+            .dialog-fields {
+                flex: 0 0 10rem;
+            }
+        }
+        .form-group {
+            label {
+                text-align: center;
+            }
+        }
+    }
+}

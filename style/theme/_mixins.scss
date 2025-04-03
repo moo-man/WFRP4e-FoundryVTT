@@ -290,3 +290,30 @@
         font-style: normal;
     }
 }
+
+@mixin wfrp-form {
+        .form-group {
+            gap: 0px;
+                label {
+                color: #d6d6d6;
+                border: 1px solid #5d513e;
+                background: #080808;
+                height: 2rem;
+                line-height: 2rem;
+                padding: 0px 0.5rem;
+            }
+
+            input,
+            select {
+                height: 2rem;
+                line-height: 2rem;
+                border-radius: 0px;
+                outline: none;
+                color: #d6d6d6;
+                border: 1px solid var(--color-faded);
+                box-shadow: 0px 0px 10px inset black;
+                background: #352516;
+                border-left: none;
+            }
+        }
+}

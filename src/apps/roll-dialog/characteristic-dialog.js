@@ -21,7 +21,7 @@ export default class CharacteristicDialog extends RollDialog {
         context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
         context.title += context.appendTitle || "";
 
-        foundry.utils.mergeObject(dialogData, {data : {characteristic}, fields : context.fields});
+        foundry.utils.mergeObject(dialogData, {data : {characteristic}, fields : context.fields || {}});
 
         let data = dialogData.data;
         
