@@ -12,7 +12,7 @@ if (!["Goblin", "Orc"].includes(this.actor.system.details.species.value)) {
 // Since wounds change when the effect is deleted, need to wait until after 
 // the max wounds have been recalculated to apply damage
 warhammer.utility.sleep(1000).then(async () => {
-    let roll = await new Roll("1d10").roll();
+    let roll = await new Roll("1d10").roll({allowInteractive : false});
 
     roll.toMessage(this.script.getChatData());
     this.script.message(await this.actor.applyBasicDamage(roll.total, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg: true }))

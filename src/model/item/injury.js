@@ -86,7 +86,7 @@ export class InjuryModel extends LocationalItemModel
 
   async start() {
     try {
-      let roll = await new Roll(this.duration.value, this.parent.actor).roll();
+      let roll = await new Roll(this.duration.value, this.parent.actor).roll({allowInteractive : false});
       roll.toMessage({speaker: {alias: this.parent.actor.name}, flavor: this.parent.name});
 
       return await this.parent.update({

@@ -34,7 +34,7 @@ if (choice.length)
         switch(training.id)
         {
             case "broken" : 
-                let roll = await new Roll("2d10").roll();   
+                let roll = await new Roll("2d10").roll({allowInteractive : false});   
                 roll.toMessage(this.script.getChatData());
                 changes.push({value : roll.total, mode : 2, key : "system.characteristics.fel.modifier"})
 

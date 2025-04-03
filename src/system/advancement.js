@@ -331,7 +331,7 @@ export default class Advancement
       else if (creatureMethod) 
       {
         let roll = new Roll("2d10");
-        await roll.roll();
+        await roll.roll({allowInteractive : false});
         let characteristics = this.actor.toObject().system.characteristics;
         for (let char in characteristics) 
         {
@@ -371,7 +371,7 @@ export default class Advancement
     }
     // The Roll class used to randomly select skills
     let skillSelector = new Roll(`1d${skillList.length}- 1`);
-    await skillSelector.roll()
+    await skillSelector.roll({allowInteractive : false})
 
     // Store selected skills
     let skillsSelected = [];
@@ -435,7 +435,7 @@ export default class Advancement
 
       // Randomly choose a talent option and advance it.
       if (talentOptions.length > 1) {
-        talentSelector = await new Roll(`1d${talentOptions.length} - 1`).roll()
+        talentSelector = await new Roll(`1d${talentOptions.length} - 1`).roll({allowInteractive : false})
         talentsToAdd.push(await this._advanceTalent(talentOptions[talentSelector.total]));
       }
       else // If no option, simply advance the talent.

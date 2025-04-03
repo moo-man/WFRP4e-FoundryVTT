@@ -9,7 +9,7 @@ await test.roll();
 if (test.failed)
 {
 
-  let myRoll = await new Roll("1d10").roll();
+  let myRoll = await new Roll("1d10").roll({allowInteractive : false});
   let duration = myRoll.total
   this.actor.addSystemEffect("nausea");
   this.script.scriptMessage(`Nausea symptom added, duration : ${duration} hours`);

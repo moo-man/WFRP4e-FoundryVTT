@@ -1500,7 +1500,7 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "manual",
                         script: `
                             let tb = this.actor.characteristics.t.bonus
-                            let damage = (await new Roll("1d10").roll()).total
+                            let damage = (await new Roll("1d10").roll({allowInteractive : false})).total
                             damage -= tb
                             if (damage <= 0) damage = 1
                             if (this.actor.status.wounds.value <= damage) {
@@ -1555,7 +1555,7 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "manual",
                         script: `
                             let tb = this.actor.characteristics.t.bonus
-                            let damage = (await new Roll("1d10").roll()).total
+                            let damage = (await new Roll("1d10").roll({allowInteractive : false})).total
                             damage -= tb
                             if (damage <= 0) {
                                 damage = 1
@@ -1605,7 +1605,7 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "manual",
                         script: `
                             let tb = this.actor.characteristics.t.bonus
-                            let damage = (await new Roll("1d10").roll()).total
+                            let damage = (await new Roll("1d10").roll({allowInteractive : false})).total
                             damage -= tb
                             if (damage <= 0) {
                                 damage = 1
@@ -1655,7 +1655,7 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "manual",
                         script: `
                             let tb = this.actor.characteristics.t.bonus
-                            let damage = (await new Roll("1d10").roll()).total
+                            let damage = (await new Roll("1d10").roll({allowInteractive : false})).total
                             damage -= tb
                             if (damage <= 0) {
                                 damage = 1
@@ -2016,7 +2016,7 @@ WFRP4E.PrepareSystemItems = function() {
                             await Promise.all(this.actor.runScripts("preApplyCondition", {effect : this.effect, data : scriptArgs}));
                             formula = scriptArgs.formula;
                             msg = scriptArgs.msg;
-                            let roll = await new Roll(formula, this).roll();
+                            let roll = await new Roll(formula, this).roll({allowInteractive : false});
                             let terms = roll.terms.map(i => (i instanceof Die ? (i.formula + " (" + i.total + ")") : (i.total))).join("")
                             msg = msg.replace("@FORMULA", terms);
 

@@ -267,7 +267,7 @@ export default class WFRP_Audio {
           files = files.filter(f => f.includes(context.action))
       }
 
-      return { file: files[(await new Roll(`1d${files.length}-1`).roll()).total], global: globalSound }
+      return { file: files[(await new Roll(`1d${files.length}-1`).roll({allowInteractive : false})).total], global: globalSound }
     }
     catch (e) {
       warhammer.utility.log("Sound Context Error: " + e, true)

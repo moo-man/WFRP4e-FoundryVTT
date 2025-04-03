@@ -244,7 +244,7 @@ export default class CastTest extends TestWFRP {
       }
 
       if (this.item.damage.dice && !this.result.additionalDamage) {
-        let roll = await new Roll(this.item.damage.dice).roll()
+        let roll = await new Roll(this.item.damage.dice).roll({allowInteractive : false})
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;
@@ -266,7 +266,7 @@ export default class CastTest extends TestWFRP {
       if (template) {
 
         let tableRoll = (await game.wfrp4e.tables.rollTable("vortex", {}, "map"))
-        let dist = (await new Roll("2d10").roll()).total
+        let dist = (await new Roll("2d10").roll({allowInteractive : false})).total
         let pixelsPerYard = canvas.scene.grid.size / canvas.scene.grid.distance
         let straightDelta = dist * pixelsPerYard;
         let diagonalDelta = straightDelta / Math.sqrt(2);

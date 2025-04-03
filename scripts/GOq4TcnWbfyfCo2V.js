@@ -5,7 +5,7 @@ let test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {sk
 await test.roll();
 if (test.failed)
 {
-    let roll = await new Roll("1d10").roll();
+    let roll = await new Roll("1d10").roll({allowInteractive : false});
     await roll.toMessage(this.script.getChatData())
     if (roll.total <= 3)
     {

@@ -56,7 +56,7 @@ export default class MarketWFRP4e {
 
       //We roll the stock if we detect a valid roll value
       if (availabilityLookup.stock.includes("d")) {
-        let stockRoll = await new Roll(availabilityLookup.stock).roll();
+        let stockRoll = await new Roll(availabilityLookup.stock).roll({allowInteractive : false});
         finalResult.quantity = stockRoll.total;
       }
 
@@ -395,7 +395,7 @@ export default class MarketWFRP4e {
       number = moneyValues.bp || 0
 
     if (game.dice3d && game.settings.get("wfrp4e", "throwMoney")) {
-      new Roll(`${number}dc`).evaluate().then((roll) => {
+      new Roll(`${number}dc`).evaluate({allowInteractive : false}).then((roll) => {
         game.dice3d.showForRoll(roll);
       });
     }
@@ -616,7 +616,7 @@ export default class MarketWFRP4e {
     if (tier != "g") // Don't roll for gold, just use standing value
     {
       dieAmount = dieAmount + "d10";
-      earned = (await new Roll(dieAmount).roll()).total;
+      earned = (await new Roll(dieAmount).roll({allowInteractive : false})).total;
     }
     else
       earned = dieAmount;

@@ -58,7 +58,7 @@ export class CumulativeVehicleModifiers extends foundry.abstract.DataModel {
         {
             for(let source of sources)
             {
-                let roll = await new Roll(source.formula).roll();
+                let roll = await new Roll(source.formula).roll({allowInteractive : false});
                 source.value = roll.total;
                 msg += `<p><a class="inline-roll" data-tooltip="${source.formula}">${source.value}</a>: ${source.description}</p>`
             }

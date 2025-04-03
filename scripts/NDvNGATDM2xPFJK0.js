@@ -6,7 +6,7 @@ teeth = teeth.toObject();
 tongue = tongue.toObject();
 
 
-let roll = await new Roll("1d10").roll();
+let roll = await new Roll("1d10").roll({allowInteractive : false});
 roll.toMessage(this.script.getChatData({flavor : "Teeth Lost"}))
 
 teeth.system.location.value = `${roll.total} ${teeth.system.location.value}`

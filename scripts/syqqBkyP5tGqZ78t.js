@@ -1,6 +1,6 @@
 this.actor.has("Immunity to Psychology")?.delete();
 
-let roll = await new Roll("1d10").roll();
+let roll = await new Roll("1d10").roll({allowInteractive : false});
 
 roll.toMessage(this.script.getChatData());
 

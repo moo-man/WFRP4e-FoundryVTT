@@ -406,7 +406,7 @@ export default class TradeGenerator
     async createMerchant()
     {
         let species = (await game.wfrp4e.tables.rollTable("species")).species;
-        let gender = (await new Roll("1d2").roll()).total == 1 ? "male" : "female";
+        let gender = (await new Roll("1d2").roll({allowInteractive : false})).total == 1 ? "male" : "female";
         let name = game.wfrp4e.names.generateName({ species, gender });
         let rolls = [d10(), d10(), d10()];
         let haggle = rolls.reduce((sum, val) => sum + val, 0) + 40;
@@ -469,7 +469,7 @@ export default class TradeGenerator
         let cargoTable = game.wfrp4e.trade.tradeData[this.tradeType].cargoTable[this.settlement.season];
         let cargoData = cargoTable[cargoKey]
 
-        let price = (await new Roll(cargoData.price.toString()).roll()).total
+        let price = (await new Roll(cargoData.price.toString()).roll({allowInteractive : false})).total
         let randomize = Math.round(price * variation);
         price += randomize;// random +/-10% variation to simulate market variance
 

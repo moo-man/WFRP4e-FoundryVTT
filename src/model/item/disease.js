@@ -171,7 +171,7 @@ export class DiseaseModel extends BaseItemModel {
 
     try
     {
-      let roll = await new Roll(this[type].value, this.parent).roll();
+      let roll = await new Roll(this[type].value, this.parent).roll({allowInteractive : false});
       let update = {[`system.${type}.value`] : roll.total};
       if (type == "duration")
       {
@@ -266,7 +266,7 @@ export class DiseaseModel extends BaseItemModel {
 
           if (negSL <= 1) 
           {
-            let roll = (await new Roll("1d10").roll()).total;
+            let roll = (await new Roll("1d10").roll({allowInteractive : false})).total;
             msg += "<br>" + game.i18n.format("CHAT.LingeringExtended", { roll });
             removeDisease = false;
             disease.system.duration.value = roll;

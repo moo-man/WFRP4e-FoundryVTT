@@ -66,7 +66,7 @@ export default class WeaponTest extends AttackTest {
     let weapon = this.weapon;
 
     if ((weapon.damage.dice || weapon.ammo?.damage.dice) && !this.result.additionalDamage) {
-      let roll = await new Roll(weapon.damage.dice + `${weapon.ammo?.damage.dice ? "+" + weapon.ammo?.damage.dice : "" }`).roll()
+      let roll = await new Roll(weapon.damage.dice + `${weapon.ammo?.damage.dice ? "+" + weapon.ammo?.damage.dice : "" }`).roll({allowInteractive : false})
       this.result.diceDamage = { value: roll.total, formula: roll.formula };
       this.preData.diceDamage = this.result.diceDamage
       this.result.additionalDamage += roll.total;

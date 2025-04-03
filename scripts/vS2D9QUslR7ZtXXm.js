@@ -2,7 +2,7 @@ let test = await this.actor.setupCharacteristic("t", {skipTargets: true, appendT
 await test.roll();
 if (test.failed)
 {
-    let roll = await new Roll("1d10").roll();
+    let roll = await new Roll("1d10").roll({allowInteractive : false});
     roll.toMessage(this.script.getChatData())
 
     this.script.message(await this.actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP, suppressMsg : true}))

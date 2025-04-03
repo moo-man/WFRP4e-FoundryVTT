@@ -36,7 +36,7 @@ export default class WFRP_Utility {
         characteristics[char] = { value: Roll.safeEval(characteristicFormulae[char].replace("2d10", "10")) , formula: characteristicFormulae[char] }
       }
       else {
-        let roll = await new Roll(characteristicFormulae[char]).roll()
+        let roll = await new Roll(characteristicFormulae[char]).roll({allowInteractive : false})
         characteristics[char] = { value: roll.total, formula: characteristicFormulae[char] + ` (${roll.result})` }
       }
     }
@@ -663,7 +663,7 @@ export default class WFRP_Utility {
     if (!roll)
       roll = target.text.trim();
     let rollMode = game.settings.get("core", "rollMode");
-    (await new Roll(roll).roll()).toMessage(
+    (await new Roll(roll).roll({allowInteractive : false})).toMessage(
       {
         user: game.user.id,
         rollMode

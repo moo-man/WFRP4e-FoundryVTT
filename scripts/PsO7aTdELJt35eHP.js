@@ -1,5 +1,5 @@
-let morale = await new Roll("-1d10").roll();
-let mood = await new Roll("-2d10").roll();
+let morale = await new Roll("-1d10").roll({allowInteractive : false});
+let mood = await new Roll("-2d10").roll({allowInteractive : false});
 
 morale.toMessage(this.script.getChatData({flavor : "Morale"}));
 mood.toMessage(this.script.getChatData({flavor : "Manann's Mood"}));

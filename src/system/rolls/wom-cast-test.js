@@ -59,7 +59,7 @@ export default class WomCastTest extends CastTest {
         }
       }
       if (this.item.damage.dice && !this.result.additionalDamage) {
-        let roll = await new Roll(this.item.damage.dice).roll()
+        let roll = await new Roll(this.item.damage.dice).roll({allowInteractive : false})
         this.result.diceDamage = { value: roll.total, formula: roll.formula };
         this.preData.diceDamage = this.result.diceDamage
         this.result.additionalDamage += roll.total;

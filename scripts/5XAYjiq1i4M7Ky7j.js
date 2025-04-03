@@ -11,7 +11,7 @@ scriptData[0].script = `
   let message = "";
   
   let wounds = foundry.utils.duplicate(this.actor.status.wounds);
-  let regenRoll = await new Roll("1d10").roll();
+  let regenRoll = await new Roll("1d10").roll({allowInteractive : false});
   let regen = regenRoll.total;
   
   if (wounds.value >= wounds.max)
