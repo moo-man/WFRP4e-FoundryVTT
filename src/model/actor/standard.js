@@ -17,19 +17,25 @@ export class StandardActorModel extends BaseActorModel {
         isStandard: true
     }, {inplace: false}));
 
+    static LOCALIZATION_PREFIXES = ["WH.Models.standard"];
+
+
     static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);
         schema.status = new fields.EmbeddedDataField(StandardStatusModel);
         schema.details = new fields.EmbeddedDataField(StandardDetailsModel);
-        schema.autoCalc = new fields.SchemaField({
-            run: new fields.BooleanField({initial : true}),
-            walk: new fields.BooleanField({initial : true}),
-            wounds: new fields.BooleanField({initial : true}),
-            criticals: new fields.BooleanField({initial : true}),
-            corruption: new fields.BooleanField({initial : true}),
-            encumbrance: new fields.BooleanField({initial : true}),
-            size: new fields.BooleanField({initial : true})
+        schema.settings = new fields.SchemaField({
+            equipPoints : new fields.NumberField({initial : 2}),
+            autoCalc : new fields.SchemaField({
+                run: new fields.BooleanField({initial : true}),
+                walk: new fields.BooleanField({initial : true}),
+                wounds: new fields.BooleanField({initial : true}),
+                criticals: new fields.BooleanField({initial : true}),
+                corruption: new fields.BooleanField({initial : true}),
+                encumbrance: new fields.BooleanField({initial : true}),
+                size: new fields.BooleanField({initial : true})
+            })
         })
         return schema;
     }
@@ -491,8 +497,22 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
+    get equipPointsUsed() {
+        return this.parent.items
+          .filter(item => item.system.isEquippable)
+          .reduce((prev, current) => {
+              if (current.system.isEquipped)
+                prev += current.system.equipPoints;
+              return prev;
+            }, 0);
+      }
+
     get isMounted() {
         return this.status.mount.mounted && this.status.mount.id
+    }
+
+    get autoCalc() {
+        return this.settings.autoCalc;
     }
 
     get mount() {

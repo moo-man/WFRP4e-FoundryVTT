@@ -1,71 +1,100 @@
 
+export default class ActorSettings extends HandlebarsApplicationMixin(ApplicationV2)
+{
+  static DEFAULT_OPTIONS = {
+    id: "actor-settings",
+    tag: "form",
+    classes : ["warhammer", "standard-form"],
+    window: {
+      title: "Actor Settings"
+    },
+    form: {
+      submitOnChange: true,
+      handler : this._onSubmit
+    }
+}
 
-export default class ActorSettings extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.id = "actor-settings";
-        options.template = "systems/wfrp4e/templates/apps/actor-settings.hbs";
-        options.height = "auto";
-        options.width = 400;
-        options.minimizable = true;
-        options.title = "Actor Settings"
-        return options;
+get title() 
+{
+    return `Actor Settings: ${this.document.name}`;
+}
+
+constructor(document, options)
+{
+    super(options);
+    this.document = document;
+}
+
+  /** @override */
+  static PARTS = {
+    form: {
+      template: "systems/wfrp4e/templates/apps/actor-settings.hbs",
+      scrollable: [""]
+    }
+  };
+
+    async _prepareContext(options) 
+    {
+        let context = await super._prepareContext(options)
+        context.tables =  game.wfrp4e.config.hitLocationTables
+
+        context.fields = this.document.system.schema.fields;
+
+        context.displays = {}
+
+        if (this.document.type == "character")
+        {
+            context.displays.size = true;
+            context.displays.movement = true;
+            context.displays.wounds = true;
+            context.displays.critwounds = true;
+            context.displays.corruption = true;
+            context.displays.encumbrance = true;
+            context.displays.hitloc = true;
+            context.displays.equipPoints = true;
+            context.displays.mainHand = true;
+        }
+        if (this.document.type == "npc")
+        {
+            context.displays.size = true;
+            context.displays.movement = true;
+            context.displays.wounds = true;
+            context.displays.critwounds = true;
+            context.displays.encumbrance = true;
+            context.displays.hitloc = true;
+            context.displays.equipPoints = true;
+            context.displays.mainHand = true;
+        }
+        if (this.document.type == "creature")
+        {
+            context.displays.size = true;
+            context.displays.movement = true;
+            context.displays.wounds = true;
+            context.displays.critwounds = true;
+            context.displays.encumbrance = true;
+            context.displays.hitloc = true;
+            context.displays.equipPoints = true;
+        }
+        if (this.document.type == "vehicle")
+        {
+            context.displays.vehicle = true;
+            context.displays.critwounds = true;
+            context.displays.hitloc = true;
+        }
+
+
+        context.buttons = [{
+            type: "submit",
+            icon: "fa-solid fa-floppy-disk",
+            label: "Submit"
+          }];
+
+        return context;
     }
 
-    getData() {
-        let data = super.getData()
-        data.tables =  game.wfrp4e.config.hitLocationTables
-
-        data.displays = {}
-
-        if (this.object.type == "character")
-        {
-            data.displays.size = true;
-            data.displays.movement = true;
-            data.displays.wounds = true;
-            data.displays.critwounds = true;
-            data.displays.corruption = true;
-            data.displays.encumbrance = true;
-            data.displays.hitloc = true;
-            data.displays.equipPoints = true;
-            data.displays.mainHand = true;
-        }
-        if (this.object.type == "npc")
-        {
-            data.displays.size = true;
-            data.displays.movement = true;
-            data.displays.wounds = true;
-            data.displays.critwounds = true;
-            data.displays.encumbrance = true;
-            data.displays.hitloc = true;
-            data.displays.equipPoints = true;
-            data.displays.mainHand = true;
-        }
-        if (this.object.type == "creature")
-        {
-            data.displays.size = true;
-            data.displays.movement = true;
-            data.displays.wounds = true;
-            data.displays.critwounds = true;
-            data.displays.encumbrance = true;
-            data.displays.hitloc = true;
-            data.displays.equipPoints = true;
-        }
-        if (this.object.type == "vehicle")
-        {
-            data.displays.vehicle = true;
-            data.displays.critwounds = true;
-            data.displays.hitloc = true;
-        }
-
-        return data
+    static async _onSubmit(event, formData) 
+    {
+        return this.document.update(formData.object)
     }
-
-
-    async _updateObject(event, formData) {
-        this.object.update(formData)
-    }
-
-  
 
 }

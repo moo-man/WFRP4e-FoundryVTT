@@ -1,111 +1,48 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
-
+<div>
     {{#if displays.size}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcTokenSize"}}</label>
-        <input type="checkbox" name="system.autoCalc.size" data-dtype="Boolean" {{checked object.system.autoCalc.size}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.size value=source.system.settings.autoCalc.size}}
     {{/if}}
     
     {{#if displays.movement}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcRun"}}</label>
-        <input type="checkbox" name="system.autoCalc.run" data-dtype="Boolean" {{checked object.system.autoCalc.run}}>
-    </div>
-
-    
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcWalk"}}</label>
-        <input type="checkbox" name="system.autoCalc.walk" data-dtype="Boolean" {{checked object.system.autoCalc.walk}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.run value=source.system.settings.autoCalc.run}}
+    {{formGroup fields.settings.fields.autoCalc.fields.walk value=source.system.settings.autoCalc.walk}}
     {{/if}}
-
     
     {{#if displays.wounds}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcWounds"}}</label>
-        <input type="checkbox" name="system.autoCalc.wounds" data-dtype="Boolean" {{checked object.system.autoCalc.wounds}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.wounds value=source.system.settings.autoCalc.wounds}}
     {{/if}}
-
     
     {{#if displays.critwounds}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcCritWounds"}}</label>
-        <input type="checkbox" name="system.autoCalc.criticals" data-dtype="Boolean" {{checked object.system.autoCalc.criticals}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.criticals value=source.system.settings.autoCalc.criticals}}
     {{/if}}
 
-    
     {{#if displays.corruption}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcCorruption"}}</label>
-        <input type="checkbox" name="system.autoCalc.corruption" data-dtype="Boolean" {{checked object.system.autoCalc.corruption}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.corruption value=source.system.settings.autoCalc.corruption}}
     {{/if}}
-
     
     {{#if displays.encumbrance}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.CalcMaxEnc"}}</label>
-        <input type="checkbox" name="system.autoCalc.encumbrance" data-dtype="Boolean" {{checked object.system.autoCalc.encumbrance}}>
-    </div>
+    {{formGroup fields.settings.fields.autoCalc.fields.encumbrance value=source.system.settings.autoCalc.encumbrance}}
     {{/if}}
 
     {{#if displays.equipPoints}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.EquipPoints"}}</label>
-        <input style="flex: unset; width: 30px" type="number" name="flags.equipPoints" data-dtype="Number" value={{object.equipPointsAvailable}}>
-    </div>
+    {{formGroup fields.settings.fields.equipPoints value=source.system.settings.equipPoints}}
     {{/if}}
 
     {{#if displays.mainHand}}
-    <div class="form-group">
-        <label>{{localize "CONFIGURE.MainHand"}}</label>
-        <select name="system.details.mainHand" data-dtype="String">
-            {{#select object.details.mainHand}}
-            <option value="r">{{localize "Right"}}</option>
-            <option value="l">{{localize "Left"}}</option>
-            {{/select}}
-        </select>
-    </div>
+    {{formGroup fields.details.fields.mainHand value=source.system.details.mainHand}}
     {{/if}}
     
     
     {{#if displays.hitloc}}
-    <div class="form-group">
-        <label>{{localize "Hit Location Table"}}</label>
-        <select name="system.details.hitLocationTable.value" data-dtype="String">
-            {{#select object.details.hitLocationTable.value}}
-            {{#each tables as |table key|}}
-            <option value="{{key}}">{{table}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
-    </div>
-    {{/if}}
+    {{formGroup fields.details.fields.hitLocationTable.fields.value value=source.system.details.hitlocationTable.value choices=tables}}
+    {{/if}}    
 
     {{#if displays.vehicle}}
     <header class="form-header">
         <h3>{{localize "Vehicle Settings"}}</h3>
     </header>
-
-    <div class="form-group">
-        <label>{{localize "VEHICLE.Type"}}</label>
-        <select name="system.vehicleType">
-            {{#select object.system.vehicleType}}
-            {{#each (config "vehicleTypes")}}
-                <option value="{{@key}}">{{this}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
-    </div>
-    <div class="form-group">
-        <label>{{localize "VEHICLE.MoraleEffects"}}</label>
-        <input type="checkbox" name="system.status.morale.transferEffects" {{checked object.system.status.morale.transferEffects}}>
-    </div>
-
+    {{formGroup fields.vehicleTYpe value=source.system.vehicleType choices=(config "vehicleTypes")}}
+    {{formGroup fields.status.fields.morale.fields.transferEffects value=source.system.status.morale.transferEffects}}
     {{/if}}
-    <button type="submit" name="submit">{{localize "Submit"}}</button>
-</form>
+</div>
     

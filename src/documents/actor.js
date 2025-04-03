@@ -1344,20 +1344,6 @@ export default class ActorWFRP4e extends WarhammerActor
     return game.wfrp4e.config.actorSizeNums[this.details.size.value]
   }
 
-  get equipPointsUsed() {
-    return this.items
-      .filter(item => item.system.isEquippable)
-      .reduce((prev, current) => {
-          if (current.system.isEquipped)
-            prev += current.system.equipPoints;
-          return prev;
-        }, 0);
-  }
-
-  get equipPointsAvailable() {
-    return Number.isNumeric(this.flags.equipPoints) ? this.flags.equipPoints : 2
-  }
-
   get currentCareer() {
     return this.system.currentCareer
   }

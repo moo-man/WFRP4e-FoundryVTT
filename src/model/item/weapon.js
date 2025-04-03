@@ -240,7 +240,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     get canEquip() {
         const actor = this.parent.actor;
         if (game.settings.get("wfrp4e", "limitEquippedWeapons") && actor.type !== "vehicle") {
-            return actor.equipPointsUsed + this.equipPoints <= actor.equipPointsAvailable;
+            return actor.system.equipPointsUsed + this.equipPoints <= actor.system.settings.equipPoints;
         }
 
         return true;

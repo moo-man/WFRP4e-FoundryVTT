@@ -293,8 +293,9 @@
 
 @mixin wfrp-form {
         .form-group {
+            @include wfrp-form-input();
             gap: 0px;
-                label {
+            label {
                 color: #d6d6d6;
                 border: 1px solid #5d513e;
                 background: #080808;
@@ -302,18 +303,25 @@
                 line-height: 2rem;
                 padding: 0px 0.5rem;
             }
-
-            input,
-            select {
-                height: 2rem;
-                line-height: 2rem;
-                border-radius: 0px;
-                outline: none;
-                color: #d6d6d6;
-                border: 1px solid var(--color-faded);
-                box-shadow: 0px 0px 10px inset black;
-                background: #352516;
-                border-left: none;
+            .form-fields {
+                input:not([type="checkbox"]),
+                select {
+                    border-left: none;
+                }
             }
+        }
+}
+
+@mixin wfrp-form-input {
+        input:not([type="checkbox"]),
+        select {
+            height: 2rem;
+            line-height: 2rem;
+            border-radius: 0px;
+            outline: none;
+            color: #d6d6d6;
+            border: 1px solid var(--color-faded);
+            box-shadow: 0px 0px 10px inset black;
+            background: #352516;
         }
 }

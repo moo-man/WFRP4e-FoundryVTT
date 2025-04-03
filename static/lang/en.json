@@ -1740,16 +1740,6 @@
     "Confirm" : "Confirm",
 
     "Actor Settings": "Actor Settings",
-    "CONFIGURE.CalcTokenSize" : "Auto-calculate Token Size",
-    "CONFIGURE.CalcRun" : "Auto-calculate Run Speed",
-    "CONFIGURE.CalcWalk" : "Auto-calculate Walk Speed",
-    "CONFIGURE.CalcWounds" : "Auto-calculate Wounds",
-    "CONFIGURE.CalcCritWounds" : "Auto-calculate Critical Wounds",
-    "CONFIGURE.CalcCorruption" : "Auto-calculate Corruption",
-    "CONFIGURE.CalcMaxEnc" : "Auto-calculate max Encumbrance",
-    "CONFIGURE.EquipPoints" : "Equip Points - Limits equipped weapons",
-    "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
-    "CONFIGURE.MainHand" : "Main Hand",
 
     "BUTTON.PostBug" : "Submit a Grudge",
     "BUTTON.CharacterCreation" : "Character Creation",
@@ -1954,6 +1944,72 @@
         },
 
         "Models" : {
+
+            "standard": {
+                "FIELDS": {
+                    "details" : {
+                        "mainHand" : {
+                            "label" : "Main Hand",
+                            "hint" : "What hand is considered 'primary' when distinguished by the system."
+                        },
+                        "hitLocationTable.value" : {
+                            "label" : "Hit Location Table",
+                            "hint" : "Defines a custom hit location table for when this Actor is attacked."
+                        }
+                    },
+                    "settings": {
+                        "equipPoints" : {
+                            "label" : "Equip Points",
+                            "hint" : "Limits equipped weapons, 2 points is 2 'hands'"
+                        },
+  
+                        "autoCalc": {
+                            "size": {
+                                "label": "Auto-calculate Token Size",
+                                "hint": "Automatically sizes tokens based on this Actor's Size"
+                            },
+                            "run": {
+                                "label": "Auto-calculate Run Speed",
+                                "hint": "Default Run speed is 4 × Movement"
+                            },
+                            "walk": {
+                                "label": "Auto-calculate Walk Speed",
+                                "hint": "Default Walk speed is 2 × Movement"
+                            },
+                            "wounds": {
+                                "label": "Auto-calculate Wounds",
+                                "hint": "Default max Wounds is SB + (2 × TB) + WPB (for Average size)"
+                            },
+                            "criticals": {
+                                "label": "Auto-calculate Criticals",
+                                "hint": "Default max Criticals is TB"
+                            },
+                            "corruption": {
+                                "label": "Auto-calculate Corruption",
+                                "hint": "Default Corruption threshold is TB + WPB"
+                            },
+                            "encumbrance": {
+                                "label": "Auto-calculate Encumbrance",
+                                "hint": "Default Encumbrance threshold is SB + TB"
+                            }
+                        }
+                    }
+                }
+            },
+
+            "vehicle" : {
+                "FILEDS" : {
+                    "vehicleType" : {
+                        "label" : "Vehicle Type"
+                    },
+                    "status.morale.transferEffects" : {
+                        "label" : "Transfer Morale Effects",
+                        "hint" : "Apply morale effects to Actors on this vehicle."
+                    }
+                }
+            },
+
+
             "ammunition" : {
                 "FIELDS" : {
                     "ammunitionType.value" : {

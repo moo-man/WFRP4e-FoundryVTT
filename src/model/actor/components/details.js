@@ -57,7 +57,7 @@ export class StandardDetailsModel extends foundry.abstract.DataModel {
         schema.hitLocationTable = new fields.SchemaField({
             value: new fields.StringField()
         });
-        schema.mainHand = new fields.StringField({initial : "r"})
+        schema.mainHand = new fields.StringField({initial : "r", choices : {r : "Right", l : "Left"}});
         return schema;
     }
 

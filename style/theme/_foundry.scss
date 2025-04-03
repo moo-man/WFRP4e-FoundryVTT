@@ -353,6 +353,7 @@ body:not(.no-theme) {
 
         &.standard-form {
             .window-content {
+                @include wfrp-form-input;
                 margin-top: -1rem; // offset gap
             }
         }
