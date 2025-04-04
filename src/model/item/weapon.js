@@ -139,7 +139,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         let damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
 
         //@HOUSE
-        if (game.settings.get("wfrp4e", "mooSizeDamage") && actor.system instanceof StandardActorModel)
+        if (game.settings.get("wfrp4e", "homebrew").mooSizeDamage && actor.system instanceof StandardActorModel)
         {
           if (this.damage.value.includes("SB") && actor.sizeNum > 3)
           {
@@ -293,7 +293,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (this.weaponGroup.value == "flail" && !this.skillToUse && !this.flaws.value.find(i => i.name == "dangerous"))
             this.flaws.value.push({ name: "dangerous" })
 
-        if (game.settings.get("wfrp4e", "mooQualities")) {
+        if (game.settings.get("wfrp4e", "homebrew").mooQualities) {
             game.wfrp4e.utility.logHomebrew("mooQualities")
             let momentum = this.qualities.value.find(q => q.name == "momentum" && q.value)
             if (momentum?.value && this.parent.actor.status.advantage.value > 0) {
@@ -357,7 +357,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         }
 
         //@HOUSE
-        if (game.settings.get("wfrp4e", "mooRangeBands")) {
+        if (game.settings.get("wfrp4e", "homebrew").mooRangeBands) {
             game.wfrp4e.utility.logHomebrew("mooRangeBands")
             if (!this.parent.getFlag("wfrp4e", "optimalRange"))
                 warhammer.utility.log("Warning: No Optimal Range set for " + this.name)

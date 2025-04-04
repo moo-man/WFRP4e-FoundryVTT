@@ -99,7 +99,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
     test._overcast(overcastChoice)
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    if (game.settings.get("wfrp4e", "homebrew").mooOvercasting)
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
     }
@@ -120,7 +120,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
     test._overcastReset()
         
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooOvercasting"))
+    if (game.settings.get("wfrp4e", "homebrew").mooOvercasting)
     {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
     }

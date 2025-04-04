@@ -805,7 +805,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           description = item.system.properties.specialAmmo;
           break;
         case "range":
-            if (!game.settings.get("wfrp4e", "mooRangeBands"))
+            if (!game.settings.get("wfrp4e", "homebrew").mooRangeBands)
             {
 
               description =

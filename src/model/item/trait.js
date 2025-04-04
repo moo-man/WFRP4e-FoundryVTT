@@ -119,7 +119,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     
     
         //@HOUSE
-        if (game.settings.get("wfrp4e", "mooSizeDamage") && actor.sizeNum > 3) 
+        if (game.settings.get("wfrp4e", "homebrew").mooSizeDamage && actor.sizeNum > 3) 
         {
           if (this.rollable.bonusCharacteristic == "s") 
           {

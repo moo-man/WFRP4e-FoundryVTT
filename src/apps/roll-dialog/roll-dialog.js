@@ -129,9 +129,9 @@ export default class RollDialog extends WarhammerRollDialogV2 {
         if (game.settings.get("wfrp4e", "autoFillAdvantage"))
         {
             this.tooltips.start(this);
-            if (!game.settings.get("wfrp4e", "mooAdvantage"))
+            if (!game.settings.get("wfrp4e", "homebrew").mooAdvantage)
             {
-                this.fields.modifier += (game.settings.get("wfrp4e", "advantageBonus") * this.actor.system.status.advantage.value)
+                this.fields.modifier += (game.settings.get("wfrp4e", "homebrew").advantageBonus * this.actor.system.status.advantage.value)
             }
             else 
             {

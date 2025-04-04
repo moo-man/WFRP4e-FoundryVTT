@@ -8,7 +8,7 @@ export default class ChannelTest extends TestWFRP {
       return
 
     this.data.preData.malignantInfluence = data.malignantInfluence;
-    this.data.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    this.data.preData.unofficialGrimoire = game.settings.get("wfrp4e", "homebrew").unofficialgrimoire;
     this.data.preData.ingredientMode = data.ingredientMode ?? "none";
     this.data.preData.skill = data.skill?.id;
     this.data.context.channelUntilSuccess = data.channelUntilSuccess
@@ -94,7 +94,7 @@ export default class ChannelTest extends TestWFRP {
           }
 
           //@HOUSE
-          if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
+          if (this.result.roll == 100 && game.settings.get("wfrp4e", "homebrew").mooCatastrophicMiscasts) {
             game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
             miscastCounter++
           }
@@ -224,7 +224,7 @@ export default class ChannelTest extends TestWFRP {
         }
         //@/HOUSE
       } 
-      else if (game.settings.get("wfrp4e", "channellingIngredients"))
+      else if (game.settings.get("wfrp4e", "homebrew").channellingIngredients)
       {
         // Find ingredient being used, if any
         if (this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll)
@@ -260,7 +260,7 @@ export default class ChannelTest extends TestWFRP {
     // SL < 0 doesn't trigger previous rule, SL < 0 triggers this rule and sets SL 0 
     // In both cases SL resolves to 0 as expected by this rule.
     // "SL < 0" is used over "SL <= 0" since if previous rule isn't True SL 0 resolves no channel progress
-    if (Number(SL) < 0 && game.settings.get("wfrp4e", "channelingNegativeSLTests"))
+    if (Number(SL) < 0 && game.settings.get("wfrp4e", "homebrew").channelingNegativeSLTests)
       SL = 0;
 
     // // If channelling test was edited, make sure to adjust the SL accordingly
@@ -326,7 +326,7 @@ export default class ChannelTest extends TestWFRP {
     // If channelling with ingredients isn't allowed, always return false 
     // HOWEVER: Witchcraft specifies: "channeling or casting spells from this Lore automatically require a roll on the Minor Miscast table unless cast with an ingredient"
     // This doesn't make any sense. So what I'm doing is if it's a witchcraft spell, and has a valid ingredient assigned, still count it, as it will have to be assumed it's used in the eventual cast?
-    if (!game.settings.get("wfrp4e", "channellingIngredients") && this.item.lore.value != "witchcraft")
+    if (!game.settings.get("wfrp4e", "homebrew").channellingIngredients && this.item.lore.value != "witchcraft")
     {
       return false 
     }

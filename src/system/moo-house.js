@@ -4,7 +4,7 @@ export default function () {
   let config = game.wfrp4e.config
 
 
-  if (game.settings.get("wfrp4e", "mooDifficulty")) {
+  if (game.settings.get("wfrp4e", "homebrew").mooDifficulty) {
 
     config.difficultyModifiers["veasy"] = 40
     config.difficultyModifiers["easy"] = 30
@@ -31,14 +31,14 @@ export default function () {
     }
   }
 
-  if (game.settings.get("wfrp4e", "mooConditions"))
+  if (game.settings.get("wfrp4e", "homebrew").mooConditions)
   {
     config.conditionDescriptions["prone"] += game.i18n.localize ("MOO.Prone")
     config.conditionDescriptions["broken"] = game.i18n.localize ("MOO.Broken")
     config.conditionDescriptions["bleeding"] = game.i18n.localize ("MOO.Bleeding")
   }
 
-  if (game.settings.get("wfrp4e", "mooConditionTriggers"))
+  if (game.settings.get("wfrp4e", "homebrew").mooConditionTriggers)
   {
     config.statusEffects.forEach(e => {
       if (e.system.condition.trigger == "endRound")
@@ -52,13 +52,13 @@ export default function () {
 
   }
 
-  if (game.settings.get("wfrp4e", "mooPenetrating"))
+  if (game.settings.get("wfrp4e", "homebrew").mooPenetrating)
   {
     config.propertyHasValue.penetrating = true
     config.qualityDescriptions.penetrating = game.i18n.localize ("MOO.Penetrating")
   }
 
-  if (game.settings.get("wfrp4e", "mooQualities"))
+  if (game.settings.get("wfrp4e", "homebrew").mooQualities)
   {
     config.weaponQualities.simple = game.i18n.localize ("Simple")
     config.qualityDescriptions.simple = game.i18n.localize ("MOO.Simple")
@@ -69,7 +69,7 @@ export default function () {
     config.propertyHasValue.momentum = true
   }
 
-  if (game.settings.get("wfrp4e", "mooHomebrewItemChanges"))
+  if (game.settings.get("wfrp4e", "homebrew").mooHomebrewItemChanges)
   {
     fetch("systems/wfrp4e/moo/items.json").then(r => r.json()).then(async records => {
       for (let id in records)

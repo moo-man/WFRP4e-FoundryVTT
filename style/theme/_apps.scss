@@ -18,6 +18,14 @@ body:not(.no-theme) {
 
     .warhammer.application {
 
+        &.hombrew-config {
+            .window-content {
+                > div {
+                    overflow: auto;
+                }
+            }
+        }   
+
         &.roll-dialog-v2 {
             @include wfrp-form;
 

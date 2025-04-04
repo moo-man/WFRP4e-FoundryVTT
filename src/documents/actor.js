@@ -503,7 +503,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
       else if (penetrating && layer.source?.type == "armour") // If penetrating - ignore 1 or all armor depending on material
       {
-        if (!game.settings.get("wfrp4e", "mooPenetrating"))
+        if (!game.settings.get("wfrp4e", "homebrew").mooPenetrating)
         {
           let penetratingIgnored = layer.metal ? 1 : layer.value
           modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Penetrating", {ignored: penetratingIgnored, item: layer.source.name}))
@@ -561,7 +561,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
 
     //@HOUSE
-    if (penetrating && game.settings.get("wfrp4e", "mooPenetrating")) 
+    if (penetrating && game.settings.get("wfrp4e", "homebrew").mooPenetrating) 
     {
       game.wfrp4e.utility.logHomebrew("mooPenetrating")
       let penetratingIgnored = penetrating.value || 2
@@ -585,7 +585,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
 
     // Not really a comprehensive fix 
-    if (modifiers.ap.shield && penetrating && !game.settings.get("wfrp4e", "mooPenetrating"))
+    if (modifiers.ap.shield && penetrating && !game.settings.get("wfrp4e", "homebrew").mooPenetrating)
     {
         modifiers.ap.details.push(game.i18n.format("BREAKDOWN.Penetrating", {ignored: modifiers.ap.shield, item: "Shield"}))
         modifiers.ap.ignored += modifiers.ap.shield;
@@ -593,7 +593,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooShieldAP") && opposedTest.defenderTest.failed && modifiers.ap.shield) {
+    if (game.settings.get("wfrp4e", "homebrew").mooShieldAP && opposedTest.defenderTest.failed && modifiers.ap.shield) {
       game.wfrp4e.utility.logHomebrew("mooShieldAP")
       modifiers.ap.details.push(game.i18n.format("BREAKDOWN.ShieldMoo", {ignored: modifiers.ap.shield}))
       modifiers.ap.shield = 0;
@@ -735,13 +735,13 @@ export default class ActorWFRP4e extends WarhammerActor
     // If damage taken reduces wounds to 0, show Critical
     if (newWounds <= 0) {
       //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
-      let critAmnt = game.settings.get("wfrp4e", "uiaCritsMod")
+      let critAmnt = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
         let critModifier = (Math.abs(newWounds)) * critAmnt;
         updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
-      else if (game.settings.get("wfrp4e", "mooCritModifiers")) {
+      else if (game.settings.get("wfrp4e", "homebrew").mooCritModifiers) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         if (critModifier)
@@ -1082,7 +1082,7 @@ export default class ActorWFRP4e extends WarhammerActor
         existing._displayScrollingStatus(false);
       //                                                                                                                   Only add fatigued after stunned if not already fatigued
       if (existing.conditionValue == 0 && (effect.id == "bleeding" || effect.id == "poisoned" || effect.id == "broken" || (effect.id == "stunned" && !this.hasCondition("fatigued")))) {
-        if (!game.settings.get("wfrp4e", "mooConditions") || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
+        if (!game.settings.get("wfrp4e", "homebrew").mooConditions || !effect.id == "broken") // Homebrew rule prevents broken from causing fatigue
           await this.addCondition("fatigued")
       }
 

@@ -270,7 +270,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
 
 
-      if (!game.settings.get("wfrp4e", "mooRangedDamage")) {
+      if (!game.settings.get("wfrp4e", "homebrew").mooRangedDamage) {
         // If size modifiers caused a success, SL becomes 0
         if (this.options.sizeModifier) {
           let unmodifiedTarget = target - this.options.sizeModifier
@@ -457,7 +457,7 @@ export default class TestWFRP extends WarhammerTestBase{
     }
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooCriticalMitigation") && this.result.critical) {
+    if (game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation && this.result.critical) {
       game.wfrp4e.utility.logHomebrew("mooCriticalMitigation")
       try {
         let target = this.targets[0];
@@ -1000,7 +1000,7 @@ export default class TestWFRP extends WarhammerTestBase{
     overcastData.available = overcastData.total - sum;
 
     //@HOUSE 
-    if (game.settings.get("wfrp4e", "mooOvercasting") && this.spell) {
+    if (game.settings.get("wfrp4e", "homebrew").mooOvercasting && this.spell) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
 
       let spent = (game.settings.get("wfrp4e-eis", "dharRules") && game.wfrp4e.config.magicWind[this.spell.lore.value] == "Dhar") ? 1 : 2
@@ -1022,7 +1022,7 @@ export default class TestWFRP extends WarhammerTestBase{
       }
     }
     //@HOUSE 
-    if (game.settings.get("wfrp4e", "mooOvercasting")) {
+    if (game.settings.get("wfrp4e", "homebrew").mooOvercasting) {
       game.wfrp4e.utility.logHomebrew("mooOvercasting")
       let multiplier = (game.settings.get("wfrp4e-eis", "dharRules") && game.wfrp4e.config.magicWind[this.spell.lore.value] == "Dhar") ? 1 : 2
       this.result.SL = `+${Number(this.result.SL) + (multiplier * (overcastData.total - overcastData.available))}`
@@ -1083,11 +1083,11 @@ export default class TestWFRP extends WarhammerTestBase{
           this.result.majormis = game.i18n.localize("ROLL.MajorMis")
         }
       }
-      else if (!game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3)
+      else if (!game.settings.get("wfrp4e", "homebrew").mooCatastrophicMiscasts && miscastCounter >= 3)
         this.result.majormis = game.i18n.localize("ROLL.MajorMis")
   
       //@HOUSE
-      else if (game.settings.get("wfrp4e", "mooCatastrophicMiscasts") && miscastCounter >= 3) {
+      else if (game.settings.get("wfrp4e", "homebrew").mooCatastrophicMiscasts && miscastCounter >= 3) {
         game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
         if (this.hasIngredient) {
           this.result.nullcatastrophicmis = game.i18n.localize("ROLL.CatastrophicMis")

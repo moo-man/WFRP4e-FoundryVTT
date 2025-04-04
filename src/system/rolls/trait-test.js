@@ -72,7 +72,7 @@ export default class TraitTest extends AttackTest {
         }
 
         //@HOUSE
-        if (game.settings.get("wfrp4e", "mooRangedDamage"))
+        if (game.settings.get("wfrp4e", "homebrew").mooRangedDamage)
         {
           game.wfrp4e.utility.logHomebrew("mooRangedDamage")
           if (this.item.isRanged)

@@ -90,7 +90,7 @@ export default class ChannellingDialog extends SkillDialog {
     _computeAdvantage()
     {
         // @HOUSE
-        if (game.settings.get("wfrp4e", "mooMagicAdvantage"))
+        if (game.settings.get("wfrp4e", "homebrew").mooMagicAdvantage)
         {
             return super._computeAdvantage();
         }

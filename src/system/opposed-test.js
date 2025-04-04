@@ -274,7 +274,7 @@ export default class OpposedTest {
     if (this.attackerTest.actor.has(game.i18n.localize("NAME.Swarm")) || this.defenderTest.actor.has(game.i18n.localize("NAME.Swarm")))
       sizeDiff = 0
 
-    if (game.settings.get("wfrp4e", "mooSizeDamage"))
+    if (game.settings.get("wfrp4e", "homebrew").mooSizeDamage)
       sizeDiff = 0
 
     damageMultiplier = sizeDiff >= 2 ? sizeDiff : 1
@@ -295,7 +295,7 @@ export default class OpposedTest {
       damage = item.Damage
 
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooSLDamage")) {
+    if (game.settings.get("wfrp4e", "homebrew").mooSLDamage) {
       game.wfrp4e.utility.logHomebrew("mooSLDamage")
       opposedSL = Number(this.attackerTest.result.SL)
     }
@@ -312,7 +312,7 @@ export default class OpposedTest {
     }
 
     //@HOUSE
-    if (game.settings.get("wfrp4e", "mooRangedDamage"))
+    if (game.settings.get("wfrp4e", "homebrew").mooRangedDamage)
     {
       game.wfrp4e.utility.logHomebrew("mooRangedDamage")
       if (this.attackerTest.item && this.attackerTest.item.isRanged)

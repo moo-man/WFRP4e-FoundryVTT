@@ -89,7 +89,7 @@ export default class CharacteristicDialog extends RollDialog {
     _computeDefending(attacker)
     {
         if (attacker.test.item.properties?.flaws.slow) {
-            if (!game.settings.get("wfrp4e", "mooQualities") || this.context.dodge) 
+            if (!game.settings.get("wfrp4e", "homebrew").mooQualities || this.context.dodge) 
             {
                 this.fields.slBonus += 1
                 this.tooltips.add("slBonus", 1, game.i18n.localize('CHAT.TestModifiers.SlowDefend'));

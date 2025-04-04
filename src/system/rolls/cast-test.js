@@ -9,7 +9,7 @@ export default class CastTest extends TestWFRP {
 
     this.preData.itemData = data.itemData || this.item.toObject() // Store item data to avoid rerolls being affected by changed channeled SL
     this.preData.malignantInfluence = data.malignantInfluence;
-    this.preData.unofficialGrimoire = game.settings.get("wfrp4e", "unofficialgrimoire");
+    this.preData.unofficialGrimoire = game.settings.get("wfrp4e", "homebrew").unofficialgrimoire;
     this.preData.overchannelling = data.overchannelling;
     this.preData.ingredientMode = data.ingredientMode ?? "none";
 
@@ -73,7 +73,7 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
 
     // Partial channelling - reduce CN by SL so far
-    if (game.settings.get("wfrp4e", "partialChannelling") || game.settings.get("wfrp4e", "useWoMChannelling")) {
+    if (game.settings.get("wfrp4e", "homebrew").partialChannelling || game.settings.get("wfrp4e", "useWoMChannelling")) {
       CNtoUse -= this.preData.itemData.system.cn.SL;
       if (CNtoUse < 0)
       {
@@ -116,7 +116,7 @@ export default class CastTest extends TestWFRP {
         }
         miscastCounter++;
         //@HOUSE
-        if (this.result.roll == 100 && game.settings.get("wfrp4e", "mooCatastrophicMiscasts")) {
+        if (this.result.roll == 100 && game.settings.get("wfrp4e", "homebrew").mooCatastrophicMiscasts) {
           game.wfrp4e.utility.logHomebrew("mooCatastrophicMiscasts")
           miscastCounter++
         }
@@ -178,7 +178,7 @@ export default class CastTest extends TestWFRP {
       }
 
       //@HOUSE
-      if (game.settings.get("wfrp4e", "mooCriticalChannelling")) {
+      if (game.settings.get("wfrp4e", "homebrew").mooCriticalChannelling) {
         game.wfrp4e.utility.logHomebrew("mooCriticalChannelling")
         if (this.spell.flags.criticalchannell && CNtoUse == 0) {
           this.result.SL = "+" + Number(this.result.SL) + this.item._source.system.cn.value
@@ -420,7 +420,7 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
     if (this.item.cn.SL > 0) {
 
-      if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "mooCastAfterChannelling"))
+      if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "homebrew").mooCastAfterChannelling)
       {
         let items = [this.item]
 
@@ -437,7 +437,7 @@ export default class CastTest extends TestWFRP {
         }
       }
 
-      else if (game.settings.get("wfrp4e", "mooCastAfterChannelling")) {
+      else if (game.settings.get("wfrp4e", "homebrew").mooCastAfterChannelling) {
         game.wfrp4e.utility.logHomebrew("mooCastAfterChannelling")
         if (this.item.cn.SL > 0 && this.result.castOutcome == "failure")
           this.result.other.push(game.i18n.localize("MOO.FailedCast"))

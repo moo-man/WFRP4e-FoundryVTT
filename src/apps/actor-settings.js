@@ -92,7 +92,7 @@ constructor(document, options)
         return context;
     }
 
-    static async _onSubmit(event, formData) 
+    static async _onSubmit(event, form, formData) 
     {
         return this.document.update(formData.object)
     }
