@@ -462,21 +462,8 @@ export default function() {
       hint: "SETTINGS.TableSettings",
       scope: "world",
       config: false,
-      default: {
-        species : "FM6ASUoNX21MHuWa",
-        minormis : "iPVwX0ul6lHVbKSX",
-        majormis : "we8Vo5GC3ZsDI7aA",
-        mutatephys : "YQ5XdjikeSiwo8fn",
-        mutatemental : "5HKnpyOk4XDPdZ7V",
-        oops : "MWkeER1iuwAJASNo",
-        wrath : "CcKYnmbQyRzGkrFy",
-        doom : "led1vSPKcqMpS6jp",
-        critarm : "JYX8E8WgNb2em8g3",
-        critleg : "j2joGAVBNJgS1G1g",
-        crithead : "7KReueNRjaI6dVLk",
-        critbody : "CUIX4e2hiHdSoJ64",
-      },
-      type: Object
+      type: TableSettings.schema
+
     });
 
     // Pre-load templates

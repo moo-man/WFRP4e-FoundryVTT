@@ -60,7 +60,6 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
 
     static get schema()
     {
-        Hooks.call("wfrp4e.homebrewSchema", this.#schema)
         return this.#schema
     }
 

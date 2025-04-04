@@ -1,20 +1,5 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
-    {{#each settings as |setting s|}}
-    <div class="form-group">
-        <label>{{localize setting.label}}</label>
-        <div class="form-fields">
-        <select name="{{s}}">
-            <option value=""></option>
-            {{#select setting.selected}}
-            {{#each setting.choices as |choice id|}}
-                <option value="{{id}}">{{choice}}</option>
-            {{/each}}
-            {{/select}}
-        </select>
-        </div>
-    </div>
+<div>
+    {{#each settings}}
+    {{formGroup this.field value=this.value localize=true choices=this.choices name=this.field.name}}
     {{/each}}
-
-    <button type="submit" name="submit">{{localize "Submit"}}</button>
-</form>
-    
+</div>
