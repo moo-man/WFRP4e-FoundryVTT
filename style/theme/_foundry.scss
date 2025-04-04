@@ -358,6 +358,13 @@ body:not(.no-theme) {
             }
         }
 
+        &.item-dialog {
+            --selected : var(--color-warm);
+            .dialog-item {
+                border-color: var(--color-faded);
+            }
+        }
+
         .window-header {
             border-image: url(./ui/borders/app-header.webp) 5 repeat;
             border-image-slice: 19 21 19 21 fill;

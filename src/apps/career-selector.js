@@ -1,46 +1,64 @@
 
 
-export default class CareerSelector extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.id = "career-selector";
-        options.template = "systems/wfrp4e/templates/apps/career-selector.hbs";
-        options.height = 800;
-        options.width = 400;
-        options.minimizable = true;
-        options.title = "Career Selector"
-        return options;
+export default class CareerSelector extends  HandlebarsApplicationMixin(ApplicationV2)
+{
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+        classes: ["warhammer", "standard-form", "career-selector", "item-dialog"],
+        window: {
+            title: "Career Selector",
+            resizable : true,
+        },
+        position : {
+            width: 400,
+            height: 800
+        },
+        form: {
+            submitOnChange: false,
+            closeOnSubmit : true,
+            handler: this._onSubmit
+        },
+        actions : {
+            clickCareer : {buttons: [0, 2], handler : this._onClickCareer}
+        }
     }
 
-    constructor(app) {
-        super(app)
+    constructor(document, options) {
+        super(options)
         this.careers = []
-        this.currentCareer = this.object.currentCareer
-        this.selectedCareer = -1
+        this.document = document;
+        this.currentCareer = document.currentCareer
+        this.selectedIndex = -1;
     }
 
-    async _render(...args) {
-        await super._render(...args)
-    }
 
-    async getData() {
-        let data = await super.getData()
-        if (this.careers.length == 0)
+      /** @override */
+    static PARTS = {
+        form: {
+        template: "systems/wfrp4e/templates/apps/career-selector.hbs",
+        scrollable: [".dialog-list"]
+        },
+    };
+
+    async _prepareContext(options) {
+        let context = await super._prepareContext(options)
+
+        await this.loadCareers();
+
+        if (!this._sortedCareers)
         {
-            await this.loadCareers();
+            this._sortedCareers = this.sortCareers();
         }
-
-        data.careers = this.careers;
-        data.careerList = {}
-
-        if (this.careers.length) {
-            data.careerList = this.sortCareers()
-        }
-        return data
+        context.careers = this._sortedCareers;
+        context.xp = this.computeXP();
+        return context
     }
 
     async loadCareers() {
-        this.careers = []
+        if (this.careers.length)
+        {
+            return 
+        }
         this.careers = await warhammer.utility.findAllItems("career", game.i18n.localize("CAREER.Loading"), true, ["system.careergroup.value", "system.level.value", "system.class.value"])
         this.careers = this.careers.sort((a, b) => a.system.careergroup.value > b.system.careergroup.value ? 1 : -1)
         this.careers = this.careers.filter(i => 
@@ -65,19 +83,23 @@ export default class CareerSelector extends FormApplication {
             return careerList
 
         this.careers.forEach((tier, i) => {
-            try {
+            try 
+            {
+                if (tier.system.careergroup.value) 
+                {
+                    let data = { level: tier.system.level.value, uuid: tier.uuid, img: tier.img, name: tier.name, index: i }
+                    let type = "outOfClass"
+                    if (this.currentCareer && this.currentCareer.system.class.value == tier.system.class.value)
+                        type = "inClass"
 
-                let data = {level: tier.system.level.value, img: tier.img, name: tier.name, index: i }
-                let type = "outOfClass"
-                if (this.currentCareer && this.currentCareer.system.class.value == tier.system.class.value)
-                    type = "inClass"
-
-                if (careerList[type][tier.system.careergroup.value]?.length) {
-                    if (!careerList[type][tier.system.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
-                        careerList[type][tier.system.careergroup.value].push(data)
+                    if (careerList[type][tier.system.careergroup.value]?.length) 
+                    {
+                        if (!careerList[type][tier.system.careergroup.value].find(i => i.name == tier.name)) // avoid duplicates
+                            careerList[type][tier.system.careergroup.value].push(data)
+                    }
+                    else
+                        careerList[type][tier.system.careergroup.value] = [data]
                 }
-                else
-                    careerList[type][tier.system.careergroup.value] = [data]
             }
             catch (e) {
                 ui.notifications.error(`Error when displaying ${tier.name}: ${e}`)
@@ -92,63 +114,71 @@ export default class CareerSelector extends FormApplication {
         return careerList
     }
 
-    async _updateObject(event, formData) {
-        await this.object.createEmbeddedDocuments("Item", [(await fromUuid(this.selectedCareer.uuid)).toObject()])
-        let experience = foundry.utils.duplicate(this.object.details.experience)
-        experience.spent += parseInt(formData.exp);
-        experience.log = this.object.system.addToExpLog(formData.exp, `${game.i18n.format("LOG.CareerChange", { career: this.selectedCareer.name })}`, experience.spent, undefined);
-        this.object.update({ "system.details.experience" : experience })
+    static async _onSubmit(event, form, formData) {
+        let selectedCareer = this.careers[this.selectedIndex];
+        await this.document.createEmbeddedDocuments("Item", [(await fromUuid(selectedCareer.uuid)).toObject()])
+        let experience = foundry.utils.duplicate(this.document.system.details.experience)
+        experience.spent += parseInt(formData.object.xp);
+        experience.log = this.document.system.addToExpLog(formData.exp, `${game.i18n.format("LOG.CareerChange", { career: selectedCareer.name })}`, experience.spent, undefined);
+        this.document.update({ "system.details.experience" : experience })
     }
 
-    calculateMoveExp() {
+    computeXP(careerIndex) 
+    {
         let exp = 0, reasons = []
-        if (!this.selectedCareer)
-            return { exp }
-
-        if (this.currentCareer)
+        if (!careerIndex || careerIndex == -1)
         {
-        exp += this.currentCareer.complete.value ? 100 : 200
+            return { exp, reasons }
+        }
 
-        reasons.push(this.currentCareer.complete.value ? game.i18n.localize("CAREER.LeaveComplete") : game.i18n.localize("CAREER.LeaveIncomplete"))
+        let selectedCareer = this.careers[careerIndex];
+        if (this.currentCareer) 
+        {
+            exp += this.currentCareer.complete.value ? 100 : 200
+
+            reasons.push(this.currentCareer.complete.value ? game.i18n.localize("CAREER.LeaveComplete") : game.i18n.localize("CAREER.LeaveIncomplete"))
 
 
+            if (selectedCareer.system.class.value != this.currentCareer.system.class.value) 
+            {
+                exp += 100
+                reasons.push(game.i18n.localize("CAREER.DifferentClass"))
+            }
 
-
-        if (this.selectedCareer.system.class.value != this.currentCareer.system.class.value) {
+        }
+        else 
+        {
             exp += 100
-            reasons.push(game.i18n.localize("CAREER.DifferentClass"))
         }
 
-        }
-        else {
-            exp += 100
-        }
-
-        return { exp, tooltip: reasons.join(", ") }
+        return { amount: exp, tooltip: reasons.join(", ") }
     }
 
-    activateListeners(html) {
-        super.activateListeners(html)
+    static _onClickCareer(ev,target)
+    {
+        if (ev.button == 2)
+        {
+            fromUuid(this.careers[target.dataset.index].uuid).then(i => i.sheet.render(true));
+        }
+        else 
+        {
 
-        let input = html.find("input")[0]
+            if (target.classList.contains("active"))
+            {
+                target.classList.toggle("active");
+                this.selectedIndex = -1;
+            }
+            else 
+            {
+                this.element.querySelectorAll(".dialog-item").forEach(e => e.classList.remove("active"));
+                target.classList.toggle("active");
+               this.selectedIndex = target.dataset.index;
+            }
 
-        html.find(".career-tier").mousedown(ev => {
-            if (ev.button == 0) {
-                html.find(".career-tier.active").each(function () {
-                    $(this).removeClass("active")
-                })
-                $(ev.currentTarget).toggleClass("active")
-                this.selectedCareer = this.careers[Number(ev.currentTarget.dataset.index)]
-                let { exp, tooltip } = this.calculateMoveExp()
-                input.value = exp
-                input.setAttribute("title", tooltip)
-            }
-            else if (ev.button == 2) {
-                fromUuid(this.careers[Number(ev.currentTarget.dataset.index)].uuid).then(i => i.sheet.render(true));
-            }
-        })
+            let input = this.element.querySelector("input[name='xp']");
+            let xp = this.computeXP(this.selectedIndex);
+            input.value = xp.amount;
+            input.closest(".form-group").dataset.tooltip = xp.tooltip;
+        }
     }
-
-
-
 }

@@ -1,45 +1,38 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
-
-    <div class="item-properties">
+    <div class="property-columns">
         <div class="property-column">
             <h2 class="property-header">{{localize "Qualities"}}</h2>
             {{#each qualities as |quality q|}}
             <div class="form-group">
-                {{#if (eq ../object.type "weapon")}}
-                <input type="number" class="property-input group {{quality.key}}" name="{{quality.key}}-group" value="{{quality.existing.group}}" title="{{localize 'PROPERTY.GroupDescription'}}">
+                {{#if (eq ../document.type "weapon")}}
+                <input type="number" class="group {{quality.key}} {{#unless quality.existing}}inactive disabled{{/unless}}" name="{{quality.key}}-group" value="{{quality.existing.group}}" data-tooltip="PROPERTY.GroupDescription" data-tooltip-direction="LEFT" maxlength="1">
                 {{/if}}
                 <label>{{quality.name}}</label>
                 {{#if quality.hasValue}}
-                <input type="text" class="property-input {{quality.key}}" name="{{quality.key}}-value" value="{{quality.existing.value}}">
+                <input type="text" class="value {{quality.key}}" name="{{quality.key}}-value" value="{{quality.existing.value}}">
+                <input type="checkbox" name="{{quality.key}}" {{checked existing}}>
                 {{/if}}
-                <input type="checkbox" name="{{quality.key}}" data-dtype="Boolean" {{checked existing}}>
             </div>
             {{/each}}
             <div class="form-group">
                 <label>{{localize "PROPERTY.Custom"}} <i class="far fa-question-circle" style="margin-left:3px;" data-tooltip="{{localize  'PROPERTY.CustomHint' type='Quality'}}"></i></label>
-                <input type="text" class="property-input" name="custom-quality" value="{{customQualities}}">
+                <input type="text" name="custom-quality" value="{{customQualities}}">
             </div>
         </div>
         <div class="property-column">
             <h2 class="property-header">{{localize "Flaws"}}</h2>
             {{#each flaws as |flaw f|}}
             <div class="form-group">
-                <!-- <input type="number" class="property-input group {{flaw.key}}" name="{{flaw.key}}-group" value="{{flaw.existing.group}}" > -->
                 <label>{{flaw.name}}</label>
                 {{#if flaw.hasValue}}
-                <input type="text" class="property-input {{flaw.key}}" name="{{flaw.key}}-value" value="{{flaw.existing.value}}">
+                <input type="text" class="value {{flaw.key}}" name="{{flaw.key}}-value" value="{{flaw.existing.value}}">
                 {{/if}}
-                <input type="checkbox" name="{{flaw.key}}" data-dtype="Boolean" {{checked existing}}>
+                <input type="checkbox" name="{{flaw.key}}" {{checked existing}}>
             </div>
             {{/each}}
             <div class="form-group">
                 <label>{{localize "PROPERTY.Custom"}} <i class="far fa-question-circle" style="margin-left:3px;" data-tooltip="{{localize  'PROPERTY.CustomHint' type='Flaw'}}"></i></label>
-                <input type="text" class="property-input" name="custom-flaw" value="{{customFlaws}}">
+                <input type="text" name="custom-flaw" value="{{customFlaws}}">
             </div>
         </div>
 
     </div>
-
-
-    <button type="submit" name="submit">{{localize "Submit"}}</button>
-</form>

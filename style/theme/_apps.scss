@@ -1,11 +1,12 @@
 @use "./mixins" as *;
 
-body:not(.no-theme) {
+body:not(.no-theme):not(.theme-light) {
 
     &.classic-font {
 
         .warhammer.application
         {
+            &.career-selector,
             &.roll-dialog-v2 {
                 font-family: var(--primary-font);
                 button[type="submit"] {
@@ -53,6 +54,29 @@ body:not(.no-theme) {
                             color: var(--color-cream)
                     }
                 }
+            }
+        }
+
+        &.career-selector {
+            --inclass : var(--color-dark-blue);
+            --outclass : var(--color-warm);
+            --selected : var(--color-warm);
+
+            h2 {
+                margin-top: 0.5rem;
+                color: #d6d6d6;
+                border: 3px double #5d513e;
+                box-shadow: 0px 0px 10px inset black;
+                border-radius: 0px;
+                opacity: 1;
+                text-shadow: 1px 1px 5px #000000;
+            }
+
+            h2.in-class {
+                background: var(--inclass)
+            }
+            h2.out-of-class {
+                background: var(--outclass);
             }
         }
     }

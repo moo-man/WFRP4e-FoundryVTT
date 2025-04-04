@@ -50,7 +50,17 @@ export default function () {
     const MIGRATION_VERSION = 10;
     let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
-      ChatMessage.create({content: `<h1>The Effect Refactor</h1>
+      ChatMessage.create({content: `
+      <h1>WFRP4e in Foundry V13</h1>
+      <p>As Foundry itself progresses in its adoption of its new application framework, so too has the WFRP system. <em>Tens of thousands</em> of lines of code, styling, and html dating back from the system's earliest renditions (2020s) have been removed have been removed and rewritten.</p>
+      <p>However, the longbeards grumble that what's new is unproven and untested, so please be patient if issues arise as I try to bring the new sheets and menus up to match all the functionality of the old ones.</p>
+      <p>In brief, the most notable changes are
+      <ul>
+      <li><p>The <em>monolithic</em> CSS file for the system's styling has been completely removed. Not to worry, this has been replaced with a much more flexible, cleaner, and customizable version. If you want to customize your WFRP theme, check out the <strong>Theme Config</strong> in the system settings</p></li>
+      <li><p>Actor and Item Sheets in V2 have had their <em>right click</em> functionalities greatly expanded. You can right click any owned Item or Active Effect to see a context menu for various actions.</p></li>
+      </ul>
+      <hr>
+      <h1>The Effect Refactor</h1>
         <p>If you are updating from pre-WFRP4e Version 7.1.0, Active Effect scripting has been greatly reworked, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>
         
         <p><strong>Minimum</strong>: Make sure your preimum modules are updated! Delete module content you've imported in your world, then replace every Talent on your unique Actors, like Player Characters or other ones you've created yourself. Reimport the module content you wish to use, which should be updated with the latest Items.</p>

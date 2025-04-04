@@ -1,30 +1,32 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
-
-    <ol class="career-list">
-        {{#if (eq careers.length 0)}}
-        <div class="careers-loading">
-            {{localize "SHEET.NoCareers"}}
-        </div>
-        {{/if}}
-        {{#each careerList.inClass as |careerGroup c|}}
-            <h2 class="career-group in-class">{{c}}</h2>
-            {{#each careerGroup as |careerTier t|}}
-                <li class="career-tier" data-index={{careerTier.index}}>{{careerTier.name}}</li>
+<div>
+      <ol class="dialog-list">
+        {{#each careers.inClass as |group|}}
+        <h2 class="in-class">{{@key}}</h2>
+            {{#each group}}
+                <li class="dialog-item {{#if (eq this.index ../../selectedCareer)}}active{{/if}} tier-{{this.level}}" data-action="clickCareer" data-index={{this.index}}>
+                    <img class="thumbnail" src="{{this.img}}">
+                    <label><a>{{this.name}}</a></label>
+                </li>
             {{/each}}
         {{/each}}
-        {{#each careerList.outOfClass as |careerGroup c|}}
-        <h2 class="career-group out-of-class">{{c}}</h2>
-        {{#each careerGroup as |careerTier t|}}
-            <li class="career-tier" data-index={{careerTier.index}}>{{careerTier.name}}</li>
+        {{#each careers.outOfClass as |group|}}
+        <h2 class="out-of-class">{{@key}}</h2>
+            {{#each group}}
+                <li class="dialog-item {{#if (eq this.index ../../selectedCareer)}}active{{/if}} tier-{{this.level}}" data-action="clickCareer" data-index={{this.index}}>
+                    <img class="thumbnail" src="{{this.img}}">
+                    <label><a>{{this.name}}</a></label>
+                </li>
+            {{/each}}
         {{/each}}
-    {{/each}}
-    </ol>
-    <div>
-        <div class="form-group">
-            <label>{{localize "Exp Cost"}}</label>
-            <input name="exp" type="text">
+      </ol>
+
+    <footer class="form-footer">
+        <div class="form-group" data-tooltip-direction="LEFT">
+            <label>{{localize "XP Cost"}}</label>
+            <div class="form-fields">
+                <input name="xp" type="number">
+            </div>
         </div>
-        <button type="submit" name="submit">{{localize "Select"}}</button>
-    </div>
-</form>
-    
+    <button type="submit">Add Career</button>
+    </footer>
+</div>    

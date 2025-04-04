@@ -39,4 +39,54 @@
             flex: 0 0 2rem;
         }
     }
+
+    &.career-selector {
+
+        --border: var(--color-cool-3);
+        --selected: var(--color-warm-3);
+        --inclass: var(--color-level-success-bg);
+        --outclass: var(--color-level-warning-bg);
+        gap : 0px;
+
+        .dialog-item {
+            &.tier-1 {
+                border-top: 0px;
+            }
+            &.active {
+                background: var(--selected);
+            }
+            height: 2rem;
+            img {
+                width: 2rem;
+                flex: 0 0 2rem;
+                height: 2rem;
+            }
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding: 0.2rem 0px 0.1rem 0px;
+            font-size: 1.5rem;
+            &.out-of-class {
+                background : linear-gradient(90deg, transparent 0%, var(--outclass) 50%, transparent 100%);
+            }
+
+            &.in-class {
+                background : linear-gradient(90deg, transparent 0%, var(--inclass) 50%, transparent 100%);
+            }
+        }
+
+        .form-footer {
+            button {
+                flex: 2;
+            }
+        }
+    }
 }
+
+.theme-light .warhammer.item-dialog.career-selector {
+    --border: var(--color-dark-6);
+    --selected: var(--color-warm-1);
+  }
