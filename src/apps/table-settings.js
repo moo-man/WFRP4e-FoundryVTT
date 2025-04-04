@@ -1,16 +1,5 @@
 export default class TableSettings extends HandlebarsApplicationMixin(ApplicationV2)
 {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.id = "table-settings";
-        options.template = "systems/wfrp4e/templates/apps/table-settings.hbs";
-        options.width = 600;
-        options.minimizable = true;
-        options.resizable = true;
-        options.title = "Table Settings"
-        return options;
-    }
-
     static DEFAULT_OPTIONS = {
         tag: "form",
         classes: ["warhammer", "standard-form", "table-settings"],

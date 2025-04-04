@@ -21,4 +21,22 @@
             }
         }
     }
+
+    .property-columns {
+        overflow: auto;
+        display: flex;
+        > * {
+            flex: 1;
+        }
+        input.value {
+            flex: 1;
+            align-self: left;
+        }
+        input.group {
+            flex: 0 0 1.5rem;
+        }   
+        input[type="checkbox"] {
+            flex: 0 0 2rem;
+        }
+    }
 }

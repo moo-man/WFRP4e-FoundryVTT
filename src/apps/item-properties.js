@@ -1,24 +1,30 @@
 import WFRP_Utility from "../system/utility-wfrp4e";
 
-export default class ItemProperties extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.id = "item-properties";
-        options.template = "systems/wfrp4e/templates/apps/item-properties.hbs";
-        options.height = "auto";
-        options.width = 400;
-        options.minimizable = true;
-        options.title = "Item Properties"
-        return options;
+export default class ItemProperties extends  HandlebarsApplicationMixin(ApplicationV2)
+{
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+        classes: ["warhammer", "standard-form", "item-properties"],
+        window: {
+            title: "Item Properties",
+            resizable : true,
+        },
+        position : {
+            width: 400
+        },
+        form: {
+            submitOnChange: true,
+            handler: this._onSubmit
+        }
     }
+    constructor(document, options) {
+        super(options);
+        this.document = document
 
-    constructor(...args) {
-        super(...args);
-
-        if (ItemProperties.hasWeaponProperties(this.object)) {
+        if (ItemProperties.hasWeaponProperties(this.document)) {
             this.qualities = foundry.utils.deepClone(game.wfrp4e.config.weaponQualities);
             this.flaws = foundry.utils.deepClone(game.wfrp4e.config.weaponFlaws);
-        } else if (ItemProperties.hasArmourProperties(this.object)) {
+        } else if (ItemProperties.hasArmourProperties(this.document)) {
             this.qualities = foundry.utils.deepClone(game.wfrp4e.config.armorQualities);
             this.flaws = foundry.utils.deepClone(game.wfrp4e.config.armorFlaws);
         } else {
@@ -29,7 +35,7 @@ export default class ItemProperties extends FormApplication {
         foundry.utils.mergeObject(this.qualities, game.wfrp4e.config.itemQualities);
         foundry.utils.mergeObject(this.flaws, game.wfrp4e.config.itemFlaws);
 
-        if (this.object.type === "trait") {
+        if (this.document.type === "trait") {
             ui.notifications.warn(game.i18n.localize("PROPERTIES.TraitWarning"))
         }
     }
@@ -57,62 +63,71 @@ export default class ItemProperties extends FormApplication {
         }
     }
 
-    getData() {
-        let data = super.getData()
+    async _prepareContext(options) {
+        let context = await super._prepareContext(options);
 
-        data.qualities = Object.keys(this.qualities).map(i => {
+        context.qualities = Object.keys(this.qualities).map(i => {
             return {
                 name: this.qualities[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.originalProperties.qualities[i],
+                existing: this.document.originalProperties.qualities[i],
             }
         })
 
-        data.flaws = Object.keys(this.flaws).map(i => {
+        context.flaws = Object.keys(this.flaws).map(i => {
             return {
                 name: this.flaws[i],
                 hasValue: game.wfrp4e.config.propertyHasValue[i],
                 key: i,
-                existing: this.object.originalProperties.flaws[i],
+                existing: this.document.originalProperties.flaws[i],
             }
         })
 
-        data.customQualities = this.object.qualities.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
-        data.customFlaws = this.object.flaws.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
+        context.customQualities = this.document.qualities.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
+        context.customFlaws = this.document.flaws.value.filter(i => i.custom).map(i => `${i.name} ${i.value ? "(" + i.value + ")" : ""}: ${i.description}`).join(" | ")
+        context.document = this.document;
+        return context
+    }
 
-        return data
+    
+    /** @override */
+    static PARTS = {
+        form: {
+            template: "systems/wfrp4e/templates/apps/item-properties.hbs",
+            scrollable: [""]
+        }
     }
 
 
-    async _updateObject(event, formData) {
+    static async _onSubmit(event, form, formData) {
 
         let qualities = []
         let flaws = []
         let groups = [];
 
-        for (let prop in formData) {
+        for (let prop in formData.object) {
 
             if (prop == "custom-quality")
-                qualities = qualities.concat(this.parseCustomProperty(formData[prop]))
+                qualities = qualities.concat(this.parseCustomProperty(formData.object[prop]))
             else if (prop == "custom-flaw")
-                flaws = flaws.concat(this.parseCustomProperty(formData[prop]))
+                flaws = flaws.concat(this.parseCustomProperty(formData.object[prop]))
 
-            if (formData[prop] && !prop.includes("-value")) {
+            if (formData.object[prop] && !prop.includes("-value")) {
                 let property = {
                     name: prop,
                     value: null
                 }
-                if (formData[`${prop}-value`]) {
-                    let value = formData[`${prop}-value`]
+                if (formData.object[`${prop}-value`]) {
+                    let value = formData.object[`${prop}-value`]
                     if (Number.isNumeric(value))
                         value = parseInt(value)
                     property.value = value
                 }
 
-                if (formData[`${prop}-group`]) 
+                if (formData.object[`${prop}-group`]) 
                 {
-                    property.group = formData[`${prop}-group`]
+                    property.group = formData.object[`${prop}-group`]
                     groups.push(property.group)
                 }
 
@@ -133,7 +148,7 @@ export default class ItemProperties extends FormApplication {
         }
 
         warhammer.utility.log("Updating Qualities/Flaws", false, formData, qualities, flaws)
-        this.object.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
+        this.document.update({ "system.qualities.value": qualities, "system.flaws.value": flaws })
     }
 
     parseCustomProperty(string)
@@ -158,19 +173,34 @@ export default class ItemProperties extends FormApplication {
         return traits
     }
 
+      /** @inheritDoc */
+    async _onFirstRender(context, options) {
+        await super._onFirstRender(context, options);
+        this.document.apps.properties = this;
+    }
 
-    activateListeners(html) {
-        super.activateListeners(html)
-        
 
-        html.find(".property-input").change(ev => {
-            let property = ev.target.classList[1];
-            let checked = ev.target.value ? true : false
-            let element = $(ev.currentTarget).parents("form").find(`[name=${property}]`)[0]
-            if (element)
-                element.checked = checked
+    /** @inheritDoc */
+    async _onRender(options) {
+        await super._onRender(options)
 
+        // Automatically check or uncheck a property if the associated textbox has been changed
+        this.element.querySelectorAll("input.value").forEach(e => {
+            e.addEventListener("keyup", ev => {
+                let property = ev.target.classList[1];
+                let checked = ev.target.value ? true : false
+                let element = this.element.querySelector(`[name=${property}]`)
+                if (element)
+                    element.checked = checked
+            })
         })
+    }
+
+    /** @inheritDoc */
+    async _onClose(options)
+    {
+        super._onClose(options);
+        delete this.document.apps.properties;
     }
 
 
