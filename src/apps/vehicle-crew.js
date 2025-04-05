@@ -1,78 +1,98 @@
-export default class VehicleCrew extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes.push("vehicle-crew")
-        options.template = "systems/wfrp4e/templates/apps/vehicle-crew.hbs";
-        options.resizable = true;
-        options.submitOnChange = true;
-        options.height = 500;
-        options.width = 400;
-        options.title = game.i18n.localize("VEHICLE.VehicleCrew")
-        return options;
+export default class VehicleCrew extends DraggableApp(HandlebarsApplicationMixin(ApplicationV2))
+{
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+        classes: ["warhammer", "standard-form", "vehicle-crew"],
+        window: {
+            title: "Vehicle Crew",
+            resizable: true,
+        },
+        position: {
+            width: 400,
+            height: 500
+        },
+        form: {
+            submitOnChange: true,
+            handler: this._onSubmit
+        },
+        actions: {
+            unassign: this._onUnassign,
+            deleteRole: this._onDeleteRole,
+            openRole: { buttons: [2], handler: this._onOpenRole },
+            addRole: this._onAddRole
+        },
+        dragDrop: [{ dragSelector: '.role', dropSelector: null }],
     }
 
-    getData() {
-        let data = super.getData()
-        data.system = this.object.system;
-        data.roles = this.object.itemTypes.vehicleRole
-        data.passengers = data.system.passengers.list;
-        return data
+
+    /** @override */
+    static PARTS = {
+        form: {
+            template: "systems/wfrp4e/templates/apps/vehicle-crew.hbs",
+            scrollable: [""]
+        }
+    };
+
+    constructor(document, options) {
+        super(options);
+        this.document = document;
     }
 
-    async _updateObject(event, formData) {
-        this.object.update(formData)
+    async _prepareContext(options) {
+        let context = await super._prepareContext(options)
+        context.system = this.document.system;
+        context.roles = this.document.itemTypes.vehicleRole
+        context.passengers = context.system.passengers.list;
+        return context;
     }
 
-    activateListeners(html)
-    {
-        super.activateListeners(html);
-
-        let dragDrop = new DragDrop(
-            {dragSelector : '.role', dropSelector : ".passenger-roles", callbacks: {
-                dragstart : this._dragRole.bind(this),
-                drop : this._dropRole.bind(this)
-            }})
-
-        dragDrop.bind(html[0]);
-
-        html.find(".add-role").click(async ev => {
-            await this.object.createEmbeddedDocuments("Item", [{name : game.i18n.localize("VEHICLE.NewRole"), type : "vehicleRole"}], {renderSheet: true});
-            this.render(true);
-        })
-
-        html.find(".role").contextmenu(async ev => {
-            this.object.items.get(ev.currentTarget.dataset.id)?.sheet?.render(true);
-        })
-
-        html.find(".delete-role").click(async ev => {
-            ev.stopPropagation();
-            await this.object.items.get(ev.currentTarget.parentElement.dataset.id)?.delete();
-            this.render(true);
-        })
-
-        html.find(".unassign-role").click(async ev => {
-            let passengerId = $(ev.currentTarget).parents(".passenger-roles").attr("data-id");
-            let roleId = ev.currentTarget.dataset.id;
-
-            await this.object.update(this.object.system.passengers.removeRole(passengerId, roleId));
-            this.render(true);
-        })
+    async _onSubmit(event, form, formData) {
 
     }
 
-     _dragRole(ev)
-     {
+    /**
+     * Add role id to drag data
+     * 
+     * @param {DragEvent} ev Drag event
+     */
+    async _onDragStart(ev) {
         ev.dataTransfer.setData("text/plain", ev.target.dataset.id);
-     }
+    }
 
-     async _dropRole(ev)
-     {
-        let roleId = ev.dataTransfer.getData("text/plain");
-        let passengerId = ev.target.dataset.id;
+    /**
+     * Handle dropping roles onto crew members
+     * 
+     * @param {Event} ev Drop event 
+     */
+    async _onDrop(ev) {
+        let roleId = ev.dataTransfer.getData("text/plain"); // Dragged role
+        let passengerId = ev.target.dataset.id;             // Dropped on passenger
 
-        await this.object.update(this.object.system.passengers.addRole(passengerId, roleId));
+        if (roleId && passengerId) {
+            await this.document.update(this.document.system.passengers.addRole(passengerId, roleId));
+            this.render(true);
+        }
+    }
+
+    static async _onUnassign(ev, target) {
+        let passengerId = target.closest(".passenger-roles").dataset.id;;
+        let roleId = target.dataset.id;
+
+        await this.document.update(this.document.system.passengers.removeRole(passengerId, roleId));
         this.render(true);
-     }
+    }
 
+    static async _onDeleteRole(ev, target) {
+        await this.document.items.get(target.parentElement.dataset.id)?.delete();
+        this.render(true);
+    }
 
+    static _onOpenRole(ev, target) {
+        this.document.items.get(target.parentElement.dataset.id)?.sheet?.render(true);
+    }
+
+    static async _onAddRole(ev, target) {
+        await this.document.createEmbeddedDocuments("Item", [{ name: game.i18n.localize("VEHICLE.NewRole"), type: "vehicleRole" }], { renderSheet: true });
+        this.render(true);
+    }
 }

@@ -291,13 +291,19 @@
     }
 }
 
+@mixin black-bg {
+    color: #d6d6d6;
+    border: 1px solid var(--color-form-border);
+    background: #080808;
+}
+
 @mixin wfrp-form {
         .form-group {
             @include wfrp-form-input();
             gap: 0px;
             label {
                 color: #d6d6d6;
-                border: 1px solid #5d513e;
+                border: 1px solid var(--color-form-border);
                 background: #080808;
                 height: 2rem;
                 line-height: 2rem;

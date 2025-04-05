@@ -6,6 +6,7 @@ body:not(.no-theme):not(.theme-light) {
 
         .warhammer.application
         {
+            &.vehicle-crew,
             &.career-selector,
             &.roll-dialog-v2 {
                 font-family: var(--primary-font);
@@ -78,6 +79,14 @@ body:not(.no-theme):not(.theme-light) {
             h2.out-of-class {
                 background: var(--outclass);
             }
+        }
+
+        &.vehicle-crew {
+            --border: var(--color-faded);
+            .window-content button {
+                @include wfrp-button;
+            }
+
         }
     }
 }
