@@ -21,7 +21,16 @@ export default function() {
       })
   
       button.insertAfter(html.find("#game-details"))
-      
+
+      let documentation = $(`<button class='documentation'>${game.i18n.localize("BUTTON.Documentation")}</button>`);
+
+      documentation.click(ev => {
+        new FrameViewer("https://moo-man.github.io/WFRP4e-FoundryVTT/pages/home.html", {
+          title: game.i18n.localize("BUTTON.Documentation")
+        }).render(true);
+      });
+
+      documentation.insertAfter(html.find("#game-details"));
     }
 
     if (app instanceof RollTableDirectory)

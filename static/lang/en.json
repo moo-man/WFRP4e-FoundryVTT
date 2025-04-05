@@ -1740,6 +1740,7 @@
     "CONFIGURE.AddActorEncumbrance" : "Add Encumbrance for Actors",
     "CONFIGURE.MainHand" : "Main Hand",
 
+    "BUTTON.Documentation" : "WFRP 4e Documentation",
     "BUTTON.PostBug" : "Submit a Grudge",
     "BUTTON.CharacterCreation" : "Character Creation",
 
