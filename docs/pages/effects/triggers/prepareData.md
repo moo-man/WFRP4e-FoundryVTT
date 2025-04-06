@@ -21,7 +21,7 @@ There is a [bug](https://github.com/foundryvtt/foundryvtt/issues/7987) when usin
 
 `args.actor` - If the effect is applied to an Actor, this is the Actor being prepared
 
-`args.item` - If the effect is applied to an Item, this is the Item being; prepared
+`args.item` - If the effect is applied to an Item, this is the Item being prepared
 
 ## Examples
 

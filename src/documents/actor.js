@@ -1219,9 +1219,9 @@ export default class ActorWFRP4e extends WarhammerActor
     {
         if (game.user.isGM)
         {
-            html += this.system.details.gmnotes.value || ""
+            html += this.system.details.gmnotes?.value || this.system.details.gmdescription?.value ||""
         }
-        html += this.system.details.biography.value || ""
+        html += this.system.details.biography?.value || this.system.details.description?.value || ""
     }
     if (options.relativeTo)
     {    
