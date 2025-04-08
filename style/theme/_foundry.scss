@@ -310,6 +310,11 @@ body:not(.no-theme) {
             box-shadow: 5px 5px 10px rgb(0, 0, 0);
             color: var(--color-cream);
             outline: none;
+            padding: 10px;
+
+            > li:hover {
+                background-color: var(--color-cream);
+            }
         }
 
         #tooltip {

@@ -2,6 +2,7 @@ import OpposedHandler from "../system/opposed-handler.js";
 import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import CastTest from "../system/rolls/cast-test.js";
+import EditTest from "../apps/edit-test.js";
 
 
 export default function () {
@@ -53,12 +54,9 @@ export default function () {
       })
   })
 
-  /**
- * Add right click option to damage chat cards to allow application of damage
- * Add right click option to use fortune point on own rolls
- */
-  Hooks.on("getChatLogEntryContext", (html, options) => {
-    let canApply = li => game.messages.get(li.attr("data-message-id")).system.opposedTest || li.find(".dice-roll").length > 0;
+  Hooks.on("getChatMessageContextOptions", (html, options) => {
+    let canApply = li => game.messages.get(li.dataset.messageId).system.opposedTest || li.querySelector(".dice-roll");
+    let hasTest  = li => game.messages.get(li.dataset.messageId).system.test;
     let canApplyFortuneReroll = function (li) {
       //Condition to have the fortune contextual options:
       //Be owner of the actor
@@ -66,7 +64,7 @@ export default function () {
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
       //Test must be failed 
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
 
@@ -77,7 +75,7 @@ export default function () {
       //Have fortune point
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL 
     };
@@ -85,7 +83,7 @@ export default function () {
       //Condition to have the darkdeak contextual options:
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.type == "character"
     };
@@ -94,7 +92,7 @@ export default function () {
       //Condition to have the darkdeak contextual options:
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && game.user.isGM
     };
@@ -103,7 +101,7 @@ export default function () {
       //Condition to be able to target someone with the card
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && test.actor.isOwner
     };
@@ -112,7 +110,7 @@ export default function () {
       //Condition to be able to target someone with the card
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return game.user.isGM && test && test.opposedMessages.length >= 2
     };
@@ -121,7 +119,7 @@ export default function () {
       //Condition to be able to target someone with the card
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return game.user.isGM &&  test && test.opposedMessages.length >= 2 && test.opposedMessages.some(m => m?.system.opposedHandler?.resultMessage)
     };
@@ -130,7 +128,7 @@ export default function () {
       //Condition to be able to target someone with the card
       //Be owner of character
       //Own the roll
-      let message = game.messages.get(li.attr("data-message-id"));
+      let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return (message.isOwner || message.isAuthor) && test && test instanceof CastTest && test.result.critical && game.settings.get("wfrp4e", "useWoMOvercast") && !test.result.totalPower
     };
@@ -143,11 +141,11 @@ export default function () {
         callback: li => {
 
           if (li.find(".dice-roll").length) {
-            let amount = li.find('.dice-total').text();
+            let amount = li.querySelector('.dice-total').textContent
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount))
           }
           else {
-            let message = game.messages.get(li.attr("data-message-id"))
+            let message = game.messages.get(li.dataset.messageId)
             let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
@@ -168,7 +166,7 @@ export default function () {
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
-            let message = game.messages.get(li.attr("data-message-id"))
+            let message = game.messages.get(li.dataset.messageId)
             let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
@@ -189,7 +187,7 @@ export default function () {
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
-            let message = game.messages.get(li.attr("data-message-id"))
+            let message = game.messages.get(li.dataset.messageId)
             let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
@@ -210,7 +208,7 @@ export default function () {
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
-            let message = game.messages.get(li.attr("data-message-id"))
+            let message = game.messages.get(li.dataset.messageId)
             let opposedTest = message.system.opposedTest;
 
             if (!opposedTest.defenderTest.actor.isOwner)
@@ -226,7 +224,7 @@ export default function () {
         icon: '<i class="fas fa-dice"></i>',
         condition: canApplyFortuneReroll,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.useFortune("reroll");
         }
@@ -236,7 +234,7 @@ export default function () {
         icon: '<i class="fas fa-dice"></i>',
         condition: canGMReroll,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.reroll();
         }
@@ -246,7 +244,7 @@ export default function () {
         icon: '<i class="fas fa-plus-square"></i>',
         condition: canApplyFortuneAddSL,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.useFortune("addSL");
         }
@@ -256,7 +254,7 @@ export default function () {
         icon: '<i class="fas fa-pen-nib"></i>',
         condition: canApplyDarkDeals,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.useDarkDeal();
         }
@@ -266,7 +264,7 @@ export default function () {
         icon: '<i class="fas fa-crosshairs"></i>',
         condition: canTarget,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
           if (canvas.scene) { 
@@ -285,7 +283,7 @@ export default function () {
         condition: canCompleteUnopposed,
         callback: li => {
 
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.opposedMessages.forEach(message => {
             if (message)
@@ -297,11 +295,21 @@ export default function () {
         }
       },
       {
+        name: game.i18n.localize("CHATOPT.EditTest"),
+        icon: '<i class="fas fa-edit"></i>',
+        condition: hasTest,
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          let test = message.system.test;
+          new EditTest(test).render(true);
+        }
+      },
+      {
         name: game.i18n.localize("CHATOPT.ApplyAllDamage"),
         icon: '<i class="fas fa-user-minus"></i>',
         condition: canApplyAllDamage,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           for (let message of test.opposedMessages) {
             if (message) {
@@ -321,7 +329,7 @@ export default function () {
         icon: '<i class="fa-solid fa-bolt"></i>',
         condition: canApplyTotalPower,
         callback: li => {
-          let message = game.messages.get(li.attr("data-message-id"));
+          let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
           test.preData.totalPower = true;
           test.roll();

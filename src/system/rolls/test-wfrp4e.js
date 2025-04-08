@@ -146,6 +146,37 @@ export default class TestWFRP extends WarhammerTestBase{
     this.roll()
   }
 
+  edit(data)
+  {
+    foundry.utils.mergeObject(this.preData, data);
+
+    // If changing hitloc, keep old roll;
+    if (data.hitloc)
+    {
+      this.preData.roll = data.roll || this.result.roll;
+    }
+    else if (!data.hitloc && this.result.hitloc) // If not changing hitloc, keep old hitloc
+    {
+      this.preData.hitloc = this.result.hitloc.roll;
+    }
+
+    if (data.SL) // If changing SL keep both roll and hitloc
+    {
+      this.preData.roll = data.roll || this.result.roll;
+      this.preData.slBonus = 0;
+      this.preData.successBonus = 0;
+      // If setting SL value, remove other bonuses
+    }
+
+    // If target was changed, keep old roll
+    if (data.target)
+    {
+      this.preData.roll = data.roll || this.result.roll;
+    }
+
+    this.roll();
+  }
+
   /**
      * Provides the basic evaluation of a test.
      * 
