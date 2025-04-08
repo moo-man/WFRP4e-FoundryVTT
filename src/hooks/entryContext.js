@@ -3,6 +3,7 @@ import StatBlockParser from "../apps/stat-parser.js";
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import CastTest from "../system/rolls/cast-test.js";
 import EditTest from "../apps/edit-test.js";
+import { OpposedHandlerMessage } from "../model/message/oppose-handler.js";
 
 
 export default function () {
@@ -260,21 +261,41 @@ export default function () {
         }
       },
       {
-        name: game.i18n.localize("CHATOPT.OpposeTarget"),
-        icon: '<i class="fas fa-crosshairs"></i>',
-        condition: canTarget,
+        name: game.i18n.localize("CHATOPT.StartOpposed"),
+        icon: '<i class="fas fa-sword"></i>',
+        condition: li => {return (hasTest(li) && !game.wfrp4e.oppose)},
         callback: li => {
           let message = game.messages.get(li.dataset.messageId);
           let test = message.system.test;
-          let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
-          if (canvas.scene) { 
-            game.canvas.tokens.setTargets([])
-          }
 
-          test.context.targets = test.context.targets.concat(targets)
-          targets.map(t => WFRP_Utility.getToken(t)).forEach(t => {
-            test.createOpposedMessage(t)
-          })
+          let targets = Array.from(game.user.targets).map(t => t.actor.speakerData(t.document))
+
+          if (targets.length)
+          {
+            if (canvas.scene) 
+            { 
+              game.canvas.tokens.setTargets([])
+            }
+
+            test.context.targets = test.context.targets.concat(targets)
+            targets.map(t => WFRP_Utility.getToken(t)).forEach(t => 
+            {
+              test.createOpposedMessage(t)
+            })
+          }
+          else // no targets
+          {
+            OpposedHandlerMessage.clickManualOpposed(message);
+          }
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.DefendOpposed"),
+        icon: '<i class="fas fa-shield"></i>',
+        condition: li => {return (hasTest(li) && game.wfrp4e.oppose)},
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          OpposedHandlerMessage.clickManualOpposed(message);
         }
       },
       {

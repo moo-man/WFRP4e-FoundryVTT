@@ -28,23 +28,26 @@ export class OpposedHandlerMessage extends WarhammerMessageModel
      * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
      * to evaluate if necessary.
      */
-    static async onClickOpposedToggle(ev, target) {
+    static async clickManualOpposed(message) {
 
-        if (game.wfrp4e.oppose && !game.wfrp4e.oppose.attackerMessage) {
+        if (game.wfrp4e.oppose && !game.wfrp4e.oppose.attackerMessage) 
+        {
             delete game.wfrp4e.oppose;
         }
 
         // Opposition already exists - click was defender
-        if (game.wfrp4e.oppose) {
-            await game.wfrp4e.oppose.setDefender(this.parent);
+        if (game.wfrp4e.oppose) 
+        {
+            await game.wfrp4e.oppose.setDefender(message);
             await game.wfrp4e.oppose.renderMessage() // Rerender opposed start with new message
             await game.wfrp4e.oppose.computeOpposeResult();
             delete game.wfrp4e.oppose;
         }
         // No opposition - click was attacker
-        else {
+        else 
+        {
             game.wfrp4e.oppose = new OpposedHandler()
-            await game.wfrp4e.oppose.setAttacker(this.parent);
+            await game.wfrp4e.oppose.setAttacker(message);
             await game.wfrp4e.oppose.renderMessage()
         }
 
