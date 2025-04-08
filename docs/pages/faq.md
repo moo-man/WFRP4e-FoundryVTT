@@ -41,9 +41,17 @@ See [Creating a new Species]()
 ## Usage
 
 {: .question}
-None of my Talent bonuses show up in the roll dialog anymore!
+How do I create new Careers?
 
-It sounds like you are using old Talents from before the [Effect Refactor](./effects//effect-refactor). See the section on [how to utilize the new effects](./effects/effect-refactor#tldr-what-should-i-do-so-my-game-doesnt-break)
+There is nothing more special about creating a Career than any other Item. See the [Foundry Knowledge Base Article](https://foundryvtt.com/article/items/). Additionally, see [Careers](./basics/careers.md) for more information on how Careers work.
+
+{: .question}
+I'm trying to change the Token size for an Actor, but it keeps reverting!
+
+See the [Actor Settings](./basics/basics.md#actor-settings) menu for how to disable certain automatic behaviors.
+
+{: .question}
+Why can't Players see the rolled number and target number when I (the GM) roll Tests?
 
 ## Modules
 

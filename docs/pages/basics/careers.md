@@ -9,9 +9,9 @@ Careers are an integral part of the WFRP4e rules, so it's important to know how 
 
 **Each Tier** of a Career is represented as an Item, i.e. *Aide*, *Advisor*, *Counsellor*, and *Chancellor* are each an Item, and they define in their data that they are part of the *Advisor* **Career Group**. This means that if a character were to progress from T1 to T4 in the Advisor career, they would add the correspending tier's Career Item to the Actor. 
 
-
 {: .important}
 > **Career Skills**
+> 
 > In the WFRP4e Rulebook, each Career Tier defines some set of skills, though any Tier is considered to have all the skills in previous Tiers as well. In Foundry, since each Career is a separate Item that has no inherent link to each other, the skills listed in each Tier include all of the ones before it. 
 > 
 > This is only really important if you're making your own Careers. For example, you create a T1 Career and fill out the characteristics, skills, talents, etc. When making the next tier, you should begin by copying the skills from T1 and transfering them to T2. When making T3, copy from T2 into T3, and so on. This ensures each Tier has all of the previous Tier skills. 
@@ -38,7 +38,6 @@ Now that the Career is on the Actor, we can mark it as **Current**. Only one Car
 If a previous Career exists on the Actor that matches the new Career's group (Noble and Scion are both in the Noble Career), you will see a pop up prompting you to **Link Career**. What this will do is insert all the data from the previous Career into the new one. This is very important if the previous Career made any Skill specialisation choices. e.g. the choice to make **Melee (Any)** into **Melee (Polearm)**. Since each Tier is an indepedent Item, this Linking is necessary, otherwise you will have to manually go into the new Career's sheet and change any grouped Skill to match the choices made in the previous Tiers. 
 
 A Career being **Complete** is a manual decision and not automated. All this does is affect XP calculation when changing career (+100 XP cost to switch Career if the **Current** one is not marked as **Complete**).
-
 
 #### Advancement Indicators
 
