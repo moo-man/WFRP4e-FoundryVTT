@@ -20,11 +20,11 @@ Below are topics that should be known when using the system and can be described
 
 The Actor Settings menu lets you configure automated behavior within the Actor, namely disabling automatic calculations. Here you can disabling automatic max wound calculation, encumbrance calculation, token sizing, and more. 
 
-![Actor Settings](../../assets/basics/actor-settings.png)
+![Actor Settings](../../assets/basics/actor-settings.webp)
 
 
 ### System Effects
 
 Adding Conditions to Actors is easy, but what about other effects? For example, Consume Alcohol effects, Overexposure to Heat or Cold, or Symptoms independent of [Diseases](./diseases.md). You can do this via a dropdown selector at the bottom of the Effects tab. Other modules may add more effects to choose from, such as **Rattled** or **Besmirched**
 
-![System Effects](../../assets/basics/system-effects.png)
+![System Effects](../../assets/basics/system-effects.webp)
