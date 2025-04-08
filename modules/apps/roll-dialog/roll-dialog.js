@@ -271,7 +271,7 @@ export default class RollDialog extends WarhammerRollDialog {
         // Defending scripts are dialog scripts coming from the attacker and/or the weapon used in the attack.
         // e.g. "Dodge tests to defend against this attack have disadvantage"
         let attacker = actor.attacker;
-        return attacker ? ((attacker.test.item?.getScripts("dialog").concat(attacker.test?.actor?.getScripts("dialog"))).filter(s => s.options?.defending)) : []
+        return attacker?.test?.actor ? ((attacker.test.actor.getScripts("dialog").concat(attacker.test?.item?.getScripts?.("dialog") || [])).filter(s => s.options?.defending)) : []
     }
 
 
