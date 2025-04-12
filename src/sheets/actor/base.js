@@ -432,7 +432,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           documentData.system.equipped.value = false;
           
           // This handles both updating when dragging within the same sheet and creating a new item when dragging from another sheet
-          this.document.update({items : [documentData]});
+          this.document.updateEmbeddedDocuments("Item",  [documentData]);
         }
       }
       else 
