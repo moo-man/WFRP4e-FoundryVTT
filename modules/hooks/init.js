@@ -664,6 +664,26 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "staticPointBlankRange", {
+      name: "SETTINGS.StaticPointBlankRange",
+      hint: "SETTINGS.StaticPointBlankRangeHint",
+      scope: "world",
+      homebrew: true,
+      config: false,
+      default: false,
+      type: Boolean
+    });
+
+    game.settings.register("wfrp4e", "staticPointBlankRangeValue", {
+      name: "SETTINGS.StaticPointBlankRangeValue",
+      hint: "SETTINGS.StaticPointBlankRangeValueHint",
+      scope: "world",
+      config: false,
+      homebrew: true,
+      default: 4,
+      type: Number
+    })
+
     game.settings.register("wfrp4e", "useWoMOvercast", {
       name: "SETTINGS.useWoMOvercast",
       hint: "SETTINGS.useWoMOvercastHint",
