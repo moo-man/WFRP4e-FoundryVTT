@@ -372,15 +372,21 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (!range || this.attackType == "melee")
             return
 
+        let staticPointBlankRange = game.settings.get("wfrp4e", "homebrew").staticPointBlankRange;
+
+        let pointBlankRangeCutoff = staticPointBlankRange ? 
+            game.settings.get("wfrp4e", "homebrew").staticPointBlankRangeValue : 
+            Math.ceil(range / 10);
+
         let rangeBands = {}
 
         rangeBands[`${game.i18n.localize("Point Blank")}`] = {
-            range: [0, Math.ceil(range / 10)],
+            range: [0, pointBlankRangeCutoff],
             modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Point Blank"]
         }
         rangeBands[`${game.i18n.localize("Short Range")}`] = {
-            range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
+            range: [pointBlankRangeCutoff + 1, Math.ceil(range / 2)],
             modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Short Range"]
         }
