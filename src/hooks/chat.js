@@ -369,8 +369,6 @@ export default function() {
       })
     })
 
-    warhammer.utility.replacePopoutTokens(html);
-
     // if (app.getFlag("wfrp4e", "roleTests"))
     // {
     //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.system.test).filter(i => i);

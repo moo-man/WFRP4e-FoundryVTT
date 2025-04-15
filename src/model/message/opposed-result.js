@@ -45,6 +45,10 @@ export class OpposedTestMessage extends WarhammerMessageModel
       return await this.parent.update({content})
     }
 
+    async onRender(html)
+    {
+      warhammer.utility.replacePopoutTokens(html);
+    }
 
     static get actions() 
     { 

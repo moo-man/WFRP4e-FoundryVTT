@@ -57,6 +57,8 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         div.appendChild(mount);
     }
       header.insertBefore(div, header.firstChild);
+
+      warhammer.utility.replacePopoutTokens(html);
     }
 
   static async onPlaceAreaEffect(event) {

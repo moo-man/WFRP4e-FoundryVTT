@@ -24,6 +24,11 @@ export class OpposedHandlerMessage extends WarhammerMessageModel
         });
     }
 
+    async onRender(html)
+    {
+      warhammer.utility.replacePopoutTokens(html);
+    }
+
     /**
      * The opposed button was clicked, evaluate whether it is an attacker or defender, then proceed
      * to evaluate if necessary.
