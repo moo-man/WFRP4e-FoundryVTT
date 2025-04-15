@@ -44,3 +44,7 @@ A Career being **Complete** is a manual decision and not automated. All this doe
 Now that the Career is marked as **Current**, you can use the Advancement Indicators to advance and automatically spend XP. When the `+` becomes a `✓`, that means the Characteristic/Skill is advanced enough to be considered complete for this Career (5 × the Career Tier). 
 
 <img src="../../assets/basics/careers5.webp"/>
+
+{: .highlight}
+> Note that you can **Force Advancement Indicators** for a Skill in its sheet. This will ensure the indicator shows regardless of current Career. Also note that by default XP for this advancing a forced Skill is double the normal rate, but XP cost can be modified as well in the sheet. 
+> Otherwise, you can still advance a non-career Skill or Characteristic by simply editing the Advances value, this will prompt you to spend some calculated XP value, taking into account the extra cost for not being in the current Career, if applicable.

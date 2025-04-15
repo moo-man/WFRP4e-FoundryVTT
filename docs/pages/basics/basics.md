@@ -15,6 +15,11 @@ While this covers the basics of using this system, it still assumes you know the
 
 Below are topics that should be known when using the system and can be described briefly. Topics that require more in-depth descriptions are given dedicated sub-pages.
 
+### Test Context Menu Options
+
+Like many other things in Foundry, right clicking a Test in chat provides many useful options that every user should know about.
+
+![Test Context](../../assets/basics/test-context.webp)
 
 ### Actor Settings
 

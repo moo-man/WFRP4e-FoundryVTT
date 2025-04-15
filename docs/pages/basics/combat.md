@@ -52,4 +52,65 @@ After applying, you can see the breakdown of modifiers in the result tooltip.
 
 ### Alternative Combat Flows
 
+{: .important}
+The standard method of targeting before rolling is preferable because the roll dialog tries to take into account any contextual modifiers that may apply to the roll. With the methods described below this will need to be done manually (usually via editing the test after it's rolled). 
+
+#### Start Opposed - Target
+
+You can target any Actor after-the-fact by targeting, right clicking your Test, and selecting **Start Opposed**. This will create an opposed test as if you had targeted them before you rolled, so the target simply needs to roll a Test to defend.
+
+![With Target](../../assets/basics/combat7.webp)
+
+#### Start Opposed - No Target
+
+When selecting **Start Opposed** without a Target, this starts an "open" opposed test that has no defender yet. To designate a defender, simply right click another Test and select **Defend Opposed**. This completes the opposed test and compares the attacker and defender, generating a result card. 
+
+{: .important}
+Note that this method *cannot* (usually) be used for Ranged Attacks (or any unopposed attack), as it involves using two different rolled Tests. Use the targeting alternative above for these cases. 
+
+![No Target](../../assets/basics/combat8.webp)
+
 ## Spells & Prayers
+
+Usings Spells and Prayers is usually straightforward and works the same way as Weapons, but overcasting can cause some complications with targeting, see the example below.
+
+{: .question}
+I have cast a spell, targeting the Actor I wish to cast it at. However, I have 3 overcasts, allowing me to select more Targets, how do I resolve this?
+
+See the [Alternative Comabt Flows](./combat.md#alternative-combat-flows), this lets you create more opposed tests off of your Casting Test against different targets, from these opposed tests you can proceed each one as unopposed. 
+
+{: .question}
+Is there an easier way to handle multiple targets than doing them one by one?
+
+Yes! After Casting the spell, simply target all the targets you wish (hold shift while clicking `T` to target multiple), then right click the Casting Test and select **Start Opposed**, this will create an Opposed Test for each target.
+
+![](../../assets/basics/combat9.webp)
+
+Then, assuming all the Tests can be resolved unopposed, right click the Casting Test again and select **Complete All Unopposed**.
+
+![](../../assets/basics/combat10.webp)
+
+Finally, right click the Casting Test once  more and select **Apply All Damage**.
+
+![](../../assets/basics/combat11.webp)
+
+## Other Considerations
+
+### Dual Wielder 
+
+The **Dual Wielder** Talent describes a very specific process for its usage, and here's how to perform it in the Foundry system.
+
+1. Ensure you have the **Dual Wielder** Talent
+2. Ensure you have two weapons equipped, with one of them mark as **offhand**
+
+    ![](../../assets/basics/combat12.webp)
+
+3. Attack with the primary weapon as normal (not the offhand weapon). 
+4. After completing the opposed test with the primary weapon, there will be a **Roll Dual Wielder Attack** button on the result card. 
+
+    ![](../../assets/basics/combat13.webp)
+
+5. Target the Actor you wish to attack with the secondary weapon, then click the button to proceed with the secondary weapon Test. 
+
+{:.important}
+Note that even if it seems like it's starting a new roll for the secondary Test, the roll will be set to the reverse of the primary roll. The roll dialog is necessary to account for any modifiers to the secondary target. 
