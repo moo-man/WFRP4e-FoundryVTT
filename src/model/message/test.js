@@ -89,14 +89,14 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
   }
   
       // Respond to overcast button clicks
-  static onOvercastClick(event) {
+  static onOvercastClick(event, target) {
     event.preventDefault();
     let msg = this.parent
     if (!this.canEdit)
       return ui.notifications.error("CHAT.EditError")
 
     let test = msg.system.test
-    let overcastChoice = event.currentTarget.dataset.overcast;
+    let overcastChoice = target.dataset.overcast;
     // Set overcast and rerender card
     test._overcast(overcastChoice)
     
