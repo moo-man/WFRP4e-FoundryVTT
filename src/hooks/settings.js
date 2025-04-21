@@ -17,7 +17,7 @@ export default function() {
                 })
             }
             // Update counter values, can't just use ui.combat because there might be popped out combat trackers
-            [ui.combat].concat(Object.values(ui.windows).filter(w => w instanceof CombatTracker)).forEach(tracker => {
+            [ui.combat].concat(Object.values(ui.windows).filter(w => w instanceof foundry.applications.sidebar.tabs.CombatTracker)).forEach(tracker => {
                 tracker.element.find(".advantage-group input").each((index, input) => {
                     let group = input.dataset.group
                     input.value = setting.value[group]

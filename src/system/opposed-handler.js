@@ -133,7 +133,7 @@ export default class OpposedHandler {
 
     let winner = this.resultMessage?.system.opposedTest?.result?.winner;
 
-    let content = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-handler.hbs", {attackerName, attackerImg, defenderName, defenderImg, winner, opposedOptions : this.getOpposedOptions(defender?.actor)});
+    let content = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-handler.hbs", {attackerName, attackerImg, defenderName, defenderImg, winner, opposedOptions : this.getOpposedOptions(defender?.actor)});
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
     if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {

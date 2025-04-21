@@ -151,7 +151,7 @@ export default class SkillDialog extends CharacteristicDialog {
             let skillValue = (this.skill?.system.advances?.value + this.skill?.system.modifier?.value) || 0
             if (skillValue)
             {
-                breakdown.skill = `${this.skill.name} ${HandlebarsHelpers.numberFormat(skillValue, {hash :{sign: true}})}`
+                breakdown.skill = `${this.skill.name} ${applications.handlebars.numberFormat(skillValue, {hash :{sign: true}})}`
             }
         }
         return breakdown;

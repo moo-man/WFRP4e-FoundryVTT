@@ -18,7 +18,7 @@ export default function () {
     /**
    * Draw the active effects and overlay effect icons which are present upon the Token
    */
-     Token.prototype.drawEffects = async function() 
+     foundry.canvas.placeables.Token.prototype.drawEffects = async function()
      {
          const wasVisible = this.effects.visible;
          this.effects.visible = false;
@@ -72,16 +72,16 @@ export default function () {
      * @returns {Promise<PIXI.Sprite|undefined>}
      * @protected
      */
-    Token.prototype._drawEffect = async function(src, tint, value) {
+    foundry.canvas.placeables.Token.prototype._drawEffect = async function(src, tint, value) {
       if ( !src ) return;
-      let tex = await loadTexture(src, {fallback: "icons/svg/hazard.svg"});
+      let tex = await foundry.canvas.loadTexture(src, {fallback: "icons/svg/hazard.svg"});
       let icon = new PIXI.Sprite(tex);
       if ( tint ) icon.tint = tint;
 
       // Add WFRPE Counter
       if(value)
       {
-        let text = new PreciseText(value, game.wfrp4e.config.effectTextStyle)
+        let text = new foundry.canvas.containers.PreciseText(value, game.wfrp4e.config.effectTextStyle)
         text.x = icon.x + icon.width * 0.1;
         text.y = icon.y + icon.height * 0.05;
         text.scale.x = 20;

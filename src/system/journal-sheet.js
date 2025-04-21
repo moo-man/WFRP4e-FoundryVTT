@@ -1,4 +1,4 @@
-export class WFRPJournalTextPageSheet extends JournalTextPageSheet {
+export class WFRPJournalTextPageSheet extends foundry.appv1.sheets.JournalTextPageSheet {
 
     async getData() {
         let data = await super.getData();

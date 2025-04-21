@@ -283,7 +283,7 @@ export default function() {
 
       let link = game.i18n.format("CHAT.CommandLine.Help.Link", { link: "https://github.com/moo-man/WFRP4e-FoundryVTT/wiki" })
 
-      renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.hbs", {
+      foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.hbs", {
         commands: commandElements,
         link: link
       }).then(html => {

@@ -213,7 +213,7 @@ export class AttributesStage extends ChargenStage {
 
   activateListeners(html) {
     super.activateListeners(html);
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop.implementation({
       dragSelector: '.ch-drag',
       dropSelector: '.ch-drag',
       permissions: { dragstart: () => true, drop: () => true },

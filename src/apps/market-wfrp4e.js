@@ -91,7 +91,7 @@ export default class MarketWFRP4e {
       rarity: game.wfrp4e.config.availability[rarity],
       name
     };
-    renderTemplate("systems/wfrp4e/templates/chat/market/market-settlement.hbs", cardData).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-settlement.hbs", cardData).then(html => {
       let chatData = WFRP_Utility.chatDataSetup(html, "selfroll");
       ChatMessage.create(chatData);
     });
@@ -467,7 +467,7 @@ export default class MarketWFRP4e {
         QtSS: parsedPayRequest.ss,
         QtBP: parsedPayRequest.bp
       };
-      renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.hbs", cardData).then(html => {
+      foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.hbs", cardData).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper: player});
         ChatMessage.create(chatData);
       });
@@ -595,7 +595,7 @@ export default class MarketWFRP4e {
         QtSS: amount.ss,
         QtBP: amount.bp
       };
-      renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", cardData).then(html => {
+      foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", cardData).then(html => {
         let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
         foundry.utils.setProperty(chatData, "flags.wfrp4e.instances", nbActivePlayers);
         ChatMessage.create(chatData);

@@ -356,7 +356,7 @@ export default class WFRP_Utility {
       chatOptions = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
-        content: await TextEditor.enrichHTML(content, {async: true})
+        content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {async: true})
       };
       chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create(chatOptions);
@@ -384,7 +384,7 @@ export default class WFRP_Utility {
     let chatOptions = {
       user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
-      content: await TextEditor.enrichHTML(propertyDescription, {async: true})
+      content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(propertyDescription, {async: true})
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
@@ -698,7 +698,7 @@ export default class WFRP_Utility {
   }
 
   static postCorruptionTest(strength, chatData={}) {
-    renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
       ChatMessage.create(foundry.utils.mergeObject({ content: html }, chatData));
     })
   }
@@ -714,7 +714,7 @@ export default class WFRP_Utility {
     let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
     if (name)
       title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { value, name, title }).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { value, name, title }).then(html => {
       ChatMessage.create({ content: html, speaker: { alias: name } });
     })
   }
@@ -733,7 +733,7 @@ export default class WFRP_Utility {
     let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
     if (name)
       title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/terror.hbs", { value, name, title }).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/terror.hbs", { value, name, title }).then(html => {
       ChatMessage.create({ content: html, speaker: { alias: name } });
     })
   }
@@ -745,7 +745,7 @@ export default class WFRP_Utility {
 
     let title = `${game.i18n.localize("CHAT.Experience")}`
 
-    renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { title, amount, reason }).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { title, amount, reason }).then(html => {
       ChatMessage.create({ content: html });
     })
   }

@@ -7,7 +7,7 @@ if(!target || !token)
     return;
 }
 
-let distance = canvas.grid.measureDistances([{ ray: new Ray({ x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }) }], { gridSpaces: true })[0]
+let distance = canvas.grid.measureDistances([{ ray: new foundry.canvas.geometry.Ray({ x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }) }], { gridSpaces: true })[0]
 let currentBand
 
 for (let band in weapon.range.bands) 

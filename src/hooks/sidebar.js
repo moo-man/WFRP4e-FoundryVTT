@@ -24,7 +24,7 @@ export default function() {
       
     }
 
-    if (app instanceof RollTableDirectory)
+    if (app instanceof foundry.applications.sidebar.tabs.RollTableDirectory)
     {
 
       // Auto-roll tables if table image is clicked
@@ -46,7 +46,7 @@ export default function() {
     }
 
 
-    if (app instanceof ActorDirectory)
+    if (app instanceof foundry.applications.sidebar.tabs.ActorDirectory)
     {
       let button = $(`<button class='character-creation'>${game.i18n.localize("BUTTON.CharacterCreation")}</button>`)
   

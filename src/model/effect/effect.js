@@ -26,7 +26,7 @@ export class WFRP4eActiveEffectModel extends WarhammerActiveEffectModel {
 
     async expandData(htmlOptions) {
         htmlOptions.async = true;
-        const data = {description : {value : await TextEditor.enrichHTML(this.parent.description, htmlOptions)}}
+        const data = {description : {value : await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.parent.description, htmlOptions)}}
         data.description.value = data.description.value || "";
         return data;
     }

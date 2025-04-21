@@ -1,4 +1,4 @@
-export default class WFRPTokenHUD extends TokenHUD {
+export default class WFRPTokenHUD extends foundry.applications.hud.TokenHUD {
 
 
   _onToggleEffect = function (event, { overlay = false } = {}) {
