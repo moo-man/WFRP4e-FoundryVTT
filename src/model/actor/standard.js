@@ -78,7 +78,7 @@ export class StandardActorModel extends BaseActorModel {
      * @return {boolean}
      */
     get canSwim() {
-        return !!this.parent.has(game.i18n.localize("NAME.Swim"), "skill");
+        return (this.parent.has(game.i18n.localize("NAME.Swim"), "skill") || this.parent.has(game.i18n.localize("NAME.Amphibious")));
     }
 
     /**
