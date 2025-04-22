@@ -30,7 +30,10 @@
     "TYPES.Item.vehicleTest" : "Vehicle Crew Test",
     "TYPES.Item.vehicleRole" : "Vehicle Role",
     "TYPES.Item.template" : "Template",
-    
+
+    "TOKEN.MOVEMENT.Status.immobile": "Immobile",
+    "TOKEN.MOVEMENT.Status.restricted": "Restricted",
+
     "Targets" : "Targets",
     "Trapping" : "Trapping",
     "Weapon" : "Weapon",
@@ -1411,6 +1414,8 @@
     "NAME.SeaLegsTalent" : "Sea Legs",
     "NAME.Ogre" : "Ogre",
     "NAME.Lingering" : "Lingering",
+    "NAME.Amphibious" : "Amphibious",
+    "NAME.Flight" : "Flight",
 
     "SPEC.Any": "Any",
     "SPEC.Basic" : "Basic",

@@ -73,6 +73,13 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         }
     }
 
+    /**
+     * @return {{}}
+     */
+    get movementDistance() {
+        return {};
+    }
+
     initialize() {}
 
     computeBase() {

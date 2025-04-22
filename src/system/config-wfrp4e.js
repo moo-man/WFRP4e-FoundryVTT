@@ -2078,6 +2078,11 @@ WFRP4E.PrepareSystemItems = function() {
                         options: {
                             activateScript: "return true"
                         }
+                    },
+                    {
+                        trigger: "prePrepareData",
+                        label: "Half Movement",
+                        script: `args.actor.system.details.move.value /= 2`
                     }
                     // { // Not sure what to do about this
                     //     trigger: "dialog",
@@ -2742,7 +2747,7 @@ WFRP4E.triggerMapping = {
 WFRP4E.placeholderItemData = {
     type : "trapping",
     img : "systems/wfrp4e/icons/blank.png"
-},
+};
 
 WFRP4E.getZoneTraitEffects = (region) => 
 {

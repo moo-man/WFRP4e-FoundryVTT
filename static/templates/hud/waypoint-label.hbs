@@ -1,0 +1,45 @@
+<div class="waypoint-label vertical {{cssClass}}">
+    <div>
+    {{#if action.icon}}
+        <i class="icon {{action.icon}}"></i>
+    {{else if action.label}}
+        <label class="action-label">{{localize action.label}}</label>
+    {{/if}}
+    {{#if cost}}
+        <span class="total-measurement">{{cost.total}} {{cost.units}}</span>
+        {{#if cost.delta}}
+            <span class="delta-measurement">({{cost.delta}})</span>
+        {{/if}}
+    {{else}}
+        <span class="total-measurement">{{distance.total}} {{units}}</span>
+        {{#if distance.delta}}
+            <span class="delta-measurement">({{distance.delta}})</span>
+        {{/if}}
+    {{/if}}
+    {{#if (and elevation (not elevation.hidden))}}
+        <i class="icon {{elevation.icon}}"></i>
+        <span class="total-elevation">{{elevation.total}} {{units}}</span>
+        {{#if elevation.delta}}
+            <span class="delta-elevation">({{elevation.delta}})</span>
+        {{/if}}
+    {{/if}}
+    {{#if secret}}
+        <i class="icon fa-solid fa-eye-slash"></i>
+    {{/if}}
+    </div>
+    {{#if additional}}
+    <div class="waypoint-label-additional {{additional.cssClass}}">
+        {{#if additional.icon}}
+            <i class="icon {{additional.icon}}"></i>
+        {{/if}}
+        <span class="waypoint-label-text">{{additional.label}}</span>
+        {{#if additional.imgs.length}}
+            {{#each additional.imgs as |img|}}
+                <img class="icon" src="{{img}}">
+            {{/each}}
+        {{else}}
+            <img class="icon" src="{{additional.img}}">
+        {{/if}}
+    </div>
+    {{/if}}
+</div>
