@@ -90,7 +90,7 @@ export default class CastDialog extends SkillDialog {
     
     _defaultFields() 
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             overchannelling : 0
         }, super._defaultFields());
     }

@@ -28,6 +28,14 @@
             }
         }
 
+        .chat-buttons {
+            display: flex;
+            gap: 0.5rem;
+            > * {
+                flex: 1;
+            }
+        }
+
         .chat-button {
             @include foundry-button;
             line-height: 1.5rem;

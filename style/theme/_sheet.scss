@@ -21,6 +21,8 @@
         --form-group-border : var(--color-faded);
         --condition-label: none;
         --condition-border: var(--color-faded);
+        --tag-bg : var(--color-faded-bg);
+        --tag-border: var(--color-faded);
 
         &.classic-font
         {
@@ -45,6 +47,10 @@
         .window-header {
             padding-top: 0.5rem;
             padding-left: 1rem;
+        }
+
+        hr {
+            @include gradient-border;
         }
 
 
@@ -155,6 +161,10 @@
                 .list-row {
                     box-shadow: 0px 0px 1px inset black;
                     color: var(--color-grey1);
+
+                    .row-content {
+                        
+                    }
                 }
             }
 
@@ -246,6 +256,21 @@
                 @include editor-text();
                 p:first-child {
                     margin-top: 0px;
+                }
+            }
+
+            prose-mirror {
+                .editor-menu {
+                    background: none;
+                    @include shadowed(#6b3a0f87);
+                    border-radius: 0px;
+                    button {
+                        color: var(--color-grey2)
+                    }
+                }
+                > button {
+                    margin: 0.5rem;
+                    @include editor-button();
                 }
             }
         }

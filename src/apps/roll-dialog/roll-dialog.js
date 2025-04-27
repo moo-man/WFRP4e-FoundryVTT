@@ -197,7 +197,7 @@ export default class RollDialog extends WarhammerRollDialogV2 {
     }
     _defaultFields() 
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             modifier : 0,
             successBonus : 0,
             slBonus : 0,

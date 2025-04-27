@@ -38,7 +38,7 @@ args.actor.flags.rangedDamageIncrease += 1;
 **Usage**: Add +20 to Animal Care
 
 ```js
-let skill = this.actor.itemTypes.skill.find(s => s.name === game.i18n.localize("NAME.AnimalCare"));
+let skill = this.actor.itemTypes.skill.find(s => s.name === "Animal Care");
 skill.system.modifier.value += 20;
 ```
 

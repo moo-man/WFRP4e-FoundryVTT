@@ -48,6 +48,19 @@
 
 }
 
+@mixin editor-button {
+    @include shadowed(#6b3a0f2b, 10px);
+    background: var(--color-faded-bg);
+    border-color : var(--color-faded);
+    color : var(--color-warm);
+
+    &:hover {
+        color: var(--color-cream);
+        background-color: var(--color-warm);
+        border-color: var(--color-cream);
+    }
+}
+
 @mixin search() {
     background: url(./ui/backgrounds/parchment-texture.webp);
     border: 2px groove var(--color-element-border);

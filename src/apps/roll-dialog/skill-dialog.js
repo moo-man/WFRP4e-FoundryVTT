@@ -159,7 +159,7 @@ export default class SkillDialog extends CharacteristicDialog {
 
     _defaultFields() 
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             characteristic : "ws",
         }, super._defaultFields());
     }
