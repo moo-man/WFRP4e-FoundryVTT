@@ -33,10 +33,15 @@
         background: none;
         border: 1px solid;
         border-image: url(./ui/backgrounds/context-menu.webp) 4 repeat;
-        border-image-slice: 70 fill;
+        border-image-slice: 40 fill;
         border-image-width: 100px;
         border-image-outset: 0px 0px 0px 0px;
         box-shadow: 5px 5px 10px rgb(0, 0, 0);
+
+        .control:hover {
+            background: var(--color-cream);
+            color: black
+        }
 
         &.collapsing,
         &.expanding {
