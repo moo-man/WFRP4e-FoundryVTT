@@ -1,18 +1,18 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
+<div class="">
 
     {{#unless roll}}
     <div class="form-group">
         <label>{{localize "VEHICLE.Starting"}}</label>
-        <input type="number" class="starting" name="system.status.{{options.key}}.starting" value="{{starting}}">
+        <input type="number" class="starting" name="system.status.{{key}}.starting" value="{{starting}}">
     </div>
     {{else}}
     <div class="form-group">
         <label>{{localize "VEHICLE.WeekLabel"}}</label>
-        <input type="text" class="week-label" value="{{options.weekLabel}}">
+        <input type="text" name="weekLabel" value="{{options.weekLabel}}">
     </div>
     <div class="form-group">
-        <label data-tooltip="{{localize "VEHICLE.SetValueToolTip"}}">{{localize "VEHICLE.SetValue"}} <i class="fa-regular fa-circle-question"></i></label>
-        <input type="text" class="set-value">
+        <label data-tooltip="VEHICLE.SetValueToolTip">{{localize "VEHICLE.SetValue"}} <i class="fa-regular fa-circle-question"></i></label>
+        <input type="text" name="setValue">
     </div>
     {{/unless}}
     <h2>{{localize "VEHICLE.Sources"}}</h2>
@@ -20,17 +20,12 @@
         <ul>
             {{#each sources}}
             <div class="source" data-index="{{@key}}">
-                <input type="checkbox" name="active" {{checked this.active}}>
-                <input type="text" name="description" value="{{this.description}}">
-                <input type="text" name="formula" value="{{this.formula}}">
-                <a class="remove"><i class="fa-solid fa-xmark"></i></a>
+                <input type="checkbox" data-property="active" {{checked this.active}}>
+                <input type="text" data-property="description" value="{{this.description}}">
+                <input type="text" data-property="formula" value="{{this.formula}}">
+                <a data-action="remove"><i class="fa-solid fa-xmark"></i></a>
             </div>
             {{/each}}
         </ul>
     </div>
-    {{#if roll}}
-    <button type="button" class="roll"><i class="fa-solid fa-dice"></i></button>
-    {{else}}
-    <button type="button" class="add"><i class="fa-solid fa-plus"></i></button>
-    {{/if}}
-</form>
+</div>

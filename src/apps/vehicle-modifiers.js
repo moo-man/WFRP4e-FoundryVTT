@@ -1,11 +1,36 @@
-export default class VehicleCumulativeModifiersConfig extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes.push("vehicle-modifiers")
-        options.template = "systems/wfrp4e/templates/apps/vehicle-modifiers.hbs";
-        options.width = 600;
-        options.resizable = true;
-        return options;
+export default class VehicleCumulativeModifiersConfig extends HandlebarsApplicationMixin(ApplicationV2)
+{
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+        classes: ["warhammer", "standard-form", "vehicle-modifiers"],
+        window: {
+            title: "Vehicle Modifiers",
+            resizable: true,
+        },
+        position: {
+            width: 600,
+            height: 800
+        },
+        form: {
+            submitOnChange: true,
+            handler: this._onSubmit
+        },
+        actions: {
+            add : this._onAddSource,
+            remove : this._onRemoveSource,
+            roll : this._onRoll,
+        }
+    }
+
+    static PARTS = {
+        form : {scrollable: [""], template : "systems/wfrp4e/templates/apps/vehicle-modifiers.hbs"},
+        footer : {template : "templates/generic/form-footer.hbs"}
+    }
+
+    constructor(document, options)
+    {
+        super(options);
+        this.document = document;
     }
 
     get title()
@@ -18,96 +43,92 @@ export default class VehicleCumulativeModifiersConfig extends FormApplication {
         return this.options.key;
     }
 
-    getData() {
+    _rollData = {}
+
+    async _prepareContext(options) {
         if (game.modules.get("foundryvtt-simple-calendar")?.active) 
         {
             this.options.weekLabel = SimpleCalendar.api.currentDateTimeDisplay()?.date
         }
-        let data = super.getData()
-        data.roll = this.options.roll;
-        data.system = this.object.system;
-        data.sources = data.system.status[this.key].sources;
-        data.starting = data.system.status[this.key].starting
-
-        return data
+        let context = await super._prepareContext(options)
+        context.roll = this.options.roll;
+        context.key = this.key;
+        context.system = this.document.system;
+        context.sources = context.system.status[this.key].sources;
+        context.starting = context.system.status[this.key].starting
+        context.buttons = [context.roll ?  { type: "roll", label: "Roll", icon: "fa-solid fa-dice", action: "roll" } : { type: "add", label: "Add", icon: "fa-solid fa-plus", action: "add" }]
+        return context
     }
 
-    async _updateObject(event, formData) {
-        this.object.update(formData)
+    static async _onSubmit(event, form, formData) {
+        this.document.update(formData.object)
     }
 
     close() 
     {
-        this.object.update({[`system.status.${this.key}.sources`] : this.object.system.status[this.key].sources.filter(i => i.description)});
+        // Remove any blank sources when the sheet is closed
+        this.document.update({[`system.status.${this.key}.sources`] : this.document.system.status[this.key].sources.filter(i => i.description)});
         super.close();
     }
 
-    activateListeners(html)
+    async _onRender(_context, _options) 
     {
-        super.activateListeners(html);
-
-
-        html.find(".starting").change(async ev => {
-            await this.object.update({[`system.status.${this.key}.starting`] : Number(ev.target.value)});
-            this.render(true);
-        })
-
-        html.find(".sources input").change(async ev => {
-            let index = Number(ev.currentTarget.parentElement.dataset.index);
-            let sources = foundry.utils.deepClone(this.object.system.status[this.key].sources);
-
-            if (ev.currentTarget.type == "checkbox")
-            {
-                sources[index].active = !sources[index].active                
-            }
-            else 
-            {
-                sources[index][ev.currentTarget.name] = ev.currentTarget.value;
-            }
-            await this.object.update({[`system.status.${this.key}.sources`] : sources.filter(i => i.description)});
-            this.render(true);
-        })
-
-        html.find(".set-value").change(ev => {
-            this.options.setValue = Number(ev.target.value) || null
-        })
-
-        html.find(".roll").click(ev => {
-            if (!this.options.weekLabel)
-            {
-                ui.notifications.error(game.i18n.localize("VEHICLE.LabelError"))
-            }
-            else 
-            {
-                if (this.options.setValue)
+        await super._onRender(_context, _options);
+        
+        this.element.querySelectorAll(".sources input").forEach(e => {
+            e.addEventListener("change", async ev => {
+                let index = Number(ev.currentTarget.parentElement.dataset.index);
+                let sources = foundry.utils.deepClone(this.document.system.status[this.key].sources);
+    
+                if (ev.currentTarget.type == "checkbox")
                 {
-                    this.object.system.status[this.key].setValue(this.options.weekLabel, this.options.setValue)
+                    sources[index].active = !sources[index].active                
                 }
                 else 
                 {
-                    this.object.system.status[this.key].roll(this.options.weekLabel);
+                    sources[index][ev.currentTarget.dataset.property] = ev.currentTarget.value;
                 }
-                this.close();
+                await this.document.update({[`system.status.${this.key}.sources`] : sources.filter(i => i.description)});
+                this.render(true);
+            })
+        })
+    }
+
+    static async _onAddSource(ev, target)
+    {
+        let sources = foundry.utils.deepClone(this.document.system.status[this.key].sources);
+        sources.push({description : "", formula : "", active : false});
+        await this.document.update({[`system.status.${this.key}.sources`] : sources});
+        this.render(true);
+    }
+
+    static async _onRemoveSource(ev, target)
+    {
+        let index = Number(target.parentElement.dataset.index);
+        let sources = foundry.utils.deepClone(this.document.system.status[this.key].sources);
+        sources.splice(index, 1);
+        await this.document.update({[`system.status.${this.key}.sources`] : sources});
+        this.render(true);
+    }
+
+    static  async _onRoll(ev, target)
+    {
+        const formData = new FormDataExtended(this.form).object;
+        if (!formData.weekLabel)
+        {
+            ui.notifications.error(game.i18n.localize("VEHICLE.LabelError"))
+        }
+        else 
+        {
+            if (formData.setValue)
+            {
+                this.document.system.status[this.key].setValue(formData.weekLabel, parseInt(formData.setValue))
             }
-        })
-
-        html.find(".week-label").change(ev => {
-            this.options.weekLabel = ev.target.value;
-        })
-
-        html.find(".add").click(async ev => {
-            let sources = foundry.utils.deepClone(this.object.system.status[this.key].sources);
-            sources.push({description : "", formula : "", active : false});
-            await this.object.update({[`system.status.${this.key}.sources`] : sources});
-            this.render(true);
-        })
-
-        html.find(".remove").click(async ev => {
-            let index = Number(ev.currentTarget.parentElement.dataset.index);
-            let sources = foundry.utils.deepClone(this.object.system.status[this.key].sources);
-            sources.splice(index, 1);
-            await this.object.update({[`system.status.${this.key}.sources`] : sources});
-            this.render(true);
-        })
+            else 
+            {
+                this.document.system.status[this.key].roll(formData.weekLabel);
+            }
+            this.close();
+        }
     }
 }

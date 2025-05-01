@@ -1,24 +1,42 @@
-export default class VehicleMoveConfig extends FormApplication {
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes.push("vehicle-move")
-        options.template = "systems/wfrp4e/templates/apps/vehicle-move.hbs";
-        options.height = "auto";
-        options.width = 600;
-        options.minimizable = true;
-        options.title = game.i18n.localize("VEHICLE.Move")
-        return options;
+export default class VehicleMoveConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+
+    static DEFAULT_OPTIONS = {
+        tag: "form",
+        classes: ["warhammer", "standard-form", "vehicle-move"],
+        window: {
+            title: "VEHICLE.Move",
+        },
+        position: {
+            width: 600,
+        },
+        form: {
+            closeOnSubmit: true,
+            handler: this._onSubmit
+        },
+        actions: {
+        }
     }
 
-    getData() {
-        let data = super.getData()
-        data.system = this.object.system;
-        return data
+    static PARTS = {
+        form: { scrollable: [""], template: "systems/wfrp4e/templates/apps/vehicle-move.hbs" },
+        footer: { template: "templates/generic/form-footer.hbs" }
     }
 
-    async _updateObject(event, formData) {
-        if (formData.sailPrimary)
-        {
+    constructor(document, options) {
+        super(options);
+        this.document = document;
+    }
+
+    async _prepareContext(options)
+    {
+        let context = await super._prepareContext(options);
+        context.system = this.document.system;
+        context.buttons = [{ type: "submit", label: "Submit", icon: "fa-solid fa-save" }]
+        return context;
+    }
+
+    static async _onSubmit(event, form, formData) {
+        if (formData.sailPrimary) {
             formData["system.details.move.primary"] = "sail";
             delete formData.sailPrimary;
         }
@@ -27,27 +45,26 @@ export default class VehicleMoveConfig extends FormApplication {
             formData["system.details.move.primary"] = "oars";
             delete formData.oarsPrimary;
         }
-        this.object.update(formData)
+        this.document.update(formData.object)
     }
 
-    activateListeners(html)
+    async _onRender(options)
     {
-        super.activateListeners(html);
+        await super._onRender(options)
+        this.sailSection = this.element.querySelector(".sail");
+        this.oarsSection = this.element.querySelector(".oars");
 
-        this.sailSection = html.find(".sail")[0];
-        this.oarsSection = html.find(".oars")[0];
+        this.sailEnable = this.element.querySelector("[name='system.details.move.sail.enabled'");
+        this.oarsEnable = this.element.querySelector("[name='system.details.move.oars.enabled'");
 
-        this.sailEnable = html.find("[name='system.details.move.sail.enabled'")[0];
-        this.oarsEnable = html.find("[name='system.details.move.oars.enabled'")[0];
+        this.sailPrimary = this.element.querySelector("[name='sailPrimary']");
+        this.oarsPrimary = this.element.querySelector("[name='oarsPrimary']");
 
-        this.sailPrimary = html.find("[name='sailPrimary']")[0];
-        this.oarsPrimary = html.find("[name='oarsPrimary']")[0];
-
-        html.find(".enableToggle").change(ev => {
+        this.element.querySelector(".enableToggle").addEventListener("change", (ev => {
             this.checkToggles()
-        })
+        }))
 
-        html.find(".primaryToggle").change(ev => {
+        this.element.querySelectorAll(".primaryToggle").forEach(e => e.addEventListener("change", (ev => {
             if (ev.target.name == "sailPrimary" && ev.target.checked)
             {
                 this.oarsPrimary.checked = false;
@@ -56,7 +73,7 @@ export default class VehicleMoveConfig extends FormApplication {
             {
                 this.sailPrimary.checked = false;
             }
-        })
+        })))
         
         this.checkToggles();
     }
