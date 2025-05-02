@@ -1,5 +1,6 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
+import { PayMessageModel } from "../model/message/pay.js";
 
 
 /**
@@ -223,8 +224,8 @@ export default class MarketWFRP4e {
     }
   }
 
-  static async handlePlayerPayment({msg = {}, payString = ''}) {
-    let actor = game.user.character;
+  static async handlePlayerPayment({msg = {}, payString = '', target}) {
+    let actor = target || game.user.character;
     let itemData
     if (msg?.flags?.transfer)
       itemData = JSON.parse(msg.flags.transfer).data
@@ -255,7 +256,7 @@ export default class MarketWFRP4e {
     let moneyItemInventory = actor.itemTags["money"].map(i => i.toObject())
     let commandParts = command.split(",");
     let moneyToPay = this.parseMoneyTransactionString(commandParts[0]);
-    let msg = `<h3><b>${game.i18n.localize("MARKET.PayCommand")}</b></h3>`;
+    let msg = ``;
     let errorOccured = false;
     //Wrong command
     if (!moneyToPay) {
@@ -329,7 +330,7 @@ export default class MarketWFRP4e {
     if (options.suppressMessage)
       ui.notifications.notify(msg)
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
+      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll", false, {flavor : game.i18n.localize("MARKET.PayCommand")}));
     return moneyItemInventory;
   }
 
@@ -446,32 +447,10 @@ export default class MarketWFRP4e {
     return isValid ? payRecap : false;
   }
 
-  /**
-   * Generate a card in the chat with a "Pay" button.
-   * GM Only
-   * @param {String} payRequest
-   */
+
   static generatePayCard(payRequest, player) {
-    let parsedPayRequest = this.parseMoneyTransactionString(payRequest);
-    //If the /pay command has a syntax error, we display an error message to the gm
-    if (!parsedPayRequest) {
-      let msg = `<h3><b>${game.i18n.localize("MARKET.PayRequest")}</b></h3>`;
-      msg += `<p>${game.i18n.localize("MARKET.MoneyTransactionWrongCommand")}</p><p><i>${game.i18n.localize("MARKET.PayCommandExample")}</i></p>`;
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll"));
-    } else //generate a card with a summary and a pay button
-    {
-      let cardData = {
-        product: payRequest.split(",")[1],
-        payRequest: payRequest,
-        QtGC: parsedPayRequest.gc,
-        QtSS: parsedPayRequest.ss,
-        QtBP: parsedPayRequest.bp
-      };
-      renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.hbs", cardData).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper: player});
-        ChatMessage.create(chatData);
-      });
-    }
+    console.warn("WFRP4e | MarketWfrp4e.generatePayCard is deprecated, please use PayMessageModel.createPayMessage instead")
+    PayMessageModel.createPayMessage(payRequest, {player})
   }
 
   /**

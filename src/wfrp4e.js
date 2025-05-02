@@ -103,6 +103,7 @@ import ChatMessageWFRP from "./documents/message.js";
 import calendar from "./system/calendar.js";
 import ItemWFRP4e from "./documents/item.js";
 import { PostedItemMessageModel } from "./model/message/posted-item.js";
+import { PayMessageModel } from "./model/message/pay.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -182,6 +183,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["handler"] = OpposedHandlerMessage;
   CONFIG.ChatMessage.dataModels["opposed"] = OpposedTestMessage;
   CONFIG.ChatMessage.dataModels["item"] = PostedItemMessageModel;
+  CONFIG.ChatMessage.dataModels["pay"] = PayMessageModel;
 
   game.wfrp4e = {
     apps: {

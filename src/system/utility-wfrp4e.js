@@ -1,4 +1,5 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
+import { PayMessageModel } from "../model/message/pay.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
 
@@ -679,7 +680,7 @@ export default class WFRP_Utility {
   static handlePayClick(event, target) {
     let payString = target.dataset.pay;
     if (game.user.isGM)
-      MarketWFRP4e.generatePayCard(payString);
+      PayMessageModel.createPayMessage(payString);
     else
       MarketWFRP4e.handlePlayerPayment({payString});
   }

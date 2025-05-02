@@ -3,6 +3,7 @@ import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
+import { PayMessageModel } from "../model/message/pay.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -514,6 +515,15 @@ export default function() {
       extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
     });
 
+
+    game.wfrp4e.commands = new ChatCommands({
+      pay : {
+          description : "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount",
+          args : ["amount", "for", "targets"],
+          defaultArg : "amount",
+          callback : (amount, product, target) => PayMessageModel.handlePayCommand(amount, {target, product})
+      }
+  })
     // Load name construction from files
     NameGenWfrp._loadNames();
 
