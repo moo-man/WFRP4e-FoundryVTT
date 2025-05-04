@@ -1,4 +1,5 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
+import { CorruptionMessageModel } from "../model/message/corruption.js";
 import { PayMessageModel } from "../model/message/pay.js";
 import { XPMessageModel } from "../model/message/xp.js";
 import ChatWFRP from "./chat-wfrp4e.js";
@@ -695,14 +696,15 @@ export default class WFRP_Utility {
 
   }
 
-  static handleCorruptionClick(event, target) {
-    return this.postCorruptionTest(target.dataset.strength);
+  static handleCorruptionClick(event, target) 
+  {
+    CorruptionMessageModel.createCorruptionMessage(target.dataset.strength);
   }
 
-  static postCorruptionTest(strength, chatData={}) {
-    renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
-      ChatMessage.create(foundry.utils.mergeObject({ content: html }, chatData));
-    })
+  static postCorruptionTest(strength, chatData={}) 
+  {
+    console.warn("WFRP4e | WFRP_Utility.postCorruptionTest is deprecated, use CorruptionMessageModel.createCorruptionMessage instead")
+    CorruptionMessageModel.createCorruptionMessage(strength, {}, chatData)
   }
 
 

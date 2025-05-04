@@ -6,7 +6,7 @@ export class XPMessageModel extends WarhammerMessageModel {
       let schema = {};
 
       // amount of XP
-      schema.amount = new foundry.data.fields.StringField({});
+      schema.amount = new foundry.data.fields.NumberField({});
 
       // What XP reward is for
       schema.reason = new foundry.data.fields.StringField()

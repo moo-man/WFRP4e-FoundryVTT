@@ -65,7 +65,7 @@ export default class WFRP_Tables {
       let roll = await new Roll(`${formula} + @modifier`, { modifier }).roll({allowInteractive : false});
       if (options.showRoll)
       {
-        let msg = await roll.toMessage({rollMode : game.settings.get("core", "rollMode"), });
+        let msg = await roll.toMessage({speaker : {alias : table.name}}, {rollMode : game.settings.get("core", "rollMode")});
         if (game.dice3d)
           await game.dice3d.waitFor3DAnimationByMessageID(msg.id)
       }

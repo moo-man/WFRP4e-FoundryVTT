@@ -192,11 +192,12 @@
                 flex-direction: column;
                 align-items: center;
             }
+            img {
+                width: 2rem;
+            }
         }
 
-        img {
-            width: 2rem;
-        }
+
 
         div.received-credit {
             text-align: center;
@@ -209,5 +210,11 @@
             margin: 1rem;
         }
 
+        .corruption-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+    }
 }

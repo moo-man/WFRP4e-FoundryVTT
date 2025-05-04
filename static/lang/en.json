@@ -1834,12 +1834,17 @@
     "WFRP4E.MountButtonNotify" : "The left-side actor ({mounter}) has mounted the right-side actor ({mountee})",
     "MountError": "You can only mount creatures of a larger or equal size.",
 
+
+    "minor": "Minor",
+    "moderate": "Moderate",
+    "major": "Major",
     "Minor": "Minor",
     "Moderate": "Moderate",
     "Major": "Major",
     "CORRUPTION.Minor": "Minor",
     "CORRUPTION.Moderate": "Moderate",
     "CORRUPTION.Major": "Major",
+    "CORRUPTION.Exposure": "Corruption Exposure",
     "Quantity": "Quantity",
     "Infinite": "Infinite",
     "Halved" : "Halved",

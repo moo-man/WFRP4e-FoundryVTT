@@ -106,6 +106,7 @@ import { PostedItemMessageModel } from "./model/message/posted-item.js";
 import { PayMessageModel } from "./model/message/pay.js";
 import { CreditMessageModel } from "./model/message/credit.js";
 import { XPMessageModel } from "./model/message/xp.js";
+import { CorruptionMessageModel } from "./model/message/corruption.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -118,38 +119,40 @@ Hooks.once("init", function () {
   warhammer.utility.log("Development Mode: Logs on")
   //#endif
 
+  let DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig
+
   // Register sheet application classes
-  foundry.applications.apps.DocumentSheetConfig.unregisterSheet(Actor, "core", ActorSheet);
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"], makeDefault: true, label : "SHEET.Actor.character"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eNPCV2, { types: ["npc"], makeDefault: true, label : "SHEET.Actor.npc"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"], makeDefault: true, label : "SHEET.Actor.creature"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eVehicleV2, { types: ["vehicle"], makeDefault: true, label : "SHEET.Actor.vehicle"});
+  DocumentSheetConfig.unregisterSheet(Actor, "core", ActorSheet);
+  DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eCharacterV2, { types: ["character"], makeDefault: true, label : "SHEET.Actor.character"});
+  DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eNPCV2, { types: ["npc"], makeDefault: true, label : "SHEET.Actor.npc"});
+  DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eCreatureV2, { types: ["creature"], makeDefault: true, label : "SHEET.Actor.creature"});
+  DocumentSheetConfig.registerSheet(Actor, "wfrp4e", ActorSheetWFRP4eVehicleV2, { types: ["vehicle"], makeDefault: true, label : "SHEET.Actor.vehicle"});
   
-  foundry.applications.apps.DocumentSheetConfig.unregisterSheet(Item, "core", ItemSheet);
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: true, label : "SHEETS.Item.ammunition"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: true, label : "SHEETS.Item.armour"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", CareerSheet, { types: ["career"], makeDefault: true, label : "SHEETS.Item.career"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: true, label : "SHEETS.Item.cargo"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", ContainerSheet, { types: ["container"], makeDefault: true, label : "SHEETS.Item.container"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: true, label : "SHEETS.Item.critical"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: true, label : "SHEETS.Item.disease"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: true, label : "SHEETS.Item.extendedTest"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", InjurySheet, { types: ["injury"], makeDefault: true, label : "SHEETS.Item.injury"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", MoneySheet, { types: ["money"], makeDefault: true, label : "SHEETS.Item.money"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: true, label : "SHEETS.Item.mutation"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: true, label : "SHEETS.Item.prayer"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: true, label : "SHEETS.Item.psychology"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", SkillSheet, { types: ["skill"], makeDefault: true, label : "SHEETS.Item.skill"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", SpellSheet, { types: ["spell"], makeDefault: true, label : "SHEETS.Item.spell"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", TalentSheet, { types: ["talent"], makeDefault: true, label : "SHEETS.Item.talent"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", TraitSheet, { types: ["trait"], makeDefault: true, label : "SHEETS.Item.trait"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: true, label : "SHEETS.Item.trapping"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: true, label : "SHEETS.Item.vehicleMod"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: true, label : "SHEETS.Item.vehicleRole"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true, label : "SHEETS.Item.vehicleTest"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true, label : "SHEETS.Item.weapon"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(Item, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true, label : "SHEETS.Item.template"});
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
+  DocumentSheetConfig.unregisterSheet(Item, "core", ItemSheet);
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: true, label : "SHEETS.Item.ammunition"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: true, label : "SHEETS.Item.armour"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", CareerSheet, { types: ["career"], makeDefault: true, label : "SHEETS.Item.career"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: true, label : "SHEETS.Item.cargo"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", ContainerSheet, { types: ["container"], makeDefault: true, label : "SHEETS.Item.container"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: true, label : "SHEETS.Item.critical"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", DiseaseSheet, { types: ["disease"], makeDefault: true, label : "SHEETS.Item.disease"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", ExtendedTestSheet, { types: ["extendedTest"], makeDefault: true, label : "SHEETS.Item.extendedTest"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", InjurySheet, { types: ["injury"], makeDefault: true, label : "SHEETS.Item.injury"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", MoneySheet, { types: ["money"], makeDefault: true, label : "SHEETS.Item.money"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", MutationSheet, { types: ["mutation"], makeDefault: true, label : "SHEETS.Item.mutation"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", PrayerSheet, { types: ["prayer"], makeDefault: true, label : "SHEETS.Item.prayer"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", PsychologySheet, { types: ["psychology"], makeDefault: true, label : "SHEETS.Item.psychology"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", SkillSheet, { types: ["skill"], makeDefault: true, label : "SHEETS.Item.skill"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", SpellSheet, { types: ["spell"], makeDefault: true, label : "SHEETS.Item.spell"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", TalentSheet, { types: ["talent"], makeDefault: true, label : "SHEETS.Item.talent"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", TraitSheet, { types: ["trait"], makeDefault: true, label : "SHEETS.Item.trait"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", TrappingSheet, { types: ["trapping"], makeDefault: true, label : "SHEETS.Item.trapping"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleModSheet, { types: ["vehicleMod"], makeDefault: true, label : "SHEETS.Item.vehicleMod"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleRoleSheet, { types: ["vehicleRole"], makeDefault: true, label : "SHEETS.Item.vehicleRole"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true, label : "SHEETS.Item.vehicleTest"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true, label : "SHEETS.Item.weapon"});
+  DocumentSheetConfig.registerSheet(Item, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true, label : "SHEETS.Item.template"});
+  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
@@ -188,6 +191,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["pay"] = PayMessageModel;
   CONFIG.ChatMessage.dataModels["credit"] = CreditMessageModel;
   CONFIG.ChatMessage.dataModels["xp"] = XPMessageModel;
+  CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
 
   game.wfrp4e = {
     apps: {

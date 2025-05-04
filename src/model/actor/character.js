@@ -279,7 +279,7 @@ export class CharacterModel extends StandardActorModel {
       let skill = this.parent.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) 
       {
-        test = await this.parent.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name, skipTargets: true }), mutate: true })
+        test = await this.parent.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name}), mutate: true, skipTargets: true})
       }
       else {
         test = await this.parent.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"], skipTargets: true }), mutate: true })

@@ -106,20 +106,20 @@ export default class Advancement
         xp *= 2;
       }
       if (xp) {
-        new Dialog({
-          title: game.i18n.localize("DIALOG.Advancement"),
+        new foundry.applications.api.DialogV2({
+          window : { title: game.i18n.localize("DIALOG.Advancement")},
           content: 
           `
           <p>${game.i18n.localize("DIALOG.AdvancementContent")}</p>
           <div class="form-group">
-          <input type="number" value=${xp}>
+          <input type="number" name="xp" value=${xp}>
           </div>
           `,
-          buttons: {
-            ok: {
+          buttons: [
+            {action : "ok",
               label: game.i18n.localize("Ok"),
-              callback: async (dlg) => {
-                xp = Number(dlg.find("input")[0]?.value) || xp
+              callback: async (ev, button) => {
+                xp = parseInt(button.form.elements.xp.value) || xp;
                 if (xp != 0)
                 {
                   try {
@@ -138,7 +138,8 @@ export default class Advancement
                 }
               }
             },
-            free: {
+            {
+              action : "free",
               label: game.i18n.localize("Free"),
               callback: () => {
                   let newSpent = actor.details.experience.spent
@@ -146,8 +147,7 @@ export default class Advancement
                   actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
                   resolve(true) 
                 }
-            }
-          },
+            }],
           close : () => {resolve(false)}
         }).render(true)
       }

@@ -2,6 +2,7 @@ import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
+import { CorruptionMessageModel } from "../model/message/corruption.js";
 import { CreditMessageModel } from "../model/message/credit.js";
 import { PayMessageModel } from "../model/message/pay.js";
 import { XPMessageModel } from "../model/message/xp.js";
@@ -82,7 +83,7 @@ export default function () {
         callback : (gender, species) => {
           // Call generator class to create name, create message, return false to not display user input of `/name`
           let name = NameGenWfrp.generateName({ species, gender })
-          ChatMessage.create(WFRP_Utility.chatDataSetup(name))
+          ChatMessage.create(WFRP_Utility.chatDataSetup(name, "selfroll"))
         }
       },
       avail : {
@@ -93,15 +94,14 @@ export default function () {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
           MarketWFRP4e.testForAvailability({ settlement : size, rarity, modifier });
-          return false;
         }
       },
       corruption : {
         description : "Prompt Corruption Test",
-        args : ["strength"],
+        args : ["strength", "skill", "source"],
         defaultArg : "strength",
-        callback: (strength) => {
-          WFRP_Utility.postCorruptionTest(strength);
+        callback: (strength, skill, source) => {
+          CorruptionMessageModel.handleCorruptionCommand(strength, skill, source)
         }
       },
       fear : {
