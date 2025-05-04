@@ -68,9 +68,8 @@ export class PayMessageModel extends WarhammerMessageModel {
 
     //If the /pay command has a syntax error, we display an error message to the gm
     if (!parsedPayRequest) {
-      let msg = `<h3><b>${game.i18n.localize("MARKET.PayRequest")}</b></h3>`;
-      msg += `<p>${game.i18n.localize("MARKET.MoneyTransactionWrongCommand")}</p><p><i>${game.i18n.localize("MARKET.PayCommandExample")}</i></p>`;
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll"));
+      let msg = `<p>${game.i18n.localize("MARKET.MoneyTransactionWrongCommand")}</p><p><i>${game.i18n.localize("MARKET.PayCommandExample")}</i></p>`;
+      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll", false, {alias : game.i18n.localize("MARKET.PayRequest")}));
     } 
     else //generate a card with a summary and a pay button
     {

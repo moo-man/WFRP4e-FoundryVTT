@@ -13,7 +13,7 @@ export default class MarketWFRP4e {
    * Takes as a parameter an object with localized settlement type, localized rarity and a modifier for the roll
    * @param {Object} options settlement, rarity, modifier, name
    */
-  static async testForAvailability({ settlement, rarity, modifier, name }) {
+  static async testForAvailability({ settlement, rarity, modifier=0, name }) {
     //This method read the table  game.wfrp4e.config.availabilityTable defined in the config file
 
     //First we get the different settlements size

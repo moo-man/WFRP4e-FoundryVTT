@@ -1,5 +1,6 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import { PayMessageModel } from "../model/message/pay.js";
+import { XPMessageModel } from "../model/message/xp.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
 
@@ -725,7 +726,7 @@ export default class WFRP_Utility {
   }
 
   static handleExpClick(event, target) {
-    return this.postExp(target.dataset.amount, target.dataset.reason);
+    return XPMessageModel.handleXPCommand(target.dataset.amount, target.dataset.reason);
   }
 
   static postTerror(value = 1, name = undefined) {
@@ -741,14 +742,8 @@ export default class WFRP_Utility {
 
 
   static postExp(amount, reason = undefined) {
-    if (isNaN(amount))
-      return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
-
-    let title = `${game.i18n.localize("CHAT.Experience")}`
-
-    renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { title, amount, reason }).then(html => {
-      ChatMessage.create({ content: html });
-    })
+    console.warn("WFRP4e | WFRP_Utility.postExp is deprecated, use XPMessageModel.handleXpCommand instead")
+    return XPMessageModel.handleXPCommand(amount, reason);
   }
 
 

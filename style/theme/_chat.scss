@@ -6,6 +6,10 @@
 #interface:not(.theme-light) #sidebar:not(.no-theme) {
     @include links;
 
+    hr {
+        @include gradient-border;
+    }
+
     #chat-message,
     .chat-form textarea {
             background: url(./ui/backgrounds/parchment-texture.webp) repeat;

@@ -71,7 +71,7 @@ export class CharacterModel extends StandardActorModel {
         // If XP received from message award, add
         if (options.fromMessage && game.user.isUniqueGM)
         {
-          this._registerChatAward(options.fromMessage)
+          game.messages.get(options.fromMessage)?.updateReceived(this.parent);
         }
     }
 
@@ -183,7 +183,7 @@ export class CharacterModel extends StandardActorModel {
       experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
       this.parent.update({ "system.details.experience": experience }, {fromMessage : message});
       if (!suppressChat) 
-        ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
+        ChatMessage.create({ content: reason ? game.i18n.format("CHAT.ExpReceived", { amount, reason }) : game.i18n.format("CHAT.ExpReceivedNoReason", { amount })  , speaker: { alias: this.parent.name } })
     }
 
     addToExpLog(amount, reason, newSpent, newTotal) 
@@ -285,16 +285,6 @@ export class CharacterModel extends StandardActorModel {
         test = await this.parent.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"], skipTargets: true }), mutate: true })
       }
       await test.roll();
-    }
-  }
-
-  async _registerChatAward(messageId)
-  {
-    let message = game.messages.get(messageId);
-    if (message)
-    {
-      let alreadyAwarded = message.getFlag("wfrp4e", "experienceAwarded") || []
-      message.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded.concat(this.parent.id));
     }
   }
 }

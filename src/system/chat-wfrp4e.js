@@ -204,45 +204,6 @@ export default class ChatWFRP {
     }
   }
 
-  static _onExpButtonClicked(event) {
-    let amount = parseInt($(event.currentTarget).attr("data-amount"));
-    let reason = $(event.currentTarget).attr("data-reason");
-    let msg = game.messages.get($(event.currentTarget).parents('.message').attr("data-message-id"));
-    let alreadyAwarded = msg.getFlag("wfrp4e", "experienceAwarded") || [];
-
-
-    if (game.user.isGM) 
-    {
-      if (!game.user.targets.size)
-      {
-        return ui.notifications.warn(game.i18n.localize("ErrorExp"))
-      }
-      game.user.targets.forEach(t => 
-      {
-        if (!alreadyAwarded.includes(t.actor.id)) 
-        {
-          t.actor.system.awardExp(amount, reason, msg.id)
-        }
-        else
-        {
-          ui.notifications.notify(`${t.actor.name} already received this reward.`)
-        }
-      })
-      if (canvas.scene)
-      { 
-        game.canvas.tokens.setTargets([])
-      }
-    }
-    else {
-      if (!game.user.character)
-        return ui.notifications.warn(game.i18n.localize("ErrorCharAssigned"))
-      if (alreadyAwarded.includes(game.user.character.id))
-        return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
-
-      foundry.utils.setProperty(msg, "flags.wfrp4e.experienceAwarded", alreadyAwarded.concat(game.user.character.id)); // Add locally to handle fast clicking or no GM 
-      game.user.character.system.awardExp(amount, reason, msg.id)
-    }
-  }
 
   static async _onConditionScriptClick(event) {
     let condkey = event.target.dataset["condId"]

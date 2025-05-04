@@ -516,14 +516,7 @@ export default function() {
     });
 
 
-    game.wfrp4e.commands = new ChatCommands({
-      pay : {
-          description : "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount",
-          args : ["amount", "for", "targets"],
-          defaultArg : "amount",
-          callback : (amount, product, target) => PayMessageModel.handlePayCommand(amount, {target, product})
-      }
-  })
+
     // Load name construction from files
     NameGenWfrp._loadNames();
 

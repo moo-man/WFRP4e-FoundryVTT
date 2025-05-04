@@ -1209,7 +1209,9 @@
       "handler",
       "opposed",
       "item",
-      "pay"
+      "pay",
+      "credit",
+      "xp"
     ]
   }
 }

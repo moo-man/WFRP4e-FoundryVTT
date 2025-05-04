@@ -13,6 +13,29 @@ import WFRP_Utility from "../system/utility-wfrp4e.js";
 export default class WFRP_Tables {
 
 
+  static handleTableCommand(key, { modifier, column }) {
+    let msg = {};
+    if (!key) {
+      game.wfrp4e.tables.formatChatRoll("menu").then(text => {
+        if (!text)
+          return
+        msg.content = text
+        msg.speaker = { alias: "Table Menu" }
+        ChatMessage.create(msg)
+      })
+    }
+    else {
+      // Call tables class to roll and return html
+      game.wfrp4e.tables.formatChatRoll(key, { modifier: modifier, showRoll: true }, column).then(text => {
+        if (!text)
+          return
+        msg.content = text
+        ChatMessage.create(msg);
+      })
+    }
+  }
+
+
   /**
    * The base function to retrieve a result from a table given various parameters.
    * 
@@ -384,7 +407,7 @@ export default class WFRP_Tables {
         let item = collection.get(result.object.documentId)
         if (item && item.documentName == "Item")
         {
-          item.postItem("inf", {"flags.wfrp4e.sourceMessageId" : options.messageId});
+          item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
           return {}
         }
       }

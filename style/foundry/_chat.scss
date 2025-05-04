@@ -181,20 +181,33 @@
 
 
         .pay-amount {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            font-size: 1.5rem;
+            margin: 0.5rem;
+
+            .coins {
                 display: flex;
+                flex-direction: column;
                 align-items: center;
-                justify-content: space-around;
-                font-size: 1.5rem;
-                margin: 0.5rem;
-                
-                .coins {
-                    display:flex;
-                    flex-direction: column;
-                    align-items: center;
-                }
             }
-            img {
-                width: 2rem;
-            }
-    }
+        }
+
+        img {
+            width: 2rem;
+        }
+
+        div.received-credit {
+            text-align: center;
+            line-height: 1.5rem;
+        }
+
+        .xp-amount {
+            font-size: var(--font-size-20);
+            text-align: center;
+            margin: 1rem;
+        }
+
+        }
 }
