@@ -11,61 +11,6 @@ import OpposedHandler from "../system/opposed-handler.js";
 export default function() {
 
 
-
-
-  /**
-   * Primary use of this hook is to intercept chat commands.
-   * /char  - Begin character generation
-   * /table - Roll on a table
-   * /cond  - Lookup a condition
-   * /name  - Generate a name
-   * /avail - Start an item availability test
-   * /pay - Player: Remove money from character. GM: Start a payment request
-   * /credit - Player: Not allowed. GM: Start a credit request to send money to players
-   * /help - display a help message on all the commands above
-   */
-  Hooks.on("chatMessage", (html, content, msg) => {
-    // Setup new message's visibility
-    let rollMode = game.settings.get("core", "rollMode");
-    if (["gmroll", "blindroll"].includes(rollMode)) msg["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
-    if (rollMode === "blindroll") msg["blind"] = true;
-
-    let regExp;
-    regExp = /(\S+)/g;
-    let commands = content.match(regExp);
-    let command = commands[0];
-  
-
-    //Help commands
-    if (command === "/help") {
-      let rawCommands = game.i18n.localize("CHAT.CommandLine.Help.Commands");
-
-      let commandElements = rawCommands.split(",").map(function (item) {
-        return {
-          title: game.i18n.localize(`CHAT.CommandLine.Help.${item}.Title`),
-          command: game.i18n.localize(`CHAT.CommandLine.Help.${item}.Usage.Command`),
-          commandLabel: game.i18n.localize(`CHAT.CommandLine.Help.Label.Command`),
-          example: game.i18n.localize(`CHAT.CommandLine.Help.${item}.Usage.Example`),
-          exampleLabel: game.i18n.localize(`CHAT.CommandLine.Help.Label.Example`),
-          note: game.i18n.localize(`CHAT.CommandLine.Help.${item}.Usage.Note`),
-          noteLabel: game.i18n.localize(`CHAT.CommandLine.Help.Label.Note`),
-        };
-      });
-
-      let link = game.i18n.format("CHAT.CommandLine.Help.Link", { link: "https://github.com/moo-man/WFRP4e-FoundryVTT/wiki" })
-
-      renderTemplate("systems/wfrp4e/templates/chat/help/chat-help-command.hbs", {
-        commands: commandElements,
-        link: link
-      }).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html, "selfroll");
-        ChatMessage.create(chatData);
-      });
-      return false;
-    }
-  });
-
-
   /**
  * Searches each message and adds drag and drop functionality and hides certain things from players
  */

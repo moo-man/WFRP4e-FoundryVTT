@@ -4,6 +4,9 @@
 
 #interface:not(.theme-light) #chat-notifications:not(.no-theme),
 #interface:not(.theme-light) #sidebar:not(.no-theme) {
+
+    --color-text-accent: var(--color-warm-3);
+
     @include links;
 
     hr {

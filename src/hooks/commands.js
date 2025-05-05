@@ -21,18 +21,23 @@ export default function () {
         description: "Roll on a table",
         args : ["table", "modifier", "column"],
         defaultArg : "table",
+        examples : "<br><span font-family:'monospaced'</span>/table critarm</span><br><span font-family:'monospaced'</span>/table mutatephys modifier=20 column=khorne</span>",
         callback: (table, modifier, column) => WFRP_Tables.handleTableCommand(table, {modifier, column})
       },
       pay: {
-        description: "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount",
+        description: "Post a prompt for payment.",
+        notes: "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount",
         args: ["amount", "for", "target"],
         defaultArg: "amount",
+        examples : "<br><span font-family:'monospaced'</span>/pay 12ss for=Room and Board</span>",
         callback: (amount, product, target) => PayMessageModel.handlePayCommand(amount, { target, product })
       },
       credit : {
-        description : "Post monetary reward",
+        description : "Post a prompt to receive money.",
         args : ["amount", "mode", "split", "target", "reason"],
         defaultArg : "amount",
+        examples : "<br><span font-family:'monospaced'</span>/credit 100gc reason=Completing the Bounty split=3</span>",
+        notes : "Mode can be set to 'split' or 'each', if unspecified, only a single reward is available to take (split=1). If the mode is set to split, and the split argument is not defined, it splits the amount between all active players.",
         callback : (amount, mode, split, target, reason) => CreditMessageModel.handleCreditCommand(amount, mode, {split, target, reason})
       },
       char: {
@@ -79,6 +84,7 @@ export default function () {
       },
       name : {
         description : "Generate a name",
+        notes : "Core Species Keys: <span font-family:'monospaced'</span>human</span> <span font-family:'monospaced'</span>dwarf</span> <span font-family:'monospaced'</span>helf</span> <span font-family:'monospaced'</span>welf</span> <span font-family:'monospaced'</span>halfling</span>",
         args : ["gender", "species"],
         defaultArg : "gender",
         callback : (gender, species) => {

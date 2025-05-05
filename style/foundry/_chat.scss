@@ -81,12 +81,12 @@
             text-align: center;
             font-size: var(--font-size-18);
             font-weight: bold;
+            margin-bottom: 0.5rem;
         }
 
         .comparison {
             display: flex;
             justify-content: center;
-            margin: 0.5rem 0;
             > span {
                 flex: 0 0 2rem;
                 text-align: center;
@@ -104,6 +104,7 @@
         }
 
         .sl {
+            margin-top: 0.5rem;
             // &:before {
             //     content: "SL";
             //     position: absolute;
