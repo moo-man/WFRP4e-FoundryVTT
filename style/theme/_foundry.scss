@@ -169,13 +169,9 @@
         background: url(./ui/backgrounds/bookshelf-texture.webp);
     }
 
-
-    .ui-control {
-        @include wfrp-button-sm;
-    }
-
     #settings,
     .action-buttons {
+        a.button,
         button {
             @include wfrp-button;
         }
@@ -239,6 +235,14 @@
 // Extra styling for popped out sidebars
 body:not(.theme-light):not(.no-theme) {
     .sidebar-tab {
+
+        #settings,
+        .action-buttons {
+            a.button,
+            button {
+                @include wfrp-button;
+            }
+        }
 
         .compendium-name strong {
             background: none;

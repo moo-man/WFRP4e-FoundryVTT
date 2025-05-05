@@ -2,10 +2,15 @@
 @use "./mixins" as *;
 
 
+body:not(.no-theme):not(.theme-light) #chat-popout
+{
+    width: 340px;
+}
+
+body:not(.no-theme):not(.theme-light) #chat-popout,
 #interface:not(.theme-light) #chat-notifications:not(.no-theme),
 #interface:not(.theme-light) #sidebar:not(.no-theme) {
 
-    --color-text-accent: var(--color-warm-3);
 
     @include links;
 
@@ -23,6 +28,11 @@
             padding: 15px;
             box-shadow: inset 0 0 40px #000000;
             color: black;
+
+    }
+
+    .ui-control {
+        @include wfrp-button-sm;
     }
 
     .chat-message 
@@ -31,6 +41,7 @@
     }
     .chat-message,
     .chat-log .message {
+        --color-text-accent: var(--color-warm-3);
         border: 1px solid;
         border-image: url(./ui/backgrounds/chat-message-border.webp) 21 repeat;
         border-image-width: 12px;
@@ -58,6 +69,7 @@
         }
 
 
+        a.button,
         .chat-button,
         button {
             @include styled-button;

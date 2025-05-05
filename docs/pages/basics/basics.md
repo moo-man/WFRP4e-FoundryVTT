@@ -33,3 +33,15 @@ The Actor Settings menu lets you configure automated behavior within the Actor, 
 Adding Conditions to Actors is easy, but what about other effects? For example, Consume Alcohol effects, Overexposure to Heat or Cold, or Symptoms independent of [Diseases](./diseases.md). You can do this via a dropdown selector at the bottom of the Effects tab. Other modules may add more effects to choose from, such as **Rattled** or **Besmirched**
 
 ![System Effects](../../assets/basics/system-effects.webp)
+
+
+### Theme Configuration
+
+You can modify the system's styling of Foundry to suit your personal taste and needs. To do so, simply navigate to the System Settings and open the Theme Configuration window. 
+
+![Theme Config](../../assets/basics/theme-config.webp)
+
+Here you can choose to disable the Theme in specific areas, or use a more readable (sans-serif) font.
+
+{: .important}
+This is a client specific setting, so whatever you choose only applies to you!
