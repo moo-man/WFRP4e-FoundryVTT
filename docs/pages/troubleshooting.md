@@ -13,6 +13,18 @@ title: Troubleshooting
 > *Even so, there might simply not be anyone online that can help. You can also send a message to me directly on Discord (`moo.man`), and I will try to help if I am available.*
 
 {: .question}
+Everything broke after an update! What do I do?
+
+Your first troubleshooting steps should always be:
+
+1. Ensure the WFRP4e **System** is up to date. 
+2. Ensure the WFRP4e **Core Module** is up to date.
+3. **IMPORTANT**: Ensure the **Warhammer Library** module is up to date, this is a foundation of code that the system is built off of, and is often forgotten in updates. 
+4. Disable all other modules.
+
+If this does not resolve the problem, it's time to consult the above Discords. If you do not use Discord, you can email me. See the [home page](./home.md).
+
+{: .question}
 Did you find a typo or some data error?
 
 Fill out a Bug Report, selecting the `Domain` as whatever module has the error, and select `Text or Data` as the Label
@@ -37,3 +49,5 @@ There's an unremovable Fear icon on a Token
 This is a status effect that comes from the "Fear" Extended Test. See [Extended Tests](./basics/actor-tabs/skills.md). This Test must be removed or completed. 
 
 ### The Bug Reporter
+
+As discussed in the warning above, please do not use the Bug Reporter for general help requests if something goes wrong. Don't panic, just join one of the Discords and someone will most likely be able to help you. 
