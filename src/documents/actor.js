@@ -259,20 +259,20 @@ export default class ActorWFRP4e extends WarhammerActor
     if (item.SL.target <= 0)
       return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
-    options.extended = item.uuid;
-    options.rollMode = defaultRollMode;
-    options.hitLocation = false;
-    options.fields = {difficulty : item.system.difficulty.value || "challenging"}
+    context.extended = item.uuid;
+    context.rollMode = defaultRollMode;
+    context.hitLocation = false;
+    context.fields = {difficulty : item.system.difficulty.value || "challenging"}
 
     let characteristic = warhammer.utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
-      let test = await this.setupCharacteristic(characteristic, options);
+      let test = await this.setupCharacteristic(characteristic, context);
       await test.roll();
     }
     else {
       let skill = this.itemTags["skill"].find(i => i.name == item.test.value)
       if (skill) {
-        let test = await this.setupSkill(skill, options);
+        let test = await this.setupSkill(skill, context);
         await test.roll();
       } 
       else {

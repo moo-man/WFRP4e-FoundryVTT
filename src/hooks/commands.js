@@ -4,6 +4,7 @@ import NameGenWfrp from "../apps/name-gen.js";
 import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import { CorruptionMessageModel } from "../model/message/corruption.js";
 import { CreditMessageModel } from "../model/message/credit.js";
+import { PsychMessageModel } from "../model/message/psych.js";
 import { PayMessageModel } from "../model/message/pay.js";
 import { XPMessageModel } from "../model/message/xp.js";
 import WFRP_Tables from "../system/tables-wfrp4e.js";
@@ -106,18 +107,18 @@ export default function () {
       },
       fear : {
         description : "Prompt Fear Test",
-        args : ["rating"],
+        args : ["rating", "source"],
         defaultArg : "rating",
-        callback: (rating) => {
-          WFRP_Utility.postFear(rating);
+        callback: (rating, source) => {
+          PsychMessageModel.handleFearCommand(rating, source)
         }
       },
-      fear : {
+      terror : {
         description : "Prompt Terror Test",
-        args : ["rating"],
+        args : ["rating", "source"],
         defaultArg : "rating",
-        callback: (rating) => {
-          WFRP_Utility.postTerror(rating);
+        callback: (rating, source) => {
+          PsychMessageModel.handleTerrorCommand(rating, source)
         }
       },
       exp : {

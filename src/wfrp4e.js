@@ -107,6 +107,7 @@ import { PayMessageModel } from "./model/message/pay.js";
 import { CreditMessageModel } from "./model/message/credit.js";
 import { XPMessageModel } from "./model/message/xp.js";
 import { CorruptionMessageModel } from "./model/message/corruption.js";
+import { PsychMessageModel } from "./model/message/psych.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -192,6 +193,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["credit"] = CreditMessageModel;
   CONFIG.ChatMessage.dataModels["xp"] = XPMessageModel;
   CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
+  CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
 
   game.wfrp4e = {
     apps: {

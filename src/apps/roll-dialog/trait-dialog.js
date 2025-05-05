@@ -50,6 +50,7 @@ export default class TraitDialog extends AttackDialog {
       // TODO account for skill 
       context.title = context.title || game.wfrp4e.config.characteristics[trait.system.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
       context.title += context.appendTitle || "";
+      delete context.appendTitle;
       
       let dialogData;
 
