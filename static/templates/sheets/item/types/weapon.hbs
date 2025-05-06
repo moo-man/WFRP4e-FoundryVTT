@@ -10,7 +10,7 @@
         {{formGroup fields.reach.fields.value value=source.system.reach.value}}
     {{else}}
         {{formGroup fields.range.fields.value value=source.system.range.value}}
-        {{#if (settings "mooRangeBands")}}
+        {{#if (settings "homebrew.mooRangeBands")}}
         <div class="form-group">
             <label>{{localize "ITEM.OptimalRange"}}</label>
             <div class="form-fields">
