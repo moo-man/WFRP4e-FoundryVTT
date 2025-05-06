@@ -1,5 +1,6 @@
     @use "./sheet" as *;
     @use "./mixins" as *;
+    @use "../mixins/button" as *;
 
     .wfrp4e.actor.sheet.application:not(.no-theme) {
         
@@ -16,6 +17,9 @@
             border-image-outset: 37px 1px 5px 1px;
 
             padding: 40px;
+
+            @include links;
+
         }
 
         nav.sheet-tabs {
@@ -284,6 +288,13 @@
 
         .overview-content {
             color: var(--color-grey1);
+        }
+
+        .group-actions {
+            color: black;
+            button {
+                @include styled-button
+            }
         }
 
     }

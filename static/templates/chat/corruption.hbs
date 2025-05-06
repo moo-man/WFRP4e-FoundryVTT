@@ -1,6 +1,6 @@
-<div>
-    <h3><b>{{localize "CHAT.CorruptingInfluence"}} <span style="text-transform: capitalize;">({{localize strength}})</span></b></h3>
+<div class="corruption-message">
+    <h3><strong>{{localize "CHAT.CorruptingInfluence"}}</strong></h3>
+    <img src="modules/wfrp4e-core/art/ui/chaos.webp" height="100" width="100">
+    {{localize strength}}
 </div>
-<span class="chat-card-button-area">
-    <a class='chat-card-button corrupt-button' data-strength="{{strength}}">{{localize "CHAT.Resist"}}</a>
-</span>
+<a class='chat-button' data-action="resist">{{localize "CHAT.Resist"}} {{#if skill}}({{skill}}){{/if}}</a>

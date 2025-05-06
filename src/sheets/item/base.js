@@ -12,7 +12,8 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     classes: ["wfrp4e"],
     defaultTab : "description",
     position : {
-      width: 500
+      width: 500,
+      height: 700,
     },
     window : {
       controls : [

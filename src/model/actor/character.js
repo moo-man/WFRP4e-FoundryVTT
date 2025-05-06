@@ -71,7 +71,7 @@ export class CharacterModel extends StandardActorModel {
         // If XP received from message award, add
         if (options.fromMessage && game.user.isUniqueGM)
         {
-          this._registerChatAward(options.fromMessage)
+          game.messages.get(options.fromMessage)?.updateReceived(this.parent);
         }
     }
 
@@ -183,7 +183,7 @@ export class CharacterModel extends StandardActorModel {
       experience.log.push({ reason, amount, spent: experience.spent, total: experience.total, type: "total" })
       this.parent.update({ "system.details.experience": experience }, {fromMessage : message});
       if (!suppressChat) 
-        ChatMessage.create({ content: game.i18n.format("CHAT.ExpReceived", { amount, reason }), speaker: { alias: this.name } })
+        ChatMessage.create({ content: reason ? game.i18n.format("CHAT.ExpReceived", { amount, reason }) : game.i18n.format("CHAT.ExpReceivedNoReason", { amount })  , speaker: { alias: this.parent.name } })
     }
 
     addToExpLog(amount, reason, newSpent, newTotal) 
@@ -199,40 +199,26 @@ export class CharacterModel extends StandardActorModel {
     }
 
     async _handleExperienceChange(data, options, changed) {
-        if (foundry.utils.hasProperty(options.changed, "system.details.experience") && !foundry.utils.hasProperty(options.changed, "system.details.experience.log")) {
-          await new Promise(resolve => {
-            new Dialog({
-                content: `<p>${game.i18n.localize("ExpChangeHint")}</p><div class="form-group"><input name="reason" type="text" /></div>`,
-                title: game.i18n.localize("ExpChange"),
-                buttons: {
-                    confirm: {
-                        label: game.i18n.localize("Confirm"),
-                        callback: (dlg) => { }
-                    }
-                },
-                default: "confirm",
-                close: dlg => {
-                    let expLog = this.details.experience.log || []
-                    let newEntry = { reason: dlg.find('[name="reason"]').val() }
-                    if (foundry.utils.hasProperty(data, "system.details.experience.spent")) {
-                        newEntry.amount = data.system.details.experience.spent - this.details.experience.spent
-                        newEntry.spent = data.system.details.experience.spent
-                        newEntry.total = this.details.experience.total
-                        newEntry.type = "spent"
-                    }
-                    if (foundry.utils.hasProperty(data, "system.details.experience.total")) {
-                        newEntry.amount = data.system.details.experience.total - this.details.experience.total
-                        newEntry.spent = this.details.experience.spent
-                        newEntry.total = data.system.details.experience.total
-                        newEntry.type = "total"
-                    }
+        if (foundry.utils.hasProperty(options.changed, "system.details.experience") && !foundry.utils.hasProperty(options.changed, "system.details.experience.log")) 
+        {
+          let reason = await ValueDialog.create({title : game.i18n.localize("ExpChange"), text :game.i18n.localize("ExpChangeHint")})
+          let expLog = this.details.experience.log || []
+          let newEntry = { reason }
+          if (foundry.utils.hasProperty(data, "system.details.experience.spent")) {
+              newEntry.amount = data.system.details.experience.spent - this.details.experience.spent
+              newEntry.spent = data.system.details.experience.spent
+              newEntry.total = this.details.experience.total
+              newEntry.type = "spent"
+          }
+          if (foundry.utils.hasProperty(data, "system.details.experience.total")) {
+              newEntry.amount = data.system.details.experience.total - this.details.experience.total
+              newEntry.spent = this.details.experience.spent
+              newEntry.total = data.system.details.experience.total
+              newEntry.type = "total"
+          }
 
-                    expLog.push(newEntry);
-                    foundry.utils.setProperty(data, "system.details.experience.log", expLog);
-                    resolve();
-                }
-            }).render(true)
-          })
+          expLog.push(newEntry);
+          foundry.utils.setProperty(data, "system.details.experience.log", expLog);
         }
     }
 
@@ -293,22 +279,12 @@ export class CharacterModel extends StandardActorModel {
       let skill = this.parent.has(game.i18n.localize("NAME.Endurance"), "skill")
       if (skill) 
       {
-        test = await this.parent.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name, skipTargets: true }), mutate: true })
+        test = await this.parent.setupSkill(skill, { title: game.i18n.format("DIALOG.MutateTitle", { test: skill.name}), mutate: true, skipTargets: true})
       }
       else {
         test = await this.parent.setupCharacteristic("t", { title: game.i18n.format("DIALOG.MutateTitle", { test: game.wfrp4e.config.characteristics["t"], skipTargets: true }), mutate: true })
       }
       await test.roll();
-    }
-  }
-
-  async _registerChatAward(messageId)
-  {
-    let message = game.messages.get(messageId);
-    if (message)
-    {
-      let alreadyAwarded = message.getFlag("wfrp4e", "experienceAwarded") || []
-      message.setFlag("wfrp4e", "experienceAwarded", alreadyAwarded.concat(this.parent.id));
     }
   }
 }

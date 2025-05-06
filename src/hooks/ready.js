@@ -49,27 +49,28 @@ export default function () {
     let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `
+      <hr>
+      <h1>New Users - Read This!</h1>
+      <p>Welcome! Before you dive in, it may be best to browse the Wiki, below are some important topics:</p>
+      <ul>
+      <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/faq.html">FAQ</a></p></li>
+      <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/basics/basics.html">Basics</a></p></li>
+      <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/premium.html">Premium Content</a> (this will tell you how to use any official content you've purchased!</p></li>
+      <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/troubleshooting.html">Troubleshooting</a></p></li>
+      <p><strong>Note</strong>: Documentation is always a work in progress, some things may be incomplete, if you have questions, see the Discords linked in the home page</p>
+      <p><strong>Also Note</strong>: While Character creation should be functional, it may be rather ugly until it gets updated to use the new features in V13</p>
+      <hr>
       <h1>WFRP4e in Foundry V13</h1>
-      <p>As Foundry itself progresses in its adoption of its new application framework, so too has the WFRP system. <em>Tens of thousands</em> of lines of code, styling, and html dating back from the system's earliest renditions (2020s) have been removed have been removed and rewritten.</p>
-      <p>However, the longbeards grumble that what's new is unproven and untested, so please be patient if issues arise as I try to bring the new sheets and menus up to match all the functionality of the old ones.</p>
+      <p>As Foundry itself progresses in its adoption of its new application framework, so too has the WFRP system. <em>Tens of thousands</em> of lines of code, styling, and html dating back from the system's earliest renditions (2020ish) have been removed have been removed and rewritten.</p>
+      <p>However, the longbeards grumble that what's new is unproven and untested, so please be patient if issues arise as I try to bring the new sheets and menus up to match all the functionality of the old ones (particularly character creation!).</p>
       <p>In brief, the most notable changes are
       <ul>
       <li><p>The <em>monolithic</em> CSS file for the system's styling has been completely removed. Not to worry, this has been replaced with a much more flexible, cleaner, and customizable version. If you want to customize your WFRP theme, check out the <strong>Theme Config</strong> in the system settings</p></li>
       <li><p>Actor and Item Sheets in V2 have had their <em>right click</em> functionalities greatly expanded. You can right click any owned Item or Active Effect to see a context menu for various actions.</p></li>
+      <li><p>Module Initialization has been centralized in the System settings, check the wiki link above!</p></li>
       </ul>
-      <hr>
-      <h1>The Effect Refactor</h1>
-        <p>If you are updating from pre-WFRP4e Version 7.1.0, Active Effect scripting has been greatly reworked, and all the automation you're used to has been vastly improved! However, existing Actors need to be updated manually. The automatic migration handles the basics, but won't update your Actors with the new Items.</p>
-        
-        <p><strong>Minimum</strong>: Make sure your preimum modules are updated! Delete module content you've imported in your world, then replace every Talent on your unique Actors, like Player Characters or other ones you've created yourself. Reimport the module content you wish to use, which should be updated with the latest Items.</p>
-        
-        <p>If Talents aren't replaced in this way, you may notice that the Roll Dialog won't have the selectable SL bonuses from the Talents.<p/>
-        
-        <p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/effects/effect-refactor.html">Read more about the Effect Refactor</a></p>
-
-        <p>Note that if this is a brand new world, you can disregard this message.</p>
-        `
-      }, {speaker : {alias : "ATTENTION - PLEASE READ"}}
+        `,
+      speaker : {alias : "INFO"}}
         )
       game.wfrp4e.migration.migrateWorld()
     }

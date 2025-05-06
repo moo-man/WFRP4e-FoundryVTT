@@ -65,6 +65,14 @@ Read more about Compendium Packs [here](https://foundryvtt.com/article/compendiu
 
 **Initialization** is a process that each of the WFRP4e modules goes through that imports certain Documents from the Compendium into the world. What Documents are imported is dependent on the Module. In general: all modules import their Journal Entries, Tables, and Scenes. Modules that are "adventures" in nature import their Actors as well. 
 
+<strong>To initialize the modules you have purchased</strong>, find the System Settings, and open the Initialization window. 
+
+![Initialization](../assets/premium-content1.webp)
+
+Here you will see all premium modules available. For ones owned, installed, and activated, you can initialize them. Once initialized, 2 more options will be available. These are **Update** and **Delete**. This will modify Documents imported into the world via initialization accordingly. 
+
+![Initialization](../assets/premium-content2.webp)
+
 {: .important}
 > Many functions within the WFRP4e System have imported Documents take precedence over Documents within the Compendium. This lets GMs import these Documents to make changes to them, and the system will use these edited versions. 
 > 

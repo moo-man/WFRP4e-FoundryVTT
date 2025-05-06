@@ -1208,7 +1208,12 @@
       "test",
       "handler",
       "opposed",
-      "item"
+      "item",
+      "pay",
+      "credit",
+      "xp",
+      "corruption",
+      "psych"
     ]
   }
 }

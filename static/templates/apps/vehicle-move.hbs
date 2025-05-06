@@ -1,63 +1,66 @@
-<form autocomplete="off" onsubmit="event.preventDefault();">
-
-    <div style="display: flex;">
-        <div style="margin-right: 5px">
-            <h2>{{localize "VEHICLE.Sail"}}</h3>
+<div>
+    <div>
+        <h2>{{localize "VEHICLE.Sail"}}</h3>
             <div class="form-group">
                 <label>{{localize "VEHICLE.Enabled"}}</label>
-                <input type="checkbox" class="enableToggle" name="system.details.move.sail.enabled" {{checked system.details.move.sail.enabled}}>
+                <input type="checkbox" class="enableToggle" name="system.details.move.sail.enabled" {{checked
+                    system.details.move.sail.enabled}}>
             </div>
             <div class="sail">
                 <div class="form-group">
                     <label>{{localize "VEHICLE.PrimaryMode"}}</label>
-                    <input type="checkbox" class="primaryToggle" name="sailPrimary" {{checked (eq system.details.move.primary "sail")}}>
+                    <input type="checkbox" class="primaryToggle" name="sailPrimary" {{checked (eq
+                        system.details.move.primary "sail" )}}>
                 </div>
                 <div class="form-group">
                     <label>{{localize "Move"}}</label>
-                    <input type="number" name="system.details.move.sail.value" value="{{system.details.move.sail.value}}">
+                    <input type="number" name="system.details.move.sail.value"
+                        value="{{system.details.move.sail.value}}">
                 </div>
                 <div class="form-group">
                     <label>{{localize "VEHICLE.Crew"}}</label>
                     <input type="number" name="system.details.move.sail.crew" value="{{system.details.move.sail.crew}}">
                 </div>
             </div>
-        </div>
-        <div style="margin-left: 5px">
-            <h2>{{localize "VEHICLE.Oars"}}</h3>
+    </div>
+    <div>
+        <h2>{{localize "VEHICLE.Oars"}}</h3>
             <div class="form-group">
                 <label>{{localize "VEHICLE.Enabled"}}</label>
-                <input type="checkbox" class="enableToggle" name="system.details.move.oars.enabled" {{checked system.details.move.oars.enabled}}>
+                <input type="checkbox" class="enableToggle" name="system.details.move.oars.enabled" {{checked
+                    system.details.move.oars.enabled}}>
             </div>
             <div class="oars">
                 <div class="form-group">
                     <label>{{localize "VEHICLE.PrimaryMode"}}</label>
-                    <input type="checkbox" class="primaryToggle" name="oarsPrimary" {{checked (eq system.details.move.primary "oars")}}>
+                    <input type="checkbox" class="primaryToggle" name="oarsPrimary" {{checked (eq
+                        system.details.move.primary "oars" )}}>
                 </div>
                 <div class="form-group">
                     <label>{{localize "Move"}}</label>
-                    <input type="number" name="system.details.move.oars.value" value="{{system.details.move.oars.value}}">
+                    <input type="number" name="system.details.move.oars.value"
+                        value="{{system.details.move.oars.value}}">
                 </div>
                 <div class="form-group">
                     <label>{{localize "VEHICLE.Crew"}}</label>
                     <input type="number" name="system.details.move.oars.crew" value="{{system.details.move.oars.crew}}">
                 </div>
             </div>
-        </div>
-        <div style="margin-left: 5px">
-            <h2>{{localize "VEHICLE.Custom"}}</h3>
+    </div>
+    <div>
+        <h2>{{localize "VEHICLE.Custom"}}</h3>
             <div class="form-group">
                 <label>{{localize "Label"}}</label>
                 <input type="text" name="system.details.move.custom.label" value="{{system.details.move.custom.label}}">
             </div>
             <div class="form-group">
                 <label>{{localize "Move"}}</label>
-                <input type="number" name="system.details.move.custom.value" value="{{system.details.move.custom.value}}">
+                <input type="number" name="system.details.move.custom.value"
+                    value="{{system.details.move.custom.value}}">
             </div>
             <div class="form-group">
                 <label>{{localize "VEHICLE.Crew"}}</label>
                 <input type="number" name="system.details.move.custom.crew" value="{{system.details.move.custom.crew}}">
             </div>
-        </div>
     </div>
-    <button type="submit" name="submit">{{localize "Submit"}}</button>
-</form>
+</div>

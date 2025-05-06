@@ -30,6 +30,18 @@ export class MoneyModel extends PhysicalItemModel
       ]);
     }
 
+
+    
+  async _onUpdate(data, options, user) {
+    await super._onUpdate(data, options, user);
+    // If credit received from message award, update message
+    if (options.updateCreditMessage && game.user.isUniqueGM && this.parent.isEmbedded)
+    {
+      game.messages.get(options.updateCreditMessage.id).system.updateMessage(this.parent.actor, options.updateCreditMessage.index);
+      delete options.updateCreditMessage;
+    }
+}
+
   /**
    * Used to identify an Item as one being a child or instance of MoneyModel
    *

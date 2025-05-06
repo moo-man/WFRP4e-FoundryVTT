@@ -1,0 +1,6 @@
+<div>
+    <select name="selectValue">
+        {{selectOptions values selected=value}}
+    </select>
+    <input name="inputValue" {{#unless valueInConfig}}value="{{value}}"{{/unless}} placeholder="{{localize "PROPERTY.Custom"}}"> 
+</div>

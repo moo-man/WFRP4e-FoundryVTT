@@ -19,6 +19,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       dismount : this._dismount,
       showMount : this._showMount,
       randomize: this._randomize,
+      editSpecies : this._onEditSpecies,
       stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
     },
   }
@@ -225,7 +226,8 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
             characteristics[c].initial = initialValues[c].value
         }
 
-        if (await Dialog.confirm({ content: game.i18n.localize("SpecChar"), title: game.i18n.localize("Species Characteristics") })) {
+        if (this.actor.type != "character" && (await Dialog.confirm({ content: game.i18n.localize("SpecChar"), title: game.i18n.localize("Species Characteristics") })) )
+        {
             mergeObject(update, {system: { characteristics, "details.move.value" : WFRP_Utility.speciesMovement(speciesKey) || 4 }})
         }
     } 

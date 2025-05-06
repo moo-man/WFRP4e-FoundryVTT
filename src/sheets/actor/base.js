@@ -33,7 +33,9 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       createItem : this._onCreateItem,
       configureActor : this._onConfigureActor,
       useAspect : this._onUseAspect,
-      toggleQuality : this._onToggleQuality
+      toggleQuality : this._onToggleQuality,
+      groupActions : this._onToggleGroupActions,
+      useGroupAction : this._onUseGroupAction
     },
     defaultTab : "main"
   }
@@ -598,6 +600,44 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         document.system.use();
       }
     }
+    
+    static async _onUseGroupAction(ev, target)
+    {
+      let index = target.dataset.index;
+
+      let action = game.wfrp4e.config.groupAdvantageActions[index];
+
+      if ((await this.actor.spend("system.status.advantage.value", action.cost)))//action.cost > this.actor.status.advantage.value)
+      {
+        if (action)
+          {
+            let html = await TextEditor.enrichHTML(`
+            <p><strong>${action.name}</strong>: ${action.description}</p>
+            <p>${action.effect}</p>
+            `)
+    
+            ChatMessage.create({
+              content : html,
+              speaker : {alias : this.actor.token?.name || this.actor.prototypeToken.name},
+              flavor : "Group Advantage Action"
+            })
+    
+            if (action.test)
+            {
+              if (action.test.type == "characteristic")
+              {
+                this.actor.setupCharacteristic(action.test.value, {appendTitle : ` - ${action.name}`}).then(test => test.roll())
+              }
+            }
+          }
+      }
+      else 
+      {
+        return ui.notifications.error("Not enough Advantage!")
+      }
+
+
+    }
 
     static async _onToggleQuality(ev)
     {
@@ -619,6 +659,39 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       qualities.find(i => i.name == toggled.key).active = true;
   
       document.update({"system.qualities.value" : qualities})
+    }
+
+    static async _onToggleGroupActions(ev, target)
+    {
+      let actions = this.element.querySelector(".group-actions");
+      if (actions.children.length > 0)
+      {
+        target.querySelector("i").classList.replace("fa-chevron-up", "fa-chevron-down")
+        actions.replaceChildren();
+        this._toggleDropdownAt(actions);
+      }
+      else 
+      {
+        target.querySelector("i").classList.replace("fa-chevron-down", "fa-chevron-up")
+        let html = ``
+        if (game.wfrp4e.config.groupAdvantageActions.length > 0) 
+        {
+          game.wfrp4e.config.groupAdvantageActions.forEach((action, i) => {
+            html += `<div class="action">
+              <button data-action="useGroupAction" data-index="${i}">${action.name}</button>
+              <p>${action.description}</p>
+              <p class="cost"><strong>Cost</strong>: ${action.cost}</p>
+              <p class="effect">${action.effect}</p>
+              </div><hr>`
+          })
+        }
+        else 
+        {
+          html = "No Actions Available"
+        }
+
+        this._toggleDropdownAt(actions, await TextEditor.enrichHTML(html));
+      }
     }
 
     static async _onRollTest(ev)
@@ -741,13 +814,20 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       if (document)
       {
         let expandData = await document.system.expandData({secrets: this.actor.isOwner});
-        this._toggleDropdown(ev, expandData.description.value);
+        this._toggleDropdown(ev, expandData.description.value + `<div class="tags">${"<div class='tag'>" + expandData.properties.join("</div><div class='tag'>")}</div>`);
       }
     }
 
     async _toggleDropdown(ev, content, parentSelector=".list-row")
     {
       let dropdownElement = this._getParent(ev.target, parentSelector).querySelector(".dropdown-content");
+      this._toggleDropdownAt(dropdownElement, content)
+    }
+
+    async _toggleDropdownAt(element, content)
+    {
+      let dropdownElement = element.querySelector(".dropdown-content") || element;
+
       if (dropdownElement.classList.contains("collapsed"))
       {
         dropdownElement.innerHTML = content;

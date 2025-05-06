@@ -1,4 +1,8 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
+import { CorruptionMessageModel } from "../model/message/corruption.js";
+import { PayMessageModel } from "../model/message/pay.js";
+import { PsychMessageModel } from "../model/message/psych.js";
+import { XPMessageModel } from "../model/message/xp.js";
 import ChatWFRP from "./chat-wfrp4e.js";
 
 
@@ -679,7 +683,7 @@ export default class WFRP_Utility {
   static handlePayClick(event, target) {
     let payString = target.dataset.pay;
     if (game.user.isGM)
-      MarketWFRP4e.generatePayCard(payString);
+      PayMessageModel.createPayMessage(payString);
     else
       MarketWFRP4e.handlePlayerPayment({payString});
   }
@@ -693,61 +697,44 @@ export default class WFRP_Utility {
 
   }
 
-  static handleCorruptionClick(event, target) {
-    return this.postCorruptionTest(target.dataset.strength);
+  static handleCorruptionClick(event, target) 
+  {
+    CorruptionMessageModel.createCorruptionMessage(target.dataset.strength);
   }
 
-  static postCorruptionTest(strength, chatData={}) {
-    renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength }).then(html => {
-      ChatMessage.create(foundry.utils.mergeObject({ content: html }, chatData));
-    })
+  static postCorruptionTest(strength, chatData={}) 
+  {
+    console.warn("WFRP4e | WFRP_Utility.postCorruptionTest is deprecated, use CorruptionMessageModel.createCorruptionMessage instead")
+    CorruptionMessageModel.createCorruptionMessage(strength, {}, chatData)
   }
 
 
   static handleFearClick(event, target) {
-    return this.postFear(target.dataset.value, target.dataset.name);
+    return PsychMessageModel.createFearMessage(target.dataset.value, target.dataset.name);
   }
 
   static postFear(value = 0, name = undefined) {
-    if (isNaN(value))
-      value = 0
-    let title = `${game.i18n.localize("CHAT.Fear")} ${value}`
-    if (name)
-      title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { value, name, title }).then(html => {
-      ChatMessage.create({ content: html, speaker: { alias: name } });
-    })
+    console.warn("WFRP4e | WFRP_Utility.postFear is deprecated, use PsychMessageModel.createFearMessage instead")
+    return PsychMessageModel.createFearMessage(value, name);
   }
 
   static handleTerrorClick(event, target) {
-    return this.postTerror(target.dataset.value, target.dataset.name);
+    return PsychMessageModel.createTerrorMessage(target.dataset.value, target.dataset.name);
   }
 
   static handleExpClick(event, target) {
-    return this.postExp(target.dataset.amount, target.dataset.reason);
+    return XPMessageModel.handleXPCommand(target.dataset.amount, target.dataset.reason);
   }
 
   static postTerror(value = 1, name = undefined) {
-    if (isNaN(value))
-      value = 1
-    let title = `${game.i18n.localize("CHAT.Terror")} ${value}`
-    if (name)
-      title += ` - ${name}`
-    renderTemplate("systems/wfrp4e/templates/chat/terror.hbs", { value, name, title }).then(html => {
-      ChatMessage.create({ content: html, speaker: { alias: name } });
-    })
+    console.warn("WFRP4e | WFRP_Utility.postTerror is deprecated, use PsychMessageModel.createTerrorMessage instead")
+    return PsychMessageModel.createTerrorMessage(value, name);
   }
 
 
   static postExp(amount, reason = undefined) {
-    if (isNaN(amount))
-      return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
-
-    let title = `${game.i18n.localize("CHAT.Experience")}`
-
-    renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { title, amount, reason }).then(html => {
-      ChatMessage.create({ content: html });
-    })
+    console.warn("WFRP4e | WFRP_Utility.postExp is deprecated, use XPMessageModel.handleXpCommand instead")
+    return XPMessageModel.handleXPCommand(amount, reason);
   }
 
 

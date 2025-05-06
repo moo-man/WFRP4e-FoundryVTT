@@ -486,25 +486,14 @@ export class StandardActorModel extends BaseActorModel {
     // If not a character, ask the user whether they want to add basic skills / money
     else
     {
-        return Dialog.wait({
-          title: game.i18n.localize("ACTOR.BasicSkillsTitle"),
-          content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`,
-          buttons: {
-            yes: {
-              label: game.i18n.localize("Yes"),
-              callback: async dlg => {
-                return basicSkills.concat(moneyItems);
-              }
-            },
-            no: {
-              label: game.i18n.localize("No"),
-              callback: async dlg => {
-                return []
-              }
-            },
-          },
-          default: 'yes'
-        })
+        if (await foundry.applications.api.DialogV2.confirm({window : {title: game.i18n.localize("ACTOR.BasicSkillsTitle")}, content: `<p>${game.i18n.localize("ACTOR.BasicSkillsPrompt")}</p>`}))
+        {
+            return basicSkills.concat(moneyItems);
+        }
+        else 
+        {
+            return []
+        }
     }
   }
 

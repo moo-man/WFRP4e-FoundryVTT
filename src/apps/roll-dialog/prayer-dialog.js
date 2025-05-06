@@ -41,6 +41,7 @@ export default class PrayerDialog extends SkillDialog {
         
         context.title = context.title || game.i18n.localize("PrayerTest") + " - " + prayer.name;
         context.title += context.appendTitle || "";
+        delete context.appendTitle;
         
         let dialogData = await super.setupData(skill, actor, context, options);
         let data = dialogData.data;

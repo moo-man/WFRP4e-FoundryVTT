@@ -47,6 +47,7 @@ export class BaseActorModel extends BaseWarhammerActorModel {
         if (!data.prototypeToken)
             foundry.utils.mergeObject(preCreateData,
                 {
+                    "prototypeToken.lockRotation": true,
                     "prototypeToken.bar1": { "attribute": "status.wounds" },                 // Default Bar 1 to Wounds
                     "prototypeToken.bar2": { "attribute": "status.advantage" },               // Default Bar 2 to Advantage
                     "prototypeToken.displayName": defaultToken?.displayName || CONST.TOKEN_DISPLAY_MODES.OWNER_HOVER,    // Default display name to be on owner hover

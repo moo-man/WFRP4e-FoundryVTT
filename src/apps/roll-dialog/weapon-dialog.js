@@ -48,6 +48,7 @@ export default class WeaponDialog extends AttackDialog {
       
       context.title = context.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
       context.title += context.appendTitle || "";
+      delete context.appendTitle;
       
       let dialogData;
       if (skill)

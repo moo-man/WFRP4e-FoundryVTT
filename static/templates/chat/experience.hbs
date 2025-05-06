@@ -1,7 +1,11 @@
 <div>
-    <h3><b>{{title}} - {{amount}}</b></h3>
-    <p>{{reason}}</p>
+    <div class="xp-amount">
+        {{amount}} XP
+    </div>
+
+    {{#if reason}}
+    <p style="text-align:center; margin-top: 0px;">{{reason}}</p>
+    {{/if}}
 </div>
-<span class="chat-card-button-area">
-    <a class='chat-card-button experience-button' data-amount="{{amount}}" data-reason="{{reason}}">{{localize "CHAT.Receive"}}</a>
-</span>
+
+<a class='chat-button' data-action='receive'>{{localize "CHAT.Receive"}}</a>

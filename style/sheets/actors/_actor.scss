@@ -8,6 +8,8 @@
     --characteristic-total : transparent;
     --characteristic-border : var(--color-cool-3);
     --property-icon : var(--color-cool-3);
+    --tag-border: var(--color-cool-3);
+    --tag-bg: transparent;
     
     section.tab {
         overflow-y: auto
@@ -220,6 +222,33 @@
             &.toughness {
                 background: radial-gradient(circle, rgba(221,221,221,0) 0%, rgba(27,143,35,1) 100%);
             }
+        }
+    }
+    .dropdown-content {
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+
+            .tag {
+                text-align: center;
+                border-radius: 5px;
+                border: 1px solid var(--tag-border);
+                background: var(--tag-bg);
+                padding: 0px 0.2rem;
+            }
+        }
+    }
+
+    .group-actions.expanded {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 0.5rem;
+
+        .group-action {
+            width: 100%;
+
         }
     }
 }

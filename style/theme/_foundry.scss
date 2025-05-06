@@ -147,7 +147,7 @@
 
         button {
             span {
-                height: 100%;
+                // height: 100%;
             }
         }
     }
@@ -263,6 +263,16 @@ body:not(.theme-light):not(.no-theme) {
 body:not(.no-theme) {
     background: url(./ui/backgrounds/background.webp) repeat;
 
+    #menu {
+        border: 1px solid transparent;
+        border-image: url(./ui/borders/menu-border.webp) 21 repeat;
+        border-image-slice: 78 4 81 4;
+        border-image-width: 80px 6px 80px 6px;
+        border-image-outset: 76px 0px 76px 0px;
+        border-radius: 0px;
+        box-shadow: 3px 4px 11px #000;
+    }
+
     .combat-sidebar {
 
         .advantage-groups {
@@ -341,15 +351,6 @@ body:not(.no-theme) {
             }
         }
 
-        #menu {
-            border: 1px solid transparent;
-            border-image: url(./ui/borders/menu-border.webp) 21 repeat;
-            border-image-slice: 78 4 81 4;
-            border-image-width: 80px 6px 80px 6px;
-            border-image-outset: 76px 0px 76px 0px;
-            border-radius: 0px;
-            box-shadow: 3px 4px 11px #000;
-        }
     }
 
 

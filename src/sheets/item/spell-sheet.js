@@ -19,15 +19,36 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
-      if (game.wfrp4e.config.magicLores[this.item.lore.value]) 
+      if (game.wfrp4e.config.magicLores[this.document.system.lore.value]) 
       {
-        context.loreValue = game.wfrp4e.config.magicLores[this.item.lore.value]
+        context.loreValue = game.wfrp4e.config.magicLores[this.document.system.lore.value]
       }
       else 
       {
-        context.loreValue = this.item.lore.value;
+        context.loreValue = this.document.system.lore.value;
       }
     return context;
+  }
+
+  
+  _addEventListeners()
+  {    
+    super._addEventListeners();
+    this.element.querySelector("[data-action='editLore']")?.addEventListener("change", this.constructor._onEditLore.bind(this));
+  }
+
+  static _onEditLore(ev)
+  {
+    let lore = ev.target.value;
+    let key = warhammer.utility.findKey(lore, game.wfrp4e.config.magicLores)
+    if (key)
+    {
+      this.document.update({"system.lore.value" : key})
+    }
+    else 
+    {
+      this.document.update({"system.lore.value" : lore})
+    }
   }
 
 }
