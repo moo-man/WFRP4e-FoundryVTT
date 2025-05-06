@@ -543,8 +543,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 
   async _handleEnrichment() {
     let enrichment = {}
-    enrichment["system.details.biography.value"] = await TextEditor.enrichHTML(this.actor.system.details.biography.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
-    enrichment["system.details.gmnotes.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmnotes.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
+    enrichment["system.details.biography.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.biography.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
+    enrichment["system.details.gmnotes.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.gmnotes.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
 
     return expandObject(enrichment)
   }
@@ -964,7 +964,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         // Remove sorted container
         containers = containers.filter(i => i.id != container.id);
 
-      let sorted = SortingHelpers.performIntegerSort(container, {target, siblings: containers});
+      let sorted = foundry.utils.SortingHelpers.performIntegerSort(container, {target, siblings: containers});
       this.actor.updateEmbeddedDocuments("Item", sorted.map(s => 
       {
           return foundry.utils.mergeObject({

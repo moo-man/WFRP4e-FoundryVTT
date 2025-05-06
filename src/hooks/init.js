@@ -469,7 +469,7 @@ export default function() {
     });
 
     // Pre-load templates
-    loadTemplates([
+    foundry.applications.handlebars.loadTemplates([
       "systems/wfrp4e/templates/actors/character/character-main.hbs",
       "systems/wfrp4e/templates/actors/actor-combat.hbs",
       "systems/wfrp4e/templates/actors/actor-effects.hbs",
@@ -503,7 +503,7 @@ export default function() {
       "systems/wfrp4e/templates/items/item-effects.hbs",
     ]);
 
-    loadTemplates({            
+    foundry.applications.handlebars.loadTemplates({
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
       aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
@@ -514,6 +514,8 @@ export default function() {
       vehicleArmour: "systems/wfrp4e/templates/sheets/partials/vehicle-armour.hbs",
       itemProperties: "systems/wfrp4e/templates/sheets/partials/item-properties.hbs",
       extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
+      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs',
+      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
     });
 
     // Load name construction from files
@@ -558,10 +560,5 @@ export default function() {
     CONFIG.Token.movement.actions.fly.canSelect = (token) => token?.actor?.system.canFly;
     CONFIG.Token.movement.actions.swim.canSelect = (token) => token?.actor?.system.canSwim;
     CONFIG.Token.rulerClass = TokenRulerWFRP;
-
-    loadTemplates({
-      aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs',
-      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
-    });
   });
 }

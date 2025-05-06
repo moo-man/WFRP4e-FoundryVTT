@@ -880,7 +880,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
     ChatMessage.applyRollMode(messageData, messageData.rollMode)
 
-    let html = await renderTemplate(messageData.template, templateData)
+    let html = await foundry.applications.handlebars.renderTemplate(messageData.template, templateData)
 
     if (newMessage || !this.message) {
       // If manual chat cards, convert elements to blank inputs
@@ -1151,7 +1151,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
       if (breakdown.modifier)
       {
-        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${HandlebarsHelpers.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
+        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${applications.handlebars.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
       }
 
       // No need to show SL value unless it's boosted by slBonus or successBonus
@@ -1194,7 +1194,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
       if (breakdown.modifier)
       {
-        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${HandlebarsHelpers.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
+        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${applications.handlebars.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
       }
 
 
@@ -1215,7 +1215,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
       for(let source of breakdown.damage.other)
       {
-        damageBreakdown += `<p><strong>${source.label}</strong>: ${HandlebarsHelpers.numberFormat(source.value, {hash: {sign : true}})}`
+        damageBreakdown += `<p><strong>${source.label}</strong>: ${applications.handlebars.numberFormat(source.value, {hash: {sign : true}})}`
       }
 
       return {test : testBreakdown, damage : damageBreakdown};

@@ -360,7 +360,7 @@ export default class WFRP_Utility {
       chatOptions = {
         user: game.user.id,
         rollMode: game.settings.get("core", "rollMode"),
-        content: await TextEditor.enrichHTML(content, {async: true})
+        content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {async: true})
       };
       chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
       ChatMessage.create(chatOptions);
@@ -388,7 +388,7 @@ export default class WFRP_Utility {
     let chatOptions = {
       user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
-      content: await TextEditor.enrichHTML(propertyDescription, {async: true})
+      content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(propertyDescription, {async: true})
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
     if (chatOptions.rollMode === "blindroll") chatOptions["blind"] = true;
@@ -697,12 +697,12 @@ export default class WFRP_Utility {
 
   }
 
-  static handleCorruptionClick(event, target) 
+  static handleCorruptionClick(event, target)
   {
     CorruptionMessageModel.createCorruptionMessage(target.dataset.strength);
   }
 
-  static postCorruptionTest(strength, chatData={}) 
+  static postCorruptionTest(strength, chatData={})
   {
     console.warn("WFRP4e | WFRP_Utility.postCorruptionTest is deprecated, use CorruptionMessageModel.createCorruptionMessage instead")
     CorruptionMessageModel.createCorruptionMessage(strength, {}, chatData)

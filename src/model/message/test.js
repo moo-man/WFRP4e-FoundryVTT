@@ -29,7 +29,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
 
       let path = token.hidden ? "systems/wfrp4e/tokens/unknown.png" : token.texture.src;
 
-      if (VideoHelper.hasVideoExtension(path))
+      if (foundry.helpers.media.VideoHelper.hasVideoExtension(path))
       {
         path = await game.video.createThumbnail(path, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
       }

@@ -1,4 +1,3 @@
-import WFRP_Utility from "../system/utility-wfrp4e.js";
 import passengerRender from "../system/passengerRender.js"
 
 export default function() {
@@ -151,7 +150,7 @@ export default function() {
         button.classList.add("active");
       }
       button.innerHTML = `<i class="fa-solid fa-user-slash"></i>`
- 
+
       button.dataset.tooltip = "WFRP4E.TogglePassengers"
 
       button.addEventListener("click", (event => {

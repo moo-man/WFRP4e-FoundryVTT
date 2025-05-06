@@ -77,7 +77,7 @@ export class TrappingStage extends ChargenStage {
 
   activateListeners(html) {
     super.activateListeners(html);
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop.implementation({
       dropSelector: '.chargen-content',
       permissions: { drop: () => true },
       callbacks: { drop: this._onDrop.bind(this) },
