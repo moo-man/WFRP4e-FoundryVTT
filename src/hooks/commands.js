@@ -62,8 +62,7 @@ export default function () {
                 let name =  game.wfrp4e.config.conditions[closest];
 
                 // Create message and return false to not display user input of `/cond`
-                msg.content = `<p><strong>${name}</strong></p>${description}`;
-                ChatMessage.create(msg);
+                ChatMessage.create({content : `<p><strong>${name}</strong></p>${description}`});
         }
       },
       prop : {
@@ -78,8 +77,8 @@ export default function () {
           let description = game.wfrp4e.config.qualityDescriptions[closest] || game.wfrp4e.config.flawDescriptions[closest];
           let name =  allProperties[closest];
     
-          msg.content = `<p><strong>${name}</strong></p>${description}`;
-          ChatMessage.create(msg);
+          ChatMessage.create({content : `<p><strong>${name}</strong></p>${description}`});
+          
         }
       },
       name : {

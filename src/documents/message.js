@@ -37,8 +37,9 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
   // Optionally provide a set of conditions
   static addEffectButtons(content, conditions = [])
   {
+    content = content?.toString()
     // Don't add buttons if already added, or from posted items
-    if (content.includes("apply-conditions") || content.includes("post-item"))
+    if (content?.includes("apply-conditions") || content?.includes("post-item"))
     {
       return content;
     }

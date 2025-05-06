@@ -40,18 +40,18 @@ export default function() {
 
 
     game.settings.registerMenu("wfrp4e", "homebrewConfig", {
-      name: "WFRP4e House Rules",
-      label: "Configure Homebrew",
-      hint: "Settings for common homebrew/house rules",
+      name: "SETTINGS.Menu.HouseRules",
+      label: "SETTINGS.Menu.HouseRulesLabel",
+      hint: "SETTINGS.Menu.HouseRulesHint",
       icon: "fa-solid fa-gears",
       type: HomebrewConfig,
       restricted: true
   })
 
   game.settings.registerMenu("wfrp4e", "tableSettings", {
-    name: "WFRP4e Table Settings",
-    label: "Configure Table Settings",
-    hint: "Configure which tables to roll on when multiple of the same key exist.",
+    name: "SETTINGS.Menu.TableSettings",
+    label: "SETTINGS.Menu.TableSettingsLabel",
+    hint: "SETTINGS.Menu.TableSettingsHint",
     icon: "fa-solid fa-list",
     type: TableSettings,
     restricted: true
