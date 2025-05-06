@@ -71,8 +71,8 @@ export default class ActorSheetWFRP4eVehicle extends BaseWFRP4eActorSheet
   async _handleEnrichment() 
   {
     let enrichment = {}
-    enrichment["system.details.description.value"] = await TextEditor.enrichHTML(this.actor.system.details.description.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
-    enrichment["system.details.gmdescription.value"] = await TextEditor.enrichHTML(this.actor.system.details.gmdescription.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
+    enrichment["system.details.description.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.description.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
+    enrichment["system.details.gmdescription.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.gmdescription.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
 
     return expandObject(enrichment)
   }

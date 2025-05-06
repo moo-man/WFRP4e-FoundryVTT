@@ -181,7 +181,7 @@ export default class TradeManager
         let cargoData = message.getFlag("wfrp4e", "cargoData")
 
         cargoData.modifier = 0;
-        let html = await renderTemplate('systems/wfrp4e/templates/apps/trade/trade-cargo.hbs', cargoData);
+        let html = await foundry.applications.handlebars.renderTemplate('systems/wfrp4e/templates/apps/trade/trade-cargo.hbs', cargoData);
         new CargoDialog(html, cargoData).render(true);
       }
    

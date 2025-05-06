@@ -1,8 +1,7 @@
-import BugReportFormWfrp4e from "../apps/bug-report.js";
 import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 
 export default function() {
-  Hooks.on("renderActorDirectory", async (app, html) => 
+  Hooks.on("renderActorDirectory", async (app, html) =>
   {
       let button = document.createElement("button");
       button.textContent = game.i18n.localize("BUTTON.CharacterCreation");

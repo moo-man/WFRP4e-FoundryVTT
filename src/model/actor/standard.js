@@ -67,6 +67,50 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
+    /**
+     * @return {ItemWFRP4e|undefined}
+     */
+    get canFly() {
+        return this.parent.has(game.i18n.localize("NAME.Flight"));
+    }
+
+    /**
+     * @return {boolean}
+     */
+    get canSwim() {
+        return (this.parent.has(game.i18n.localize("NAME.Swim"), "skill") || this.parent.has(game.i18n.localize("NAME.Amphibious")));
+    }
+
+    /**
+     * @return {boolean}
+     */
+    get canCrawl() {
+        return true;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    get canClimb() {
+        return true;
+    }
+
+    /**
+     * @return {{walk: number[], swim: number[], climb: number[], crawl: number, fly: number}}
+     */
+    get movementDistance() {
+        const value = this.details.move.value;
+        const walk = [this.details.move.walk, this.details.move.run];
+
+        return {
+            walk,
+            swim: this.parent.has(game.i18n.localize("NAME.Amphibious")) ? walk : walk.map(v => v * 0.5),
+            climb: walk.map(v => v * 0.5),
+            crawl: value * 0.5,
+            fly: this.canFly?.system.specification.value || 0,
+        }
+    }
+
     itemIsAllowed(item) {
         let allowed = super.itemIsAllowed(item);
 

@@ -77,7 +77,7 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
   async _preFirstRender(_context, _options) {
     await super._preFirstRender(_context, _options);
     if (!WFRP4eThemeConfig.#localized) {
-      Localization.localizeDataModel({ schema: WFRP4eThemeConfig.#schema }, {
+      foundry.helpers.Localization.localizeDataModel({ schema: WFRP4eThemeConfig.#schema }, {
         prefixes: ["WH.Theme"],
           prefixPath: "wfrp4e.theme."
       });
@@ -101,7 +101,7 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
   }
 
   _onChangeForm(_formConfig, _event) {
-    const formData = new FormDataExtended(this.form);
+    const formData = new foundry.applications.ux.FormDataExtended(this.form);
     this.#setting = WFRP4eThemeConfig.#cleanFormData(formData);
     this.setThemeOnActiveSheets();
     this.render();

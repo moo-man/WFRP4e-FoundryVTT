@@ -330,7 +330,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
   activateListeners(html) {
     super.activateListeners(html);
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop.implementation({
       dragSelector: '.drag-skill',
       dropSelector: '.drag-area',
       permissions: { dragstart: () => true, drop: () => true },

@@ -80,7 +80,7 @@ let fields = foundry.data.fields;
         data.properties = [];
         data.other = [];
         data.description.value = data.description.value || "";
-        data.description.value = await TextEditor.enrichHTML(data.description.value, htmlOptions);
+        data.description.value = await foundry.applications.ux.TextEditor.implementation.enrichHTML(data.description.value, htmlOptions);
         data.manualScripts = this.parent.manualScripts;
         data.independentEffects = this.parent.testIndependentEffects
         return data;
