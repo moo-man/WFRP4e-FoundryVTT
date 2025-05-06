@@ -16,23 +16,8 @@ let choice = await ItemDialog.create(index, 1, "Choose a Lore")
 let text;
 if (!choice[0])
 {
-    let custom = await Dialog.wait({
-        title : "Enter Lore",
-        content : "<input type='text'>",
-        buttons : {
-            confirm : {
-                label : game.i18n.localize("Confirm"),
-                callback : (dlg) => {
-                    return dlg.find("input")[0].value
-                }
-            }
-        },
-        default : "confirm",
-        close : () => {
-            return ""
-        }
-    })   
-    text = custom || ""
+    let custom = await ValueDialog.create({text : "Enter Lore", title : this.effect.name});
+    text = custom || "";
 }
 else 
 {

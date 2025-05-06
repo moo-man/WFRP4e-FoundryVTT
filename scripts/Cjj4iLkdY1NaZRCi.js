@@ -1,23 +1,6 @@
 if ((args.opposedTest.attackerTest.item && args.opposedTest.attackerTest.item.isMelee) || (args.opposedTest.attackerTest.item && !args.opposedTest.attackerTest.item.name.includes("Ranged")))
 {
-    let choice = await Dialog.wait({
-        title: this.effect.name,
-        content: `<p>Apply damage with <strong>${this.effect.name}</strong> to attacker?`,
-        buttons: {
-            yes: {
-                label: "Yes",
-                callback: () => {
-                    return true;
-                }
-            },
-            no: {
-                label: "No",
-                callback: () => {
-                    return false;
-                }
-            }
-        }
-    })
+    let choice = await foundry.applications.api.DialogV2.confirm({window : {title : this.effect.name}, content : `<p>Apply damage with <strong>${this.effect.name}</strong> to attacker?`})
 
     if (choice)
     {

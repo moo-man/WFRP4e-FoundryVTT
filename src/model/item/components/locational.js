@@ -95,23 +95,25 @@ export class LocationalItemModel extends BaseItemModel {
     }
 
     async promptLocation() {
-        let location = await Dialog.wait({
-            title: game.i18n.localize("Location"),
+        let location = await foundry.applications.api.DialogV2.wait({
+            window : {title: game.i18n.localize("Location")},
             content: "Choose Location",
-            buttons: {
-                l: {
+            buttons: [
+                {
+                    action : "left",
                     label: `${game.i18n.localize("Left")} ${this.location.value}`,
                     callback: () => {
                         return "l";
                     }
                 },
-                r: {
+                {
+                    action : "right",
                     label: `${game.i18n.localize("Right")} ${this.location.value}`,
                     callback: () => {
                         return "r";
                     }
                 }
-            }
+            ]
         })
 
 

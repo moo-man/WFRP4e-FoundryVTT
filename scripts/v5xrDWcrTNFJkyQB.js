@@ -1,48 +1,44 @@
-let choice = await Dialog.wait({
-    title : "Option",
+let addOption = await foundry.applications.api.DialogV2.confirm({
+    window : {title : "Option"},
     content : 
-    `<p>
+    `
     Add Option?
+    <p>
+    Ranged (Bow) +10 and a Longbow with 12 Arrows
     </p>
-    <ol>
-    <li>Ranged (Bow) +10 and a Longbow with 12 Arrows</li>
-    </ol> 
     `,
-    buttons : {
-        1 : {
-            label : "Yes",
-            callback : () => {
-                return [
-                    {
-                        type : "skill",
-                        name : "Ranged (Bow)",
-                        diff : {
-                            system : {
-                                advances : {
-                                    value : 10
-                                }
-                            }
-                        }
-                    },
-                    {
-                        type : "weapon",
-                        name : "Longbow",
-                    },
-                    {
-                        type : "ammunition",
-                        name : "Arrow",
+})
+
+let choice = []
+
+if (addOption)
+{
+    choice = [
+        {
+            type : "skill",
+            name : "Ranged (Bow)",
+            diff : {
+                system : {
+                    advances : {
+                        value : 10
                     }
-                ];
+                }
             }
         },
-        2 : {
-            label : "No",
-            callback : () => {
-                return [];
-            }
+        {
+            type : "weapon",
+            name : "Longbow",
+        },
+        {
+            type : "ammunition",
+            name : "Arrow",
         }
-    }
-})
+    ];
+}
+
+
+
+
 
 let updateObj = this.actor.toObject();
 let items = []

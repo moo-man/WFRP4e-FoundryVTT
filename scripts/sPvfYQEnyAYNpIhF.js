@@ -1,5 +1,5 @@
-let shouldDamage = await Dialog.confirm({
-  title: this.effect.name + " - " + args.actor.name
+let shouldDamage = await foundry.applications.api.DialogV2.confirm({
+  window : {title: this.effect.name + " - " + args.actor.name},
   content: "Are you humanoid creature who have not made a sacrifice to Rhya (or another diety of nature or powerful nature spirit to whom the cult of Rhya are well disposed, such as Isha or Taal) since the last spring equinox?"
 });
 

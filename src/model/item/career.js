@@ -197,7 +197,7 @@ export class CareerModel extends BaseItemModel
 
     async _promptCareerAdvance()
     {
-        let advance = await Dialog.confirm({ content: game.i18n.localize("CAREERAdvHint"), title: game.i18n.localize("CAREERAdv")})
+        let advance = await foundry.applications.api.DialogV2.confirm({yes : {default: true}, content: game.i18n.localize("CAREERAdvHint"), window : {title: game.i18n.localize("CAREERAdv")}})
 
         if (advance)
         {
@@ -221,7 +221,7 @@ export class CareerModel extends BaseItemModel
         }
 
         // Ask the user to confirm the change
-        let changeCareer = skipPrompt || await Dialog.confirm({title: game.i18n.localize("SHEET.CareerSkill"), content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`})
+        let changeCareer = skipPrompt || await foundry.applications.api.DialogV2.confirm({yes : {default: true}, window : {title: game.i18n.localize("SHEET.CareerSkill")}, content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`})
 
         if (changeCareer)
         {
@@ -247,7 +247,7 @@ export class CareerModel extends BaseItemModel
                 return;
             }
 
-            if (await Dialog.confirm({title : game.i18n.localize("DIALOG.LinkCareer"), content : `<p>${game.i18n.format("DIALOG.LinkCareerContent", {new : this.parent.name, old : previous.name})}</p>`}))
+            if (await foundry.applications.api.DialogV2.confirm({yes : {default: true}, window : {title : game.i18n.localize("DIALOG.LinkCareer")}, content : `<p>${game.i18n.format("DIALOG.LinkCareerContent", {new : this.parent.name, old : previous.name})}</p>`}))
             {
                 let collectedSkills = previous.system.skills.concat(this.skills.slice(previous.system.skills.length));
 

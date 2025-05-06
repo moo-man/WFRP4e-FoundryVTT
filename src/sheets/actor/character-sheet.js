@@ -92,7 +92,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       }
       else {
         try {
-          if (await Dialog.confirm({ title: game.i18n.localize("SHEET.AddSkillTitle"), content: `<p>${game.i18n.localize("SHEET.AddSkillPrompt")}</p>`}))
+          if (await foundry.applications.api.DialogV2.confirm({ window : {title: game.i18n.localize("SHEET.AddSkillTitle")}, content: `<p>${game.i18n.localize("SHEET.AddSkillPrompt")}</p>`}))
           {
             this.actor.createEmbeddedDocuments("Item", [skill], {career : true});
           }
@@ -117,15 +117,16 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
   
       else {
         try {
-          new Dialog(
+          new foundry.applications.api.DialogV2(
             {
-              title: game.i18n.localize("SHEET.AddTalentTitle"),
+              window : {title: game.i18n.localize("SHEET.AddTalentTitle")},
               content: `<p>${game.i18n.localize("SHEET.AddTalentPrompt")}</p>`,
               buttons:
-              {
-                yes:
+              [
                 {
+                  action: "yes",
                   label: game.i18n.localize("Yes"),
+                  default: true,
                   callback: dlg => {
                     try {
                       Advancement.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
@@ -143,18 +144,17 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
                     }
                   }
                 },
-                yesNoExp:
                 {
+                  action: "yesNoExp",
                   label: game.i18n.localize("Free"),
                   callback: dlg => { this.actor.createEmbeddedDocuments("Item", [talent.toObject()]); }
                 },
-                cancel:
                 {
+                  action: "cancel",
                   label: game.i18n.localize("Cancel"),
                   callback: dlg => { return }
                 },
-              },
-              default: 'yes'
+              ],
             }).render(true);
         }
         catch
@@ -350,14 +350,16 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         let cost = (advances) * 100
         spent = this.actor.details.experience.spent - cost
 
-        new Dialog(
+        new foundry.applications.api.DialogV2(
           {
-            title: game.i18n.localize("SHEET.RefundXPTitle"),
+            window : {title: game.i18n.localize("SHEET.RefundXPTitle")},
             content: `<p>${game.i18n.localize("SHEET.RefundXPPrompt")} (${(advances) * 100})</p>`,
             buttons:
             {
               yes:
               {
+                action : "yes",
+                default: true,
                 label: game.i18n.localize("Yes"),
                 callback: async dlg => {
                   let expLog = this.actor.system.addToExpLog(-1 * cost, talent.name, spent)
@@ -368,6 +370,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
               },
               no:
               {
+                action : "no",
                 label: game.i18n.localize("No"),
                 callback: async dlg => {
                   await talent.delete();
@@ -375,11 +378,11 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
               },
               cancel:
               {
+                action : "cancel",
                 label: game.i18n.localize("Cancel"),
                 callback: dlg => { return }
               }
             },
-            default: 'yes'
           }).render(true);
       }
 

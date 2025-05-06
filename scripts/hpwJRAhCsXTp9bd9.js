@@ -39,8 +39,8 @@ let choice3 = [
     }
 ]
 
-let choice = await Dialog.wait({
-        title : "Choice",
+let choice = await foundry.applications.api.DialogV2.wait({
+        window : {title : "Choice"},
         content : 
         `<p>
         Select your choice
@@ -51,26 +51,29 @@ let choice = await Dialog.wait({
         <li>Melee (Two-Handed)</li>
         </ol> 
         `,
-        buttons : {
-            1 : {
+        buttons : [
+            {
                 label : "Basic",
+                action : "basic",
                 callback : () => {
                     return choice1
                 }
             },
-            2 : {
+            {
                 label : "Polearm",
+                action : "polearm",
                 callback : () => {
                     return choice2
                 }
             },
-            3 : {
+            {
                 label : "Two-Handed",
+                action : "two-handed",
                 callback : () => {
                     return choice3
                 }
             }
-    }
+    ]
 })
 
 let updateObj = this.actor.toObject();

@@ -85,7 +85,7 @@ for (let trapping of trappings)
     }
 }
 
-let ride = await Dialog.confirm({title : "Skill", content : "Add Chaos Steed and +20 Ride (Horse)?"})
+let ride = await foundry.applications.api.DialogV2.confirm({window : {title : "Skill"}, content : "Add Chaos Steed and +20 Ride (Horse)?"})
 
 if (ride)
 {

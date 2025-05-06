@@ -414,8 +414,8 @@ export class SkillsTalentsStage extends ChargenStage {
 
   async checkTalentReplacement(talent){
     if (this.context.talentReplacement[talent]) {
-      let choice = await Dialog.confirm({
-        title: game.i18n.localize("CHARGEN.SkillsTalents.ReplaceTalentDialog.Title"),
+      let choice = await foundry.applications.api.DialogV2.confirm.confirm({
+        window : {title: game.i18n.localize("CHARGEN.SkillsTalents.ReplaceTalentDialog.Title")},
         content: game.i18n.format("CHARGEN.SkillsTalents.ReplaceTalentDialog.Content", {talent, replacement: this.context.talentReplacement[talent]})
       });
 

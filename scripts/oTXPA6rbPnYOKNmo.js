@@ -98,7 +98,7 @@ let filters = [
 
 items = items.concat(await ItemDialog.createFromFilters(filters, 1, {text: "Choose an appropriate Polearm or Two-Handed Weapon"}))
 
-let ride = await Dialog.confirm({title : "Skill", content : "Add Chaos Steed and +20 Ride (Horse)?"})
+let ride = await foundry.applications.api.DialogV2.confirm({window : {title : "Skill"}, content : "Add Chaos Steed and +20 Ride (Horse)?"})
 
 if (ride)
 {

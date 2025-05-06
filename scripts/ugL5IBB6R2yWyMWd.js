@@ -1,6 +1,6 @@
 if (args.totalWoundLoss > 0)
 {
-    let apply = await Dialog.confirm({title : this.effect.name, content : `<p>Appy ${this.effect.name} Damage? Attacker must have used bare hands or a melee weapon made of metal.`})
+    let apply = await foundry.applications.api.DialogV2.confirm({window : {title : this.effect.name}, content : `<p>Appy ${this.effect.name} Damage? Attacker must have used bare hands or a melee weapon made of metal.`})
     if (apply)
     {
             

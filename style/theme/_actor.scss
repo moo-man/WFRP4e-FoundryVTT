@@ -116,6 +116,7 @@
         }
 
         .item-property-row {
+            .twohanded-property,
             a[data-action='toggleProperty'],
             .property-icon {
                 border: 1px solid var(--color-faded);

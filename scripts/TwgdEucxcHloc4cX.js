@@ -57,42 +57,43 @@ let choice3 = [
     },
 ]
 
-let choice = await new Promise((resolve, reject) => {
-    new Dialog({
-        title : "Choice",
-        content : 
-        `<p>
-        Select your choice
-        </p>
-        <ol>
-        <li>Mail</li>
-        <li>Mail & Leather</li>
-        <li>Plate</li>
-        </ol> 
-        `,
-        buttons : {
-            1 : {
-                label : "Mail",
-                callback : () => {
-                    resolve(choice1)
-                }
-            },
-            2 : {
-                label : "Mail & Leather",
-                callback : () => {
-                    resolve(choice2)
-                }
-            },
-            3 : {
-                label : "Plate",
-                callback : () => {
-                    resolve(choice3)
-                }
+
+let choice = await foundry.applications.api.DialogV2.wait({
+    window : {title : "Choice"},
+    content : 
+    `<p>
+    Select your choice
+    </p>
+    <ol>
+    <li>Mail</li>
+    <li>Mail & Leather</li>
+    <li>Plate</li>
+    </ol> 
+    `,
+    buttons : [
+        {
+            action : 1,
+            label : "Mail",
+            callback : () => {
+                return choice1
+            }
+        },
+        {
+            action : 2,
+            label : "Mail & Leather",
+            callback : () => {
+                return choice2
+            }
+        },
+        {
+            action : 3,
+            label : "Plate",
+            callback : () => {
+                return choice3
             }
         }
-    }).render(true)
-}) 
-
+    ]
+})
 let updateObj = this.actor.toObject();
 let items = []
 for (let c of choice)

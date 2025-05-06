@@ -1,19 +1,7 @@
-let useWard = await Dialog.wait({
-	title : this.effect.name,
+let useWard = await foundry.applications.api.DialogV2.confirm({
 	content : `<p>Use Ward provided by <strong>${this.effect.name}</strong>?`,
-	buttons : {
-		yes : {
-			label : "Yes",
-			callback: () => {
-				return true;
-			}
-		},
-		no : {
-			label: "No",
-			callback: () => {
-				return false;
-			}
-		}
+	window : {
+		title : this.effect.name,
 	}
 })
 

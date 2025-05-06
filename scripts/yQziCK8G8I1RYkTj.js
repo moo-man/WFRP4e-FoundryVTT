@@ -1,6 +1,6 @@
 let add;
 if (args.opposedTest?.attackerTest?.weapon?.isRanged && args.opposedTest?.result.hitloc?.value === "head") {
-    add = await Dialog.confirm({title : this.effect.name, content : "Add 1 AP? Bascinet provides 4 AP instead of 3 against missile attacks from the front"})
+    add = await foundry.applications.api.DialogV2.confirm({window : {title : this.effect.name}, content : "Add 1 AP? Bascinet provides 4 AP instead of 3 against missile attacks from the front"})
 }
 
 if (add) {

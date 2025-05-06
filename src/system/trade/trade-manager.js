@@ -39,21 +39,23 @@ export default class TradeManager
 
     async getTradeType()
     {
-        let buttons = {};
+        let buttons = [];
 
         if (this.tradeData.river?.dotr)
         {
-            buttons.river = {
+            buttons.push({
+                action : "river",
                 label : game.i18n.localize("TRADE.River"),
                 callback : () => "river"
-            }
+            })
         }
         if (this.tradeData.maritime.soc)
         {
-            buttons.maritime = {
+            buttons.push({
+                action : "maritime",
                 label : game.i18n.localize("TRADE.Maritime"),
                 callback : () => "maritime"
-            }
+            })
         }
 
         if (foundry.utils.isEmpty(buttons))
@@ -67,8 +69,8 @@ export default class TradeManager
             return Object.keys(buttons)[0];
         }
 
-        return Dialog.wait({
-            title : "Trade",
+        return foundry.applications.api.DialogV2.wait({
+            window : {title : "Trade"},
             content : "Choose the type of Trade",
             buttons
         })
@@ -121,7 +123,7 @@ export default class TradeManager
         }
         else if (type == "maritime")
         {
-            let far = await Dialog.confirm({title : "Distance", content : `Is ${settlementData.name} over 100 miles from ${cargo.system.origin.value}?`});
+            let far = await foundry.applications.api.DialogV2.confirm({window : {title : "Distance"}, content : `Is ${settlementData.name} over 100 miles from ${cargo.system.origin.value}?`});
             tradeGenerator.attemptSellMaritime(cargo, far);
         }
     }    

@@ -1,4 +1,4 @@
-let hasMagazine = await Dialog.confirm({content: "<p>Does the vessel have a magazine or any other kind of store for blackpowder?</p>"});
+let hasMagazine = await foundry.applications.api.DialogV2.confirm({window : {title : this.effect.name}, content: "<p>Does the vessel have a magazine or any other kind of store for blackpowder?</p>"});
 
 if (!hasMagazine) return;
 

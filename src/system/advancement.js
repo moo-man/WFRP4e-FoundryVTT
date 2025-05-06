@@ -155,47 +155,45 @@ export default class Advancement
     })
   }
 
-  static memorizeCostDialog(spell, actor) {
-    return new Promise(resolve => {
-      let xp = this.calculateSpellCost(spell, actor)
-      if (xp) {
-        new Dialog({
-          title: game.i18n.localize("DIALOG.MemorizeSpell"),
+  static async memorizeCostDialog(spell, actor) {
+    let xp = this.calculateSpellCost(spell, actor)
+    if (xp) {
+        return await foundry.applications.api.DialogV2.wait({
+          window : {title: game.i18n.localize("DIALOG.MemorizeSpell")},
           content: `<p>${game.i18n.format("DIALOG.MemorizeSpellContent", { xp })}</p>`,
-          buttons: {
-            ok: {
+          buttons: [
+            {
+              action : "ok",
               label: game.i18n.localize("Ok"),
               callback: () => {
                 let newSpent = actor.details.experience.spent + xp
                 let log = actor.system.addToExpLog(xp, game.i18n.format("LOG.MemorizedSpell", { name: spell.name }), newSpent)
                 actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
-                resolve(true)
               }
             },
-            free: {
+            {
+              action : "free",
               label: game.i18n.localize("Free"),
-              callback: () => { resolve(true) }
+              callback: () => { }
             }
-          },
-          close : () => {resolve(false)}
-        }).render(true)
-      }
-      else resolve(true)
-    })
+          ],
+        })
+    }
   }
 
 
   
-  static miracleGainedDialog(miracle, actor)
+  static async miracleGainedDialog(miracle, actor)
   {
     let xp = 100 * (actor.itemTags["prayer"].filter(p => p.prayerType.value == "miracle").length)
     if (xp) {
-      new Dialog({
-        title: game.i18n.localize("DIALOG.GainPrayer"),
+      return await foundry.applications.api.DialogV2.wait({
+        window : {title: game.i18n.localize("DIALOG.GainPrayer")},
         content: `<p>${game.i18n.format("DIALOG.GainPrayerContent", { xp })}</p>`,
         buttons: {
           ok: {
-            label: game.i18n.localize("Ok"),
+              action : "ok",
+              label: game.i18n.localize("Ok"),
             callback: () => {
               let newSpent = actor.details.experience.spent + xp
               let log = actor.system.addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
@@ -203,7 +201,8 @@ export default class Advancement
             }
           },
           free: {
-            label: game.i18n.localize("Free"),
+              action : "free",
+              label: game.i18n.localize("Free"),
             callback: () => { }
           }
         }

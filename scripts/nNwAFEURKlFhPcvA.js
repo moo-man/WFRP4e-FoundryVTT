@@ -1,1 +1,1 @@
-game.wfrp4e.utility.postCorruptionTest("minor", this.script.getChatData());
+CorruptionMessageModel.createCorruptionMessage("minor", this.script.getChatData());

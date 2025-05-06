@@ -739,19 +739,22 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         return this.actor.setupCast(spell, options)
       }
       else {
-          return Dialog.wait({
-            title: game.i18n.localize("DIALOG.CastOrChannel"),
+          return foundry.applications.api.DialogV2.wait({
+            window : {title: game.i18n.localize("DIALOG.CastOrChannel")},
             content: `<div class="cast-channel-dialog selection"> 
                       <p>${game.i18n.localize("DIALOG.CastChannel")}</p> 
                       </div>`,
-            buttons: {
-              cast: {
+            buttons: [
+              {
+                action : "cast",
+                default: true,
                 label: game.i18n.localize("Cast"),
                 callback: btn => {
                   return this.actor.setupCast(spell, options);
                 }
               },
-              channel: {
+              {
+                action : "channel",
                 label: game.i18n.localize("Channel"),
                 callback: async btn => {
                   return this.actor.setupChannell(spell, options);
@@ -773,8 +776,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
                   // }
                 }
               }
-            },
-            default: 'cast'
+            ],
           });
       }
     }

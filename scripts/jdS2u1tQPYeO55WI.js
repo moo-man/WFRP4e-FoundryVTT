@@ -8,7 +8,7 @@ if (type == "cold")
 
 if (type == "corrosion")
 {
-    let damageItems = await Dialog.confirm({title : this.item.name, content : `<p>Damage all Items carried?</p>`})
+    let damageItems = await foundry.applications.api.DialogV2.confirm({window: {title : this.item.name}, content : `<p>Damage all Items carried?</p>`})
 	if (damageItems)
 	{
 		let msg = ``

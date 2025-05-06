@@ -43,35 +43,15 @@ async function addTrait(c) {
 }
 
 async function dialogChoice() {
-    for (let c of choice1) {
-        await new Dialog({
-            title: "Option",
-            content:
-                `<p>
-            Add Option?
-            </p>
-            <ol>
-            <li>${c.name}</li>
-            </ol> 
-            `,
-            buttons: {
-                1: {
-                    label: "Yes",
-                    callback: () => {
-                        addTrait(c)
-                        c.valid = true;
-                    }
-                },
-                2: {
-                    label: "No",
-                    callback: () => {
-                    }
-                }
-            }
-        }).render(true)
+    for (let c of choice1) 
+    {
+        if (await foundry.applications.api.DialogV2.confirm({window : {title: "Option"}, content:`<p>Add Option?</p><ol><li>${c.name}</li></ol>`}))
+        {
+            addTrait(c)
+            c.valid = true;
+        }
     }
 }
-
 updateObj = this.actor.toObject();
 actor = this.actor
 await dialogChoice();

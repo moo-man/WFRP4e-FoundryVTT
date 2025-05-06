@@ -29,7 +29,7 @@
                         </div>
                         <div class="item-property-row">
                             {{#if this.twohanded.value}}
-                                <div>{{localize "ITEM.TwoHanded"}}</div>
+                            <div class="twohanded-property">{{localize "ITEM.TwoHanded"}}</div>
                             {{else if this.offhand.value}}
                                 <a data-action="toggleProperty" data-path="system.offhand.value"><i class="far fa-check-circle"></i> {{localize "SHEET.Offhand"}}</a>
                             {{else if ../actor.noOffhand}}
