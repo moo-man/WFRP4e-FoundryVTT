@@ -227,24 +227,7 @@ export default class CharGenWfrp4e extends FormApplication {
     let existing = localStorage.getItem("wfrp4e-chargen");
     if (existing)
     {
-      let useExisting = await Dialog.wait({
-        title : game.i18n.localize("CHARGEN.UseExistingData"),
-        content : game.i18n.localize("CHARGEN.UseExistingDataContent"),
-        buttons : {
-          yes : {
-            label : game.i18n.localize("Yes"),
-            callback : () => {
-              return true;
-            }
-          },
-          no : {
-            label : game.i18n.localize("No"),
-            callback : () => {
-              return false
-            }
-          }
-        }
-      })
+      let useExisting = await foundry.applications.api.DialogV2.confirm({title : game.i18n.localize("CHARGEN.UseExistingData"), content : game.i18n.localize("CHARGEN.UseExistingDataContent")})
 
       return new this(useExisting ? JSON.parse(existing) : null).render(true);
     }

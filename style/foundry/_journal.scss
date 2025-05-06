@@ -1,11 +1,22 @@
 .wfrp4e,
 .journal-sheet {
+
+    .toc .level4 .page-title {
+        text-indent: calc(3 * var(--level-indent));
+    }
+
     table.embedded { 
+        background: none;
+        margin-bottom: 0.5rem;
         thead {
             background: rgba(0, 0, 0, 0.1);
             text-shadow: none;
-            th:first-of-type {
+            td:first-of-type {
+                border-left: none;
                 border-right: 1px solid black;
+            }
+            td:last-of-type {
+                border-right: none;
             }
         }
 
@@ -20,6 +31,8 @@
                 border-right: 0px;
             }
             td {
+                border-bottom: 1px solid black;
+                border-right: 1px solid black;
             }
         }
     }

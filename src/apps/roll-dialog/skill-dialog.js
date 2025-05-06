@@ -62,6 +62,7 @@ export default class SkillDialog extends CharacteristicDialog {
 
         context.title = context.title || game.i18n.format("SkillTest", {skill: skill.name});
         context.title += context.appendTitle || "";
+        delete context.appendTitle;
 
         let dialogData = await super.setupData(characteristic, actor, context, options)
         dialogData.fields.characteristic = characteristic;
@@ -159,7 +160,7 @@ export default class SkillDialog extends CharacteristicDialog {
 
     _defaultFields() 
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             characteristic : "ws",
         }, super._defaultFields());
     }

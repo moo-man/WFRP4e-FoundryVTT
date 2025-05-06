@@ -138,7 +138,7 @@ export default class ActorWFRP4e extends WarhammerActor
   async setupSkill(skill, context = {}) {
     if (typeof (skill) === "string") {
       let skillName = skill
-      skill = this.itemTags["skill"].find(sk => sk.name == skill)
+      skill = this.itemTags["skill"].find(sk => sk.name.toLowerCase() == skill.toLowerCase())
       if (!skill)
       {
         // Skill not found, find later and use characteristic
@@ -259,20 +259,20 @@ export default class ActorWFRP4e extends WarhammerActor
     if (item.SL.target <= 0)
       return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
-    options.extended = item.uuid;
-    options.rollMode = defaultRollMode;
-    options.hitLocation = false;
-    options.fields = {difficulty : item.system.difficulty.value || "challenging"}
+    context.extended = item.uuid;
+    context.rollMode = defaultRollMode;
+    context.hitLocation = false;
+    context.fields = {difficulty : item.system.difficulty.value || "challenging"}
 
     let characteristic = warhammer.utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
-      let test = await this.setupCharacteristic(characteristic, options);
+      let test = await this.setupCharacteristic(characteristic, context);
       await test.roll();
     }
     else {
       let skill = this.itemTags["skill"].find(i => i.name == item.test.value)
       if (skill) {
-        let test = await this.setupSkill(skill, options);
+        let test = await this.setupSkill(skill, context);
         await test.roll();
       } 
       else {
@@ -870,37 +870,35 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
 
-  async corruptionDialog(strength) {
-    const test = await Dialog.wait({
-      title: game.i18n.localize("DIALOG.CorruptionTitle"),
-      content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
-      buttons: {
-        endurance: {
-          label: game.i18n.localize("NAME.Endurance"),
-          callback: async () => {
-            let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Endurance"))
-            if (skill)
-              return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
+  async corruptionDialog(strength, skill) {
+    skill = skill?.toLowerCase();
+    if (!["cool", "endurance"].includes(skill))
+    {
 
-            return await this.setupCharacteristic("t", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["t"] }), corruption: strength, skipTargets : true })
-          }
+      skill = await foundry.applications.api.DialogV2.wait({
+        window : {
+          title: game.i18n.localize("DIALOG.CorruptionTitle"),
         },
-        cool: {
-          label: game.i18n.localize("NAME.Cool"),
-          callback: async () => {
-            let skill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Cool"))
-            if (skill)
-              return await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.name }), corruption: strength, skipTargets: true })
+        content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
+        buttons: [
+          {
+            action : "endurance",
+            label: game.i18n.localize("NAME.Endurance")
+          },
+          {
+            action : "cool",
+            label: game.i18n.localize("NAME.Cool")
+          },
+        ]
+      })
+    }
 
-            return await this.setupCharacteristic("wp", { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: game.wfrp4e.config.characteristics["wp"] }), corruption: strength, skipTargets : true })
-          }
-        }
-      }
-    });
-
-    await test.roll();
-
-    return test;
+    if (skill)
+    {
+      let test = await this.setupSkill(skill, { title: game.i18n.format("DIALOG.CorruptionTestTitle", { test: skill.capitalize() }), corruption: strength, skipTargets: true })
+      await test.roll();
+      return test;
+    }
   }
 
 

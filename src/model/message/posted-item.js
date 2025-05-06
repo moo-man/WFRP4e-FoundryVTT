@@ -141,11 +141,11 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     
     let itemData = foundry.utils.mergeObject(item.toObject(), mergeData);
     let content = await this._renderHTMLFromItemData(item, quantity);
-    ChatMessage.create({
+    ChatMessage.create(ChatMessage.applyRollMode({
       type : "item",
       content,
       system : {itemData, originalItemData : itemData, postQuantity : quantity}
-    })
+    }, game.settings.get("core", "rollMode")))
 
   }
 

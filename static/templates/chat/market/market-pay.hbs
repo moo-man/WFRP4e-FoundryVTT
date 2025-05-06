@@ -1,7 +1,22 @@
 <div>
-    <h3><b>{{localize "MARKET.PayRequest"}}</b></h3>
-    {{QtGC}} {{localize "MARKET.Abbrev.GC"}}, {{QtSS}} {{localize "MARKET.Abbrev.SS"}}, {{QtBP}} {{localize "MARKET.Abbrev.BP"}} {{#if product}}{{localize "MARKET.For"}} {{product}}{{/if}}
+    <div class="pay-amount">
+        {{#if QtGC}}
+        <div class="coins" data-tooltip="NAME.GC" data-tooltip-direction="UP">
+            {{QtGC}} <img src="modules/wfrp4e-core/icons/currency/goldcrown.png">
+        </div>
+        {{/if}}
+
+        {{#if QtSS}}
+        <div class="coins" data-tooltip="NAME.SS" data-tooltip-direction="UP">
+            {{QtSS}} <img src="modules/wfrp4e-core/icons/currency/silvershilling.png">
+        </div>
+        {{/if
+        }}
+        {{#if QtBP}}
+        <div class="coins" data-tooltip="NAME.BP" data-tooltip-direction="UP">
+            {{QtBP}} <img  src="modules/wfrp4e-core/icons/currency/brasspenny.png">
+        </div>
+        {{/if}}
 </div>
-<span class="chat-card-button-area">
-    <a class='chat-card-button market-button' data-button='payItem' data-pay="{{payRequest}}">{{localize "MARKET.PayForItem"}}</a>
-</span>
+
+<a class='chat-button' data-action='pay'>{{localize "MARKET.PayForItem"}} <i class="fa-solid fa-coins"></i></a>

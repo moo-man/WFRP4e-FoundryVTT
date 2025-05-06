@@ -1,7 +1,22 @@
 <div>
-    <h3><b>{{localize "MARKET.CreditRequest"}}</b></h3>
-    <p> {{digestMessage}} {{QtGC}} {{localize "MARKET.Abbrev.GC"}}, {{QtSS}} {{localize "MARKET.Abbrev.SS"}}, {{QtBP}} {{localize "MARKET.Abbrev.BP"}}</p>
+    {{#each splits}}
+        <div class="pay-amount {{#if this}} disabled inactive{{/if}}">
+                <div class="coins" data-tooltip="NAME.GC" data-tooltip-direction="UP" {{#unless ../gc}}style="display:none"{{/unless}}>
+                    {{../gc}} <img src="modules/wfrp4e-core/icons/currency/goldcrown.png">
+                </div>
+
+                <div class="coins" data-tooltip="NAME.SS" data-tooltip-direction="UP" {{#unless ../ss}}style="display:none"{{/unless}}>
+                    {{../ss}} <img src="modules/wfrp4e-core/icons/currency/silvershilling.png">
+                </div>
+                <div class="coins" data-tooltip="NAME.BP" data-tooltip-direction="UP" {{#unless ../bp}}style="display:none"{{/unless}}>
+                    {{../bp}} <img src="modules/wfrp4e-core/icons/currency/brasspenny.png">
+                </div>
+        </div>
+        {{#unless this}}
+            <a class='chat-button' data-index="{{@key}}" data-action='receive'>{{localize "CHAT.Receive"}} <i class="fa-solid fa-coins"></i></a>
+        {{else}}
+            <div class="received-credit">Received by {{this}}</div>
+        {{/unless}}
+        <hr>
+    {{/each}}
 </div>
-<span class="chat-card-button-area">
-    <a class='chat-card-button market-button' data-button='creditItem' data-amount="{{amount}}">{{localize "MARKET.ReceiveCredit"}}</a>
-</span>

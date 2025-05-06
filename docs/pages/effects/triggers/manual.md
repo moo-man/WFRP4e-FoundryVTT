@@ -22,7 +22,7 @@ Manual scripts are executed on-demand. They will provide a button on the Actor S
 **Usage**: Easily post a corruption prompt to chat
 
 ```js
-game.wfrp4e.utility.postCorruptionTest("moderate", this.script.getChatData())
+CorruptionMessageModel.createCorruptionMessage("moderate", this.script.getChatData())
 ```
 
 **Notes**: Use `"minor"` or `"major"` to alter the severity of corruption

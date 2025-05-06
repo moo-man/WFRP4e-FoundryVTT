@@ -15,7 +15,7 @@
         .sheet-list {
             flex: 1;
             margin: 0px 5px;
-
+            width: 50%;
             .list-header {
                 .list-controls {
                     flex : 0 0 0.6rem;
@@ -45,6 +45,20 @@
                 overflow-y: auto;
                 height: 100%;
                 scrollbar-gutter: stable;
+
+                .list-row {
+                    height: auto;
+                }
+
+                .row-content {
+                    height: auto;
+                }
+    
+                .row-content > *{
+                    text-overflow: unset;
+                    white-space: wrap                
+                }
+        
             }
             &:first-of-type {
                 margin-left: 0px;

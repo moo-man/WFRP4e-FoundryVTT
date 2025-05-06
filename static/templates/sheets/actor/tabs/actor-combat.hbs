@@ -1,7 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     <div class="form-group">
         {{#if (settings "useGroupAdvantage")}}
-            <label style="flex: 1"><a class="group-actions">{{localize "SHEET.GroupAdvantage"}} <i
+            <label style="flex: 1"><a data-action="groupActions">{{localize "SHEET.GroupAdvantage"}} <i
                         class="fa-solid fa-chevron-down"></i></a></label>
         {{else}}
             <label style="flex: 1">{{localize "Advantage"}}</label>
@@ -9,6 +9,10 @@
         <div class="form-fields">
             <input type="number" name="system.status.advantage.value" value="{{system.status.advantage.value}}" />
         </div>
+    </div>
+
+    <div class="group-actions collapsed">
+
     </div>
     
     {{#if actor.attacker}} 

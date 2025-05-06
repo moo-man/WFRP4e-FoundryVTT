@@ -33,10 +33,15 @@
         background: none;
         border: 1px solid;
         border-image: url(./ui/backgrounds/context-menu.webp) 4 repeat;
-        border-image-slice: 70 fill;
+        border-image-slice: 40 fill;
         border-image-width: 100px;
         border-image-outset: 0px 0px 0px 0px;
         box-shadow: 5px 5px 10px rgb(0, 0, 0);
+
+        .control:hover {
+            background: var(--color-cream);
+            color: black
+        }
 
         &.collapsing,
         &.expanding {
@@ -46,6 +51,19 @@
 
     }
 
+}
+
+@mixin editor-button {
+    @include shadowed(#6b3a0f2b, 10px);
+    background: var(--color-faded-bg);
+    border-color : var(--color-faded);
+    color : var(--color-warm);
+
+    &:hover {
+        color: var(--color-cream);
+        background-color: var(--color-warm);
+        border-color: var(--color-cream);
+    }
 }
 
 @mixin search() {

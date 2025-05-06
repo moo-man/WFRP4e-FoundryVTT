@@ -32,7 +32,6 @@ import WomCastTest from "./system/rolls/wom-cast-test.js";
 import ChannelTest from "./system/rolls/channel-test.js";
 import PrayerTest from "./system/rolls/prayer-test.js";
 import TraitTest from "./system/rolls/trait-test.js";
-import { WFRPJournalTextPageSheet } from "./system/journal-sheet.js";
 import { ChargenStage } from "./apps/chargen/stage.js";
 import { CharacterModel } from "./model/actor/character.js";
 import { VehicleModel } from "./model/actor/vehicle.js";
@@ -104,6 +103,11 @@ import ChatMessageWFRP from "./documents/message.js";
 import calendar from "./system/calendar.js";
 import ItemWFRP4e from "./documents/item.js";
 import { PostedItemMessageModel } from "./model/message/posted-item.js";
+import { PayMessageModel } from "./model/message/pay.js";
+import { CreditMessageModel } from "./model/message/credit.js";
+import { XPMessageModel } from "./model/message/xp.js";
+import { CorruptionMessageModel } from "./model/message/corruption.js";
+import { PsychMessageModel } from "./model/message/psych.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -151,8 +155,6 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
-  // DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", WFRPJournalSheet, {makeDefault :true})
-  DocumentSheetConfig.registerSheet(JournalEntryPage, "wfrp4e", WFRPJournalTextPageSheet, {types: ["text"], makeDefault: true, label : "WFRP Journal Sheet (ProseMirror)"})
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
@@ -188,6 +190,11 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["handler"] = OpposedHandlerMessage;
   CONFIG.ChatMessage.dataModels["opposed"] = OpposedTestMessage;
   CONFIG.ChatMessage.dataModels["item"] = PostedItemMessageModel;
+  CONFIG.ChatMessage.dataModels["pay"] = PayMessageModel;
+  CONFIG.ChatMessage.dataModels["credit"] = CreditMessageModel;
+  CONFIG.ChatMessage.dataModels["xp"] = XPMessageModel;
+  CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
+  CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
 
   game.wfrp4e = {
     apps: {

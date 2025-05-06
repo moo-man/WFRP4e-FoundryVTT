@@ -1,7 +1,7 @@
-import WFRP_Utility from "../system/utility-wfrp4e.js";
 import passengerRender from "../system/passengerRender.js"
 
 export default function() {
+
 
   Hooks.on("createToken", async (token, data, user) => {
 
@@ -74,6 +74,12 @@ export default function() {
   Hooks.on('renderTokenHUD', (hud, html) => {
     _addMountButton(hud, html)
     _addPassengerButton(hud, html)
+
+    for (let condition of html.querySelectorAll("img.effect-control")) {
+      condition.dataset.tooltip = game.wfrp4e.config.conditions[condition.dataset["statusId"]]
+      if (condition.dataset.statusId == "dead")
+        condition.dataset.tooltip = "Dead"
+    }
   })
 
   Hooks.on("refreshToken", token => {
@@ -91,15 +97,11 @@ export default function() {
   {
     if (canvas.tokens.controlled.length == 2)// && canvas.tokens.controlled[0].actor.details.size.value != canvas.tokens.controlled[1].actor.details.size.value)
     {
-      const button = $(
-        `<div class='control-icon'><i class="fas fa-horse"></i></div>`
-      );
-      button.attr(
-        'title',
-        'Mount'
-      );
+      const button = document.createElement("button");
+      button.classList.add("control-icon");
+      button.innerHTML = `<i class="fas fa-horse"></i>`
 
-      button.mousedown(event => {
+      button.addEventListener("click", (async event => {
         let token1 = canvas.tokens.controlled[0].document;
         let token2 = canvas.tokens.controlled[1].document;
 
@@ -124,13 +126,13 @@ export default function() {
           if (mounter.actorLink)
             ui.notifications.warn(game.i18n.localize("WarnUnlinkedMount"))
         }
-        mounter.actor.update({ "system.status.mount.id": mountee.actorId, "system.status.mount.mounted": true, "system.status.mount.isToken": !mountee.actorLink, "system.status.mount.tokenData": tokenData })
-        canvas.scene.updateEmbeddedDocuments("Token", [{ "flags.wfrp4e.mount": mountee.id, _id: mounter.id }, { _id: mounter.id, x: mountee.x, y: mountee.y }])
+        await mounter.actor.update({ "system.status.mount.id": mountee.actorId, "system.status.mount.mounted": true, "system.status.mount.isToken": !mountee.actorLink, "system.status.mount.tokenData": tokenData })
+        await mounter.update({"flags.wfrp4e.mount" : mountee._id, x : mountee.x, y : mountee.y})
         mounter.zIndex = 1 // Ensure rider is on top
 
 
-      })
-      html.find('.col.right').append(button);
+      }))
+      html.querySelector('.col.right').insertAdjacentElement("beforeend", button);
     }
   }
 
@@ -141,23 +143,25 @@ export default function() {
         return
       }
 
-      const button = $(
-        `<div class='control-icon ${hud.object.document.getFlag("wfrp4e", "hidePassengers") ? "active" : ""}'><i class="fa-solid fa-user-slash"></i></div>`
-      );
-      button.attr(
-        'title',
-        game.i18n.localize("WFRP4E.TogglePassengers")
-      );
+      const button = document.createElement("button");
+      button.classList.add("control-icon");
+      if (hud.object.document.getFlag("wfrp4e", "hidePassengers"))
+      {
+        button.classList.add("active");
+      }
+      button.innerHTML = `<i class="fa-solid fa-user-slash"></i>`
 
-      button.mousedown(event => {
+      button.dataset.tooltip = "WFRP4E.TogglePassengers"
+
+      button.addEventListener("click", (event => {
         let newState = !hud.object.document.getFlag("wfrp4e", "hidePassengers")
         event.currentTarget.classList.toggle("active", newState)
         
         hud.object.document.setFlag("wfrp4e", "hidePassengers", newState).then(() => {
           // newState ? hud.object.passengers?.destroy() : passengerRender(hud.object);
         })
-      })
-      html.find('.col.right').append(button);
+      }))
+      html.querySelector('.col.right').insertAdjacentElement("beforeend", button);
 
   }
 }

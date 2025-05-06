@@ -12,6 +12,7 @@ import sidebar from "../hooks/sidebar.js"
 import rolltable from "../hooks/rolltable.js"
 import entryContext from "../hooks/entryContext.js"
 import token from "../hooks/token.js"
+import commands from "../hooks/commands.js"
 
 export default function registerHooks() {
     init()
@@ -28,6 +29,7 @@ export default function registerHooks() {
     token()
     i18n();
     settings();
+    commands();
 
 
     // #if _ENV === "development"

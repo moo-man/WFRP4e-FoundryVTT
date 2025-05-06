@@ -49,6 +49,7 @@ export default class CastDialog extends SkillDialog {
         
         context.title = context.title || game.i18n.localize("CastingTest") + " - " + spell.name;
         context.title += context.appendTitle || "";
+        delete context.appendTitle;
 
         let dialogData;
         if (skill)
@@ -90,7 +91,7 @@ export default class CastDialog extends SkillDialog {
     
     _defaultFields() 
     {
-        return mergeObject({
+        return foundry.utils.mergeObject({
             overchannelling : 0
         }, super._defaultFields());
     }

@@ -3,6 +3,7 @@ import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
+import { PayMessageModel } from "../model/message/pay.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -515,6 +516,8 @@ export default function() {
       aspectDetails: 'systems/wfrp4e/templates/items/partials/item-aspect-details.hbs',
       "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
     });
+
+
 
     // Load name construction from files
     NameGenWfrp._loadNames();
