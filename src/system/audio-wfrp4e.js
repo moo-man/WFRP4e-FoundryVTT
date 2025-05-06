@@ -88,7 +88,7 @@ export default class WFRP_Audio {
 
     try {
       let files, file, group;
-      await FilePicker.browse("user", game.settings.get("wfrp4e", "soundPath")).then(resp => {
+      await foundry.applications.apps.FilePicker.implementation.browse("user", game.settings.get("wfrp4e", "soundPath")).then(resp => {
         files = resp.files
       })
       if (context.action == "hit")

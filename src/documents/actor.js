@@ -1225,7 +1225,7 @@ export default class ActorWFRP4e extends WarhammerActor
     {    
       html = html.replaceAll(new RegExp(`<.{1,2}>@UUID\\[${options.relativeTo.uuid}.+?\\].+?<\/.>`, "gm"), "");
     }
-    return $(await TextEditor.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true, secrets : options.secrets}))[0];
+    return $(await foundry.applications.ux.TextEditor.implementation.enrichHTML(`<div style="${config.style || ""}">${html}</div>`, {relativeTo : this, async: true, secrets : options.secrets}))[0];
   }
 
   get itemTags() {

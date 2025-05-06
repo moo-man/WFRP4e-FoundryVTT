@@ -174,7 +174,7 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     }
 
 
-    return await renderTemplate('systems/wfrp4e/templates/chat/post-item.hbs', messageData);
+    return await foundry.applications.handlebars.renderTemplate('systems/wfrp4e/templates/chat/post-item.hbs', messageData);
 
   }
 

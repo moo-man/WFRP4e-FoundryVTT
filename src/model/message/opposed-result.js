@@ -22,7 +22,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
       let opposeData = opposedTest.data
       let opposeResult = opposedTest.result
 
-      let html = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", opposeResult)
+      let html = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", opposeResult)
       let chatOptions = {
         user: game.user.id,
         type : "opposed",
@@ -41,7 +41,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
 
     async renderMessage()
     {
-      let content = await renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", this.opposedTest.result);
+      let content = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/roll/opposed-result.hbs", this.opposedTest.result);
       return await this.parent.update({content})
     }
 

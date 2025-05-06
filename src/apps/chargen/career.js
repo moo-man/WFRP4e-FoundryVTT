@@ -79,7 +79,7 @@ export class CareerStage extends ChargenStage {
   async getData() {
     let data = await super.getData();
     for (let c of this.context.careers.concat(this.context.replacements)) {
-      c.enriched = await TextEditor.enrichHTML(c.system.description.value, { async: true });
+      c.enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(c.system.description.value, { async: true });
     }
     data.showChooseButton = this.context.replacements.length + this.context.careers.length > 1
     return data
@@ -212,7 +212,7 @@ export class CareerStage extends ChargenStage {
     let num = packs.length;
     for (let pack of packs)
     {
-      SceneNavigation.displayProgressBar({label: game.i18n.localize("CHARGEN.Career.LoadingCareers"), pct: Math.round((counter / num) * 100) })
+      foundry.applications.ui.SceneNavigation.displayProgressBar({label: game.i18n.localize("CHARGEN.Career.LoadingCareers"), pct: Math.round((counter / num) * 100) })
       counter++;
       careers = careers.concat((await pack.getDocuments()).filter(i => i.type == "career"));
     }
@@ -223,7 +223,7 @@ export class CareerStage extends ChargenStage {
   
   activateListeners(html) {
     super.activateListeners(html);
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop.implementation({
       dropSelector: '.chargen-content',
       permissions: { drop: () => true },
       callbacks: { drop: this._onDrop.bind(this) },
