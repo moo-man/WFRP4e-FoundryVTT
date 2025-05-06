@@ -106,6 +106,22 @@
             background: rgba(255, 0, 0, 0.05);
             border: 1px dashed red;
         }
+
+        &.critical,
+        &.critical-roll {
+            color: green;
+            > i {
+                color: green;
+            }
+        }
+
+        &.fumble,
+        &.fumble-roll {
+            color: darkred;
+            > i {
+                color: darkred;
+            }
+        }
     }
 }
 

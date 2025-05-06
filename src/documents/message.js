@@ -23,6 +23,11 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     async renderHTML(options)
     {
         let html = await super.renderHTML(options);
+        if (this.getFlag("wfrp4e", "socketResult"))
+        {
+          html.classList.add("socket-result");
+          html.style.display = "none";
+        }
         GenericActions.addEventListeners(html, this);
         return html;
     }

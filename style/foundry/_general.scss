@@ -12,11 +12,13 @@ body {
             margin-right: 0.1rem;
         }
 
-        &.critical {
+        &.critical,
+        &.critical-roll {
             color: green;
         }
 
-        &.fumble {
+        &.fumble,
+        &.fumble-roll {
             color: darkred;
         }
     }
