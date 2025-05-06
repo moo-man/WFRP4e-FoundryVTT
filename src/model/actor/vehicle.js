@@ -69,6 +69,23 @@ export class VehicleModel extends BaseActorModel {
         return allowed
     }
 
+    /**
+     * @return {boolean}
+     */
+    get canSwim() {
+        return this.details.move[this.details.move.primary].enabled;
+    }
+
+    /**
+     * @return {{walk: number, swim: number}}
+     */
+    get movementDistance() {
+        return {
+            walk: this.details.move.value,
+            swim: this.details.move[this.details.move.primary].value,
+        };
+    }
+
     initialize()
     {
         this.collision = 0;

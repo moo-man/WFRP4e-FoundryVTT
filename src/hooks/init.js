@@ -4,6 +4,7 @@ import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
 import { PayMessageModel } from "../model/message/pay.js";
+import TokenRulerWFRP from "../canvas/token-ruler.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -517,8 +518,6 @@ export default function() {
       "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
     });
 
-
-
     // Load name construction from files
     NameGenWfrp._loadNames();
 
@@ -550,5 +549,16 @@ export default function() {
 
     // Keep a list of actors that need to prepareData after 'ready' (generally those that rely on other actor data - passengers/mounts)
     game.wfrp4e.postReadyPrepare = [];
+
+    // Token Ruler data
+    delete CONFIG.Token.movement.actions.burrow;
+    delete CONFIG.Token.movement.actions.jump;
+    delete CONFIG.Token.movement.actions.climb.getCostFunction;
+    delete CONFIG.Token.movement.actions.crawl.getCostFunction;
+    CONFIG.Token.movement.actions.climb.canSelect = (token) => token?.actor?.system.canClimb;
+    CONFIG.Token.movement.actions.crawl.canSelect = (token) => token?.actor?.system.canCrawl;
+    CONFIG.Token.movement.actions.fly.canSelect = (token) => token?.actor?.system.canFly;
+    CONFIG.Token.movement.actions.swim.canSelect = (token) => token?.actor?.system.canSwim;
+    CONFIG.Token.rulerClass = TokenRulerWFRP;
   });
 }

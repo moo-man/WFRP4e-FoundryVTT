@@ -1,0 +1,45 @@
+#measurement {
+
+  .waypoint-label {
+
+    &.vertical {
+      flex-direction: column;
+
+      > div {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+      }
+    }
+
+    .waypoint-label-additional {
+      --color: var(--color-text-emphatic);
+
+      &.error {
+        --color: var(--color-level-error);
+      }
+      &.warning {
+        --color: var(--color-level-warning);
+      }
+
+      .waypoint-label-text {
+        color: var(--color);
+        font-size: var(--font-size-24);
+      }
+
+      .icon {
+        color: var(--color);
+      }
+
+      img.icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
