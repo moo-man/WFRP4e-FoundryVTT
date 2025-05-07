@@ -9,8 +9,8 @@
                 <label>{{quality.name}}</label>
                 {{#if quality.hasValue}}
                 <input type="text" class="value {{quality.key}}" name="{{quality.key}}-value" value="{{quality.existing.value}}">
-                <input type="checkbox" name="{{quality.key}}" {{checked existing}}>
                 {{/if}}
+                <input type="checkbox" name="{{quality.key}}" {{checked existing}}>
             </div>
             {{/each}}
             <div class="form-group">
