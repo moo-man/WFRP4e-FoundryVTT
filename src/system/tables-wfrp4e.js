@@ -26,10 +26,11 @@ export default class WFRP_Tables {
     }
     else {
       // Call tables class to roll and return html
-      game.wfrp4e.tables.formatChatRoll(key, { modifier: modifier, showRoll: true }, column).then(text => {
-        if (!text)
+      game.wfrp4e.tables.formatChatRoll(key, { modifier: modifier, showRoll: true, returnResult: true }, column).then(result => {
+        if (!result)
           return
-        msg.content = text
+        msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
+        msg.content += `<p>${result.result}</p>`;
         ChatMessage.create(msg);
       })
     }
@@ -392,7 +393,7 @@ export default class WFRP_Tables {
     { }
 
     // If the roll is an item, don't post the link to chat, post the item to chat
-    if (result.object?.documentCollection && result.object?.documentId)
+    if (result.object?.documentUuid)
     {
       let collection = game.packs.get(result.object.documentCollection)
 
@@ -407,8 +408,8 @@ export default class WFRP_Tables {
         let item = collection.get(result.object.documentId)
         if (item && item.documentName == "Item")
         {
-          item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
-          return {}
+          await item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
+          return null;
         }
       }
 

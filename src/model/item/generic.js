@@ -37,11 +37,6 @@ export class GenericAspectModel extends BaseItemModel
         return this.constructor.plural;
     }
 
-    get detailsPartial()
-    {
-        return 'aspectDetails';
-    }
-
     /**
      * Whether the Aspect can be "used" or not. Usage may – depending on Aspect – mean Rolling, initiating a Test,
      * or doing something else entirely.
