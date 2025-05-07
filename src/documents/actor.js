@@ -1235,7 +1235,7 @@ export default class ActorWFRP4e extends WarhammerActor
       let items = this.items.contents;
       for (const item of items) 
       {
-        tags = tags.union(item.system.tags);
+        tags = tags.union(item.system.tags);// || new Set());
       }
       this._itemTags = tags.toObject().reduce((obj, tag) => 
       {
