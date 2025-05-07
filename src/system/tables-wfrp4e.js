@@ -408,8 +408,8 @@ export default class WFRP_Tables {
         let item = collection.get(result.object.documentId)
         if (item && item.documentName == "Item")
         {
-          item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
-          return {}
+          await item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
+          return null;
         }
       }
 
