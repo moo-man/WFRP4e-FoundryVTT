@@ -1,1 +1,1 @@
-return !args.options.sizeModifier && args.item?.system?.attackType != "ranged"
+return !args.context.sizeModifier && args.item?.system?.attackType != "ranged"

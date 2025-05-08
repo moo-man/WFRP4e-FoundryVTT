@@ -105,7 +105,7 @@ export default class AttackDialog extends SkillDialog
         
         if (sizeModifier)
         {
-          this.options.sizeModifier = sizeModifier
+          this.context.sizeModifier = sizeModifier
           this.fields.modifier += sizeModifier
         }
 

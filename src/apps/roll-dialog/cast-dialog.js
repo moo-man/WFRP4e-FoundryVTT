@@ -51,6 +51,8 @@ export default class CastDialog extends SkillDialog {
         context.title += context.appendTitle || "";
         delete context.appendTitle;
 
+        context.hitloc = !!spell.system.damage.value
+
         let dialogData;
         if (skill)
         {   

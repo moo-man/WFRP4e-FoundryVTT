@@ -26,7 +26,7 @@ export default class CharacteristicDialog extends RollDialog {
 
         let data = dialogData.data;
         
-        data.hitloc = (characteristic == "ws" || characteristic == "bs") && !dialogData.context.reload
+        data.hitloc = context.hitloc || ((characteristic == "ws" || characteristic == "bs") && !dialogData.context.reload)
         
         if (dialogData.context.reload)
         {
