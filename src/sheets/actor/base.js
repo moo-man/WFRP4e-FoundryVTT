@@ -431,7 +431,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         if (container)
         {
           documentData.system.location.value = container.id;
-          documentData.system.equipped.value = false;
+          foundry.utils.setProperty(documentData, "system.equipped.value", false);
           
           // This handles both updating when dragging within the same sheet and creating a new item when dragging from another sheet
           this.document.updateEmbeddedDocuments("Item",  [documentData]);
