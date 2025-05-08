@@ -13,7 +13,6 @@ import StatBlockParser from "./apps/stat-parser.js";
 import BrowserWfrp4e from "./apps/wfrp-browser.js";
 import WFRP_Audio from "./system/audio-wfrp4e.js";
 import WFRP4E from "./system/config-wfrp4e.js"
-import ChatWFRP from "./system/chat-wfrp4e.js";
 import WFRP_Tables from "./system/tables-wfrp4e.js";
 import WFRP_Utility from "./system/utility-wfrp4e.js";
 import ActorSettings from "./apps/actor-settings.js";
@@ -231,7 +230,6 @@ Hooks.once("init", function () {
     utility: WFRP_Utility,
     tables: WFRP_Tables,
     config: WFRP4E,
-    chat: ChatWFRP,
     market: MarketWFRP4e,
     audio: WFRP_Audio,
     names: NameGenWfrp,

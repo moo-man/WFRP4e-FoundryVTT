@@ -1,10 +1,3 @@
-import MarketWFRP4e from "../apps/market-wfrp4e.js";
-import NameGenWfrp from "../apps/name-gen.js";
-import WFRP_Utility from "../system/utility-wfrp4e.js";
-
-import ChatWFRP from "../system/chat-wfrp4e.js";
-import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
-import CharGenWfrp4e from "../apps/chargen/char-gen.js";
 import OpposedHandler from "../system/opposed-handler.js";
 
 

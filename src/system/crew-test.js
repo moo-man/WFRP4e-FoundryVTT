@@ -57,7 +57,7 @@ export default class CrewTest
     {
         if (this.roles[roleId])
         {
-            this.roles[roleId].messageId = message.id
+            this.roles[roleId].messageId = message._id
         }
         this.renderChatPrompt()
     }
@@ -113,7 +113,7 @@ export default class CrewTest
                 {
                     roleHTML = `<p>${roleHTML}: ${game.i18n.localize("CHAT.NoCrewWithRole")}</p>`
                 }
-                roleHTML += `<a class="chat-button crew-test" data-vital="${isVital}" data-uuid="${roleItem.uuid}">${roleItem.system.test} ${roleData.messageId ? '<i class="fa-solid fa-check"></i>' : ""}</a>`
+                roleHTML += `<a class="chat-button" data-action="crewTest" data-vital="${isVital}" data-uuid="${roleItem.uuid}">${roleItem.system.test} ${roleData.messageId ? '<i class="fa-solid fa-check"></i>' : ""}</a>`
             }
             else 
             {

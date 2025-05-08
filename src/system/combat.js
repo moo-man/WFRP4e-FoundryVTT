@@ -39,7 +39,7 @@ export default class CombatHelpersWFRP {
                         conditionName += ` ${cond.system.condition.value}`
                     msgContent = `
                 <h2>${conditionName}</h2>
-                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
+                <a class="chat-button" data-action="conditionScript" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
                     await ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
             }
 
@@ -61,7 +61,7 @@ export default class CombatHelpersWFRP {
                         conditionName += ` ${cond.system.condition.value}`
                     msgContent = `
                 <h2>${conditionName}</h2>
-                <a class="condition-script" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
+                <a class="chat-button" data-action="conditionScript" data-combatant-id="${combatant.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
                     await ChatMessage.create({ content: msgContent, speaker: { alias: combatant.token.name } })
             }
         }
@@ -280,7 +280,7 @@ export default class CombatHelpersWFRP {
                     conditionName += ` ${cond.system.condition.value}`
                 msgContent = `
             <h2>${conditionName}</h2>
-            <a class="condition-script" data-combatant-id="${turn.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
+            <a class="chat-button" data-action="conditionScript" data-combatant-id="${turn.id}" data-cond-id="${cond.conditionId}">${game.i18n.format("CONDITION.Apply", { condition: conditionName })}</a>`
                 await ChatMessage.create({ content: msgContent, speaker: { alias: turn.token.name } });
             }
 

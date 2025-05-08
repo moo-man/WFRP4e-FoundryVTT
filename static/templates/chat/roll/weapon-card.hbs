@@ -7,7 +7,7 @@
     <div class="card-content" >
         <span><strong>{{localize "Qualities"}}</strong>: </span>
         {{#each test.item.Qualities as |quality q|}}
-        <a class ="item-property">{{quality}} </a>
+        <a data-action="postProperty">{{quality}} </a>
         {{/each}}
     </div>
     {{/if}}
@@ -16,7 +16,7 @@
     <div class="card-content" >
             <span><strong>{{localize "Flaws"}}</strong>: 
             {{#each test.item.Flaws as |flaw f|}}
-            <a class ="item-property">{{flaw}} </a>
+            <a data-action="postProperty">{{flaw}} </a>
             {{/each}}
             </span>
         </div>

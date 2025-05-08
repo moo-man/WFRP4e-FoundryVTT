@@ -33,7 +33,6 @@ import WomCastTest from "../system/rolls/wom-cast-test.js";
  * @see   ActorSheetWFRP4eCharacter - Character sheet class
  * @see   ActorSheetWFRP4eNPC - NPC sheet class
  * @see   ActorSheetWFRP4eCreature - Creature sheet class
- * @see   ChatWFRP4e - Sends test data to roll tests.
  */
 export default class ActorWFRP4e extends WarhammerActor
 {
@@ -128,12 +127,8 @@ export default class ActorWFRP4e extends WarhammerActor
   /**
    * Setup a Skill Test.
    *
-   * Skill tests are much like Characteristic Tests in their simplicity, just with another layer of modifiers (skill advances).
-   * However, there is more complication if the skill is instead for an Income test, which adds computation after the roll is
-   * completed.
    *
    * @param {Object} skill    The skill item being tested. Skill items contain the advancements and the base characteristic, see template.json for more information.
-   * @param {bool}   income   Whether or not the skill is being tested to determine Income.
    */
   async setupSkill(skill, context = {}) {
     if (typeof (skill) === "string") {
@@ -159,9 +154,6 @@ export default class ActorWFRP4e extends WarhammerActor
   /**
    * Setup a Weapon Test.
    *
-   * Probably the most complicated type of Test, weapon tests' complexity comes from all the different
-   * factors and variables of the different weapons available and how they might affect test results,
-   * as well as ammo usage, the effects of using different skills etc.
    *
    * @param {Object} weapon   The weapon Item being used.
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
@@ -175,9 +167,6 @@ export default class ActorWFRP4e extends WarhammerActor
   /**
    * Setup a Casting Test.
    *
-   * Casting tests are more complicated due to the nature of spell miscasts, ingredients, etc. Whatever ingredient
-   * is selected will automatically be used and negate one miscast. For the spell rolling logic, see ChatWFRP.rollCastTest
-   * where all this data is passed to in order to calculate the roll result.
    *
    * @param {Object} spell    The spell Item being Casted. The spell item has information like CN, lore, and current ingredient ID
    *
@@ -190,9 +179,6 @@ export default class ActorWFRP4e extends WarhammerActor
   /**
    * Setup a Channelling Test.
    *
-   * Channelling tests are more complicated due to the nature of spell miscasts, ingredients, etc. Whatever ingredient
-   * is selected will automatically be used and mitigate miscasts. For the spell rolling logic, see ChatWFRP.rollChannellTest
-   * where all this data is passed to in order to calculate the roll result.
    *
    * @param {Object} spell    The spell Item being Channelled. The spell item has information like CN, lore, and current ingredient ID
    * This spell SL will then be updated accordingly.
@@ -206,9 +192,6 @@ export default class ActorWFRP4e extends WarhammerActor
   /**
    * Setup a Prayer Test.
    *
-   * Prayer tests are fairly simple, with the main complexity coming from sin and wrath of the gods,
-   * the logic of which can be found in ChatWFRP.rollPrayerTest, where all this data here is passed
-   * to in order to calculate the roll result.
    *
    * @param {Object} prayer    The prayer Item being used, compared to spells, not much information
    * from the prayer itself is needed.

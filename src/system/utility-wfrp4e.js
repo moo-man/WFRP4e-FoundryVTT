@@ -3,7 +3,6 @@ import { CorruptionMessageModel } from "../model/message/corruption.js";
 import { PayMessageModel } from "../model/message/pay.js";
 import { PsychMessageModel } from "../model/message/psych.js";
 import { XPMessageModel } from "../model/message/xp.js";
-import ChatWFRP from "./chat-wfrp4e.js";
 
 
 /**
@@ -372,22 +371,23 @@ export default class WFRP_Utility {
    * 
    * @param {String} property   name of the quality or flaw
    */
-  static  async postProperty(property) {
+  static  async postProperty(propertyText) {
     let properties = foundry.utils.mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
       propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
       propertyKey;
 
-    property = this.parsePropertyName(property.replace(/,/g, '').trim());
+    let property = this.parsePropertyName(propertyText.replace(/,/g, '').trim());
 
     propertyKey = warhammer.utility.findKey(property, properties)
 
-    let propertyDescription = `<b>${property}:</b><br>${propertyDescr[propertyKey]}`;
+    let propertyDescription = propertyDescr[propertyKey];
     propertyDescription = propertyDescription.replace("(Rating)", property.split(" ")[1])
 
 
     let chatOptions = {
       user: game.user.id,
       rollMode: game.settings.get("core", "rollMode"),
+      speaker : {alias : propertyText},
       content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(propertyDescription, {async: true})
     };
     if (["gmroll", "blindroll"].includes(chatOptions.rollMode)) chatOptions["whisper"] = ChatMessage.getWhisperRecipients("GM").map(u => u.id);
@@ -616,8 +616,6 @@ export default class WFRP_Utility {
     let condName = game.wfrp4e.config.conditions[condkey];
     let condDescr = game.wfrp4e.config.conditionDescriptions[condkey];
     let messageContent = `<b>${condName}</b><br>${condDescr}`
-
-     messageContent = ChatWFRP.addEffectButtons(messageContent, [condkey])
 
     let chatData = WFRP_Utility.chatDataSetup(messageContent)
     ChatMessage.create(chatData);
