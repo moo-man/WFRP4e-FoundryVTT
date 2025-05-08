@@ -186,7 +186,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   {
     let characteristic = ev.target.dataset.characteristic;
     let value = Number(ev.target.value);
-    let characteristics = foundry.utils.deepClone(this.actor.system.characteristics);
+    let characteristics = this.actor.system.characteristics.toObject();
     if (!(value == characteristics[characteristic].initial + characteristics[characteristic].advances)) 
     {
       characteristics[characteristic].initial = value;
