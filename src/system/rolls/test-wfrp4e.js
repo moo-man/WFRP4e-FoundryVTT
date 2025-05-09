@@ -1,9 +1,8 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
-import OpposedHandler from "../opposed-handler.js";
 import WFRP_Audio from "../audio-wfrp4e.js";
 import CrewTest from "../crew-test.js"
 
-export default class TestWFRP extends WarhammerTestBase{
+export default class TestWFRP extends WarhammerTestBase {
   constructor(data, actor) {
     super();
     if (!data)
@@ -938,7 +937,7 @@ export default class TestWFRP extends WarhammerTestBase{
 
 
   async createOpposedMessage(token) {
-    let oppose = new OpposedHandler();
+    let oppose = new game.wfrp4e.opposedHandler();
     await oppose.setAttacker(this.message);
     let opposeMessageId = await oppose.startOppose(token);
     if (opposeMessageId) {

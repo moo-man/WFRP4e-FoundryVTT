@@ -1,5 +1,15 @@
+@use "../mixins/button" as *;
+@use "../theme/mixins" as *;
+
 #chargen-stage.app.window-app .window-content,
 #chargen.app.window-app .window-content {
+  background: url(./ui/backgrounds/parchment-texture.webp) repeat;
+  font-family: CaslonPro;
+}
+
+.chargen button {
+  @include wfrp-button;
+  color: white;
 }
 
 .chargen h1{
@@ -55,6 +65,10 @@
   margin: 5px;
   width: 150px;
   text-align: center;
+}
+
+.chargen-button {
+  @include styled-button
 }
 
 .chargen .disabled {
@@ -396,7 +410,7 @@
   position: absolute;
   padding: 4px 5px 10px 5px;
   border: 1px solid #666;
-  background: url(../ui/frames/parchment-texture.webp) repeat;
+  background: url(./ui/backgrounds/parchment-texture.webp) repeat;
 }
 
 .app.window-app .chargen-species-preview.active {
