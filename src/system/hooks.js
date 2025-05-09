@@ -7,6 +7,7 @@ import canvas from "../hooks/canvas.js"
 import chat from "../hooks/chat.js"
 import combat from "../hooks/combat.js"
 import hotbarDrop from "../hooks/hotbarDrop.js"
+import journal from "../hooks/journal.js"
 import sidebar from "../hooks/sidebar.js"
 import rolltable from "../hooks/rolltable.js"
 import entryContext from "../hooks/entryContext.js"
@@ -22,6 +23,7 @@ export default function registerHooks() {
     combat()
     controlButtons()
     hotbarDrop()
+    journal()
     sidebar()
     rolltable()
     entryContext()

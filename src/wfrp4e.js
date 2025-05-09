@@ -5,7 +5,6 @@ import ActorSheetWFRP4eNPC from "./sheets/actor/npc-sheet.js";
 import ActorSheetWFRP4eCreature from "./sheets/actor/creature-sheet.js";
 import ActorSheetWFRP4eVehicle from "./sheets/actor/vehicle-sheet.js";
 import ActorWFRP4e from "./documents/actor.js";
-import JournalEntrySheetWFRP4e   from "./sheets/journal-entry.js";
 import registerHooks from "./system/hooks.js"
 import CharGenWfrp4e from "./apps/chargen/char-gen.js"
 import MarketWFRP4e from "./apps/market-wfrp4e.js";
@@ -156,9 +155,6 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
-
-  DocumentSheetConfig.unregisterSheet(JournalEntry, "core", foundry.applications.sheets.journal.JournalEntrySheet);
-  DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", JournalEntrySheetWFRP4e, {makeDefault :true});
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
