@@ -1,14 +1,19 @@
-import WFRP_Utility from "../system/utility-wfrp4e.js";
+import GenericActions from "../system/actions.js";
 
 export default function() {
-  Hooks.on("renderJournalEntrySheet", (sheet, html) => {
+  Hooks.on("renderJournalEntrySheet", (sheet, html, options, context) => {
+    if (context.isFirstRender === true)
+    {
+      GenericActions.addEventListeners(html, this);
+    }
+
     let theme = game.settings.get("wfrp4e", "theme")
     if (!theme.journal.enabled)
     {
       html.classList.add("no-theme");
       html.classList.remove("classic-font");
     }
-    else 
+    else
     {
       html.classList.remove("no-theme");
 
