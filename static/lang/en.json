@@ -60,6 +60,8 @@
     "SHEETS.Actor.creature" : "Creature Sheet",
     "SHEETS.Actor.vehicle" : "Vehicle Sheet",
 
+    "wfrp4e.JournalEntrySheetWFRP4e": "Journal Entry Sheet WFRP4e",
+
     "TOKEN.MOVEMENT.Status.immobile": "Immobile",
     "TOKEN.MOVEMENT.Status.restricted": "Restricted",
 

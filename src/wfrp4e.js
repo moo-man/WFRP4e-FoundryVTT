@@ -158,7 +158,7 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
 
   DocumentSheetConfig.unregisterSheet(JournalEntry, "core", foundry.applications.sheets.journal.JournalEntrySheet);
-  DocumentSheetConfig.registerSheet(JournalEntry, "core", JournalEntrySheetWFRP4e, {makeDefault :true});
+  DocumentSheetConfig.registerSheet(JournalEntry, "wfrp4e", JournalEntrySheetWFRP4e, {makeDefault :true});
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
