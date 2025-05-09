@@ -679,20 +679,16 @@ export default class WFRP_Utility {
  * @param {Object} event clicke event
  */
   static handlePayClick(event, target) {
-    let payString = target.dataset.pay;
+    let payString = target.dataset.args;
     if (game.user.isGM)
-      PayMessageModel.createPayMessage(payString);
+      game.wfrp4e.commands.call("pay", payString);
     else
       MarketWFRP4e.handlePlayerPayment({payString});
   }
 
-  static handleCreditClick(event, target) {
-    let creditString = target.dataset.credit;
-    let amt = creditString.split(" ")[0]
-    let option = creditString.split(" ")[1]
-    if (game.user.isGM)
-      MarketWFRP4e.processCredit(amt, option);
-
+  static handleCreditClick(event, target) 
+  {
+    game.wfrp4e.commands.call("credit", target.dataset.args);
   }
 
   static handleCorruptionClick(event, target)

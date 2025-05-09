@@ -190,7 +190,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             const a = document.createElement("a")
             a.classList.add("action-link")
-            a.dataset.pay = match[1]
+            a.dataset.args = match[1]
             a.dataset.action = "clickPay"
             let id = match[1]
             let label = match[2]
@@ -203,7 +203,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
         enricher : (match, options) => {
             const a = document.createElement("a")
             a.classList.add("action-link")
-            a.dataset.credit = match[1]
+            a.dataset.args = match[1]
             a.dataset.action = "clickCredit"
             let id = match[1]
             let label = match[2]
