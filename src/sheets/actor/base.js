@@ -1,6 +1,7 @@
-import WFRP_Utility from "../../system/utility-wfrp4e";
-import ActorSettings from "../../apps/actor-settings";
-import MarketWFRP4e from "../../apps/market-wfrp4e";
+import GenericActions from "../../system/actions.js";
+import WFRP_Utility   from "../../system/utility-wfrp4e";
+import ActorSettings  from "../../apps/actor-settings";
+import MarketWFRP4e   from "../../apps/market-wfrp4e";
 
 export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
 {
@@ -501,6 +502,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
   }
 
   //#endregion
+
+  /** @inheritDoc */
+  _attachFrameListeners() {
+    super._attachFrameListeners();
+    GenericActions.addEventListeners(this.element, this);
+  }
 
   _addEventListeners()
   {

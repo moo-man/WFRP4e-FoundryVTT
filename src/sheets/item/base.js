@@ -1,4 +1,5 @@
-import ItemProperties from "../../apps/item-properties";
+import ItemProperties     from "../../apps/item-properties";
+import GenericActions     from "../../system/actions.js";
 import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 
 export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
@@ -200,4 +201,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
   }
 
     //#endregion
+  /** @inheritDoc */
+  _attachFrameListeners() {
+    super._attachFrameListeners();
+    GenericActions.addEventListeners(this.element, this);
+  }
+
 }
