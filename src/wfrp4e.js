@@ -107,6 +107,7 @@ import { CreditMessageModel } from "./model/message/credit.js";
 import { XPMessageModel } from "./model/message/xp.js";
 import { CorruptionMessageModel } from "./model/message/corruption.js";
 import { PsychMessageModel } from "./model/message/psych.js";
+import {NODE_ENV} from 'process.env';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -114,10 +115,10 @@ import { PsychMessageModel } from "./model/message/psych.js";
 
 Hooks.once("init", function () {
 
-  // #if _ENV === "development"
-  CONFIG.debug.wfrp4e = true;
-  warhammer.utility.log("Development Mode: Logs on")
-  //#endif
+  if (NODE_ENV === "development") {
+    CONFIG.debug.wfrp4e = true;
+    warhammer.utility.log("Development Mode: Logs on");
+  }
 
   // Register sheet application classes
   const {DocumentSheetConfig} = foundry.applications.apps;

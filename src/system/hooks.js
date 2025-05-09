@@ -14,6 +14,7 @@ import entryContext from "../hooks/entryContext.js"
 import token from "../hooks/token.js"
 import commands from "../hooks/commands.js"
 
+import {NODE_ENV} from 'process.env';
 export default function registerHooks() {
     init()
     ready()
@@ -31,11 +32,9 @@ export default function registerHooks() {
     settings();
     commands();
 
-
-    // #if _ENV === "development"
-    Hooks.on("renderApplication", (app, html, data) => {
-        warhammer.utility.log(`Rendering ${app.constructor.name}: `, undefined, data)
-    })
-    //#endif
-
+    if (NODE_ENV === "development") {
+        Hooks.on("renderApplication", (app, html, data) => {
+            warhammer.utility.log(`Rendering ${app.constructor.name}: `, undefined, data);
+        });
+    }
 }
