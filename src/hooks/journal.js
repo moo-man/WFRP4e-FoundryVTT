@@ -1,8 +1,8 @@
 import GenericActions from "../system/actions.js";
 
 export default function() {
-  Hooks.on("renderJournalEntrySheet", (sheet, html, options, renderOptions) => {
-    if (renderOptions.isFirstRender === true)
+  Hooks.on("renderJournalEntrySheet", (sheet, html, options, context) => {
+    if (context.isFirstRender === true)
     {
       GenericActions.addEventListeners(html, this);
     }
