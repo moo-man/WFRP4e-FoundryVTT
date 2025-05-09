@@ -24,6 +24,8 @@ export default class GenericActions
     {
         html.addEventListener("click", ev => {
             let element = ev.target.closest("[data-action]");
+            if (!element) return;
+
             let action = this.actions[element.dataset.action];
             if (action)
             {

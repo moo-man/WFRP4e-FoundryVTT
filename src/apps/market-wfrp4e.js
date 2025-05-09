@@ -1,4 +1,3 @@
-import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
 import { PayMessageModel } from "../model/message/pay.js";
 
@@ -64,7 +63,7 @@ export default class MarketWFRP4e {
       //Format the message before sending it back to chat
       msg += this.formatTestForChat(finalResult);
     }
-    ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll", true, {flavor: name}));
+    ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "roll", true, {flavor: name}));
   }
 
   /**
@@ -93,7 +92,7 @@ export default class MarketWFRP4e {
       name
     };
     foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-settlement.hbs", cardData).then(html => {
-      let chatData = WFRP_Utility.chatDataSetup(html, "selfroll");
+      let chatData = game.wfrp4e.utility.chatDataSetup(html, "selfroll");
       ChatMessage.create(chatData);
     });
   }
@@ -208,7 +207,7 @@ export default class MarketWFRP4e {
     if (options.suppressMessage)
       ui.notifications.notify(`${actor.name} received ${moneyToSend.gc}${game.i18n.localize("MARKET.Abbrev.GC")} ${moneyToSend.ss}${game.i18n.localize("MARKET.Abbrev.SS")} ${moneyToSend.bp}${game.i18n.localize("MARKET.Abbrev.BP")}`)
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll"));
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "roll"));
     return moneyItemInventory;
   }
 
@@ -330,7 +329,7 @@ export default class MarketWFRP4e {
     if (options.suppressMessage)
       ui.notifications.notify(msg)
     else
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "roll", false, {flavor : game.i18n.localize("MARKET.PayCommand")}));
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "roll", false, {flavor : game.i18n.localize("MARKET.PayCommand")}));
     return moneyItemInventory;
   }
 
@@ -514,7 +513,7 @@ export default class MarketWFRP4e {
     if (!parsedPayRequest) {
       let msg = `<h3><b>${game.i18n.localize("MARKET.CreditRequest")}</b></h3>`;
       msg += `<p>${game.i18n.localize("MARKET.MoneyTransactionWrongCommand")}</p><p><i>${game.i18n.localize("MARKET.CreditCommandExample")}</i></p>`;
-      ChatMessage.create(WFRP_Utility.chatDataSetup(msg, "gmroll"));
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "gmroll"));
     } else //generate a card with a summary and a receive button
     {
       let amount, message, forceWhisper
@@ -575,7 +574,7 @@ export default class MarketWFRP4e {
         QtBP: amount.bp
       };
       foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", cardData).then(html => {
-        let chatData = WFRP_Utility.chatDataSetup(html, "roll", false, {forceWhisper});
+        let chatData = game.wfrp4e.utility.chatDataSetup(html, "roll", false, {forceWhisper});
         foundry.utils.setProperty(chatData, "flags.wfrp4e.instances", nbActivePlayers);
         ChatMessage.create(chatData);
       })
