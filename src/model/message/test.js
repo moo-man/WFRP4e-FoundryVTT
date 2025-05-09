@@ -61,11 +61,11 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
       warhammer.utility.replacePopoutTokens(html);
     }
 
-  static async onPlaceAreaEffect(event) {
+  static async onPlaceAreaEffect(event, target) {
     if (!this.canEdit)
       return ui.notifications.error("CHAT.EditError")
     
-    let effectUuid = event.currentTarget.dataset.uuid;
+    let effectUuid = target.dataset.uuid;
     let test = this.test
     let radius;
     if (test?.result.overcast?.usage.target)
@@ -84,7 +84,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
     {
         return;
     }
-    let template = await AreaTemplate.fromEffect(effectUuid, messageId, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
+    let template = await AreaTemplate.fromEffect(effectUuid, this.parent.id, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
     await template.drawPreview(event);
   }
   
