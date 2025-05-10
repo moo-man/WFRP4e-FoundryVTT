@@ -2,7 +2,7 @@
     <div class="condition-section">
         {{#each effects.conditions}}
             <div class="condition" data-key="{{this.key}}">
-                <a>{{localize this.name}}</a>
+                <a data-tooltip="{{lookup ../enriched.conditions this.key}}" data-tooltip-direction="LEFT">{{localize this.name}}</a>
                 <div class="controls">
                     {{#if this.isNumberedCondition}}
                         <a data-action="clickCondition">{{this.conditionValue}}</a>
@@ -60,7 +60,7 @@
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                                <a class="label" data-action="toggleSummary">{{this.name}}</a>
                             </div>
 
                             <div>{{this.system.location.value}}</div>
@@ -102,7 +102,7 @@
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                                <a class="label" data-action="toggleSummary">{{this.name}}</a>
                             </div>
 
                             <div>{{this.system.location.value}}</div>
@@ -133,7 +133,7 @@
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                                <a class="label" data-action="toggleSummary">{{this.name}}</a>
                             </div>
 
                             <div class="list-controls"></div>
@@ -162,7 +162,7 @@
                         <div class="row-content">
                             <div class="list-name">
                                 <img src="{{this.img}}">
-                                <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                                <a class="label" data-action="toggleSummary">{{this.name}}</a>
                             </div>
 
                             <div class="list-controls"></div>
@@ -197,7 +197,7 @@
                             <div class="row-content">
                                 <div class="list-name">
                                     <img src="{{this.img}}">
-                                    <a class="label" data-action="editEmbedded">{{this.name}}</a>
+                                    <a class="label" data-action="toggleSummary">{{this.name}}</a>
                                 </div>
 
                                 {{#if (isGM)}}

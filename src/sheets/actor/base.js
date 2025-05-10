@@ -553,6 +553,12 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     enrichment["system.details.biography.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.biography.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
     enrichment["system.details.gmnotes.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.actor.system.details.gmnotes.value, { async: true, secrets: this.actor.isOwner, relativeTo: this.actor })
 
+    enrichment.conditions = {}
+
+    for(let c in game.wfrp4e.config.conditionDescriptions)
+    {
+      enrichment.conditions[c] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(game.wfrp4e.config.conditionDescriptions[c]);
+    }
     return expandObject(enrichment)
   }
 
@@ -823,7 +829,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       if (document)
       {
         let expandData = await document.system.expandData({secrets: this.actor.isOwner});
-        this._toggleDropdown(ev, expandData.description.value + `<div class="tags">${"<div class='tag'>" + expandData.properties.join("</div><div class='tag'>")}</div>`);
+        this._toggleDropdown(ev, expandData.description.value + `<div class="tags">${expandData.properties?.length ? "<div class='tag'>" + expandData.properties.join("</div><div class='tag'>") : ""}</div>`);
       }
     }
 
