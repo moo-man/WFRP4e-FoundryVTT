@@ -73,7 +73,7 @@
             </div>
             <div class="list-content">
                 {{#each experienceLog}}
-                    <div class="list-row">
+                    <div class="list-row" data-index="{{this.index}}">
                         <div class="row-content">
                             <div class="flex">
                                 <span {{#if (eq this.type "total" )}} style="visibility: hidden;" {{/if}}>{{this.amount}}</span>
@@ -83,7 +83,7 @@
                             <div class="flex">{{this.reason}}</div>
                             <div class="flex">{{this.spent}} / {{this.total}}</div>
                             {{#if (isGM)}}
-                                <a class="tiny exp-delete" title="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-trash"></i></a>
+                                <a class="tiny" data-action="deleteExp"><i class="fas fa-trash"></i></a>
                             {{/if}}
                             </div>
                         </div>

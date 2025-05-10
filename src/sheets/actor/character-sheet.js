@@ -15,7 +15,8 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
           clickUntrainedTalent : {buttons: [0, 2], handler : this._onClickUntrainedTalent},
           rollIncome : this._onRollIncome,
           changeCareer : this._onChangeCareer,
-          onRest : this._onRest
+          onRest : this._onRest,
+          deleteExp : this._onDeleteExp
         },
         window : {
           resizable : true
@@ -41,7 +42,8 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         let context = await super._prepareContext(options);
         context.experienceLog = this._condenseXPLog()
         context.nonTrivialCriticals = context.items.critical.filter(c => Number.isNumeric(c.system.wounds.value))
-    
+        context.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
+  
         return context;
       }
     
@@ -62,13 +64,14 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         if (condense) {
           lastPushed[lastPushed.type] = this.document.details.experience.log[logIndex][lastPushed.type]
           lastPushed.amount += this.document.details.experience.log[logIndex].amount
-          lastPushed.index = this.document.details.experience.log[logIndex].index
+          lastPushed.index = logIndex // If condensed entry, keep the "latest" log index so when a condensed entry is deleted, it deletes from the latest
           lastPushed.spent = this.document.details.experience.log[logIndex].spent
           lastPushed.total = this.document.details.experience.log[logIndex].total
           lastPushed.counter++
         }
         else {
           lastPushed = foundry.utils.duplicate(this.document.details.experience.log[logIndex]);
+          lastPushed.index = logIndex
           lastPushed.counter = 1;
           condensed.push(lastPushed)
           lastPushedCounter = 0;
@@ -387,6 +390,31 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       }
 
 
+  }
+
+  static _onDeleteExp(ev) {
+    let index = this._getIndex(ev);
+    let experience = foundry.utils.duplicate(this.actor.system.details.experience)
+    let entry = experience.log[index];
+    let exp = parseInt(entry.amount);
+    let type = entry.type;
+    experience.log.splice(index, 1)
+
+    foundry.applications.api.DialogV2.confirm({
+      window : {title: game.i18n.localize("RevertExperience")}, 
+      content: `<p>${game.i18n.localize("DIALOG.RevertExperience")}</p>`,
+      yes: {
+        callback: () => {
+          experience[type] -= exp
+          this.actor.update({ "system.details.experience": experience })
+        }
+      },
+      no: {
+        callback: () => {
+          this.actor.update({ "system.details.experience": experience })
+        }
+      }
+    })
   }
 
 }

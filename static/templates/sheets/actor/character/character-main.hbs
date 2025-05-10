@@ -113,9 +113,9 @@
             <div class="label" style="grid-column: 1 / span 2"><label class="centered">{{localize "Current"}}</label></div>
             <div class="field" style="grid-column: 3 / span 2"><input type="number" readonly value="{{system.details.experience.current}}" readonly></div>
             <div class="label" style="grid-column: 5 / span 2"><label class="centered">{{localize "Spent"}}</label></div>
-            <div class="field" style="grid-column: 7 / span 2"><input type="number" value="{{system.details.experience.spent}}" name="system.details.experience.spent"></div>
+            <div class="field" style="grid-column: 7 / span 2"><input type="number" value="{{system.details.experience.spent}}" name="system.details.experience.spent" {{#unless canEditExperience}}readonly{{/unless}}></div>
             <div class="label" style="grid-column: 9 / span 2"><label class="centered">{{localize "Total"}}</label></div>
-            <div class="field" style="grid-column: 11 / span 2"><input type="number" value="{{system.details.experience.total}}" name="system.details.experience.total"></div>
+            <div class="field" style="grid-column: 11 / span 2"><input type="number" value="{{system.details.experience.total}}" name="system.details.experience.total" {{#unless canEditExperience}}readonly{{/unless}}></div>
         </div>
     </div>
 
