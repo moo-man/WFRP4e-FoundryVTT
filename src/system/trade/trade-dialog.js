@@ -1,87 +1,103 @@
+export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV2)
+{
+  static DEFAULT_OPTIONS = {
+    tag: "form",
+    classes : ["warhammer", "standard-form"],
+    window: {
+      title: "Trade"
+    },
+    form: {
+      submitOnChange: false,
+      closeOnSubmit : true,
+      handler : this._onSubmit
+    }
 
-/************************************************************************************/
-export default class TradeDialog extends Dialog {
+  }
 
-    constructor(cargo, gazetteer, tradeType, resolve)
+    /** @override */
+    static PARTS = {
+      form: {
+        template: "systems/wfrp4e/templates/apps/trade/trade-dialog.hbs",
+        scrollable: [""]
+      },
+      footer: {
+        template: "templates/generic/form-footer.hbs"
+      }
+    };
+
+
+    constructor(tradeData, options)
     {
-        let dialogContent = {
-          title : game.i18n.localize("TRADE.SettlementDetails"),
-          buttons : {
-            ok : {
-              label : "Ok",
-              callback : (dlg) => {
-                let settlementData = {}
-  
-                let settlementIndex = dlg.find('[name="settlement"]').val();
-                let season = dlg.find('[name="season"]').val()
-                if (Number.isNumeric(settlementIndex))
-                {
-                  let selected = this.gazetteer[Number(settlementIndex)]
-                  settlementData = {
-                    wealth : Number(selected.w),
-                    size : Number(selected),
-                    trade : selected.isTrade,
-                    produces : selected.produces,
-                    season
-                  }
-                }
-                settlementData.name = dlg.find('[name="name"]').val();
-                settlementData.wealth = Number(dlg.find('[name="wealth"]').val());
-                settlementData.size = Number(dlg.find('[name="size"]').val());
-                settlementData.trade = dlg.find('[name="trade"]').is(':checked');
-                settlementData.season = season;
-                settlementData.produces = dlg.find('[name="produces"]').val().split(",").map(i=> {
-                  i = i.trim();
-                  return warhammer.utility.findKey(i.split("(")[0].trim(), game.wfrp4e.trade.tradeData[tradeType].cargoTypes)
-                }).filter(i => !!i);
+      super(options)
 
-                settlementData.surplus = this.encodeSurplusDemand(dlg.find('[name="surplus"]').val())
-                settlementData.demand = this.encodeSurplusDemand(dlg.find('[name="demand"]').val())
-
-                resolve(settlementData)
-              }
-            }
+      if (game.modules.get("foundryvtt-simple-calendar")?.active) 
+      {
+          this.season = SimpleCalendar.api.getCurrentSeason();
+          if (this.season == "fall")
+          {
+              this.season = "autumn"
           }
-        }
-        super(dialogContent)
+      }
+      this.tradeType = tradeData.tradeType;
+      this.cargo = tradeData.cargo;
+      this.gazetteer = tradeData.gazetteer
+    }
 
-        if (game.modules.get("foundryvtt-simple-calendar")?.active) 
-        {
-            this.season = SimpleCalendar.api.getCurrentSeason();
-            if (this.season == "fall")
-            {
-                this.season = "autumn"
-            }
+    async _prepareContext(options) {
+      let context = await super._prepareContext(options);
+      context.cargo = this.cargoData
+      context.gazetteer = this.gazetteer
+      context.tradeType = this.tradeType;
+      context.seasons = game.wfrp4e.trade.seasons
+      context.buttons = [{ type: "submit", label: "Submit", icon: "fa-solid fa-save" }]
+      return context
+    }
+
+    static _onSubmit(ev, form, formData)
+    {
+      let settlementData = {}
+  
+      let settlementIndex = formData.object.settlement
+      let season = formData.object.season
+      if (Number.isNumeric(settlementIndex))
+      {
+        let selected = this.gazetteer[Number(settlementIndex)]
+        settlementData = {
+          wealth : Number(selected.w),
+          size : Number(selected),
+          trade : selected.isTrade,
+          produces : selected.produces,
+          season
         }
-        this.tradeType = tradeType;
-        this.cargo = cargo;
-        this.gazetteer = gazetteer
+      }
+      settlementData.name = formData.object.name;
+      settlementData.wealth = Number(formData.object.wealth);
+      settlementData.size = Number(formData.object.size);
+      settlementData.trade = formData.object.trade;
+      settlementData.season = season;
+      settlementData.produces = formData.object.produces.split(",").map(i=> {
+        i = i.trim();
+        return warhammer.utility.findKey(i.split("(")[0].trim(), game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes)
+      }).filter(i => !!i);
+
+      settlementData.surplus = this.encodeSurplusDemand(formData.object.surplus)
+      settlementData.demand = this.encodeSurplusDemand(formData.object.demand)
+
+      this.options.resolve(settlementData)
+      return settlementData;
     }
-  
-  
-    static get defaultOptions() {
-        return foundry.utils.mergeObject(super.defaultOptions, {
-          template: "systems/wfrp4e/templates/apps/trade/trade-dialog.hbs",
-      });
-    }
-  
-    getData() {
-      let data = super.getData();
-      data.cargo = this.cargoData
-      data.gazetteer = this.gazetteer
-      data.tradeType = this.tradeType;
-      data.seasons = game.wfrp4e.trade.seasons
-      return data
-    }
+
   
     /* -------------------------------------------- */
-    activateListeners(html) {
-      super.activateListeners(html);
+    async _onRender(options) {
+      super._onRender(options);
+
   
-      this.settlement = html.find("#settlement").change(ev => {
+      this.settlement = this.element.querySelector("[name='settlement']")
+      this.settlement.addEventListener("change", ev => {
         if (ev.target.value != "")
         {
-          let index = Number(ev.target.value);
+          let index = ev.target.selectedIndex - 1;
           this.wealth.value = this.gazetteer[index].w
           this.size.value = this.gazetteer[index].size
           this.produces.value = this.gazetteer[index].produces.map(i => this.formatCargoType(i) || i).join(", ")
@@ -96,36 +112,34 @@ export default class TradeDialog extends Dialog {
           this.trade.checked = this.gazetteer[index].isTrade
           this.name.value = this.gazetteer[index].name
         }
-      })[0]
+      })
   
-      this.wealth = html.find("#wealth").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.wealth = this.element.querySelector("[name='wealth']");
+      this.wealth.addEventListener("change", this._clearSettlement.bind(this))
   
-      this.size = html.find("#size").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.size = this.element.querySelector("[name='size']");
+      this.size.addEventListener("change", this._clearSettlement.bind(this))
   
-      this.produces = html.find("#produces").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.produces = this.element.querySelector("[name='produces']");
+      this.produces.addEventListener("change", this._clearSettlement.bind(this))
   
-      this.surplus = html.find("#surplus").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.surplus = this.element.querySelector("[name='surplus']");
+      this.surplus?.addEventListener("change", this._clearSettlement.bind(this))
 
-      this.demand = html.find("#demand").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.demand = this.element.querySelector("[name='demand']");
+      this.demand?.addEventListener("change", this._clearSettlement.bind(this))
 
-      this.trade = html.find("#trade").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.trade = this.element.querySelector("[name='trade']");
+      this.trade.addEventListener("change", this._clearSettlement.bind(this))
   
-      this.name = html.find("#name").change(ev => {
-        this.settlement.value = ""
-      })[0]
+      this.name = this.element.querySelector("[name='name']");
+      this.name.addEventListener("change", this._clearSettlement.bind(this))
 
+    }
+
+    _clearSettlement()
+    {
+      this.settlement.value = "";
     }
 
 

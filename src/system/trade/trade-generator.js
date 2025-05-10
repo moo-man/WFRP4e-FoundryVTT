@@ -47,22 +47,38 @@ export default class TradeGenerator
         let available = [];
 
         let target = (this.settlement.wealth + this.settlement.size) * 10;
-        if (this.settlement.produces.length)
+        let roll = d100();
+        this.rolls.push(roll);
+        if (roll <= target)
         {
-            let roll = d100();
-            this.rolls.push(roll);
-            if (roll <= target)
+            // If has product list, choose from product
+            if (this.settlement.produces.length)
             {
-                available = available.concat(this.settlement.produces);
+                this.randomCargo(this.settlement.produces)
             }
+            else // If no product list, choose randomly
+            {
+                this.randomCargo()
+            }
+            available = available.concat(this.settlement.produces);
         }
+
+        // if (this.settlement.produces.length)
+        // {
+        //     let roll = d100();
+        //     this.rolls.push(roll);
+        //     if (roll <= target)
+        //     {
+        //         available = available.concat(this.settlement.produces);
+        //     }
+        // }
         if (this.settlement.trade)
         {
             let roll = d100();
             this.rolls.push(roll);
             if (roll <= target)
             {
-                available = available.concat(this.randomCargo(this.settlement.season));
+                available = available.concat(this.randomCargo());
             }
         }
         return available[Math.floor(CONFIG.Dice.randomUniform() * available.length)];
@@ -339,7 +355,16 @@ export default class TradeGenerator
     //#endregion
 
    
-    randomCargo() {
+    randomCargo(products=[]) {
+
+        // If supplied with products, randomnly select index
+        if (products.length)
+        {
+            return products[Math.floor(CONFIG.Dice.randomUniform() * products.length)]
+        }
+
+
+        // Otherwise
         let roll = d100();
         let cargoTable = game.wfrp4e.trade.tradeData[this.tradeType].cargoTable[this.settlement.season];
         for (let key in cargoTable) 
@@ -365,8 +390,7 @@ export default class TradeGenerator
         merchant.test = {roll, SL};
     }
 
-    static async buyTrade(event) {
-        let cargoData = this.getCargoData(event)
+    static async buyCargo(cargoData) {
         let actor = game.user.character;
         if (!actor) return ui.notifications.error("Please assign a character.");
     
@@ -424,7 +448,7 @@ export default class TradeGenerator
             throw Error("No successful trade data provided")
         }
         let message =
-        `<h3>${game.i18n.format("TRADE.CargoTitle", tradeData)}</h3><br>
+        `<p style="text-align:center"><strong>${game.i18n.format("TRADE.CargoTitle", tradeData)}</strong></p>
           <b>Enc</b>: ${itemData.system.encumbrance.value}<br>
           <b>${game.i18n.localize("TRADE.Price")}</b>: ${itemData.system.price.gc} ${game.i18n.localize("MARKET.Abbrev.GC")}<br>
           <b>${game.i18n.localize("TRADE.Quality")}</b>: ${game.i18n.localize("TRADE." + itemData.system.quality.value.capitalize())}<br><br>
@@ -435,9 +459,7 @@ export default class TradeGenerator
            message += `<p>${game.i18n.format("TRADE.MerchantTest", tradeData.merchant.test)}</p>`;
           }
 
-          message += `<span class="chat-card-button-area">`;
-          message += `<a class='chat-card-button market-button trade-cargo-click' data-button='manageTrade'>${game.i18n.localize("TRADE.ManageCargo")}</a>`;
-          message += "</span>";
+          message += `<p><a class="chat-button" data-action="manageTrade">${game.i18n.localize("TRADE.ManageCargo")}</a></p>`;
           let messageData = game.wfrp4e.utility.chatDataSetup(message, "gmroll")
           messageData["flags.wfrp4e.cargoData"] = itemData
           return ChatMessage.create(messageData);

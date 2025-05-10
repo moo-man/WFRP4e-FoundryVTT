@@ -1,70 +1,61 @@
+<div>
+  {{#if cargo}}
+    <p>{{localize cargo.name}} - {{cargo.system.encumbrance.value}} Enc. - {{cargo.system.price.gc}}
+      {{localize "MARKET.Abbrev.GC"}}</p>
+  {{/if}}
+  <div class="form-group">
+    <label>{{localize "TRADE.Settlement"}}</label>
+    <div class="form-fields">
 
-<div class="dialog-content">
-  <div class="grid2col">
-    {{#if cargo}}
-    <p>{{localize cargo.name}} - {{cargo.system.encumbrance.value}} Enc. - {{cargo.system.price.gc}} {{localize "MARKET.Abbrev.GC"}}</p>
-    {{/if}}
-    <div class="form-group">
-      <label>{{localize "TRADE.Settlement"}}</label>
-      <select type="text" id="settlement" name="settlement">
-          <option value=""></option>
-          {{#each gazetteer as |settlement s|}}
-          <option value={{s}}>{{settlement.name}}</option>
-        {{/each}}
-      </select>
+    <select type="text" name="settlement">
+      <option value=""></option>
+      {{selectOptions gazetteer nameAttr='name'}}
+    </select>
     </div>
+  </div>
 
-    <div class="form-group">
-      <label style="min-width: 135px;">{{localize "TRADE.SettlementName"}}</label>
-      <input type="text" id="name" name="name" />
+  <div class="form-group">
+    <label>{{localize "TRADE.SettlementName"}}</label>
+    <div class="form-fields">
+    <input type="text" name="name" />
     </div>
+  </div>
 
-    <div class="form-group">
-      <label>{{localize "TRADE.Size"}}</label>
-      <input type="text" id="size" name="size" />
-      <label>{{localize "TRADE.Wealth"}}</label>
-      <input type="text" id="wealth" name="wealth" />
-    </div>
+  <div class="form-group">
+    <label>{{localize "TRADE.Size"}}</label>
+    <input type="text" name="size" />
+    <label>{{localize "TRADE.Wealth"}}</label>
+    <input type="text" name="wealth" />
+  </div>
 
-    <div class="form-group">
-      <label>{{localize "TRADE.Trade"}} <input type="checkbox" id="trade" name="trade" ></label>
+  <div class="form-group">
+    <label>{{localize "TRADE.Trade"}}</label>
+    <div class="form-fields">
+      <input type="checkbox" name="trade">
     </div>
-  
-    <div class="form-group">
-      <label>{{localize "TRADE.Produces"}}</label>
-      <input type="text" id="produces" name="produces" />
-    </div>
+  </div>
 
-      
-    {{#if (eq tradeType "maritime")}}
+  <div class="form-group">
+    <label>{{localize "TRADE.Produces"}}</label>
+    <input type="text" name="produces" />
+  </div>
+
+
+  {{#if (eq tradeType "maritime")}}
     <div class="form-group">
       <label>{{localize "TRADE.Surplus"}}</label>
-      <input type="text" id="surplus" name="surplus" />
-            <label>{{localize "TRADE.Demand"}}</label>
-      <input type="text" id="demand" name="demand" />
+      <input type="text" name="surplus" />
+      <label>{{localize "TRADE.Demand"}}</label>
+      <input type="text" name="demand" />
     </div>
-    {{/if}}
+  {{/if}}
 
-    {{#if seasons}}
+  {{#if seasons}}
     <div class="form-group">
       <label>{{localize "TRADE.Season"}}</label>
       <select type="text" id="season" name="season">
-          {{#select season}}
-          {{#each seasons as |season s|}}
-          <option value={{s}}>{{season}}</option>
-          {{/each}}
-          {{/select}}
+        {{selectOptions seasons selected=season}}
       </select>
     </div>
-    {{/if}}
-  </div>
+  {{/if}}
 </div>
-
-  <div class="dialog-buttons">
-    {{#each buttons as |button id|}}
-    <button class="dialog-button {{cssClass}}" data-button="{{id}}">
-        {{{button.icon}}}
-        {{{button.label}}}
-    </button>
-    {{/each}}
-  </div>

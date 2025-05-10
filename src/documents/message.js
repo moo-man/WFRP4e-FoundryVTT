@@ -1,5 +1,7 @@
 import MarketWFRP4e from "../apps/market-wfrp4e";
 import GenericActions from "../system/actions";
+import TradeGenerator from "../system/trade/trade-generator";
+import TradeManager from "../system/trade/trade-manager";
 
 export default class ChatMessageWFRP extends WarhammerChatMessage 
 {
@@ -28,7 +30,9 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
           postProperty : this._onPostProperty,
           placeTemplate : this._onPlaceTemplate,
           conditionScript : this._onConditionScript,
-          applyCondition : this._onApplyCondition
+          applyCondition : this._onApplyCondition,
+          manageTrade : this._manageTrade,
+          buyCargo : this._buyCargo
         }, super.actions);
     }
 
@@ -43,6 +47,17 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
         }
         GenericActions.addEventListeners(html, this);
         return html;
+    }
+
+
+    static _manageTrade(ev)
+    {
+      TradeManager.manageTrade(foundry.utils.deepClone(this.getFlag("wfrp4e", "cargoData")));
+    }
+
+    static _buyCargo(ev, target)
+    {
+      TradeGenerator.buyCargo(this.getFlag("wfrp4e", "cargoData"));
     }
 
     static _onApplyCondition(ev, target)

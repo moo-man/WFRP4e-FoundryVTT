@@ -86,7 +86,7 @@ export default class TradeManager
         }
 
         let settlementData = await new Promise(resolve => {
-            new TradeDialog(null, this.gazetteers[type], type, resolve).render(true)
+            new TradeDialog({cargo : null, gazetteer: this.gazetteers[type], tradeType : type}, {resolve}).render(true)
         })
 
         let tradeGenerator = new TradeGenerator(settlementData, type);
@@ -112,7 +112,7 @@ export default class TradeManager
         }
 
         let settlementData = await new Promise(resolve => {
-            new TradeDialog(null, this.gazetteers[type], type, resolve).render(true)
+            new TradeDialog({cargo : null, gazetteer: this.gazetteers[type], tradeType : type}, {resolve}).render(true)
         })
 
         let tradeGenerator = new TradeGenerator(settlementData, type)
@@ -174,15 +174,10 @@ export default class TradeManager
         }
       }
 
-      static async manageTrade(event) {
-        let msgId = $(event.currentTarget).parents(".message").attr("data-message-id")
-        let message = game.messages.get(msgId)
-
-        let cargoData = message.getFlag("wfrp4e", "cargoData")
-
+      static async manageTrade(cargoData) 
+      {
         cargoData.modifier = 0;
-        let html = await foundry.applications.handlebars.renderTemplate('systems/wfrp4e/templates/apps/trade/trade-cargo.hbs', cargoData);
-        new CargoDialog(html, cargoData).render(true);
+        new CargoDialog(cargoData).render(true);
       }
    
 }
