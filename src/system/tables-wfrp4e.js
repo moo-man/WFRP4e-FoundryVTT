@@ -378,7 +378,7 @@ export default class WFRP_Tables {
     let tableObject = this.findTable(table, column);
 
     if (tableObject && tableObject.columns)
-      return this.promptColumn(table);
+      return {result : this.promptColumn(table)};
 
 
     let result = await this.rollTable(table, options, column);
@@ -476,11 +476,11 @@ export default class WFRP_Tables {
 
   // Display all columns for a table so the user can click on them and roll them.
   static promptColumn(table) {
-    let prompt = `<h3>${game.i18n.localize("CHAT.ColumnPrompt")}</h3>`
+    let prompt = `<h4>${game.i18n.localize("CHAT.ColumnPrompt")}</h4>`
 
     let tableObject = this.findTable(table);
     for (let c of tableObject.columns)
-      prompt += `<div><a class = "action-link" data-action="clickTable"  data-table="${table}" data-column = "${c.getFlag("wfrp4e", "column")}"><i class="fas fa-list"></i> ${c.name}</a></div>`
+      prompt += `<p><a class = "action-link" data-action="clickTable"  data-table="${table}" data-column = "${c.getFlag("wfrp4e", "column")}"><i class="fas fa-list"></i> ${c.name}</a></p>`
 
     return prompt;
   }

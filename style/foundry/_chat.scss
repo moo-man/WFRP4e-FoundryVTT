@@ -218,4 +218,28 @@
         }
 
     }
+
+
+    .vortex-table,
+    .scatter-table{
+        border: 1px solid #000;
+        width: 80%;
+        margin: auto;
+        aspect-ratio: 1 / 1;
+        margin-bottom: 1rem;
+        tr > td{
+            border: 1px solid #000;
+            text-align: center;
+            width: 50px;
+            height: 40px;
+            }
+            .selected-position {
+                background-color: maroon;
+                color: #CCC
+                }
+        }
+
+        .vortex-table .selected-position {
+            background-color: skyblue;
+          }
 }
