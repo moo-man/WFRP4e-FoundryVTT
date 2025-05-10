@@ -107,7 +107,7 @@ export default class TravelDistanceWFRP4e {
       message += `<h3>${game.i18n.localize("TRAVEL.TownPrompt")}</h3>`
       for ( var travel of this.travel_data) {
         if ( travel.from.toLowerCase() == fromTown ) {
-          message += `<div><a class = "travel-click" data-fromtown="${travel.from}" data-totown = "${travel.to}"><i class="fas fa-list"></i> ${travel.to}</a></div>`
+          message += `<p><a class="action-link" data-action="clickTravel" data-from="${travel.from}" data-to="${travel.to}"><i class="fas fa-list"></i> ${travel.to}</a></p>`
         }
       }
     } else {
@@ -116,19 +116,19 @@ export default class TravelDistanceWFRP4e {
       for ( var travel of this.travel_data) {
         if ( uniqTown[travel.from] == undefined ) {
           uniqTown[travel.from] = 1; // Already added in the list
-          message += `<div><a class = "travel-click" data-fromtown="${travel.from}"><i class="fas fa-list"></i> ${travel.from}</a></div>`
+          message += `<p><a class="action-link" data-action="clickTravel" data-from="${travel.from}"><i class="fas fa-list"></i> ${travel.from}</a></p>`
         }
       }
     }
-    ChatMessage.create( WFRP_Utility.chatDataSetup( message ) );      
+    ChatMessage.create( WFRP_Utility.chatDataSetup( message, "gmroll" ) );      
    }
 
    /**
     * 
     */
    static handleTravelClick( event, target ) {
-    let fromTown = target.dataset.fromtown;
-    let toTown = target.dataset.totown;
+    let fromTown = target.dataset.from;
+    let toTown = target.dataset.to;
     TravelDistanceWFRP4e.displayTravelDistance( fromTown, toTown);
    }
 }

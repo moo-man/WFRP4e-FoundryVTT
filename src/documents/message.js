@@ -32,7 +32,8 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
           conditionScript : this._onConditionScript,
           applyCondition : this._onApplyCondition,
           manageTrade : this._manageTrade,
-          buyCargo : this._buyCargo
+          buyCargo : this._buyCargo,
+          travel : this._onTravelClick
         }, super.actions);
     }
 
