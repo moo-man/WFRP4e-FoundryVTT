@@ -45,8 +45,9 @@ export default function () {
       game.settings.set("wfrp4e", "autoFillAdvantage", false)
     }
 
-    const MIGRATION_VERSION = 10;
-    let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, game.settings.get("wfrp4e", "systemMigrationVersion"))
+    const MIGRATION_VERSION = 11;
+    let currentMigration = game.settings.get("wfrp4e", "systemMigrationVersion")
+    let needMigration = foundry.utils.isNewerVersion(MIGRATION_VERSION, currentMigration)
     if (needMigration && game.user.isGM) {
       ChatMessage.create({content: `
       <hr>
@@ -57,11 +58,12 @@ export default function () {
       <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/basics/basics.html">Basics</a></p></li>
       <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/premium.html">Premium Content</a> (this will tell you how to use any official content you've purchased!</p></li>
       <li><p><a href="https://moo-man.github.io/WFRP4e-FoundryVTT/pages/troubleshooting.html">Troubleshooting</a></p></li>
+      </ul>
       <p><strong>Note</strong>: Documentation is always a work in progress, some things may be incomplete, if you have questions, see the Discords linked in the home page</p>
       <p><strong>Also Note</strong>: While Character creation should be functional, it may be rather ugly until it gets updated to use the new features in V13</p>
       <hr>
       <h1>WFRP4e in Foundry V13</h1>
-      <p>As Foundry itself progresses in its adoption of its new application framework, so too has the WFRP system. <em>Tens of thousands</em> of lines of code, styling, and html dating back from the system's earliest renditions (2020ish) have been removed have been removed and rewritten.</p>
+      <p>As Foundry itself progresses in its adoption of its new application framework, so too has the WFRP system. <em>Tens of thousands</em> of lines of code, styling, and html dating back from the system's earliest renditions (2020ish) have been removed and rewritten.</p>
       <p>However, the longbeards grumble that what's new is unproven and untested, so please be patient if issues arise as I try to bring the new sheets and menus up to match all the functionality of the old ones (particularly character creation!).</p>
       <p>In brief, the most notable changes are
       <ul>
@@ -72,7 +74,11 @@ export default function () {
         `,
       speaker : {alias : "INFO"}}
         )
-      game.wfrp4e.migration.migrateWorld()
+
+      if (currentMigration != 10) // No need to actually migrate if coming from 10, just display message
+      {
+        game.wfrp4e.migration.migrateWorld()
+      }
     }
     game.settings.set("wfrp4e", "systemMigrationVersion", MIGRATION_VERSION)
 
