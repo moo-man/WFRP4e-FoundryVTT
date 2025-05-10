@@ -261,6 +261,9 @@
             }
 
             prose-mirror {
+                .editor-content {
+                    position: static; 
+                }
                 .editor-menu {
                     background: none;
                     @include shadowed(#6b3a0f87);
