@@ -1,1 +1,1 @@
-return args.options.corruption;
+return args.context.corruption;

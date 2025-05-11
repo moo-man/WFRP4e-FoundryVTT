@@ -1,7 +1,7 @@
 if (!["rLeg", "lLeg"].includes(this.effect.getFlag("wfrp4e", "location")))
 	return true;
 
-if (args.options.dodge)
+if (args.context.dodge)
 {
 	args.abort = true;
 	this.script.notification("Cannot Dodge!")

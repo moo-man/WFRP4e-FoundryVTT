@@ -4,4 +4,4 @@ if (args.extendedTest?.getFlag("wfrp4e", "fear"))
 	args.extendedTest.delete();
 	args.abort = true;
 }
-return args.options.terror || args.extendedTest?.getFlag("wfrp4e", "fear")
+return args.context.terror || args.extendedTest?.getFlag("wfrp4e", "fear")

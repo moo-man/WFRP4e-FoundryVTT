@@ -1,1 +1,1 @@
-args.options.diceman= true;
+args.context.diceman= true;

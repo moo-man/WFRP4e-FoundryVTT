@@ -1,1 +1,1 @@
-args.options.addChargingDice = true;
+args.context.addChargingDice = true;

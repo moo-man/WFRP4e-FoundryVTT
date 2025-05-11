@@ -1,4 +1,4 @@
-if (args.options.dodge)
+if (args.context.dodge)
 {
 	args.abort = true;
 	this.script.notification("Cannot Dodge!")

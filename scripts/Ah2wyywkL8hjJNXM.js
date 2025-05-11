@@ -1,1 +1,1 @@
-args.options.healWounds = true;
+args.context.healWounds = true;

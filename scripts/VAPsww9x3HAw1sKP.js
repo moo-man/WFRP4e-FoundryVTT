@@ -1,1 +1,1 @@
-return !args.options.dodge
+return !args.context.dodge

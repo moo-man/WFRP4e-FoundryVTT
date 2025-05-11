@@ -1,1 +1,1 @@
-return args.options.dualWieldOffhand
+return args.context.dualWieldOffhand

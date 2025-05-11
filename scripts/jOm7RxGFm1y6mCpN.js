@@ -1,1 +1,1 @@
-return args.options.crewTest.name.includes("Batten Down");
+return args.context.crewTest.name.includes("Batten Down");

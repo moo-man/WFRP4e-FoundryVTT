@@ -1,1 +1,1 @@
-return !args.options.terror  && !args.extendedTest?.flags.wfrp4e?.fear
+return !args.context.terror  && !args.extendedTest?.flags.wfrp4e?.fear

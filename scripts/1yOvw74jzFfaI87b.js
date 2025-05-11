@@ -1,1 +1,1 @@
-return args.options.reload
+return args.context.reload

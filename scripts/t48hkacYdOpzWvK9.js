@@ -1,1 +1,1 @@
-args.options.beatBlade = true;
+args.context.beatBlade = true;

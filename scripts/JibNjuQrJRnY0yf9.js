@@ -1,1 +1,1 @@
-return this.actor.flags.useless.rEye && this.actor.flags.useless.lEye && (["ws", "bs"].includes(args.characteristic) || args.skill?.name?.includes(game.i18n.localize("NAME.Ride")) || args.weapon || args.options.dodge)
+return this.actor.flags.useless.rEye && this.actor.flags.useless.lEye && (["ws", "bs"].includes(args.characteristic) || args.skill?.name?.includes(game.i18n.localize("NAME.Ride")) || args.weapon || args.context.dodge)
