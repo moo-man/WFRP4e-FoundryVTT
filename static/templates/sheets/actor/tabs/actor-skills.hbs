@@ -67,11 +67,15 @@
                             </div>
 
                             <a class="skill-total small {{this.system.modified}}" data-action="rollTest" data-type="skill">{{this.system.total.value}}</a>
-
-
                         </div>
                     </div>
                 {{/each}}
+                <div class="new-skill" data-type="bsc">
+                    <input data-action="addSkill" placeholder="+">
+                    <select data-action="addSkill">
+                        {{selectOptions (config "characteristicsAbbrev") blank=""}}
+                    </select>
+                </div>
             </div>
         </div>
         <div class="sheet-list condensed advanced">
@@ -113,6 +117,7 @@
                             <a class="skill-total small {{this.system.modified}}" data-action="rollTest" data-type="skill">{{this.system.total.value}}</a>
 
 
+
                         </div>
                     </div>
                 {{/each}}
@@ -125,6 +130,13 @@
                         </div>
                     </div>
                 {{/each}}
+                    <div class="new-skill" data-type="adv">
+                    <input data-action="addSkill" placeholder="+">
+                    <select data-action="addSkill">
+                        {{selectOptions (config "characteristicsAbbrev") blank=""}}
+                    </select>
+                </div>
+
             </div>
         </div>
     </div>

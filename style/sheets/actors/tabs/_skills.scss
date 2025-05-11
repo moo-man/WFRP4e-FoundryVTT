@@ -68,6 +68,26 @@
             }
             
         }
+
+
+        .new-skill {
+            width: 100%;
+            display: flex;
+            height: 1.5rem;
+            display: flex;
+            input {
+                flex: 1;
+            }
+            select {
+                flex: 0 0 60px;
+            }
+            input,
+            select {
+                border-radius: 0px;
+                text-align: center;
+                height: 100%;
+            }
+        }
     }
     
     .extended-tests {

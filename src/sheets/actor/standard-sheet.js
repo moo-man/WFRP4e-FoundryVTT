@@ -180,6 +180,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     super._addEventListeners();
     this.element.querySelectorAll("[data-action='editCharacteristic']").forEach(e => e.addEventListener("change", this.constructor._onEditCharacteristic.bind(this)));
     this.element.querySelector("[data-action='editSpecies']")?.addEventListener("change", this.constructor._onEditSpecies.bind(this));
+    this.element.querySelectorAll("[data-action='addSkill']").forEach(e => e.addEventListener("change", this.constructor._onAddSkill.bind(this)));
   }
 
   static _onEditCharacteristic(ev)
@@ -238,6 +239,26 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     await this.actor.update(update);
 
 }
+
+  static _onAddSkill(ev)
+  {
+    let nameInput = ev.target.parentElement.querySelector("input");
+    let charInput = ev.target.parentElement.querySelector("select");
+
+    if (nameInput.value && charInput.value)
+    {
+      let type = ev.target.parentElement.dataset.type;
+      let item = {type : "skill", name : nameInput.value, system : {advanced : {value : type}, characteristic: {value : charInput.value}}};
+      if (this.actor.itemTypes.skill.find(i => i.name == item.name))
+      { 
+        ui.notifications.error("ERROR.SkillAlreadyExists", {localize: true})
+      }
+      else 
+      {
+        this.actor.createEmbeddedDocuments("Item", [item]);
+      }
+    }
+  }
 
   static _onUnarmedClick(ev) {
     ev.preventDefault();

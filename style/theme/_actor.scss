@@ -113,6 +113,20 @@
             a {
                 color: var(--color-warm);
             }
+
+            .new-skill {
+                input,
+                select {
+                    background: rgba(0, 0, 0, 0.05);
+                    border: none;
+                    border-radius: 0px;
+                    &:hover,
+                    &:focus {
+                        border: 1px dashed black;
+                    }
+                }
+
+            }
         }
 
         .item-property-row {
