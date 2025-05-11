@@ -165,7 +165,7 @@ CONFIG.TextEditor.enrichers = CONFIG.TextEditor.enrichers.concat([
             const a = document.createElement("a")
             a.classList.add("action-link")
             a.dataset.cond = match[1]
-            a.dataset.action = "clickCondition"
+            a.dataset.action = "clickConditionText"
             let id = match[1]
             let label = match[2]
             a.innerHTML = `<i class="fas fa-user-injured"></i>${label ? label : id}`

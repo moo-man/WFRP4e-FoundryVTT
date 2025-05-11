@@ -6,7 +6,7 @@ export default class GenericActions
 
     static actions = {
         clickSymptom : WFRP_Utility.handleSymptomClick.bind(WFRP_Utility),
-        clickCondition : WFRP_Utility.handleConditionClick.bind(WFRP_Utility),
+        clickConditionText : WFRP_Utility.handleConditionClick.bind(WFRP_Utility),
         clickProperty : WFRP_Utility.handlePropertyClick.bind(WFRP_Utility),
         clickTable : WFRP_Utility.handleTableClick.bind(WFRP_Utility),
         clickPay : WFRP_Utility.handlePayClick.bind(WFRP_Utility),
