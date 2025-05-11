@@ -1,6 +1,11 @@
 @use "../mixins/index" as *;
 
 body {
+
+    .image-popout {
+        background: url(/ui/parchment.jpg) repeat
+    }
+
     .action-link {
         @include content-link;
 

@@ -426,6 +426,14 @@ body:not(.no-theme) {
             }
         }
 
+        &.image-popout {
+            .window-content {
+                background: url(./ui/backgrounds/parchment-texture.webp) repeat;
+                @include shadowed(black, 20px);
+            }
+        }
+    
+
 
         .form-footer {
             button {

@@ -54,24 +54,22 @@
         }
 
 
-        .sheet-header {
-            .detail-group {
-                height: 2.35rem;
-                input {
-                    height: 1rem;
-                    color: var(--color-grey1);
-                    // font-family: var(--input-font);
-                    &:focus {
-                        outline: none;
-                    }
+        .detail-group {
+            height: 2.35rem;
+            input {
+                height: 1rem;
+                color: var(--color-grey1);
+                // font-family: var(--input-font);
+                &:focus {
+                    outline: none;
                 }
+            }
 
-                label {
-                    // font-family: var(--header-font);
-                    height: 1rem;
-                    border-color: var(--color-grey2);
-                    color: var(--color-grey2);
-                }
+            label {
+                // font-family: var(--header-font);
+                height: 1rem;
+                border-color: var(--color-grey2);
+                color: var(--color-grey2);
             }
         }
 
@@ -170,7 +168,8 @@
             }
 
             input {
-                color: var(--color-grey1)
+                color: var(--color-grey1);
+                background: rgba(0, 0, 0, 0.05)
             }
 
             select {
@@ -285,4 +284,34 @@
                 color: var(--color-grey2);
             }
         }
+
+        table {
+            background: none;
+            color: black;   
+
+            select,
+            input {
+                color: black;
+                border-radius: 0px;
+
+                &:focus {
+                    border: 1px dotted var(--color-faded);
+                    border-radius: 3px;
+                    outline: none;  
+
+                    option:hover {
+                        background: var(--color-warm);
+                    }
+                    
+                }
+            }
+        }
+
+        .choice-group {
+            color: black;
+            .choice-text {
+                border-color: var(--color-faded);
+            }
+        }
+    
     }
