@@ -70,7 +70,7 @@
 
                             {{#if this.system.UnusedQualities.length}}
                                     <div class="property-icon inactive">{{localize "SHEET.Qualities"}}</div>
-                                    {{{array this.system.UnusedQualities "inactive" action="itemPropertyDropdown" type="qualities"}}}
+                                    {{{array this.system.UnusedQualities "inactive" action="itemPropertyDropdown" tooltip=(localize "SHEET.UnusedQualitiesHint") type="qualities"}}}
                             {{/if}}
 
                             {{#if this.system.InactiveQualities.length}}

@@ -1534,6 +1534,7 @@
     "SHEET.Stomp": "Stomp",
     "SHEET.GenerateName" : "Generate Name",
     "SHEET.Randomize" : "Randomize",
+    "SHEET.UnusedQualitiesHint" : "You don't have the proper Skill to utilize this Quality.",
 
     "DISEASE.IncubationFinished" : "{disease} incubation finished. ",
 
