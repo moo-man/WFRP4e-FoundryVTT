@@ -6,7 +6,7 @@
         <legend>{{localize "Status"}}</legend>
         <div class="form-group">
             <label>{{localize "Tier"}}</label>
-            <select>
+            <select name="system.status.tier">
                 {{selectOptions (config "statusTiers") selected=source.system.status.tier}}
             </select>
             <label>{{localize "Standing"}}</label>
