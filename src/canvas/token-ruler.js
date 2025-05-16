@@ -75,23 +75,27 @@ export default class TokenRulerWFRP extends foundry.canvas.placeables.tokens.Tok
     return foundry.utils.mergeObject(style, color);
   }
 
+  /** @override */
   _getSegmentStyle(waypoint) {
     const scale = canvas.dimensions.uiScale;
-    const movement = this.token.actor.system.movementDistance[waypoint.action] || 0;
-    const maxMovement = typeof movement === "object" ? movement[1] : movement;
-    const cost = waypoint.measurement.cost;
+    if  (canvas.scene.grid.type != 0) {
+	   return {width: 4 * scale, color: game.user.color, alpha: 1};
+    } else {
+      const movement = this.token.actor.system.movementDistance[waypoint.action] || 0;
+      const maxMovement = typeof movement === "object" ? movement[1] : movement;
+      const cost = waypoint.measurement.cost;
 
-    // 2-step gradient, different color for immobile, blink and displace
-    let color = this.constructor.STYLES.move.color;
-    if (movement[0] < cost && cost <= maxMovement )
-      color = this.constructor.STYLES.stride.color;
-  	else if (maxMovement < cost)
-  	  color = this.constructor.STYLES.exceed.color;
-  	if  (maxMovement <= 0)
-  	  color = this.constructor.STYLES.immobile.color;
-  	if (["blink", "displace"].includes(waypoint.action))
-  	  color = 0x0000aa;
-
-    return {width: 4 * scale, color: color, alpha: 1};
-  }
+      // 2-step gradient, different color for immobile, blink and displace
+      let color = this.constructor.STYLES.move.color;
+      if (movement[0] < cost && cost <= maxMovement )
+        color = this.constructor.STYLES.stride.color;
+      else if (maxMovement < cost)
+        color = this.constructor.STYLES.exceed.color;
+      if  (maxMovement <= 0)
+        color = this.constructor.STYLES.immobile.color;
+      if (["blink", "displace"].includes(waypoint.action))
+        color = 0x0000aa;
+	  return {width: 4 * scale, color: color, alpha: 1};
+      }
+    }
 }
