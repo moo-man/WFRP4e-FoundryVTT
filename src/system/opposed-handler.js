@@ -174,7 +174,7 @@ export default class OpposedHandler {
     }
     let options = [
       { id : "unopposed", tooltip : game.i18n.localize("Unopposed"), icon : "fa-arrow-down" },
-      { id : "dodge", tooltip : game.i18n.localize("Dodge"), icon : "fa-reply" },
+      { id : "dodge", tooltip : game.i18n.localize("NAME.Dodge"), icon : "fa-reply" },
     ]
 
     if (actor)

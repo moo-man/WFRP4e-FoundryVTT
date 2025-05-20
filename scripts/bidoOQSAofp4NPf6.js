@@ -1,1 +1,1 @@
-return args?.skill?.name !== "Cool"
+return args?.skill?.name !== game.i18n.localize("NAME.Cool")
