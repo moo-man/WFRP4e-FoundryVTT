@@ -314,6 +314,8 @@ Hooks.once("init", () => {
 });
 ```
 
-The above example makes it so all `Human` characters can now pick `Wizard` as a replacement for rolled `Soldier`.
+The above example makes it so all `Human` characters can now pick `Wizard` as a replacement for rolled `Soldier` 
+(in addition to what they potentially can in case Up in Arms is enabled).
 
-Additionally, `Human (Salzenmunder)` characters that rolled `Engineer` are now able to choose either `Charlatan` or `Thief`.
+Additionally, `Human (Salzenmunder)` characters that rolled `Engineer` are now able to also choose either
+`Charlatan` or `Thief`.
