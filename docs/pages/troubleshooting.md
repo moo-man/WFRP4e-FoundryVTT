@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Troubleshooting
+nav_order: 60
 ---
 
 {: .warning}

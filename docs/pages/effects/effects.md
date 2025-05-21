@@ -2,6 +2,7 @@
 layout: default
 title: Active Effects
 has_children: true
+nav_order: 4
 ---
 
 {: .highlight}

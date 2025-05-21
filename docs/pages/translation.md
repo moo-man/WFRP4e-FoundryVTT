@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Translation
+nav_order: 50
 ---
 
 Complete translation of WFRP4e on Foundry is a multi-step involved process, each component detailed below. While some systems include translations in the system itself, I've determined the best avenue would be creating a standalone module introduce a translation. 
