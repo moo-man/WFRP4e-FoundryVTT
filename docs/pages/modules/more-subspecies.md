@@ -4,6 +4,11 @@ title: More Subspecies
 parent: Fan-made Modules
 ---
 
+![Module Version](https://img.shields.io/github/v/release/mcavallo/foundry-vtt-wfrp4e-more-subspecies?style=for-the-badge)
+![Foundry Min Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2Fmcavallo%2Ffoundry-vtt-wfrp4e-more-subspecies%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Min%20Version&query=$.compatibility.minimum&colorB=orange&style=for-the-badge)
+![Foundry Verified Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fgithub.com%2Fmcavallo%2Ffoundry-vtt-wfrp4e-more-subspecies%2Freleases%2Flatest%2Fdownload%2Fmodule.json&label=Foundry%20Verified&query=$.compatibility.verified&colorB=orange&style=for-the-badge)
+
+
 **Author:** [iKindred](https://foundryvtt.com/community/ikindred)  
 **Module:** [Foundry VTT](https://foundryvtt.com/packages/wfrp4e-more-subspecies) | [GitHub](https://github.com/mcavallo/foundry-vtt-wfrp4e-more-subspecies)
 
