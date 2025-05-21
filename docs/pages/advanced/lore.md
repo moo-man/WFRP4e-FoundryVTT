@@ -53,7 +53,7 @@ Hooks.once("init", () => {
 
   config.magicLores.ice = "Ice";
   config.magicWind.ice = "Azyr";
-  config.loreEffectDescriptions.ice = "<p>Ice Spells inflicting Damage cause the target to become <em>Chilled</em> for one minute, reducing their Agility by 10 and their Movement by 1 (down to minimum od 3). Target can suffer from only one <em>Chilled</em> Effect at a time."
+  config.loreEffectDescriptions.ice = "<p>Ice Spells inflicting Damage cause the target to become <em>Chilled</em> for one minute, reducing their Agility by 10 and their Movement by 1 (down to minimum od 3). Target can suffer from only one <em>Chilled</em> Effect at a time.</p>"
 
   config.loreEffects.ice = {
     name: "Chilled",
