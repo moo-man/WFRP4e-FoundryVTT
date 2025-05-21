@@ -855,7 +855,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
   async corruptionDialog(strength, skill) {
     skill = skill?.toLowerCase();
-    if (!["cool", "endurance"].includes(skill))
+    if (![game.i18n.localize("NAME.Cool").toLowerCase(), game.i18n.localize("NAME.Endurance").toLowerCase()].includes(skill))
     {
 
       skill = await foundry.applications.api.DialogV2.wait({
@@ -865,15 +865,15 @@ export default class ActorWFRP4e extends WarhammerActor
         content: `<p>${game.i18n.format("DIALOG.CorruptionContent", { name: this.name })}</p>`,
         buttons: [
           {
-            action : "endurance",
+            action : game.i18n.localize("NAME.Endurance"),
             label: game.i18n.localize("NAME.Endurance")
           },
           {
-            action : "cool",
+            action : game.i18n.localize("NAME.Cool"),
             label: game.i18n.localize("NAME.Cool")
           },
         ]
-      })
+      });
     }
 
     if (skill)

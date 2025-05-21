@@ -670,19 +670,19 @@ export default class TestWFRP extends WarhammerTestBase {
     let failed = this.failed
     let corruption = 0 // Corruption GAINED
     switch (strength) {
-      case game.i18n.localize("CORRUPTION.Minor").toLowerCase():
+      case "minor":
         if (failed)
           corruption++;
         break;
 
-        case game.i18n.localize("CORRUPTION.Moderate").toLowerCase():
+        case "moderate":
         if (failed)
           corruption += 2
         else if (this.result.SL < 2)
           corruption += 1
         break;
 
-        case game.i18n.localize("CORRUPTION.Major").toLowerCase():
+        case "major":
         if (failed)
           corruption += 3
         else if (this.result.SL < 2)
