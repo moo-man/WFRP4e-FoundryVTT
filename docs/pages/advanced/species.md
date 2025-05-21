@@ -14,7 +14,9 @@ nav_order: 20
 Adding new Species and Subspecies requires modifying the WFRP4e's config. You can achieve this using either 
 [World Script](./worldScripts.md) or Module.
 
-Config data can be found under the `game.wfrp4e.config` as soon as `init` hook.
+Config data can be found under the `game.wfrp4e.config` as soon as `init` hook.  
+Whenever this guide starts with `config` it means either `game.wfrp4e.config` or an object that will be merged with 
+`game.wfrp4e.config`
 
 ### Table of Contents
 - [Config Fields](#config-fields)
@@ -25,7 +27,24 @@ Config data can be found under the `game.wfrp4e.config` as soon as `init` hook.
 
 ## Config Fields
 There are 16 fields pertaining to the Species and Subspecies used by Chargen. All values should share matching key 
-representing the Species in their object field 
+representing the Species in their object field:
+
+- [`species`](#species)
+- [`speciesCharacteristics`](#speciescharacteristics)
+- [`speciesSkills`](#speciesskills)
+- [`speciesTalents`](#speciestalents)
+- [`speciesRandomTalents`](#speciesrandomtalents)
+- [`speciesTalentReplacement`](#speciestalentreplacement)
+- [`speciesTraits`](#speciestraits)
+- [`speciesMovement`](#speciesmovement)
+- [`speciesFate`](#speciesfate)
+- [`speciesRes`](#speciesres)
+- [`speciesExtra`](#speciesextra)
+- [`speciesAge`](#speciesage)
+- [`speciesHeight`](#speciesheight)
+- [`speciesCareerReplacements`](#speciescareerreplacements)
+- [`extraSpecies`](#extraspecies)
+- [`subspecies`](#subspecies)
 
 ### `species` 
 Holds displayed name for the species.
