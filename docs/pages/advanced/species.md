@@ -148,7 +148,7 @@ The above means the random height for Wolfkin is `5’2” + 1d10”`
 Holds an object describing what available career replacements there are
 ```js
 config.speciesCareerReplacements.wolfkin = {
-  "Flagellant": "Hunter"
+  "Flagellant": ["Hunter"]
 }
 ```
 The above will allow Wolfkin to pick `Hunter` career in case they rolled `Flagellant`
@@ -156,7 +156,10 @@ The above will allow Wolfkin to pick `Hunter` career in case they rolled `Flagel
 {: .highlight}
 > This is not typically used for new Species, as you should provide a dedicated Random Career Table
 > 
-> For existing Species it is also recommended to use the `game.wfrp4e.utility.mergeCareerReplacements` helper method instead of direct definitions to avoid overwriting.
+> For existing Species it is also recommended to use the `game.wfrp4e.utility.mergeCareerReplacements` helper method 
+> instead of direct definitions to avoid overwriting.
+> 
+> Check [Example 3](#example-3-add-career-replacements-to-human-and-human-salzenmunder) for details.
 
 ### `extraSpecies`
 This is an array that holds keys of Species that should appear in Chargen separate from rollable playable Species. 
@@ -293,3 +296,24 @@ Hooks.once("init", () => {
   foundry.utils.mergeObject(game.wfrp4e.config, config);
 });
 ```
+
+### Example 3: Add Career Replacements to Human and Human (Salzenmunder)
+
+Using the `game.wfrp4e.utility.mergeCareerReplacements` helper method we can safely add new career replacements without 
+worrying about potentially overwriting different module (such as Up in Arms).
+```js
+Hooks.once("init", () => {
+  game.wfrp4e.utility.mergeCareerReplacements({
+    human: {
+      "Soldier": ["Wizard"],
+    },
+    "human-salzenmunder": {
+      "Engineer": ["Charlatan", "Thief"],
+    },
+  });
+});
+```
+
+The above example makes it so all `Human` characters can now pick `Wizard` as a replacement for rolled `Soldier`.
+
+Additionally, `Human (Salzenmunder)` characters that rolled `Engineer` are now able to choose either `Charlatan` or `Thief`.
