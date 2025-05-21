@@ -46,6 +46,8 @@ representing the Species in their object field:
 - [`extraSpecies`](#extraspecies)
 - [`subspecies`](#subspecies)
 
+For the purpose of this guide we will be using `wolfkin` as the **key** of our new custom Species.
+
 ### `species` 
 Holds displayed name for the species.
 ```js
