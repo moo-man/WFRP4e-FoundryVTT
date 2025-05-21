@@ -21,6 +21,7 @@ Config data can be found under the `game.wfrp4e.config` as soon as `init` hook.
 - [Creating Career's Rolltable](#creating-careers-rolltable)
 - [Example 1: Add Wolfkin Species](#example-1-add-wolfkin-species)
 - [Example 2: Add "Arctic" Subspecies to the Wolfkin Species](#example-2-add-arctic-subspecies-to-the-wolfkin-species)
+- [Example 3: Add Career Replacements to Human and Human (Salzenmunder)](#example-3-add-career-replacements-to-human-and-human-salzenmunder)
 
 ## Config Fields
 There are 16 fields pertaining to the Species and Subspecies used by Chargen. All values should share matching key 
