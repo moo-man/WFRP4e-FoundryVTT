@@ -203,7 +203,7 @@ Available fields are:
 ```js
 Hooks.once("init", () => {
   const config = {
-    subspecies: {},
+    species: {},
     speciesCharacteristics: {},
     speciesSkills: {},
     speciesTalents: {},
@@ -218,6 +218,8 @@ Hooks.once("init", () => {
     speciesHeight: {}
   };
 
+  config.species.wolfkin = "Wolfkin";
+  
   config.speciesCharacteristics.wolfkin = {
     ws: "2d10+20",
     bs: "2d10+20",
