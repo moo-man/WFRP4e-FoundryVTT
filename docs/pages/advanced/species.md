@@ -176,7 +176,7 @@ config.speciesCareerReplacements.wolfkin = {
 The above will allow Wolfkin to pick `Hunter` career in case they rolled `Flagellant`
 
 {: .highlight}
-> This is not typically used for new Species, as you should provide a dedicated Random Career Table
+> This is not typically used for new Species, as you should provide a dedicated [Random Career Table](#creating-careers-rolltable)
 > 
 > For existing Species it is also recommended to use the `game.wfrp4e.utility.mergeCareerReplacements` helper method 
 > instead of direct definitions to avoid overwriting.
