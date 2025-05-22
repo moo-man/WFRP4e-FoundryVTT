@@ -694,7 +694,7 @@ export default class TestWFRP extends WarhammerTestBase {
 
     // Revert previous test if rerolled
     if (this.context.reroll || this.context.fortuneUsedAddSL) {
-      let previousFailed = this.context.previousResult.outcome == "failure";
+      let previousFailed = this.context.previousResult.outcome == "failure"
       switch (strength) {
         case game.i18n.localize("CORRUPTION.Minor").toLowerCase():
           if (previousFailed)
