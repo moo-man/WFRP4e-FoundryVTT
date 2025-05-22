@@ -206,7 +206,7 @@ export default class Advancement
             callback: () => { }
           }
         ]
-      }).render(true)
+      })
     }
   }
 
