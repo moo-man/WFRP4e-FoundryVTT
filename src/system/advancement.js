@@ -190,22 +190,22 @@ export default class Advancement
       return await foundry.applications.api.DialogV2.wait({
         window : {title: game.i18n.localize("DIALOG.GainPrayer")},
         content: `<p>${game.i18n.format("DIALOG.GainPrayerContent", { xp })}</p>`,
-        buttons: {
-          ok: {
-              action : "ok",
-              label: game.i18n.localize("Ok"),
+        buttons: [
+          {
+            action : "ok",
+            label: game.i18n.localize("Ok"),
             callback: () => {
               let newSpent = actor.details.experience.spent + xp
               let log = actor.system.addToExpLog(xp, game.i18n.format("LOG.GainPrayer", { name: miracle.name }), newSpent)
               actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
             }
           },
-          free: {
-              action : "free",
-              label: game.i18n.localize("Free"),
+          {
+            action : "free",
+            label: game.i18n.localize("Free"),
             callback: () => { }
           }
-        }
+        ]
       }).render(true)
     }
   }
