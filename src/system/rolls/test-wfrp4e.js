@@ -677,18 +677,18 @@ export default class TestWFRP extends WarhammerTestBase {
 
         case game.i18n.localize("CORRUPTION.Moderate").toLowerCase():
         if (failed)
-          corruption += 2;
+          corruption += 2
         else if (this.result.SL < 2)
-          corruption += 1;
+          corruption += 1
         break;
 
         case game.i18n.localize("CORRUPTION.Major").toLowerCase():
         if (failed)
-          corruption += 3;
+          corruption += 3
         else if (this.result.SL < 2)
-          corruption += 2;
+          corruption += 2
         else if (this.result.SL < 4)
-          corruption += 1;
+          corruption += 1
         break;
     }
 
@@ -703,9 +703,9 @@ export default class TestWFRP extends WarhammerTestBase {
 
         case game.i18n.localize("CORRUPTION.Moderate").toLowerCase():
           if (previousFailed)
-            corruption -= 2;
+            corruption -= 2
           else if (this.context.previousResult.SL < 2)
-            corruption -= 1;
+            corruption -= 1
           break;
 
         case game.i18n.localize("CORRUPTION.Major").toLowerCase():
