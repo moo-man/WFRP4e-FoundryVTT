@@ -1,4 +1,5 @@
 import Advancement from "../../system/advancement";
+import WFRP_Audio from "../../system/audio-wfrp4e";
 import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
@@ -129,6 +130,22 @@ export class SpellModel extends OvercastItemModel {
       if (foundry.utils.hasProperty(options.changed, "system.cn.SL"))
       {
           data.system.cn.SL = Math.max(data.system.cn.SL, 0);
+      }
+    }
+
+    async _onUpdate(dat, options, user)
+    {
+      if (this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
+      {
+        if (options.changed.system.memorized.value)
+        {
+          WFRP_Audio.PlayContextAudio({ item: this.parent, action: "memorize" })
+          await Advancement.memorizeCostDialog(this.parent, this.parent.actor)
+        }
+        else 
+        {
+          WFRP_Audio.PlayContextAudio({ item: this.parent, action: "unmemorize" })
+        }
       }
     }
 
