@@ -83,6 +83,7 @@ export default class TraitDialog extends AttackDialog {
       data.trait = trait;
       data.skill = skill;
       data.characteristic = trait.system.rollable.rollCharacteristic;
+      dialogData.fields.characteristic = trait.system.rollable.rollCharacteristic;
 
       if (trait.attackType == "melee")
       {
