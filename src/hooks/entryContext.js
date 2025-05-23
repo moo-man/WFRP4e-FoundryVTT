@@ -141,7 +141,7 @@ export default function () {
         condition: canApply,
         callback: li => {
 
-          if (li.find(".dice-roll").length) {
+          if (li.querySelector(".dice-roll")) {
             let amount = li.querySelector('.dice-total').textContent
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount))
           }
@@ -162,8 +162,8 @@ export default function () {
         icon: '<i class="fas fa-user-shield"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length) {
-            let amount = li.find('.dice-total').text();
+          if (li.querySelector(".dice-roll")) {
+            let amount = li.querySelector('.dice-total').textContent;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
@@ -183,8 +183,8 @@ export default function () {
         icon: '<i class="fas fa-fist-raised"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length) {
-            let amount = li.find('.dice-total').text();
+          if (li.querySelector(".dice-roll")) {
+            let amount = li.querySelector('.dice-total').textContent;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
@@ -204,8 +204,8 @@ export default function () {
         icon: '<i class="fas fa-skull-crossbones"></i>',
         condition: canApply,
         callback: li => {
-          if (li.find(".dice-roll").length) {
-            let amount = li.find('.dice-total').text();
+          if (li.querySelector(".dice-roll")) {
+            let amount = li.querySelector('.dice-total').textContent;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
