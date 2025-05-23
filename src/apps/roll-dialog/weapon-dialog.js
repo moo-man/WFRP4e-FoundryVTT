@@ -63,6 +63,9 @@ export default class WeaponDialog extends AttackDialog {
       data.weapon = weapon;
       data.hitloc = true;
 
+      data.scripts = data.scripts.concat(data.weapon?.getScripts("dialog").filter(s => !s.options.defending) || [])
+
+
       if (weapon.attackType == "ranged") 
       {
         // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
