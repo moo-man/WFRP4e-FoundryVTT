@@ -172,7 +172,7 @@ export default class WeaponDialog extends AttackDialog {
       if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) 
       {
         currentBand = band;
-        this.options.rangeBand = band;
+        this.context.rangeBand = band;
         break;
       }
     }
