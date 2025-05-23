@@ -39,6 +39,7 @@ constructor(document, options)
         context.tables =  game.wfrp4e.config.hitLocationTables
 
         context.fields = this.document.system.schema.fields;
+        context.source = this.document._source;
 
         context.displays = {}
 
