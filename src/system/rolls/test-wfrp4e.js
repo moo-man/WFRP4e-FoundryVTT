@@ -696,19 +696,19 @@ export default class TestWFRP extends WarhammerTestBase {
     if (this.context.reroll || this.context.fortuneUsedAddSL) {
       let previousFailed = this.context.previousResult.outcome == "failure"
       switch (strength) {
-        case "minor":
+        case game.i18n.localize("CORRUPTION.Minor").toLowerCase():
           if (previousFailed)
             corruption--;
           break;
 
-        case "moderate":
+        case game.i18n.localize("CORRUPTION.Moderate").toLowerCase():
           if (previousFailed)
             corruption -= 2
           else if (this.context.previousResult.SL < 2)
             corruption -= 1
           break;
 
-        case "major":
+        case game.i18n.localize("CORRUPTION.Major").toLowerCase():
           if (previousFailed)
             corruption -= 3
           else if (this.context.previousResult.SL < 2)
