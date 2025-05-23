@@ -2,6 +2,7 @@
 layout: default
 title: Macros
 has_children: true
+nav_order: 10
 ---
 ## System Generated Macros
 The system generates certain macros with drag and drop functionality.

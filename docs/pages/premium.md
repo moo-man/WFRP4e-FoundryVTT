@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Premium Content
+nav_order: 20
 ---
 
 There are four steps to take in acquiring and using Premium Content: Buying, Registering, Installing, and Activating
