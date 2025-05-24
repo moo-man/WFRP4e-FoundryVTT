@@ -582,7 +582,8 @@ export default class WFRP_Utility {
         let damage = target.dataset.damage
         html = game.i18n.format("ROLL.Misfire", { damage: damage });
       }
-      else {
+      else if (target.dataset.table) 
+      {
         html = await game.wfrp4e.tables.formatChatRoll(target.dataset.table,
           {
             modifier: modifier,
