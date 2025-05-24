@@ -223,25 +223,29 @@ export default class MarketWFRP4e {
     }
   }
 
-  static async handlePlayerPayment({msg = {}, payString = '', target}) {
-    let actor = target || game.user.character;
-    let itemData
-    if (msg?.flags?.transfer)
-      itemData = JSON.parse(msg.flags.transfer).data
-    if (actor) {
-      let money = MarketWFRP4e.payCommand(payString, actor);
-      if (money) {
-        WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
-        await actor.updateEmbeddedDocuments("Item", money);
-        if (itemData) {
-          await actor.createEmbeddedDocuments("Item", [itemData])
-          ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: itemData.name, actor: actor.name }))
-        }
-        return true;
-      }
-    } else {
+  static async handlePlayerPayment({payString = '', target}) {
+
+    // Priority: target argument -> controlled tokens -> assigned character
+    
+    let payments = [];
+    let actors = target ? [target] : warhammer.utility.selectedWithFallback();
+    if (actors.length == 0)
+    {
       ui.notifications.notify(game.i18n.localize("MARKET.NotifyNoActor"));
     }
+    else 
+    {
+      for(let actor of actors)
+      {
+        let money = MarketWFRP4e.payCommand(payString, actor);
+        if (money) {
+          WFRP_Audio.PlayContextAudio({ item: { "type": "money" }, action: "lose" })
+          await actor.updateEmbeddedDocuments("Item", money);
+          payments.push(actor);
+        }
+      }
+    }
+    return payments;
   }
 
   /**
@@ -329,7 +333,7 @@ export default class MarketWFRP4e {
     if (options.suppressMessage)
       ui.notifications.notify(msg)
     else
-      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "roll", false, {flavor : game.i18n.localize("MARKET.PayCommand")}));
+      ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "roll", false, {flavor : game.i18n.localize("MARKET.PayCommand"), alias : actor.name}));
     return moneyItemInventory;
   }
 
@@ -396,7 +400,7 @@ export default class MarketWFRP4e {
 
     if (game.dice3d && game.settings.get("wfrp4e", "throwMoney")) {
       new Roll(`${number}dc`).evaluate({allowInteractive : false}).then((roll) => {
-        game.dice3d.showForRoll(roll);
+        game.dice3d.showForRoll(roll, game.user, true);
       });
     }
   }

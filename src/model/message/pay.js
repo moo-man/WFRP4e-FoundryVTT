@@ -95,13 +95,13 @@ export class PayMessageModel extends WarhammerMessageModel {
   {
       if (!game.user.isGM) 
       {
-        game.wfrp4e.market.handlePlayerPayment({msg : this.parent, payString : this.payString})
+        game.wfrp4e.market.handlePlayerPayment({payString : this.payString})
       } 
       else 
       {
         for(let actor of targetsWithFallback())
         {
-          game.wfrp4e.market.handlePlayerPayment({msg : this.parent, payString: this.payString, target : actor})
+          game.wfrp4e.market.handlePlayerPayment({payString: this.payString, target : actor})
         }
       }
   }
