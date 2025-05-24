@@ -23,7 +23,7 @@
     @include window-header();
 
     .window-content {
-        background: url(./ui/backgrounds/bookshelf-background.webp.webp);
+        background: url(./ui/backgrounds/bookshelf-background.webp);
         border-width: 10px;
         border-image: url(./ui/borders/dialog-border.webp) repeat;
         border-image-slice: 10 13 13 13;
