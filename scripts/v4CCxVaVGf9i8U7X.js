@@ -1,4 +1,4 @@
-let cured = ValueDialog.create({text : "Enter the number of diseases/poisons cured", title : this.effect.name})
+let cured = await ValueDialog.create({text : "Enter the number of diseases/poisons cured", title : this.effect.name})
 
 let damage = 0;
 

@@ -769,7 +769,7 @@ export default class WFRP_Utility {
       case "weapon":
         return actor.setupWeapon(item, bypassData).then(test => test.roll());
       case "spell":
-        return actor.sheet.spellDialog(item, bypassData)
+        return actor.sheet.castOrChannelPrompt(item, bypassData).then(test => test.roll());
       case "prayer":
         return actor.setupPrayer(item, bypassData).then(test => test.roll());
       case "trait":
