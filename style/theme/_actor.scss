@@ -131,6 +131,7 @@
 
         .item-property-row {
             .twohanded-property,
+            a[data-action='stepProperty'],
             a[data-action='toggleProperty'],
             .property-icon {
                 border: 1px solid var(--color-faded);
@@ -140,6 +141,7 @@
                 @include shadowed(#6b3a0f2b, 3px)
             }
 
+            a[data-action='stepProperty'],
             a[data-action='toggleProperty'] {
                 height: 1.5rem;
                 line-height: 1.5rem;

@@ -51,7 +51,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         schema.loaded = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false }),
             repeater: new fields.BooleanField({ initial: false }),
-            amt: new fields.NumberField({ initial: 0 })
+            amt: new fields.NumberField({ min: 0, initial: 0 })
         });
         schema.offhand = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false })
@@ -127,10 +127,17 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     }
 
     get ammoList() {
-    if (this.ammunitionGroup.value == "throwing")
-        return this.parent.actor.itemTags["weapon"].filter(i => i.weaponGroup.value == "throwing")
-    else 
-        return this.parent.actor.itemTags["ammunition"].filter(a => a.ammunitionType.value == this.ammunitionGroup.value)
+        let ammo;
+        if (this.ammunitionGroup.value == "throwing")
+            ammo = this.parent.actor.itemTags["weapon"].filter(i => i.weaponGroup.value == "throwing").map(i => i.toObject())
+        else
+            ammo = this.parent.actor.itemTags["ammunition"].filter(a => a.ammunitionType.value == this.ammunitionGroup.value).map(i => i.toObject())
+
+        ammo.forEach(i => {
+            let location = this.parent.actor.items.get(i.system.location.value);
+            i.name = `(${i.system.quantity.value}) ${i.name} ${location ? "- " + location.name : ""}`.trim();
+        });
+        return ammo;
     }
 
     get Damage() {
@@ -203,6 +210,39 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
         if (foundry.utils.hasProperty(data, "system.equipped")) {
             data["system.offhand.value"] = false;
+        }
+
+        if (foundry.utils.hasProperty(options, "changed.system.loaded"))
+        {
+            let loaded = data.system.loaded; 
+
+            if (loaded.amt > this.loaded.max)
+            {
+                loaded.amt = this.loaded.max;
+            }
+
+            if (loaded.amt == 0)
+            {
+                loaded.value = false;
+            }
+
+            if (options.changed.system?.loaded?.value)
+            {
+                loaded.amt = this.loaded.max || 1;
+            }
+            else if (options.changed.system?.loaded?.value == false)
+            {
+                loaded.amt = 0;
+            }
+        }
+    }
+
+    async _onUpdate(data, options,user)
+    {
+        await super._onUpdate(data, options, user);
+        if (foundry.utils.hasProperty(options, "changed.system.loaded") && this.parent.actor)
+        {
+            this.parent.actor.checkReloadExtendedTest(this.parent);
         }
     }
 

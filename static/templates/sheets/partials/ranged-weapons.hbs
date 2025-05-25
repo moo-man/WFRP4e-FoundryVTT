@@ -4,7 +4,7 @@
             <div>{{localize "Group"}}</div>
             <div>{{localize "Ammunition"}}</div>
             <div>{{localize "Damage"}}</div>
-            <div>{{localize "Range"}}</div>
+            <div class="small" >{{localize "Range"}}</div>
         </div>
         <div class="list-content weapon-list">
             {{#each weapons}}
@@ -17,15 +17,10 @@
                             </div>
                             <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
                             <select data-action="editProperty" data-path="system.currentAmmo.value">
-                            {{#select this.currentAmmo.value}}
-                                <option value="">{{localize "NoneAmmo"}}</option>
-                                {{#each this.ammoList as |ammo|}}
-                                <option value="{{ammo.id}}"> ({{ammo.quantity.value}}) {{ammo.name}} {{#if ammo.location.name}}– {{ammo.location.name}}{{/if}}</option>
-                                {{/each}}
-                            {{/select}}
+                                {{selectOptions this.ammoList  selected=this.currentAmmo.value blank="-" nameAttr="_id" labelAttr="name"}}
                             </select>
                             <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
-                            <a data-action="combatDropdown" data-property="range">{{this.Range}} {{localize "yds"}}</a>
+                            <a class="small" data-action="combatDropdown" data-property="range">{{this.Range}} {{localize "yds"}}</a>
                         </div>
                         <div class="item-property-row">
                             {{#if this.twohanded.value}}
@@ -39,14 +34,14 @@
                             {{#if this.system.loading}}
                                 {{#if this.system.loaded.value}}
                                     {{#if this.system.repeater}}
-                                        <a data-action="toggleProperty" data-path="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
+                                        <a data-action="stepProperty" data-path="system.loaded.amt">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
                                             {{localize "Loaded"}}</a>
                                     {{else}}
                                         <a data-action="toggleProperty" data-path="system.loaded.value"><i class="far fa-check-circle"></i> {{localize "Loaded"}}</a>
                                     {{/if}}
                                 {{else}}
                                     {{#if this.system.repeater}}
-                                        <a data-action="toggleProperty" data-path="system.loaded.value">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
+                                        <a data-action="stepProperty" data-path="system.loaded.amt">{{this.system.loaded.amt}}/{{this.system.loaded.max}}
                                             {{localize "Loaded"}}</a>
                                     {{else}}
                                         <a data-action="toggleProperty" data-path="system.loaded.value"><i class="far fa-circle"></i> {{localize "Loaded"}}</a>
