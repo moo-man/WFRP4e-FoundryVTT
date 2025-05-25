@@ -1,0 +1,1 @@
+return ["ws", "ag"].includes(args.characteristic);

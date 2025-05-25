@@ -5,7 +5,10 @@ export default class CareerSheet extends BaseWFRP4eItemSheet
   static type="career"
 
   static DEFAULT_OPTIONS = {
-    classes: [this.type]
+    classes: [this.type],
+    actions : {
+      copySkills : this._onCopySkills
+    }
   }
   
   static PARTS = {
@@ -50,6 +53,12 @@ export default class CareerSheet extends BaseWFRP4eItemSheet
     {
       this.element.querySelector(`.${this.focus} .empty`)?.focus();
     }
+  }
+
+  static _onCopySkills(ev, target)
+  {
+    navigator.clipboard.writeText(this.item.system.skills.join(", "));
+    ui.notifications.info("Copied skills to clipboard")
   }
 
 }

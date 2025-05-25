@@ -1,0 +1,1 @@
+args.abort = `Only gunpowder or artillery weapons can attack targets within the ${this.effect.name}`;

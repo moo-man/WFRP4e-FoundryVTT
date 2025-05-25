@@ -1,0 +1,1 @@
+args.fields.slBonus += this.effect.sourceActor.system.characteristics.fel.bonus;

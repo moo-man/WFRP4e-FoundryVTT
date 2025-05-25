@@ -1,0 +1,1 @@
+return args.type !== "pray" || args.item?.system?.type?.value !== "miracle" || args.item?.system?.god?.value?.toLowerCase() !== "taal";

@@ -1133,7 +1133,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-archives3" : "Archives of the Empire: Vol III.",
     "wfrp4e-ua3" : "Ubersreik Adventures III",
     "wfrp4e-tribes" : "Tribes & Tribulations",
-    "wfrp4e-owb3" : "Places & Perils"
+    "wfrp4e-owb3" : "Places & Perils",
+    "wfrp4e-dslf" : "Deft Steps Light Fingers"
 }
 
 WFRP4E.copyrightText = `

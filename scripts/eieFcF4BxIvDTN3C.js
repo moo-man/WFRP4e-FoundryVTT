@@ -1,0 +1,1 @@
+args.abort = `Cannot perform Ranged Attacks within ${this.effect.name}`;

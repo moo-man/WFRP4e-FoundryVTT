@@ -30,7 +30,7 @@
 
     <div class="form-group skills" data-group="skills">
         <div class="career-list">
-        <label>{{localize "Skills"}}</label>
+        <label>{{localize "Skills"}} <a data-action="copySkills"><i class="fa-solid fa-copy"></i></a></label>
             <div class="list-container" data-path="system.skills">
                 {{#each system.skills}}
                     <input class="skill" data-action="editList" data-index="{{@key}}" onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" type="text" value="{{this}}">

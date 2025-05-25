@@ -153,6 +153,18 @@ export class CareerModel extends BaseItemModel
     ]);
   }
 
+  async _preUpdate(data, options, user)
+  {
+    await super._preUpdate(data, options, user);
+
+    // If the last skill inputted has commas, separate them into their own array elements
+    let skills = foundry.utils.getProperty(data, "system.skills")
+    if (skills && skills[skills.length - 1]?.includes(","))
+    {
+      foundry.utils.setProperty(data, "system.skills", skills.slice(0, skills.length - 1).concat(skills[skills.length - 1].split(",").map(i => i.trim())));
+    }
+  }
+
 
     async _onCreate(data, options, user)
     {

@@ -1,0 +1,1 @@
+args.fields.slBonus += this.effect.getFlag("wfrp4e", "slBonus") || 0;

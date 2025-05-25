@@ -1,0 +1,1 @@
+return this.sourceActor.uuid === this.actor.uuid || !["ws", "ag"].includes(args.characteristic);

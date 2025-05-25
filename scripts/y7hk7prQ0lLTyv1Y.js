@@ -1,0 +1,1 @@
+return args.item?.system?.isRanged && (args.item.system.weaponGroup.value !== "blackpowder" || args.item.system.weaponGroup.value !== "engineering")
