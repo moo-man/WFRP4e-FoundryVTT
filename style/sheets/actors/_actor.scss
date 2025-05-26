@@ -22,6 +22,16 @@
             width: 95px;
             height: 95px;
         }
+
+        &.limited {
+            height: 145px;
+        }
+    }
+
+    .editor-section.limited {
+        prose-mirror {
+            height: calc(100% - 1.5rem);
+        }
     }
 
     .detail-row {

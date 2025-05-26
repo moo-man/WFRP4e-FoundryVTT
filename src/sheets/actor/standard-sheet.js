@@ -175,6 +175,18 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
   }
   //#endregion
 
+  
+  _configureLimitedParts(options)
+  {
+      let limited = {
+          header : {scrollable: [""], template : 'systems/wfrp4e/templates/sheets/actor/limited/limited-header.hbs', classes: ["sheet-header", "limited"] },
+          notes: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/actor/limited/limited-notes.hbs', classes: ["limited"]  },
+      };
+      Object.values(limited).forEach(p => p.templates ??= []);
+      return limited;
+  }
+
+
   _addEventListeners()
   {    
     super._addEventListeners();
