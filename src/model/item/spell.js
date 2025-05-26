@@ -131,9 +131,20 @@ export class SpellModel extends OvercastItemModel {
       {
           data.system.cn.SL = Math.max(data.system.cn.SL, 0);
       }
+
+      if (foundry.utils.hasProperty(options, "changed.system.cn.SL") && game.settings.get("wfrp4e", "useWoMChannelling") && !options.updateWoM)
+      {
+        let items = this.parent.actor?.items.filter(s => s.type == "spell" && s.system.lore.value == this.lore.value && s.id != this.parent.id).map(s => {
+          return {
+            _id : s.id,
+            "system.cn.SL" : options.changed.system.cn.SL
+          }
+        })
+        this.parent.actor?.updateEmbeddedDocuments("Item", items, {updateWoM : true});
+      }
     }
 
-    async _onUpdate(dat, options, user)
+    async _onUpdate(data, options, user)
     {
       if (this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
       {

@@ -357,36 +357,25 @@ export default class ChannelTest extends TestWFRP {
     return this.item
   }
 
-  // WoM channelling updates all items of the lore channelled
-  updateChannelledItems(slDelta)
+  updateChannelledItems(slDelta) 
   {
-    let items = [this.item];
-    if (game.settings.get("wfrp4e", "useWoMChannelling"))
-    {
-      items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value)
+    let item = this.item.toObject();
+    item.system.cn.SL += slDelta
+    let computedCN = item.system.memorized.value ? item.system.cn.value : item.system.cn.value * 2
+
+    // THIS WHOLE PROCESS CAN GO TO HELL
+    // Cap SL to CN if WoM channelling is disabled
+    if (!game.settings.get("wfrp4e", "useWoMChannelling")) {
+      this.result.pastSL = item.system.cn.SL - computedCN; // Needed to accurately account for edits and change in SL
+      item.system.cn.SL = Math.min(computedCN, item.system.cn.SL);
     }
+    if (item.system.cn.SL < 0) {
+      this.result.pastSL = item.system.cn.SL
+    }
+    item.system.cn.SL = Math.max(0, item.system.cn.SL)
 
-    items = items.map(i => i.toObject());
-    items.forEach(i => {
-      i.system.cn.SL += slDelta
-      let computedCN = i.system.memorized.value ? i.system.cn.value : i.system.cn.value * 2
-
-      // THIS WHOLE PROCESS CAN GO TO HELL
-      // Cap SL to CN if WoM channelling is disabled
-      if (!game.settings.get("wfrp4e", "useWoMChannelling"))
-      {
-        this.result.pastSL = i.system.cn.SL - computedCN; // Needed to accurately account for edits and change in SL
-        i.system.cn.SL = Math.min(computedCN, i.system.cn.SL);
-      }
-      if (i.system.cn.SL < 0)
-      {
-        this.result.pastSL = i.system.cn.SL
-      }
-      i.system.cn.SL = Math.max(0, i.system.cn.SL) 
-    });
-
-    this.actor.updateEmbeddedDocuments("Item", items)
-    return items[0].system.cn.SL
+    this.actor.updateEmbeddedDocuments("Item", [item])
+    return item.system.cn.SL
   }
 
 }
