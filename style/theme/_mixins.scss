@@ -322,6 +322,26 @@
         }
     }
 
+    blockquote.parchment {
+        background: none;
+        border: 25px solid transparent;
+        border-image: url(./ui/backgrounds/stamp-background.webp);
+        border-image-slice: 150 fill;
+        filter: drop-shadow(0 0 3px black);
+
+        &:not(.no-image)::after {
+            background-image: url(./ui/misc/stamp.webp);
+            background-size: 62px 60px;
+            content: "";
+            width: 62px;
+            height: 60px;
+            float: right;
+            position: relative;
+            top: -50px;
+            right: -16px;
+        }
+    }
+
     ul li::marker{
         font-family: OnlySkulls;
         content: "0";
