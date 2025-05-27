@@ -31,6 +31,9 @@ if (god)
     {
         this.script.notification(`Could not find any Blessings associated with ${god}.`)
     }
-    this.item.updateSource({name : this.item.name.replace("Any", god)})
+    if (this.item.name.includes("Any"))
+        this.item.updateSource({name: this.item.name.replace("Any", god)});
+    else
+        this.item.updateSource({name: this.item.name + ` (${god})`});
     await this.actor.update({"system.details.god.value": god})
 }
