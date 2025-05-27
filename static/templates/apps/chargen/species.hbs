@@ -28,7 +28,7 @@
     {{#if context.choose}}
     <div><b>{{localize "Choose"}}:</b> {{configLookup "species" context.choose}}</div>
     {{else if context.roll}}
-    <div><b>{{localize "Roll"}}:</b> {{context.roll.roll}} - {{context.roll.result}}</div>
+    <div><b>{{localize "Roll"}}:</b> {{context.roll.roll}} - {{context.roll.name}}</div>
     {{/if}}
 
 

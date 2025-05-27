@@ -128,6 +128,12 @@ export default class CharGenWfrp4e extends FormApplication {
       ui.notifications.warn(game.i18n.localize("CHARGEN.NoGMWarning"), {permanent : true})
     }
 
+    let speciesTable = game.wfrp4e.tables.findTable("species");
+
+    if (speciesTable.results.some(i => !i.name))
+    {
+      ui.notifications.warn("The configured Species table is from an older version and may not be compatible with character creation in V13. To ensure it works correctly, please delete and reimport the table from the compendium.", {permanent : true})
+    }
 
     Hooks.call("wfrp4e:chargen", this)
   }
@@ -353,38 +359,36 @@ export default class CharGenWfrp4e extends FormApplication {
         return i instanceof Item.implementation ? i.toObject() : i
       })
 
+
+      // Must create items separately so preCreate scripts run
+      let actorItems = this.actor.items;
+      this.actor.items = [];
+
       if (game.user.isGM || game.settings.get("core", "permissions").ACTOR_CREATE.includes(game.user.role))
       {
-        // Must create items separately so preCreate scripts run
-        let actorItems = this.actor.items;
-        this.actor.items = [];
-        let document = await Actor.create(this.actor, {skipItems : true});
+
+        let document = await Actor.implementation.create(this.actor, {skipItems : true});
         await document.createEmbeddedDocuments("Item", actorItems, {skipSpecialisationChoice : true})
-        for(let i of document.items.contents)
-        {
-          // Run onCreate scripts
-          await i._onCreate(i._source, {}, game.user.id);
-        }
+        // for(let i of document.items.contents)
+        // {
+        //   // Run onCreate scripts
+        //   await i._onCreate(i._source, {}, game.user.id);
+        // }
         document.sheet.render(true);
         localStorage.removeItem("wfrp4e-chargen")
       }
       else {
-        // Create temp actor to handle any immediate scripts
-        let tempActor = await Actor.create(this.actor, {temporary: true})
-        for(let i of tempActor.items.contents)
-        {
-          // Run preCreate scripts
-          await i._preCreate(i._source, {skipSpecialisationChoice : true}, game.user.id);
-        }
-        const payload =  {id : game.user.id, data : tempActor.toObject(), options : {skipSpecialisationChoice : true}}
+        const payload =  {id : game.user.id, data : this.actor, options : {skipSpecialisationChoice : true}}
         let id = await SocketHandlers.executeOnUserAndWait("GM", "createActor", payload);
         let actor = game.actors.get(id);
-        if (actor && actor.isOwner) {
-          for(let i of actor.items.contents)
-          {
-            // Run onCreate scripts
-            await i._onCreate(i._source, {}, game.user.id);
-          }
+        await actor.createEmbeddedDocuments("Item", actorItems, {skipSpecialisationChoice : true})
+        if (actor && actor.isOwner) 
+        {
+          // for(let i of actor.items.contents)
+          // {
+          //   // Run onCreate scripts
+          //   await i._onCreate(i._source, {}, game.user.id);
+          // }
           actor.sheet.render(true)
           localStorage.removeItem("wfrp4e-chargen")
         }

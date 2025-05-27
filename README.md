@@ -168,6 +168,8 @@ npm run pack
 
 - [Places & Perils](https://foundryvtt.com/packages/wfrp4e-owb3/) - Contains seven more titles previously released as short PDF only options that will help expand your WFRP adventures, this time focused on various locations and people.
 
+- [Deft Steps Light Fingers](https://foundryvtt.com/packages/wfrp4e-dslf/) - A supplement for playing Characters in the Rogue or Ranger class.
+
 **Unofficial**
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!

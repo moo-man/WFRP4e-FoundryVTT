@@ -96,6 +96,7 @@ export default class WFRP_Tables {
         result : rollResult?.getChatText(),
         roll : displayTotal,
         total : rollValue,
+        name : rollResult?.name,
         object : rollResult?.toObject(),
         title : table.name,
       }

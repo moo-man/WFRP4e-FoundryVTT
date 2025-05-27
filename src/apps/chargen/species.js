@@ -48,10 +48,10 @@ export class SpeciesStage extends ChargenStage {
 
     for (let result of speciesTable.results)
     {
-      let speciesKey = warhammer.utility.findKey(result.text, game.wfrp4e.config.species)
+      let speciesKey = warhammer.utility.findKey(result.name, game.wfrp4e.config.species)
       if (speciesKey)
       {
-        data.species[speciesKey] = result.text
+        data.species[speciesKey] = result.name
       }
     }
 
@@ -139,8 +139,8 @@ export class SpeciesStage extends ChargenStage {
     this.context.exp = 20;
     this.context.roll = await game.wfrp4e.tables.rollTable("species");
     this.context.choose = false;
-    this.updateMessage("Rolled", {rolled : this.context.roll.result})
-    this.setSpecies(findKey(this.context.roll.result, game.wfrp4e.config.species));
+    this.updateMessage("Rolled", {rolled : this.context.roll.name})
+    this.setSpecies(findKey(this.context.roll.name, game.wfrp4e.config.species));
   }
 
   // Set chosen species, but don't unset "roll" (prevents users from rolling again after they've rolled once)
