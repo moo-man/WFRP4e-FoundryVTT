@@ -292,7 +292,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         try {
           let result  = table.results.find(r => r.getFlag("wfrp4e", "loc") == loc)
           if (result)
-          AP[loc].label = game.i18n.localize(result.text)
+          AP[loc].label = game.i18n.localize(result.description)
           else
           AP[loc].show = false;
         }

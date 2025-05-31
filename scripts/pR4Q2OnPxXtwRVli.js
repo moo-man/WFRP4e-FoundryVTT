@@ -6,7 +6,7 @@ if (criticals.length)
     this.actor.deleteEmbeddedDocuments("Item", criticals.map(i => i.id))
 }
 
-if (getProperty(args.data, "system.status.wounds.value") == 0)
+if (foundry.utils.getProperty(args.data, "system.status.wounds.value") == 0)
 {
     this.script.notification(`Dormant for ${Math.ceil(CONFIG.Dice.randomUniform() * 10)} Rounds`)
 }
