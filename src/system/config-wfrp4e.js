@@ -1343,6 +1343,18 @@ WFRP4E.PrepareSystemItems = function() {
                                         this.item.updateSource({name : this.item.name + " (" + name + ")" })
                                     }
                                     `
+                                },
+                                {
+                                    trigger: "endRound",
+                                    label: "Roll to remove Fear",
+                                    script: `
+                                        const test = await this.actor.setupExtendedTest(this.effect.item, {
+                                            fields: {difficulty: "challenging"}, 
+                                            skipTargets: true, 
+                                            appendTitle :  \` - \${this.effect.name}\`, 
+                                        });
+                                        await test.roll();
+                                    `,
                                 }
                             ]
                         }
