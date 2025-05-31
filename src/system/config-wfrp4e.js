@@ -2101,7 +2101,19 @@ WFRP4E.PrepareSystemItems = function() {
                         trigger: "prePrepareData",
                         label: "Half Movement",
                         script: `args.actor.system.details.move.value /= 2`
-                    }
+                    },
+                    {
+                        trigger: "endRound",
+                        label: "Roll to remove Stunned",
+                        script: `
+const test = await this.actor.setupSkill(game.i18n.localize("NAME.Endurance"), {fields: {difficulty: "challenging"}, skipTargets: true, appendTitle :  \` - \${this.effect.name}\`, context: {success: "Removed SL + 1 Conditions.", failure: "Failed to remove Conditions."}});
+await test.roll();
+if (test.succeeded) {
+  const toRemove = 1 + Number(test.result.SL);
+  this.actor.removeCondition("stunned", toRemove);
+}
+                    `,
+                    },
                     // { // Not sure what to do about this
                     //     trigger: "dialog",
                     //     label : "Bonus to Melee Attacks",
