@@ -66,7 +66,7 @@ export default function() {
 
     game.settings.register("wfrp4e", "homebrew", {
       name: "Hombrew Settings",
-      scope: "client",
+      scope: "world",
       config: false,
       type: HomebrewConfig.schema
     });
