@@ -11,14 +11,14 @@ export default function () {
   /**
    * Add right click option to actors to add all basic skills
    */
-  Hooks.on("getActorDirectoryEntryContext", async (html, options) => {
+  Hooks.on("getActorContextOptions", async (html, options) => {
     options.push(
       {
         name: game.i18n.localize("ACTOR.AddBasicSkills"),
         condition: game.user.isGM,
         icon: '<i class="fas fa-plus"></i>',
         callback: target => {
-          const actor = game.actors.get(target.attr('data-document-id'));
+          const actor = game.actors.get(target.dataset.entryId);
           actor.addBasicSkills();
         }
       })
@@ -28,7 +28,7 @@ export default function () {
         name: game.i18n.localize("ACTOR.ClearMount"),
         icon: '<i class="fas fa-horse"></i>',
         callback: target => {
-          const actor = game.actors.get(target.attr('data-document-id'));
+          const actor = game.actors.get(target.dataset.entryId);
           return actor.update({
             "system.status.mount": {
               "id": "",
@@ -49,7 +49,7 @@ export default function () {
         condition: game.user.isGM,
         icon: '<i class="fa fa-download"></i>',
         callback: target => {
-          const actor = game.actors.get(target.attr('data-document-id'));
+          const actor = game.actors.get(target.dataset.entryId);
           new StatBlockParser(actor).render(true)
         }
       })

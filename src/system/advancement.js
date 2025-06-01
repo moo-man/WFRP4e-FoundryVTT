@@ -427,7 +427,7 @@ export default class Advancement
       {
         for (let i = 0; i < talent; i++) {
           let result = await game.wfrp4e.tables.rollTable("talents")
-          talentsToAdd.push(await this._advanceTalent(result.object.text));
+          talentsToAdd.push(await this._advanceTalent(result.object.name));
         }
         continue
       }

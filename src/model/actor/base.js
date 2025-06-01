@@ -104,10 +104,11 @@ export class BaseActorModel extends BaseWarhammerActorModel {
     // Resize tokens based on size property
     checkSize() {
         let actor = this.parent
-        if (game.user.id != getActiveDocumentOwner(actor)?.id) {
-            return
-        }
-        if (actor.flags.autoCalcSize && game.canvas.ready) {
+
+        // if (game.user.id != getActiveDocumentOwner(actor)?.id) {
+        //     return
+        // }
+        if (actor.system.autoCalc.size && game.canvas.ready) {
             let tokenData = this.tokenSize();
             if (actor.isToken) 
             {

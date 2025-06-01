@@ -14,7 +14,7 @@ let index = game.packs
 	return i
 })
 
-let choice = await ItemDialog.create(index, 1, "Choose a Trade Skill")
+let choice = await ItemDialog.create(index, 1, {text : "Choose a Trade Skill, or select none to enter manually.", title : this.effect.name})
 let text;
 if (!choice[0])
 {
