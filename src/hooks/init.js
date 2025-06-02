@@ -274,16 +274,6 @@ export default function() {
       type: Boolean
     });
 
-    // Register Manual Chat Cards
-    game.settings.register("wfrp4e", "manualChatCards", {
-      name: "SETTINGS.ManualChatCards",
-      hint: "SETTINGS.ManualChatCardsHint",
-      scope: "client",
-      config: true,
-      default: false,
-      type: Boolean
-    });
-
     game.settings.register("wfrp4e", "weaponLength", {
       name: "SETTINGS.WeaponLength",
       hint: "SETTINGS.WeaponLengthHint",

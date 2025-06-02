@@ -860,10 +860,6 @@ export default class TestWFRP extends WarhammerTestBase {
 
     this.result.breakdown.formatted = this.formatBreakdown()
 
-    // Blank if manual chat cards
-    if (game.settings.get("wfrp4e", "manualChatCards") && !this.message)
-      this.result.roll = this.result.SL = null;
-
     if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && messageData.sound?.includes("dice"))
       messageData.sound = undefined;
 
@@ -882,19 +878,6 @@ export default class TestWFRP extends WarhammerTestBase {
     let html = await foundry.applications.handlebars.renderTemplate(messageData.template, templateData)
 
     if (newMessage || !this.message) {
-      // If manual chat cards, convert elements to blank inputs
-      if (game.settings.get("wfrp4e", "manualChatCards")) {
-        let blank = $(html)
-        let elementsToToggle = blank.find(".display-toggle")
-
-        for (let elem of elementsToToggle) {
-          if (elem.style.display == "none")
-            elem.style.display = ""
-          else
-            elem.style.display = "none"
-        }
-        html = blank.html();
-      }
 
       messageData.content = html;
       if (messageData.sound)
