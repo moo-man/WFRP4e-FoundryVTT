@@ -532,6 +532,7 @@ WFRP4E.armorTypes = {
     "boiledLeather": "WFRP4E.ArmourType.BLeather",
     "mail": "WFRP4E.ArmourType.Mail",
     "plate": "WFRP4E.ArmourType.Plate",
+    "gromril": "WFRP4E.ArmourType.Gromril",
     "other": "WFRP4E.ArmourType.Other",
     "otherMetal": "WFRP4E.ArmourType.OtherMetal"
 };
