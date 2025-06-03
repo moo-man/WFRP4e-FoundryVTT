@@ -30,6 +30,7 @@ Borri
 Bradni
 Brand
 Brogar
+Brokk
 Brokk(i)
 Brond(i)
 Bronn
@@ -47,7 +48,6 @@ Dern
 Dimgol
 Dimrond
 Dimzad
-Dorin
 Dorin
 Dorri
 Drakki
@@ -143,6 +143,7 @@ Kargun
 Katalin
 Kaz(a)rik
 Kaz(i)
+Kazadar
 Kazador
 Kazgar
 Kazran
@@ -219,7 +220,6 @@ Thungni
 Thurgrom
 Thyk
 Trygg
-Ulfar
 Ulfar
 Ulrik
 Ulther
