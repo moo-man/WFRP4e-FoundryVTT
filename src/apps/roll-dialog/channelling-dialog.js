@@ -6,11 +6,7 @@ export default class ChannellingDialog extends SkillDialog {
     chatTemplate = "systems/wfrp4e/templates/chat/roll/channel-card.hbs"
     testClass = ChannelTest
 
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["channel-roll-dialog"]);
-        return options;
-    }
+
 
     get item()
     {
@@ -24,15 +20,15 @@ export default class ChannellingDialog extends SkillDialog {
 
     static PARTS = {
         fields : {
-            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
-            container : {id : "base", classes : ["dialog-base"]}
+            template : "systems/wfrp4e/templates/dialog/type/base-dialog.hbs",
+            fields: true
         },
         modifiers : {
             template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
-            container : {id : "base", classes : ["dialog-base"]}
+            modifiers: true
         },
         specific : {
-            template : "systems/wfrp4e/templates/dialog/v2/channel-dialog.hbs",
+            template : "systems/wfrp4e/templates/dialog/type/channel-dialog.hbs",
         },
         footer : {
             template : "templates/generic/form-footer.hbs"

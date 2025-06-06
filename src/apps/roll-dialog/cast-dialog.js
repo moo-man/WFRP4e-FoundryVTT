@@ -6,11 +6,6 @@ export default class CastDialog extends SkillDialog {
     testClass = game.settings.get("wfrp4e", "useWoMOvercast") ? game.wfrp4e.rolls.WomCastTest : game.wfrp4e.rolls.CastTest
     chatTemplate = "systems/wfrp4e/templates/chat/roll/spell-card.hbs"
 
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["spell-roll-dialog"]);
-        return options;
-    }
 
     get item()
     {
@@ -25,15 +20,15 @@ export default class CastDialog extends SkillDialog {
     
     static PARTS = {
         fields : {
-            template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
-            container : {id : "base", classes : ["dialog-base"]}
+            template : "systems/wfrp4e/templates/dialog/type/base-dialog.hbs",
+            fields: true
         },
         modifiers : {
             template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
-            container : {id : "base", classes : ["dialog-base"]}
+            modifiers: true
         },
         specific : {
-            template : "systems/wfrp4e/templates/dialog/v2/spell-dialog.hbs",
+            template : "systems/wfrp4e/templates/dialog/type/spell-dialog.hbs",
         },
         footer : {
             template : "templates/generic/form-footer.hbs"

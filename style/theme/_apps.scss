@@ -19,15 +19,6 @@ body:not(.no-theme):not(.theme-light) {
     }
 
     .warhammer.application {
-
-        &.hombrew-config {
-            .window-content {
-                > div {
-                    overflow: auto;
-                }
-            }
-        }   
-
         &.roll-dialog-v2 {
             @include wfrp-form;
 

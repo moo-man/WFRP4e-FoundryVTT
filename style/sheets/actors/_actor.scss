@@ -168,7 +168,6 @@
     }
 
     .attribute-box {
-        margin: 5px 0px;
 
         &.movement {
             flex: 2;
@@ -212,15 +211,13 @@
 
     fieldset {
         border-color: var(--attribute-border);
-        margin: 10px 0px;
     }
     .armour-section 
     {
-        > .flexrow {
+        > .flexrow:not(:first-child) {
             margin-top: 0.5rem;
         }
         .sheet-list {
-            margin-top: 0px;
         }
         .ap-source {
             text-align: center;
@@ -255,6 +252,10 @@
                 padding: 0px 0.2rem;
             }
         }
+    }
+
+    .group-actions.collapsed {
+        margin-bottom: -0.5rem; // offset gap when collapsed
     }
 
     .group-actions.expanded {

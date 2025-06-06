@@ -252,6 +252,25 @@
         @include h6;
     }
 
+    figure {
+        img {
+            box-shadow: none;
+        }
+    }
+
+    .content-embed {
+        .embed-caption {
+
+            color: black;
+            margin: 0px 1rem;
+        }
+        figcaption {
+            cite {
+                font-style: normal
+            }
+        }
+    }
+
     p code {
         font-family: "Lucida Console";
     }

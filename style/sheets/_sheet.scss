@@ -4,15 +4,20 @@
 --condition-control-bg : var(--color-cool-4);  
 
 
+    .window-content {
+        gap: 0.5rem;
+    }
+
+
     section.tab[data-tab="effects"] {
         &.active {
             display : flex;
+            flex-direction: row;
         }
         .condition-section {
             display: flex;
             flex-direction: column;
             flex: 0 0 8rem;
-            margin-right: 0.5rem;
             gap: 3px;
             .condition {
                 height: 2rem;
@@ -38,6 +43,9 @@
         }
 
         .effect-lists {
+            gap: 0.5rem;
+            display: flex;
+            flex-direction: column;
             flex: 1;
             .flex {
                 i {

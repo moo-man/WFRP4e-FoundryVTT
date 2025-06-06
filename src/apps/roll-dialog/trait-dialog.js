@@ -7,12 +7,6 @@ export default class TraitDialog extends AttackDialog {
     testClass = TraitTest
     chatTemplate = "systems/wfrp4e/templates/chat/roll/weapon-card.hbs"
 
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["trait-roll-dialog"]);
-        return options;
-    }
-
     get item()
     {
       return this.data.trait
@@ -25,15 +19,15 @@ export default class TraitDialog extends AttackDialog {
 
     static PARTS = {
       fields : {
-          template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
-          container : {id : "base", classes : ["dialog-base"]}
+          template : "systems/wfrp4e/templates/dialog/type/base-dialog.hbs",
+          fields: true
       },
       modifiers : {
           template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
-          container : {id : "base", classes : ["dialog-base"]}
+          modifiers: true
       },
       specific : {
-          template : "systems/wfrp4e/templates/dialog/v2/trait-dialog.hbs",
+          template : "systems/wfrp4e/templates/dialog/type/trait-dialog.hbs",
       },
       footer : {
           template : "templates/generic/form-footer.hbs"

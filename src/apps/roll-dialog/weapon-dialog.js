@@ -21,15 +21,15 @@ export default class WeaponDialog extends AttackDialog {
     
     static PARTS = {
       fields : {
-          template : "systems/wfrp4e/templates/dialog/v2/base-dialog.hbs",
-          container : {id : "base", classes : ["dialog-base"]}
+          template : "systems/wfrp4e/templates/dialog/type/base-dialog.hbs",
+          fields: true
       },
       modifiers : {
           template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
-          container : {id : "base", classes : ["dialog-base"]}
+          modifiers: true
       },
       specific : {
-          template : "systems/wfrp4e/templates/dialog/v2/weapon-dialog.hbs",
+          template : "systems/wfrp4e/templates/dialog/type/weapon-dialog.hbs",
       },
       footer : {
           template : "templates/generic/form-footer.hbs"

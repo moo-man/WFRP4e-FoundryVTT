@@ -202,13 +202,12 @@
             }
         }
 
-        input[type="checkbox"]::before
+        input[type="checkbox"]
         {
-            color: #d6d6d6;
-            border: 1px solid #736953a6;
-            border-left: none;
-            box-shadow: 0px 0px 10px inset black;
-            background: #352516;
+            --checkbox-checked-color: var(--color-warm);
+            &:focus {
+                border: none;
+            }
         }
 
         section.tab[data-tab=effects]
@@ -228,7 +227,7 @@
         }
 
         .sheet-effect-buttons {
-            height: 1.5rem;
+            gap: 0.5rem;
             button {
                 @include styled-button();
                 height: 1.5rem;
@@ -239,10 +238,6 @@
 
         .editor-section {
             border: 1px solid var(--color-faded);
-            &:not(:first-child)
-            {
-                margin-top: 5px;
-            }
             .header {
                 background: none;
                 @include shadowed(#6b3a0f87);

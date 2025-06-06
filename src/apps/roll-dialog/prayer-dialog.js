@@ -6,11 +6,6 @@ export default class PrayerDialog extends SkillDialog {
     testClass = PrayerTest
     chatTemplate = "systems/wfrp4e/templates/chat/roll/prayer-card.hbs"
 
-    static get defaultOptions() {
-        const options = super.defaultOptions;
-        options.classes = options.classes.concat(["prayer-roll-dialog"]);
-        return options;
-    }
 
     get item()
     {

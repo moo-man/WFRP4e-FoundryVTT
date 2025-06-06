@@ -24,6 +24,13 @@
                 text-align: center;
             }
         }
+
+        div[data-application-part="specific"]
+        {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
     }
 
     &.item-properties {
@@ -233,6 +240,14 @@
             }
         }
     }
+
+    &.homebrew-config {
+        .window-content {
+            > div {
+                overflow: auto;
+            }
+        }
+    }   
 
 
 }

@@ -19,7 +19,6 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       dismount : this._dismount,
       showMount : this._showMount,
       randomize: this._randomize,
-      editSpecies : this._onEditSpecies,
       stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
     },
   }

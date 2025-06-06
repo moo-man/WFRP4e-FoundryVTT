@@ -125,8 +125,6 @@
     "SETTINGS.FocusTurnStartHint" : "At the start of a combatant's turn, pan the camera to them.",
     "SETTINGS.HideTestData" : "Hide Test Data",
     "SETTINGS.HideTestDataHint" : "GM test chat cards don't show sensitive NPC data to players.",
-    "SETTINGS.ManualChatCards" : "Manual Chat Cards",
-    "SETTINGS.ManualChatCardsHint" : "Show blank roll result to fill in if physical dice are used.",
     "SETTINGS.PlayerBrowser" : "Player access to browser",
     "SETTINGS.PlayerBrowserHint" : "Allow players to access the Item browser.",
     "SETTINGS.AdvantageBonus" : "Advantage Bonus",
@@ -177,7 +175,7 @@
     "SETTINGS.Moo": "Moo Man's House Rules",
     "SETTINGS.MooHint": "Assorted mechanics change that I believe have potential to improve the game. Note that the ones listed here are not an exhaustive list of the house rules I use, but only those that can be applied in code.<br><br>For the entire list, please see the <a href='https://github.com/moo-man/WFRP4e-FoundryVTT/wiki/Homebrew-Rules'>Wiki Page.</a><br>Note that these rules are generally all meant to be used together.<br>Feedback is always appreciated. Please use the <a href='https://github.com/moo-man/WFRP4e-FoundryVTT/discussions/categories/moo-s-house-rules'>Github Discussion Board</a> for discussion of the mechanics.",
     "SETTINGS.MooAdvantage" : "Advantage",
-    "SETTINGS.MooAdvantageHint" : "Instead of +10 per Advantage, you gain +1 SL per Advantage <strong>on successful tests</strong>",
+    "SETTINGS.MooAdvantageHint" : "Instead of +10 per Advantage, you gain +1 SL per Advantage on successful tests",
     "SETTINGS.MooDifficulty" : "Difficulty Options",
     "SETTINGS.MooDifficultyHint" : "Makes the Difficulty options symmetric",
     "SETTINGS.MooCritsFumbles" : "MooCritsFumbles",
@@ -2573,29 +2571,6 @@
                         "label" : "Location"
                     }
                 }
-            }
-        },
-
-        "Theme" : {
-            "Config" : "Theme Configuration",
-            "ConfigButton" : "Configure Theme",
-            "ConfigHint" : "Enable or disable the styling provided by the system.",
-            "FIELDS" : {
-                "actor.enabled.label" : "Enable Theme",
-                "item.enabled.label" : "Enable Theme",
-                "journal.enabled.label" : "Enable Theme",
-                "sidebar.enabled.label" : "Enable Theme",
-                "apps.enabled.label" : "Enable Theme",
-
-                "actor.font.label" : "Font",
-                "item.font.label" : "Font",
-                "journal.font.label" : "Font",
-                "sidebar.font.label" : "Font",
-                "apps.font.label" : "Font"
-            },
-            "Font" : {
-                "Classic" : "Classic",
-                "Readable" : "Readable"
             }
         }
       }

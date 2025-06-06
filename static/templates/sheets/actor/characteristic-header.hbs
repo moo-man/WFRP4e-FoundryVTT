@@ -35,7 +35,10 @@
         </div>
         <div class="detail-row">
             <div class="attribute-row flexrow">
-                <div class="attribute-box movement">
+                <div class="attribute-box movement top-label">
+                    <div class="label" style="grid-column: 1 / span 4"><label class="centered">{{localize "Move"}}</label></div>
+                    <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
+                    <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
                     <div class="field" style="grid-column: 1 / span 4"><input type="text"
                             name="system.details.move.value" value="{{system.details.move.value}}"></div>
                     <div class="field" style="grid-column: 5 / span 4"><input type="text" {{#if
@@ -44,11 +47,8 @@
                     <div class="field" style="grid-column: 9 / span 4"><input type="text" {{#if
                             actor.system.autoCalc.run}}readonly value="{{system.details.move.run}} {{localize " yds"}}"
                             {{else}}name="system.details.move.run" value="{{system.details.move.run}}" {{/if}}></div>
-                    <div class="label" style="grid-column: 1 / span 4"><label class="centered">{{localize "Move"}}</label></div>
-                    <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
-                    <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
                 </div>
-                <div class="attribute-box wounds">
+                <div class="attribute-box wounds top-label">
                     <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label></div>
                     <div class="field" style="grid-column: 1 / span 6">
                     <input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div> 
