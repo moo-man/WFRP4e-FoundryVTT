@@ -143,7 +143,7 @@ export class CareerStage extends ChargenStage {
 
     for (let i = 0; i < number; i++) {
       let careerResult = await this.rollCareerTable(rollSpecies)
-      let careerName = careerResult.text;
+      let careerName = careerResult.description;
 
       // Some books that add careers define replacement options, such as (If you roll career X you can use this new career Y (e.g. Soldier to Ironbreaker))
       // If there's a replacement option for a given career, add that replacement career too
