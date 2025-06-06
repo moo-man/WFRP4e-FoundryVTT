@@ -288,7 +288,7 @@ export default class CombatHelpersWFRP {
             for (let cond of conditions) {
                 // I swear to god whoever thought it was a good idea for these conditions to reduce every *other* round...
                 if (cond.conditionId == "deafened" || cond.conditionId == "blinded" && Number.isNumeric(cond.flags.wfrp4e.roundReceived)) {
-                    if ((combat.round - 1) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
+                    if ((combat.round) % 2 == cond.flags.wfrp4e.roundReceived % 2) {
                         await turn.actor.removeCondition(cond.conditionId)
                         removedConditions.push(
                             game.i18n.format("CHAT.RemovedConditions", {
