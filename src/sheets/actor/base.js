@@ -832,34 +832,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         this._toggleDropdown(ev, expandData.description.value + `<div class="tags">${expandData.properties?.length ? "<div class='tag'>" + expandData.properties.join("</div><div class='tag'>") : ""}</div>`);
       }
     }
-
-    async _toggleDropdown(ev, content, parentSelector=".list-row")
-    {
-      let dropdownElement = this._getParent(ev.target, parentSelector).querySelector(".dropdown-content");
-      this._toggleDropdownAt(dropdownElement, content)
-    }
-
-    async _toggleDropdownAt(element, content)
-    {
-      let dropdownElement = element.querySelector(".dropdown-content") || element;
-
-      if (dropdownElement.classList.contains("collapsed"))
-      {
-        dropdownElement.innerHTML = content;
-        dropdownElement.style.height = `${dropdownElement.scrollHeight}px`;
-        dropdownElement.classList.replace("collapsed", "expanded");
-        // Fit content can't be animated, but we would like it be flexible height, so wait until animation finishes then add fit-content
-        // sleep(500).then(() => dropdownElement.style.height = `fit-content`);
-        
-      }
-      else if (dropdownElement.classList.contains("expanded"))
-      {
-        // dropdownElement.style.height = `${dropdownElement.scrollHeight}px`;
-        dropdownElement.style.height = `0px`;
-        dropdownElement.classList.replace("expanded", "collapsed");
-      }
-    }
-
     static async _onItemPropertyDropdown(ev) {
       let item = await this._getDocumentAsync(ev);
       let type = ev.target.dataset.type;

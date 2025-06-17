@@ -26,6 +26,13 @@ body {
         &.fumble-roll {
             color: darkred;
         }
+
+        &.nulled {
+            color: black;
+            text-decoration: line-through;
+            background: none;
+            border: none;
+        }
     }
 
     .combat-sidebar {

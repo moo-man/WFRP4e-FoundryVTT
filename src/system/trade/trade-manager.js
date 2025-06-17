@@ -64,9 +64,9 @@ export default class TradeManager
             throw new Error("No Trade Data found: The Death on the Reik module is required for River trading, and the Sea of Claws module is required for Maritime trading. These modules provide the base data needed to compute trading results. ")
         }
 
-        else if (Object.keys(buttons).length == 1)
+        else if (buttons.length == 1)
         {
-            return Object.keys(buttons)[0];
+            return buttons[0]?.action;
         }
 
         return foundry.applications.api.DialogV2.wait({

@@ -122,6 +122,17 @@
                 color: darkred;
             }
         }
+
+        &.nulled {
+            > i {
+                display: none;
+            }
+            box-shadow: none;
+            pointer-events: none;
+            text-decoration: line-through;
+            background: none;
+            border: none;
+        }
     }
 }
 

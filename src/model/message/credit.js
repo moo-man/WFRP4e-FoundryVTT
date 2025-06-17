@@ -76,7 +76,7 @@ export class CreditMessageModel extends WarhammerMessageModel {
       let nbActivePlayers = Array.from(game.users).filter(u => u.role != 4 && u.active).length;
       split = nbActivePlayers;
     }
-    else 
+    else if (split > 1)
     {
       parsedMoney = MarketWFRP4e.splitAmountBetweenAllPlayers(parsedMoney, split)
     }

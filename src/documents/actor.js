@@ -951,6 +951,29 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
 
+  /** 
+   * @override
+   * 
+   * Not ideal, but if overlay is true, that means it was right clicked, so if numbered condition, increase or decrease if left or right clicked
+   */
+  async toggleStatusEffect(statusId, {active, overlay=false}={}) {
+    const effect = await ActiveEffect.fromStatusEffect(statusId);
+
+    if (effect.isNumberedCondition)
+    {
+      if (overlay == true)
+      {
+        this.removeCondition(statusId);
+      }
+      else 
+      {
+        this.addCondition(statusId);
+      }
+    }
+
+    else super.toggleStatusEffect(statusId, {active, overlay})
+  }
+
   setAdvantage(val) {
     return this.update({ "system.status.advantage.value": val })
   }

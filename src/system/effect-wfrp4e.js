@@ -143,7 +143,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 
     get conditionValue() 
     {
-        return this.system.condition.value || this.getFlag("wfrp4e", "value") || 0;
+        return this.system.condition.value ?? this.getFlag("wfrp4e", "value");
     }
 
     get testIndependent()
