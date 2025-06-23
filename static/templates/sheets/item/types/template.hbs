@@ -2,8 +2,8 @@
     <div class="form-group">
         <label>{{localize "SHEET.AlterName"}}</label>
         <div class="form-fields">
-            <input type="text" placeholder="Prepend" name="system.alterName.pre" value="{{system.alterName.pre}}">
-            <input type="text" placeholder="Append" name="system.alterName.post" value="{{system.alterName.post}}">
+            <input type="text" placeholder="{{localize 'SHEET.Prepend'}}" name="system.alterName.pre" value="{{system.alterName.pre}}">
+            <input type="text" placeholder="{{localize 'SHEET.Append'}}" name="system.alterName.post" value="{{system.alterName.post}}">
         </div>
     </div>
     <table>
@@ -40,7 +40,7 @@
                 <div class="list-row" data-index="{{@key}}" data-path="system.skills">
                     <div class="row-content">
                         <div class="list-name">
-                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Skill Name" value="{{this.name}}">
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="{{localize 'SHEET.SkillName'}}" value="{{this.name}}">
                         </div>
                         <input class="small" type="number" data-action="editList" data-ipath="specialisations" value="{{this.specialisations}}">
                         <input class="small" type="number" data-action="editList" data-ipath="advances" value="{{this.advances}}">
@@ -70,7 +70,7 @@
                 <div class="list-row" data-index="{{@key}}" data-path="system.talents">
                     <div class="row-content">
                         <div class="list-name">
-                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Talent Name" value="{{this.name}}">
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="{{localize 'SHEET.TalentName'}}" value="{{this.name}}">
                         </div>
                         <input class="small" type="number" data-action="editList" data-ipath="advances" value="{{this.advances}}">
                         <input class="small" type="number" data-action="editList" data-ipath="group" value="{{this.group}}">
@@ -125,7 +125,7 @@
                             {{else}}
                             <img src="systems/wfrp4e/icons/blank.png">
                             {{/if}}
-                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="Lore" value="{{this.name}}">
+                            <input type="text" class="label" data-action="editList" data-ipath="name" placeholder="{{localize 'Lore'}}" value="{{this.name}}">
                         </div>
 
                         <input class="small" type="number" data-action="editList" data-ipath="number" value="{{this.number}}">
