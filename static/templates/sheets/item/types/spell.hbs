@@ -23,7 +23,7 @@
         {{#unless source.system.range.vortex}}
             {{formGroup fields.range.fields.value value=source.system.range.value}}
         {{else}}
-            {{formGroup fields.range.fields.value value="Random Vortex" disabled=true}}
+            {{formGroup fields.range.fields.value value=fields.range.fields.vortex.label disabled=true}}
         {{/unless}}
         {{formGroup fields.range.fields.vortex value=source.system.range.vortex}}
 
