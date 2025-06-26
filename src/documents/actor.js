@@ -737,6 +737,10 @@ export default class ActorWFRP4e extends WarhammerActor
         updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
         updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+
+      if (modifiers.ap.nonmetal > 0 || modifiers.ap.metal > 0) {
+        updateMsg += ` / <a class="action-link" data-action="applyHack">${game.i18n.localize('CHAT.CriticalDeflection')}</a>`
+      }
     }
     if (hack)
     {

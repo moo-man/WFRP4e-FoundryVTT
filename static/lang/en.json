@@ -856,6 +856,7 @@
     "CHAT.DamageApplied" : "Damage Applied",
     "CHAT.ApplyDamageBasic" : "@DAMAGE damage applied to <b>{name}</b>",
     "CHAT.ApplyHack" : "Apply Hack",
+    "CHAT.CriticalDeflection" : "Critical Deflection",
     "CHAT.DamageShield" : "Shield",
     "CHAT.CriticalsNullified" : "Criticals Nullified",
     "CHAT.DamageAP" : "Damage 1 AP on",
