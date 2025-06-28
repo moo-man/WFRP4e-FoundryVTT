@@ -16,7 +16,7 @@ export default class CharacteristicDialog extends RollDialog {
 
     static async setupData(characteristic, actor, context={}, options={})
     {
-        let dialogData = this._baseDialogData(actor, context);
+        let dialogData = this._baseDialogData(actor, context, options);
 
         context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
         context.title += context.appendTitle || "";

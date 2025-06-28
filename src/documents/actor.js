@@ -120,8 +120,8 @@ export default class ActorWFRP4e extends WarhammerActor
 
   //#region Rolling
 
-  async setupCharacteristic(characteristic, context = {}) {
-    return this._setupTest(CharacteristicDialog, CharacteristicTest, characteristic, context, false)
+  async setupCharacteristic(characteristic, context = {}, options) {
+    return this._setupTest(CharacteristicDialog, CharacteristicTest, characteristic, context, options, false)
   }
 
   /**
@@ -130,7 +130,7 @@ export default class ActorWFRP4e extends WarhammerActor
    *
    * @param {Object} skill    The skill item being tested. Skill items contain the advancements and the base characteristic, see template.json for more information.
    */
-  async setupSkill(skill, context = {}) {
+  async setupSkill(skill, context = {}, options) {
     if (typeof (skill) === "string") {
       let skillName = skill
       skill = this.itemTags["skill"].find(sk => sk.name.toLowerCase() == skill.toLowerCase())
@@ -148,7 +148,7 @@ export default class ActorWFRP4e extends WarhammerActor
         }
       }
     }
-    return this._setupTest(SkillDialog, SkillTest, skill, context, false)
+    return this._setupTest(SkillDialog, SkillTest, skill, context, options, false)
   }
 
   /**
@@ -158,9 +158,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} weapon   The weapon Item being used.
    * @param {bool}   event    The event that called this Test, used to determine if attack is melee or ranged.
    */
-  async setupWeapon(weapon, context = {}) {
+  async setupWeapon(weapon, context = {}, options) {
 
-    return this._setupTest(WeaponDialog, WeaponTest, weapon, context, false)
+    return this._setupTest(WeaponDialog, WeaponTest, weapon, context, options, false)
   }
 
 
@@ -171,9 +171,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} spell    The spell Item being Casted. The spell item has information like CN, lore, and current ingredient ID
    *
    */
-  async setupCast(spell, context = {}) {
+  async setupCast(spell, context = {}, options) {
 
-    return this._setupTest(CastDialog, game.settings.get("wfrp4e", "useWoMOvercast") ? WomCastTest : CastTest, spell, context, false)
+    return this._setupTest(CastDialog, game.settings.get("wfrp4e", "useWoMOvercast") ? WomCastTest : CastTest, spell, context, options, false)
   }
 
   /**
@@ -184,9 +184,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * This spell SL will then be updated accordingly.
    *
    */
-  async setupChannell(spell, context = {}) 
+  async setupChannell(spell, context = {}, options) 
   {
-    return this._setupTest(ChannellingDialog, ChannelTest, spell, context, false)
+    return this._setupTest(ChannellingDialog, ChannelTest, spell, context, options, false)
   }
 
   /**
@@ -196,9 +196,9 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} prayer    The prayer Item being used, compared to spells, not much information
    * from the prayer itself is needed.
    */
-  async setupPrayer(prayer, context = {}) 
+  async setupPrayer(prayer, context = {}, options) 
   {
-    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, false)
+    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, options, options, false)
   }
 
   /**
@@ -211,31 +211,31 @@ export default class ActorWFRP4e extends WarhammerActor
    *
    * @param {Object} trait   The trait Item being used, containing which characteristic/bonus characteristic to use
    */
-  async setupTrait(trait, context = {}) 
+  async setupTrait(trait, context = {}, options) 
   {
-    return this._setupTest(TraitDialog, TraitTest, trait, context, false)
+    return this._setupTest(TraitDialog, TraitTest, trait, context, options, false)
   }
 
-  setupItem(id, options={})
+  setupItem(id, context={}, options)
   {
     let item = this.items.get(id);
     switch(item?.type)
     {
       case "skill":
-        return this.setupSkill(item, options);
+        return this.setupSkill(item, context, options);
       case "weapon":
-        return this.setupWeapon(item, options);
+        return this.setupWeapon(item, context, options);
       case "trait":
-        return this.setupTrait(item, options);
+        return this.setupTrait(item, context, options);
       case "spell":
-        return this.setupCast(item, options);
+        return this.setupCast(item, context, options);
       case "prayer":
-        return this.setupPrayer(item, optionts);
+        return this.setupPrayer(item, context, options);
     }
   }
 
 
-  async setupExtendedTest(item, context = {}) {
+  async setupExtendedTest(item, context = {}, optiosn) {
 
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
@@ -249,13 +249,13 @@ export default class ActorWFRP4e extends WarhammerActor
 
     let characteristic = warhammer.utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
-      let test = await this.setupCharacteristic(characteristic, context);
+      let test = await this.setupCharacteristic(characteristic, context, options);
       await test.roll();
     }
     else {
       let skill = this.itemTags["skill"].find(i => i.name == item.test.value)
       if (skill) {
-        let test = await this.setupSkill(skill, context);
+        let test = await this.setupSkill(skill, context, options);
         await test.roll();
       } 
       else {
@@ -265,7 +265,7 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
 
-  async rollReloadTest(weapon) {
+  async rollReloadTest(weapon, options) {
     let testId = weapon.getFlag("wfrp4e", "reloading")
     let extendedTest = weapon.actor.items.get(testId)
     if (!extendedTest) {
@@ -274,7 +274,7 @@ export default class ActorWFRP4e extends WarhammerActor
       await this.checkReloadExtendedTest(weapon, this.actor);
       return
     }
-    await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") });
+    await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") }, optiosn);
   }
 
 

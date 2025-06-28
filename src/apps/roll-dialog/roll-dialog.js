@@ -287,10 +287,9 @@ export default class RollDialog extends WarhammerRollDialogV2 {
   * @param {object} context Additional contextual flags for dialog, usually used by scripts
   * @returns {object} Basic dialog data shared by all types of dialogs
   */
-    static _baseDialogData(actor, context) 
+    static _baseDialogData(actor, context, options) 
     {
-        let dialogData = super._baseDialogData(actor, context)
-
+        let dialogData = super._baseDialogData(actor, context, options)
 
         dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
         dialogData.data.speaker = CONFIG.ChatMessage.documentClass.getSpeaker({ actor });

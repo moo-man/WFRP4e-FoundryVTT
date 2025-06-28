@@ -1,3 +1,4 @@
+import TestWFRP from "./rolls/test-wfrp4e";
 
 export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 {
@@ -118,6 +119,17 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         }
 
         return effect;
+    }
+
+    
+    get sourceTest() 
+    {
+        let testData = this.system.sourceData.test.data
+        let message = game.messages.get(testData.context?.messageId);
+        if (testData)
+        {
+            return message ? message.system.test : TestWFRP.recreate(testData);    
+        }
     }
 
     get show() {
