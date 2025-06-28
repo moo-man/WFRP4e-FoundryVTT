@@ -20,7 +20,7 @@ export default class DiseaseSheet extends BaseWFRP4eItemSheet
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
-    context.units = {"minutes" : "Minutes", "hours" : "Hours", "days": "Days"}
+    context.units = {"minutes" : game.i18n.localize("Minutes"), "hours" : game.i18n.localize("Hours"), "days": game.i18n.localize("Days")}
     return context;
   }
 }
