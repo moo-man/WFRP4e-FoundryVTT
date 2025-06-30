@@ -65,7 +65,7 @@ export class ContainerModel extends EquippableItemModel {
 
     async _preUpdate(data, options, user) {
       await super._preUpdate(data, options, user);
-      if (getProperty(data, "system.location.value") == this.parent.id)
+      if (foundry.utils.getProperty(data, "system.location.value") == this.parent.id)
       {
         delete foundry.utils.setProperty(data, "system.location.value", null)
       }

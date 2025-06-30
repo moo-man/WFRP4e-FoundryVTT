@@ -104,7 +104,7 @@ export class SkillModel extends BaseItemModel {
             this._handleSkillNameChange(data.name, this.parent.name)
         }
 
-        if (actor?.type == "character" && getProperty(options.changed, "system.advances.value") && !options.skipExperienceChecks)
+        if (actor?.type == "character" && foundry.utils.getProperty(options.changed, "system.advances.value") && !options.skipExperienceChecks)
         {
             let resolved = await Advancement.advancementDialog(this.parent, data.system.advances.value, "skill", actor)
     

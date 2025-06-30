@@ -104,7 +104,7 @@ export default class WFRP_Tables {
 
 
       // If table result text is a UUID link, add a text property with just the label
-      result.text = WFRP_Utility.extractLinkLabel(result.result)
+      result.description = WFRP_Utility.extractLinkLabel(result.result)
 
       foundry.utils.mergeObject(result, flags)
 
@@ -332,7 +332,7 @@ export default class WFRP_Tables {
     {
       table.results.forEach(result => {
         if (result.flags.wfrp4e.loc)
-          hitloc[result.flags.wfrp4e.loc] = result.text
+          hitloc[result.flags.wfrp4e.loc] = result.description
       })
     }
     return hitloc
