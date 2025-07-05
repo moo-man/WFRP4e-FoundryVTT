@@ -235,7 +235,7 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
 
-  async setupExtendedTest(item, context = {}, optiosn) {
+  async setupExtendedTest(item, context = {}, options) {
 
     let defaultRollMode = item.hide.test || item.hide.progress ? "gmroll" : "roll"
 
@@ -274,7 +274,7 @@ export default class ActorWFRP4e extends WarhammerActor
       await this.checkReloadExtendedTest(weapon, this.actor);
       return
     }
-    await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") }, optiosn);
+    await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") }, options);
   }
 
 
