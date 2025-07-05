@@ -142,14 +142,12 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
 
     static async onApplyCriticalDeflection(ev)
     {
-        const controlledTokens = [...canvas.tokens.controlled, ...game.user.targets].map(t => t.actor);
-        const targetIntersection = controlledTokens.filter(t => this.test.targets.includes(t));
+        const targetTokens = game.user.targets.length > 0 ? game.user.targets.map(t => t.actor) : this.test.targets;
+        const targetIntersection = targetTokens.filter(t => this.test.targets.includes(t));
         const hitLoc = this.test.hitloc.result;
 
         for (const target of targetIntersection) {
-            if (!target.isOwner) {
-                ui.notifications.error("ErrorArmourDamagePermission", {localize: true});
-            } else {
+            if (target.isOwner) {
                 let armour = target.armour[hitLoc].layers.filter(i => i.value > 0 && i.source instanceof ItemWFRP4e).map(l => l.source);
                 if (armour.length)
                 {
