@@ -156,11 +156,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
                     let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : "Critical Deflection - " + target.name});
                     if (chosen[0])
                     {
-                        if (chosen[0].item.type === "trait" && chosen[0].item.name === "Armour") {
-                            chosen[0].item.system.specification.value = "0";
-                        } else {
-                            chosen[0].system.damageItem(1, [hitLoc]);
-                        }
+                        chosen[0].system.damageItem(1, [hitLoc]);
                         ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Critical Deflection)</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
                     }
                 }
