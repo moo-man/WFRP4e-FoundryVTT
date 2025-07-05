@@ -1,5 +1,6 @@
 import WFRP_Utility from "../utility-wfrp4e.js";
 import AttackTest from "./attack-test.js";
+import ItemWFRP4e from "../../documents/item.js";
 
 export default class WeaponTest extends AttackTest {
 
@@ -155,5 +156,24 @@ export default class WeaponTest extends AttackTest {
       return actor.items.get(this.preData.item)
     else
       return new CONFIG.Item.documentClass(this.preData.item, { parent: actor })
+  }
+
+  get canUseCriticalDeflection() {
+    let result = false;
+    const hitLoc = this.data.result.hitloc.result;
+    this.targets.forEach(target => {
+      if (this.isCritical  === "Critical"  && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.armour[hitLoc].value > 0) {
+        const armour = target.armour[hitLoc].layers.reduce((prev, curr) => {
+          if ((curr.metal || !curr.magical) &&  curr.source instanceof ItemWFRP4e) {
+            return prev + curr.value;
+          }
+          return prev;
+        }, 0);
+        if (armour > 0) {
+          result = true;
+        }
+      }
+    })
+    return result;
   }
 }

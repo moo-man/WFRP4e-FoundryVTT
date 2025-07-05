@@ -75,7 +75,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
         const type = ev.target.innerText;
   
       if (!opposedTest.defenderTest.actor.isOwner)
-        return ui.notifications.error("ErrorHackPermission", {localize : true})
+        return ui.notifications.error("ErrorArmourDamagePermission", {localize : true})
   
       let loc = opposedTest.result.hitloc.value
       let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)

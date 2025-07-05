@@ -738,7 +738,7 @@ export default class ActorWFRP4e extends WarhammerActor
       else
         updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
 
-      if (!(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) &&  (modifiers.ap.nonmetal > 0 || modifiers.ap.metal > 0)) {
+      if (!(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && game.settings.get("wfrp4e", "homebrew").mooCriticalDeflection &&  (modifiers.ap.nonmetal > 0 || modifiers.ap.metal > 0)) {
         updateMsg += ` / <a class="action-link" data-action="applyHack">${game.i18n.localize('CHAT.CriticalDeflection')}</a>`
       }
     }
