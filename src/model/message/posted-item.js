@@ -83,8 +83,18 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     let paid = await game.wfrp4e.market.handlePlayerPayment({payString : game.wfrp4e.market.amountToString(this.itemData.system.price), itemData : this.itemData});
     for(let actor of paid)
     {
-      await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id})
-      ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: this.itemData.name, actor : actor.name })) 
+      const hasItem = actor.itemTypes[this.itemData.type].find(i => i.name === this.itemData.name
+          && i._stats.compendiumSource === this.itemData._stats.compendiumSource);
+      if(hasItem) {
+        await actor.updateEmbeddedDocuments("Item", [{
+          _id : hasItem.id,
+          "system.quantity.value" : hasItem.system.quantity.value + 1,
+        }], {fromMessage: this.parent.id});
+        ui.notifications.notify(game.i18n.format("MARKET.ItemAppended", { item: this.itemData.name, actor : actor.name, quantity: hasItem.system.quantity.value }));
+      } else {
+        await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id});
+        ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: this.itemData.name, actor : actor.name }));
+      }
     }
   }
 
