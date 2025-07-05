@@ -162,7 +162,7 @@ export default class WeaponTest extends AttackTest {
     let result = false;
     const hitLoc = this.data.result.hitloc.result;
     this.targets.forEach(target => {
-      if (this.isCritical  === "Critical"  && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.armour[hitLoc].value > 0) {
+      if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.armour[hitLoc].value > 0) {
         const armour = target.armour[hitLoc].layers.reduce((prev, curr) => {
           if ((curr.metal || !curr.magical) &&  curr.source instanceof ItemWFRP4e) {
             return prev + curr.value;
