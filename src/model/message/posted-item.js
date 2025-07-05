@@ -86,15 +86,7 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     for(let actor of paid)
     {
       const hasItem = actor.itemTypes[this.itemData.type].find(i => i.name === this.itemData.name
-          && i._stats.compendiumSource === this.itemData._stats.compendiumSource
-          && i.system.encumbrance.value === this.itemData.system.encumbrance.value
-          && foundry.utils.objectsEqual(i.system.price, this.itemData.system.price)
-          && foundry.utils.objectsEqual(i.system.description, this.itemData.system.description)
-          && foundry.utils.objectsEqual(i.system.availability, this.itemData.system.availability)
-          && foundry.utils.objectsEqual(i.system.flaws, this.itemData.system.flaws)
-          && foundry.utils.objectsEqual(i.system.qualities, this.itemData.system.qualities)
-          && foundry.utils.objectsEqual(i.system.trappingType, this.itemData.system.trappingType)
-          && foundry.utils.objectsEqual(i.system.damageToItem, this.itemData.system.damageToItem));
+          && i._stats.compendiumSource === this.itemData._stats.compendiumSource);
       if(hasItem) {
         await actor.updateEmbeddedDocuments("Item", [{
           _id : hasItem.id,
