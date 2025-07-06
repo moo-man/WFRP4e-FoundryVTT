@@ -68,7 +68,7 @@ export default class AttackDialog extends SkillDialog
         {
             this.fields.modifier -= 20;
             this.tooltips.add("modifier", -20, game.i18n.localize("EFFECT.ShootingAtEngagedTarget"));
-            this.options.engagedModifier = -20;
+            this.context.engagedModifier = -20;
         }
 
 
