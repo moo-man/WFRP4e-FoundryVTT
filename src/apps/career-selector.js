@@ -49,6 +49,7 @@ export default class CareerSelector extends  HandlebarsApplicationMixin(Applicat
         {
             this._sortedCareers = this.sortCareers();
         }
+        context.currentCareer = this.currentCareer;
         context.careers = this._sortedCareers;
         context.xp = this.computeXP();
         return context
