@@ -16,7 +16,7 @@
               <img src="{{this.img}}">
               <a class="label">{{this.name}}</a>
             </div>
-            <a class="small prevent-context" data-action="stepProperty" data-reversed="true" data-path="system.APdamage.{{../loc}}" data-tooltip="{{localize 'SHEET.ArmourCurrent'}}: {{lookup this.system.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup this.system.AP ../loc}} ({{lookup this.system.APdamage ../loc}} {{localize 'Damage'}})" class="ap-value {{#if (lookup this.system.APdamage ../loc)}}item-damaged{{/if}}">{{lookup this.system.currentAP ../loc}}</a>
+            <a class="small prevent-context ap-value {{#if (lookup this.system.APdamage ../loc)}}item-damaged{{/if}}" data-action="stepProperty" data-reversed="true" data-path="system.APdamage.{{../loc}}" data-tooltip="{{localize 'SHEET.ArmourCurrent'}}: {{lookup this.system.currentAP ../loc}} {{localize 'SHEET.ArmourMax'}}: {{lookup this.system.AP ../loc}} ({{lookup this.system.APdamage ../loc}} {{localize 'Damage'}})">{{lookup this.system.currentAP ../loc}}</a>
           </div>
           <div class="item-property-row">
 
