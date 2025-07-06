@@ -59,9 +59,11 @@ export default class CareerSelector extends  HandlebarsApplicationMixin(Applicat
         {
             return 
         }
+        const currentCareerGroup = this.currentCareer.system.careergroup.value;
         this.careers = await warhammer.utility.findAllItems("career", game.i18n.localize("CAREER.Loading"), true, ["system.careergroup.value", "system.level.value", "system.class.value"])
         this.careers = this.careers.sort((a, b) => a.system.careergroup.value > b.system.careergroup.value ? 1 : -1)
-        this.careers = this.careers.filter(i => 
+            .sort((a, b) => a.system.careergroup.value === currentCareerGroup ? -1 : b.system.careergroup.value === currentCareerGroup ? 1 : 0)
+        this.careers = this.careers.filter(i =>
         {
             if (game.user.isGM)
             {
