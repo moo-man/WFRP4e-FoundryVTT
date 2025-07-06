@@ -8,7 +8,13 @@
     <div class="card-content">{{{item.system.description.value}}}</div>
 
     {{#if item.system.quantity}}
-    <span><strong>{{localize "Quantity"}}</strong>: {{item.system.quantity.value}}</span><br>
+    <span><strong>{{localize "Quantity"}}</strong>: {{item.system.quantity.value}}
+        <a data-action="quantity" data-type="up"><i class="fas fa-caret-up"></i></a>
+        <a data-action="quantity" data-type="down"><i class="fas fa-caret-down"></i></a>
+        {{#if  (gt originalItemQuantity 0)}}
+            <a style="opacity: 0.5" data-tooltip="{{localize "MARKET.OriginalQuantity"}} {{originalItemQuantity}}" data-tooltip-direction="UP" ><i class="fa-solid fa-circle-info"></i></a>
+        {{/if}}</span>
+        <br>
     {{/if}}
     {{#each properties as |property p|}}
     <span>{{{property}}}</span><br>
