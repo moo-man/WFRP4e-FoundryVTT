@@ -45,6 +45,7 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
         mooQualities : new foundry.data.fields.BooleanField({label : "SETTINGS.MooQualities", hint : "SETTINGS.MooQualitiesHint"}),
         mooShieldAP : new foundry.data.fields.BooleanField({label : "SETTINGS.MooShieldAP", hint : "SETTINGS.MooShieldAPHint"}),
         mooCriticalMitigation : new foundry.data.fields.BooleanField({label : "SETTINGS.MooCriticalMitigation", hint : "SETTINGS.MooCriticalMitigationHint"}),
+        mooCriticalDeflection : new foundry.data.fields.BooleanField({label : "SETTINGS.MooCriticalDeflection", hint : "SETTINGS.MooCriticalDeflectionHint"}),
         mooRangeBands : new foundry.data.fields.BooleanField({label : "SETTINGS.MooRangeBands", hint : "SETTINGS.MooRangeBandsHint"}),
         mooSizeDamage : new foundry.data.fields.BooleanField({label : "SETTINGS.MooSizeDamage", hint : "SETTINGS.MooSizeDamageHint"}),
         mooHomebrewItemChanges : new foundry.data.fields.BooleanField({label : "SETTINGS.MooHomebrewItems", hint : "SETTINGS.MooHomebrewItemHint"})
