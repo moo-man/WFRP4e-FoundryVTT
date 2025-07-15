@@ -65,10 +65,16 @@ body:not(.no-theme):not(.theme-light) {
             }
 
             h2.in-class {
-                background: var(--inclass)
+                background: var(--inclass);
+                &.current {
+                    background: var(--color-level-success-bg);
+                }
             }
             h2.out-of-class {
                 background: var(--outclass);
+            }
+            .dialog-item.current:not(.active) {
+                background: var(--color-level-success-bg);
             }
         }
 
