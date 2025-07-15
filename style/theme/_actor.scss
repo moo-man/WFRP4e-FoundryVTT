@@ -252,6 +252,20 @@
             .header {
                 @include shadowed(#6b3a0f87);
                 border-color: var(--color-faded);
+
+                .counter {
+                    input {
+                        color: var(--color-grey1);
+                        border: 1px solid var(--attribute-border);
+                        border-radius: 0px;
+                        text-align: center;
+                        background-color: var(--attribute-input);
+                        padding: 0px;
+                        height: 1rem;
+                        width: 3rem;
+                        line-height: 1rem;
+                    }
+                }
             }
 
             .bar {
