@@ -145,17 +145,18 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         const targetTokens = game.user.targets.length > 0 ? game.user.targets.map(t => t.actor) : this.test.targets;
         const targetIntersection = targetTokens.filter(t => this.test.targets.includes(t));
         const hitLoc = this.test.hitloc.result;
+        const type = ev.target.innerText;
 
         for (const target of targetIntersection) {
             if (target.isOwner) {
                 let armour = target.armour[hitLoc].layers.filter(i => i.value > 0 && i.source instanceof ItemWFRP4e).map(l => l.source);
                 if (armour.length)
                 {
-                    let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : "Critical Deflection - " + target.name});
+                    let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : `${type} - ${target.name}`});
                     if (chosen[0])
                     {
                         chosen[0].system.damageItem(1, [hitLoc]);
-                        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Critical Deflection)</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
+                        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (${type})</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
                     }
                 }
                 else
