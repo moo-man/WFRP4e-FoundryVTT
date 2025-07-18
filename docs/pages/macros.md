@@ -42,7 +42,9 @@ game.wfrp4e.utility.rollItemMacro("fel", "characteristic");
 ### Test a Skill
 Simply match the name of the skill you wish to roll for the test. 
 
-`game.wfrp4e.utility.rollItemMacro("Athletics", "skill");`
+```js
+game.wfrp4e.utility.rollItemMacro("Athletics", "skill");
+```
 
 ***
 
@@ -50,34 +52,55 @@ Simply match the name of the skill you wish to roll for the test.
 
 The third argument of `rollItemMacro` can be used to configure the dialog. 
 
-`fields` - Concerns all the actual fillable fields within the dialog, the notable ones are `modifier`, `slBonus` and `successBonus`.
+`fields` - Concerns all the actual fillable fields within the dialog, the notable ones are 
+- `modifier`, applied to the target number that is needed to be rolled
+- `slBonus` always added to the number of Success Levels, regardless of whether the test has succeeded or failed
+- `successBonus` - added to the number of Success Levels only if the test has succeeded
 
 `appendTitle` - Adds a string to the title of the dialog and test
 
-`skipTargets` - Whether or not to consider any targets in the test. If skipped, no opposed tests are created
+`skipTargets` - Whether or not to consider any targets in the test. If skipped, no opposed tests are created.t
 
-`bypass` - Whether or not to bypass the roll dialog entirely
+`skipDialog` - Whether or not to bypass the roll dialog entirely
 
 #### Examples
 
-`game.wfrp4e.utility.rollItemMacro("ws", "characteristic", {fields : {difficulty: "average"}})`
+```js
+game.wfrp4e.utility.rollItemMacro("ws", "characteristic", {fields : {difficulty: "average"}})
+```
 
-`game.wfrp4e.utility.rollItemMacro("Dodge", "skill", {fields : {modifier: +20}, appendTitle : " - Dive Roll!"})`
+```js
+game.wfrp4e.utility.rollItemMacro("Dodge", "skill", {fields : {modifier: +20}, appendTitle : " - Dive Roll!"})
+```
 
-`game.wfrp4e.utility.rollItemMacro("Zweihander", "weapon", {bypass: true, fields: {modifier: -10, slBonus: 2, successBonus: 1}})`
+```js
+game.wfrp4e.utility.rollItemMacro(
+  "Zweihander",  // name of thing to test
+  "weapon",  // type of test
+  {skipDialog: true, fields: {modifier: -10, slBonus: 2, successBonus: 1}} // optional test options
+)
+```
 
 
 ### Roll a Table
-You can either use a chat macro 
-`/table hitloc`
+You can either use a chat macro:
 
-Or a script macro
-`ChatMessage.create({content : game.wfrp4e.tables.formatChatRoll("hitloc"), user : game.user.id})`
+```js 
+/table hitloc modifier=20
+```
+
+Or a script macro:
+
+```js
+ChatMessage.create({content : await game.wfrp4e.tables.formatChatRoll("hitloc"), user : game.user.id})
+```
 
 Script macros are more powerful - for example:
 *I want a macro to roll the Winds and Weather tables simultaneously*
+
 ```js
-ChatMessage.create({content : game.wfrp4e.tables.formatChatRoll("winds"), user : game.user.id})
-ChatMessage.create({content : game.wfrp4e.tables.formatChatRoll("weather"), user : game.user.id})
+ChatMessage.create({content : await game.wfrp4e.tables.formatChatRoll("winds"), user : game.user.id})
+ChatMessage.create({content : await game.wfrp4e.tables.formatChatRoll("weather"), user : game.user.id})
 ```
-You can find table names by entering `/table help` in the chat.
+
+You can find table names by entering `/table` in the chat.
