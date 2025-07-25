@@ -153,7 +153,7 @@ export default class ItemProperties extends  HandlebarsApplicationMixin(Applicat
 
     parseCustomProperty(string)
     {
-        let regex = /(.+?)(\((.+?)\))*\s*:(.+?)(\||$)/gm
+        let regex = /([^()]+?)(?:\(([^()]+?)\))?\s*:\s*([^|]+)(?:\||$)/gm
 
         let matches = string.matchAll(regex)
         let traits = []
@@ -163,10 +163,10 @@ export default class ItemProperties extends  HandlebarsApplicationMixin(Applicat
             traits.push({
                 key : match[1].trim().slugify(),
                 custom : true,
-                value : match[3],
+                value : match[2],
                 name : match[1].trim(),
-                display : (match[1].trim() + ` ${match[3] ? match[3] : ""}`).trim(),
-                description : match[4].trim()
+                display : (match[1].trim() + ` ${match[2] ? match[2] : ""}`).trim(),
+                description : match[3].trim()
             })
         }
 
