@@ -225,6 +225,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             {
                 loaded.value = false;
             }
+            else if (loaded.amt)
+            {
+                loaded.value = true;
+            }
 
             if (options.changed.system?.loaded?.value)
             {

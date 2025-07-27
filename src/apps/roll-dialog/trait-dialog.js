@@ -36,9 +36,14 @@ export default class TraitDialog extends AttackDialog {
 
     static async setupData(trait, actor, context={}, options={})
     {
-      if (!trait.rollable.value)
+      if (!trait.system.rollable.value)
       {
         return ui.notifications.notify("Non-rollable trait");
+      }
+
+      else if (!(trait instanceof Item))
+      {
+        trait = new Item.implementation(trait);
       }
 
       // TODO account for skill 
@@ -51,7 +56,7 @@ export default class TraitDialog extends AttackDialog {
       let skill
       if (trait.system.rollable.skill)
       {
-        skill = data.actor.itemTags["skill"].find(sk => sk.name == trait.system.rollable.skill)
+        skill = actor.itemTags["skill"].find(sk => sk.name == trait.system.rollable.skill)
         if (!skill)
           {
             skill = {
@@ -84,7 +89,7 @@ export default class TraitDialog extends AttackDialog {
         data.chargingOption = true;
       }
 
-      data.scripts = data.scripts.concat(data.trait?.getScripts("dialog").filter(s => !s.options.defending), skill?.getScripts("dialog").filter(s => !s.options.defending) || [])
+      data.scripts = data.scripts.concat(data.trait?.getScripts("dialog").filter(s => !s.options.defending), skill?.getScripts?.("dialog").filter(s => !s.options.defending) || [])
 
 
       return dialogData;
