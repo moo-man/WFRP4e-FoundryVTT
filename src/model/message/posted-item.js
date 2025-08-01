@@ -26,7 +26,8 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     return foundry.utils.mergeObject(super.actions, {
       haggle : this._onHaggle,
       rollAvailability : this._onRollAvailability,
-      pay : this._onPay
+      pay : this._onPay,
+      quantity: this._onQuantity
     });
   }
 
@@ -83,8 +84,18 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     let paid = await game.wfrp4e.market.handlePlayerPayment({payString : game.wfrp4e.market.amountToString(this.itemData.system.price), itemData : this.itemData});
     for(let actor of paid)
     {
-      await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id})
-      ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: this.itemData.name, actor : actor.name })) 
+      const hasItem = actor.itemTypes[this.itemData.type].find(i => i.name === this.itemData.name
+          && i._stats.compendiumSource === this.itemData._stats.compendiumSource);
+      if(hasItem) {
+        await actor.updateEmbeddedDocuments("Item", [{
+          _id : hasItem.id,
+          "system.quantity.value" : hasItem.system.quantity.value + this.itemData.system.quantity.value,
+        }], {fromMessage: this.parent.id});
+        ui.notifications.notify(game.i18n.format("MARKET.ItemAppended", { item: this.itemData.name, actor : actor.name, quantity: hasItem.system.quantity.value }));
+      } else {
+        await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id});
+        ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: this.itemData.name, actor : actor.name }));
+      }
     }
   }
 
@@ -127,6 +138,20 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
   }
 
   /**
+   * Increases or decreases the quantity of the item by 1
+   *
+   * @param {Event} ev Click event
+   * @param {HTMLElement} target Button/element clicked
+   */
+  static async _onQuantity(ev, target)
+  {
+    let itemData = foundry.utils.deepClone(this.itemData);
+    itemData.system.quantity.value += target.dataset.type == "up" ? 1 : -1;
+    let content = await this.constructor._renderHTMLFromItemData(itemData, this.postQuantity, this.retrievedBy);
+    this.parent.update({content, "system.itemData" : itemData});
+  }
+
+  /**
    * Creates a PostedItem Message 
    * 
    * @param {ItemWFRP4e} item Item posted to chat
@@ -161,11 +186,13 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
    */
   static async _renderHTMLFromItemData(itemData, postQuantity, retrievedBy=[])
   {
+    const originalItem = await fromUuid(itemData._stats.compendiumSource);
     let messageData = {
       item : itemData,
       img : itemData.img,
       properties : new Item.implementation(itemData).system.chatData(),
       postQuantity,
+      originalItemQuantity: originalItem && originalItem.system.quantity.value !== itemData.system.quantity.value ? originalItem.system.quantity.value : 0,
       retrievedBy : retrievedBy.join(", ")
     };
 
