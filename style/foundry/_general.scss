@@ -6,6 +6,14 @@ body {
         background: url(/ui/parchment.jpg) repeat
     }
 
+    .critical {
+        color: green;
+    }
+
+    .fumble {
+         color: darkred;
+     }
+
     .action-link {
         @include content-link;
 
