@@ -52,6 +52,19 @@ body:not(.no-theme):not(.theme-light) #chat-popout,
         margin: 1.5rem 1rem;
         padding: 1re 0.5rem;
 
+        &.whisper {
+            border-image: url(./ui/backgrounds/chat-message-border-private.webp) 21 repeat;
+            border-image-outset: 8px;
+            border-image-width: 12px;
+            border-image-slice: 12;
+            &.blind {
+                border-image: url(./ui/backgrounds/chat-message-border-blind.webp) 21 repeat;
+                border-image-outset: 8px;
+                border-image-width: 12px;
+                border-image-slice: 12;
+            }
+        }
+
         .message-header {
             text-shadow: 0px 0px 1px #00000087;
             border: 3px double #3e000078;
