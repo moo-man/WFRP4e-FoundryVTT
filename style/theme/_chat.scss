@@ -53,15 +53,9 @@ body:not(.no-theme):not(.theme-light) #chat-popout,
         padding: 1re 0.5rem;
 
         &.whisper {
-            border-image: url(./ui/backgrounds/chat-message-border-private.webp) 21 repeat;
-            border-image-outset: 8px;
-            border-image-width: 12px;
-            border-image-slice: 12;
+            border-image-source: url(./ui/backgrounds/chat-message-border-private.webp);
             &.blind {
-                border-image: url(./ui/backgrounds/chat-message-border-blind.webp) 21 repeat;
-                border-image-outset: 8px;
-                border-image-width: 12px;
-                border-image-slice: 12;
+                border-image-source: url(./ui/backgrounds/chat-message-border-blind.webp);
             }
         }
 
