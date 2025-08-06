@@ -37,4 +37,12 @@ export default function registerHooks() {
             warhammer.utility.log(`Rendering ${app.constructor.name}: `, undefined, data);
         });
     }
+
+    Hooks.on("ready", () => {
+        const minVersion = game.system.relationships.requires.first().compatibility.minimum;
+        const libVersion = game.modules.get("warhammer-lib").version;
+        if (libVersion.localeCompare(minVersion, undefined, { numeric: true, sensitivity: 'base' }) < 0) {
+            ui.notifications.error(game.i18n.localize("ERROR.WarhammerLibNotUpdated"), {permanent : true})
+        }
+    });
 }

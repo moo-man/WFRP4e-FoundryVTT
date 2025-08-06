@@ -1579,6 +1579,7 @@
     "ERROR.VehicleTraitsOnStandard" : "Cannot add Vehicle Traits to this Actor",
     "ERROR.NoAvailableActors" : "No available owned Actors to choose!",
     "ERROR.SkillAlreadyExists" : "A Skill with this name already exists on this Actor",
+    "ERROR.WarhammerLibNotUpdated" : "Your version of warhammer-lib module is outdated. Please update",
 
     "Item Properties": "Item Properties",
     "PROPERTY.Group" : "Group",
