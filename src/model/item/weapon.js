@@ -374,9 +374,14 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
         let staticPointBlankRange = game.settings.get("wfrp4e", "homebrew").staticPointBlankRange;
 
-        let pointBlankRangeCutoff = staticPointBlankRange ? 
-            game.settings.get("wfrp4e", "homebrew").staticPointBlankRangeValue : 
-            Math.ceil(range / 10);
+        let pointBlankRangeCutoff = Math.ceil(range / 10);
+        
+        if (staticPointBlankRange) {
+            pointBlankRangeCutoff = Math.min(
+                pointBlankRangeCutoff, 
+                game.settings.get("wfrp4e", "homebrew").staticPointBlankRangeValue
+            )
+        }
 
         let rangeBands = {}
 
