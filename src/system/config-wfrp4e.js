@@ -2419,7 +2419,7 @@ if (test.succeeded) {
                 scriptData : [{
                     label : "Blast",
                     trigger : "rollWeaponTest",
-                    script : "if (args.test.succeeded) args.test.result.other.push(`<a class='aoe-template' data-type='radius'><i class='fas fa-ruler-combined'></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)",
+                    script : "if (args.test.succeeded) args.test.result.other.push(`<a class='content-link' data-action='placeTemplate' data-type='radius'><i class='fas fa-ruler-combined'></i>${this.item.properties.qualities.blast.value} yard Blast</a>`)",
                 }]
             }
         },

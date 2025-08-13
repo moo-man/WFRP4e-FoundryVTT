@@ -14,7 +14,7 @@
     <div class="overcast-section">
         <a class='chat-button' data-action="overcastClick" {{#unless test.result.overcast.usage.target.available}}style = "opacity: 0.5"{{/unless}} data-overcast="target">{{test.result.overcast.usage.target.label}}</a>
         {{#if test.result.overcast.usage.target.AoE}}
-        <a class="overcast-value aoe-template target" data-type="diameter" data-id="{{test.preData.item}}" data-actor-id="{{test.actor.id}}" ><i class="fas fa-ruler-combined"></i> {{test.result.overcast.usage.target.current}} {{test.result.overcast.usage.target.unit}}</a>
+        <a class="overcast-value target content-link"  data-action='placeTemplate' data-type="diameter" data-id="{{test.preData.item}}" data-actor-id="{{test.actor.id}}" ><i class="fas fa-ruler-combined"></i> {{test.result.overcast.usage.target.current}} {{test.result.overcast.usage.target.unit}}</a>
         {{else}}
         <a class="overcast-value target">{{test.result.overcast.usage.target.current}} </a>
         {{/if}}
