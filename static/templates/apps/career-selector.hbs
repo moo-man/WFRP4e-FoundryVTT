@@ -1,9 +1,9 @@
 <div>
       <ol class="dialog-list">
         {{#each careers.inClass as |group|}}
-        <h2 class="in-class">{{@key}}</h2>
+        <h2 class="in-class {{#if (eq ../currentCareer.system.careergroup.value @key)}}current{{/if}}">{{@key}}</h2>
             {{#each group}}
-                <li class="dialog-item {{#if (eq this.index ../../selectedCareer)}}active{{/if}} tier-{{this.level}}" data-action="clickCareer" data-index={{this.index}}>
+                <li class="dialog-item {{#if (eq @root.currentCareer.name this.name)}}current{{/if}} {{#if (eq this.index @root.selectedCareer)}}active{{/if}} tier-{{this.level}}" {{#unless (eq @root.currentCareer.name this.name)}}data-action="clickCareer"{{/unless}} data-index={{this.index}}>
                     <img class="thumbnail" src="{{this.img}}">
                     <label><a>{{this.name}}</a></label>
                 </li>
