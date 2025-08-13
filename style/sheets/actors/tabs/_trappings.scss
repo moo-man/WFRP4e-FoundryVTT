@@ -42,7 +42,9 @@
             display: flex;
             justify-content: space-between;
             padding: 5px;
-            border-bottom: 1px solid var(--color-cool-3)
+            border-bottom: 1px solid var(--color-cool-3);
+            min-height: 2rem;
+            align-items: center;
         }
 
         .counter {
@@ -51,7 +53,7 @@
 
         .status {
             position: absolute;
-            top: 2.0rem;
+            top: 2.5rem;
             left: 5px;
         }
 
