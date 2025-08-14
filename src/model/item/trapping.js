@@ -89,10 +89,10 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
     
         // Make qualities and flaws clickable
         if (this.qualities.value.length)
-          properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+          properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a data-action='postItemProperty' class ='item-property'>" + i + "</a>").join(", ")}`);
     
         if (this.flaws.value.length)
-          properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+          properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a data-action='postItemProperty' class ='item-property'>" + i + "</a>").join(", ")}`);
     
         return properties;
       }

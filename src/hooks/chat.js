@@ -79,11 +79,6 @@ export default function() {
       })
     })
 
-    // Post an Item Quality/Flaw
-    html.on("click", ".item-property", ev => {
-      WFRP_Utility.postProperty(ev.target.text)
-    })
-
     // if (app.getFlag("wfrp4e", "roleTests"))
     // {
     //   let tests = app.getFlag("wfrp4e", "roleTests").map(i => game.messages.get(i)?.system.test).filter(i => i);
