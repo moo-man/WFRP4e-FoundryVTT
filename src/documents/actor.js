@@ -198,7 +198,7 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupPrayer(prayer, context = {}, options) 
   {
-    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, options, options, false)
+    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, options, false)
   }
 
   /**
