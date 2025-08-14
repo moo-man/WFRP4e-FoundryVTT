@@ -84,7 +84,6 @@ export default class ActorSheetWFRP4eCreature extends StandardWFRP4eActorSheet
         
         context.overviewButtons = this.actor.items.contents.reduce((buttons, item) => {
           let add = [];
-          console.log(buttons)
           if (item.included)
           {
             add = item.sheetButtons.filter(i => !buttons.find(b => i.label == b.label))

@@ -41,7 +41,7 @@
     <header class="form-header">
         <h3>{{localize "Vehicle Settings"}}</h3>
     </header>
-    {{formGroup fields.vehicleTYpe value=source.system.vehicleType choices=(config "vehicleTypes")}}
+    {{formGroup fields.vehicleType value=source.system.vehicleType choices=(config "vehicleTypes")}}
     {{formGroup fields.status.fields.morale.fields.transferEffects value=source.system.status.morale.transferEffects}}
     {{/if}}
 </div>
