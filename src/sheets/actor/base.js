@@ -36,7 +36,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       useAspect : this._onUseAspect,
       toggleQuality : this._onToggleQuality,
       groupActions : this._onToggleGroupActions,
-      useGroupAction : this._onUseGroupAction
+      useGroupAction : this._onUseGroupAction,
+      postItemProperty: this._postItemProperty
     },
     defaultTab : "main"
   }
@@ -959,6 +960,11 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           }, s.update);
       }));
   
+    }
+
+    static _postItemProperty(ev)
+    {
+      WFRP_Utility.postProperty(ev.target.text)
     }
 
     //#endregion

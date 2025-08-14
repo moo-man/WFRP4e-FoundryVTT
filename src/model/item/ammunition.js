@@ -89,7 +89,7 @@ export class AmmunitionModel extends PropertiesMixin(PhysicalItemModel)
 
     let itemProperties = this.Qualities.concat(this.Flaws)
     for (let prop of itemProperties)
-      properties.push("<a class ='item-property'>" + prop + "</a>")
+      properties.push("<a data-action='postItemProperty' class ='item-property'>" + prop + "</a>")
 
     if (this.special.value)
       properties.push(`${game.i18n.localize("Special")}: ` + this.special.value);

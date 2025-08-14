@@ -179,7 +179,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
     let itemProperties = this.Qualities.concat(this.Flaws)
     for (let prop of itemProperties)
-      properties.push("<a class ='item-property'>" + prop + "</a>")
+      properties.push("<a data-action='postItemProperty' class ='item-property'>" + prop + "</a>")
     properties.push(this.penalty.value);
 
     data.properties = properties.filter(p => !!p);

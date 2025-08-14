@@ -74,7 +74,7 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
     
         let itemProperties = this.Qualities.concat(this.Flaws)
         for (let prop of itemProperties)
-          data.properties.push("<a class ='item-property'>" + prop + "</a>")
+          data.properties.push("<a data-action='postItemProperty' class ='item-property'>" + prop + "</a>")
     
         return data;
       }

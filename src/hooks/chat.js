@@ -1,4 +1,5 @@
 import OpposedHandler from "../system/opposed-handler.js";
+import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 
 export default function() {
@@ -76,6 +77,11 @@ export default function() {
         }
         ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
       })
+    })
+
+    // Post an Item Quality/Flaw
+    html.on("click", ".item-property", ev => {
+      WFRP_Utility.postProperty(ev.target.text)
     })
 
     // if (app.getFlag("wfrp4e", "roleTests"))
