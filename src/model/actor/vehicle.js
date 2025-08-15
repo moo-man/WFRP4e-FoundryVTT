@@ -7,7 +7,7 @@ let fields = foundry.data.fields;
 
 export class VehicleModel extends BaseActorModel {
     static preventItemTypes = ["talent", "career", "disease", "injury", "mutation", "spell", "psychology", "skill", "prayer", "injury", "template"];
-    static LOCALIZATION_PREFIXES = ["WH.models.vehicle"]
+    static LOCALIZATION_PREFIXES = ["WH.Models.vehicle"]
     static defineSchema() {
         let schema = super.defineSchema();
         schema.characteristics = new fields.SchemaField({
