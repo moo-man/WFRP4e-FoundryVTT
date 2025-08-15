@@ -160,16 +160,8 @@ export default class AttackTest extends TestWFRP {
     let result = false;
     const hitLoc = this.data.result.hitloc.result;
     this.targets.forEach(target => {
-      if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.armour[hitLoc].value > 0) {
-        const armour = target.armour[hitLoc].layers.reduce((prev, curr) => {
-          if ((curr.metal || !curr.magical) &&  curr.source instanceof ItemWFRP4e) {
-            return prev + curr.value;
-          }
-          return prev;
-        }, 0);
-        if (armour > 0) {
-          result = true;
-        }
+      if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.physicalNonDamagedArmourAtLocation(hitLoc).length > 0) {
+        result = true;
       }
     })
     return result;

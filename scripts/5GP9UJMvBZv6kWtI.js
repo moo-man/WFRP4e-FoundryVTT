@@ -3,7 +3,7 @@ this.script.message(await this.actor.applyBasicDamage(8, {damageType : game.wfrp
 
 let msg = ``
 let weapons = args.actor.itemTypes.weapon.filter(i => !i.system.location.value);
-let armour = args.actor.itemTypes.armour.filter(i => !i.system.location.value);
+let armour = args.actor.itemTypes.armour.filter(i => !i.system.location.value); // FIXME Won't work for AOE3 armour
 for(let item of weapons)
 {
 	if (item.system.properties.qualities.shield)

@@ -149,7 +149,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
 
         for (const target of targetIntersection) {
             if (target.isOwner) {
-                let armour = target.armour[hitLoc].layers.filter(i => i.value > 0 && i.source instanceof ItemWFRP4e).map(l => l.source);
+                let armour = target.physicalNonDamagedArmourAtLocation(hitLoc)
                 if (armour.length)
                 {
                     let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : `${type} - ${target.name}`});
