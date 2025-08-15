@@ -1,7 +1,8 @@
 /** Creates and manages an Item posted to chat, retrievable by dragging and dropping from chat into an Actor sheet.
  *  If the item is physical, with quantity and price, it also tracks who has dragged and the amount it has been dragged
- *  If a "Post Quantity" is specified, then it can only be retrieved that many times before disallowing further dragging. 
- */  
+ *  If a "Post Quantity" is specified, then it can only be retrieved that many times before disallowing further dragging.
+ */
+import WFRP_Utility from "../../system/utility-wfrp4e.js";
 
 export class PostedItemMessageModel extends WarhammerMessageModel {
   static defineSchema() 
@@ -26,7 +27,8 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     return foundry.utils.mergeObject(super.actions, {
       haggle : this._onHaggle,
       rollAvailability : this._onRollAvailability,
-      pay : this._onPay
+      pay : this._onPay,
+      postItemProperty: this._postItemProperty
     });
   }
 
@@ -179,5 +181,9 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
 
   }
 
+  static _postItemProperty(ev)
+  {
+    WFRP_Utility.postProperty(ev.target.text)
+  }
 
 }

@@ -179,7 +179,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     properties.push(game.wfrp4e.config.armorTypes[this.armorType.value]);
     let itemProperties = this.Qualities.concat(this.Flaws)
     for (let prop of itemProperties)
-      properties.push("<a class ='item-property'>" + prop + "</a>")
+      properties.push("<a data-action='postItemProperty' class ='item-property'>" + prop + "</a>")
     properties.push(this.penalty.value);
 
     data.properties = properties.filter(p => !!p);
@@ -207,10 +207,10 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
 
     // Make qualities and flaws clickable
     if (this.qualities.value.length)
-      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Qualities")}</b>: ${this.OriginalQualities.map(i => i = "<a data-action='postItemProperty' class ='item-property'>" + i + "</a>").join(", ")}`);
 
     if (this.flaws.value.length)
-      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a class ='item-property'>" + i + "</a>").join(", ")}`);
+      properties.push(`<b>${game.i18n.localize("Flaws")}</b>: ${this.OriginalFlaws.map(i => i = "<a data-action='postItemProperty' class ='item-property'>" + i + "</a>").join(", ")}`);
 
 
     properties = properties.filter(p => p != game.i18n.localize("Special"));
