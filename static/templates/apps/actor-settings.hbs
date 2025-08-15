@@ -1,48 +1,44 @@
 <div>
     {{#if displays.size}}
-    {{formGroup fields.settings.fields.autoCalc.fields.size value=source.system.settings.autoCalc.size}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.size value=source.system.settings.autoCalc.size rootId=rootId}}
     {{/if}}
     
     {{#if displays.movement}}
-    {{formGroup fields.settings.fields.autoCalc.fields.run value=source.system.settings.autoCalc.run}}
-    {{formGroup fields.settings.fields.autoCalc.fields.walk value=source.system.settings.autoCalc.walk}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.run value=source.system.settings.autoCalc.run rootId=rootId}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.walk value=source.system.settings.autoCalc.walk rootId=rootId}}
     {{/if}}
     
     {{#if displays.wounds}}
-    {{formGroup fields.settings.fields.autoCalc.fields.wounds value=source.system.settings.autoCalc.wounds}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.wounds value=source.system.settings.autoCalc.wounds rootId=rootId}}
     {{/if}}
     
     {{#if displays.critwounds}}
-    {{formGroup fields.settings.fields.autoCalc.fields.criticals value=source.system.settings.autoCalc.criticals}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.criticals value=source.system.settings.autoCalc.criticals rootId=rootId}}
     {{/if}}
 
     {{#if displays.corruption}}
-    {{formGroup fields.settings.fields.autoCalc.fields.corruption value=source.system.settings.autoCalc.corruption}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.corruption value=source.system.settings.autoCalc.corruption rootId=rootId}}
     {{/if}}
     
     {{#if displays.encumbrance}}
-    {{formGroup fields.settings.fields.autoCalc.fields.encumbrance value=source.system.settings.autoCalc.encumbrance}}
+    {{formGroup  fields.settings.fields.autoCalc.fields.encumbrance value=source.system.settings.autoCalc.encumbrance rootId=rootId}}
     {{/if}}
 
     {{#if displays.equipPoints}}
-    {{formGroup fields.settings.fields.equipPoints value=source.system.settings.equipPoints}}
+    {{formGroup  fields.settings.fields.equipPoints value=source.system.settings.equipPoints rootId=rootId}}
     {{/if}}
 
     {{#if displays.mainHand}}
-    {{formGroup fields.details.fields.mainHand value=source.system.details.mainHand}}
+    {{formGroup  fields.details.fields.mainHand value=source.system.details.mainHand rootId=rootId}}
     {{/if}}
     
-    
     {{#if displays.hitloc}}
-    {{formGroup fields.details.fields.hitLocationTable.fields.value value=source.system.details.hitlocationTable.value choices=tables}}
+    {{formGroup  fields.details.fields.hitLocationTable.fields.value value=source.system.details.hitlocationTable.value choices=tables rootId=rootId}}
     {{/if}}    
 
     {{#if displays.vehicle}}
-    <header class="form-header">
-        <h3>{{localize "Vehicle Settings"}}</h3>
-    </header>
-    {{formGroup fields.vehicleType value=source.system.vehicleType choices=(config "vehicleTypes")}}
-    {{formGroup fields.status.fields.morale.fields.transferEffects value=source.system.status.morale.transferEffects}}
+    {{formGroup  fields.vehicleType value=source.system.vehicleType choices=(config "vehicleTypes") rootId=rootId}}
+    {{formGroup  fields.status.fields.morale.fields.transferEffects value=source.system.status.morale.transferEffects rootId=rootId}}
     {{/if}}
 </div>
     

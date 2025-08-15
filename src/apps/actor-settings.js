@@ -1,16 +1,18 @@
 
-export default class ActorSettings extends HandlebarsApplicationMixin(ApplicationV2)
+export default class ActorSettings extends WHFormApplication
 {
   static DEFAULT_OPTIONS = {
     id: "actor-settings",
     tag: "form",
     classes : ["warhammer", "standard-form"],
     window: {
+      contentClasses : ["standard-form"],
       title: "Actor Settings"
     },
     form: {
       submitOnChange: true,
-      handler : this._onSubmit
+      closeOnSubmit: false,
+      handler : this.submit
     }
 }
 
@@ -28,6 +30,7 @@ constructor(document, options)
   /** @override */
   static PARTS = {
     form: {
+      classes: ["standard-form"],
       template: "systems/wfrp4e/templates/apps/actor-settings.hbs",
       scrollable: [""]
     }
@@ -83,17 +86,10 @@ constructor(document, options)
             context.displays.hitloc = true;
         }
 
-
-        context.buttons = [{
-            type: "submit",
-            icon: "fa-solid fa-floppy-disk",
-            label: "Submit"
-          }];
-
         return context;
     }
 
-    static async _onSubmit(event, form, formData) 
+    static async submit(event, form, formData) 
     {
         return this.document.update(formData.object)
     }

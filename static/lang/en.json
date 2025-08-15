@@ -2060,6 +2060,10 @@
                     "vehicleType" : {
                         "label" : "Vehicle Type"
                     },
+                    "details.hitLocationTable.value" : {
+                        "label" : "Hit Location Table",
+                        "hint" : "Defines a custom hit location table for when this Actor is attacked."
+                    },
                     "status.morale.transferEffects" : {
                         "label" : "Transfer Morale Effects",
                         "hint" : "Apply morale effects to Actors on this vehicle."
