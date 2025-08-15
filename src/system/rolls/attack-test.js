@@ -1,4 +1,5 @@
 import TestWFRP from "./test-wfrp4e.js"
+import ItemWFRP4e from "../../documents/item.js";
 
 export default class AttackTest extends TestWFRP {
 
@@ -153,5 +154,16 @@ export default class AttackTest extends TestWFRP {
         this.preData.other.push(game.i18n.format("CHAT.SpreadExtreme", {damage : value}))
       }
     }
+  }
+
+  get canUseCriticalDeflection() {
+    let result = false;
+    const hitLoc = this.data.result.hitloc.result;
+    this.targets.forEach(target => {
+      if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.physicalNonDamagedArmourAtLocation(hitLoc).length > 0) {
+        result = true;
+      }
+    })
+    return result;
   }
 }
