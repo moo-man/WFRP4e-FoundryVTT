@@ -130,7 +130,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
     let speciesTable = game.wfrp4e.tables.findTable("species");
 
-    if (speciesTable.results.some(i => !i.name))
+    if (speciesTable?.results.some(i => !i.name))
     {
       ui.notifications.warn("The configured Species table is from an older version and may not be compatible with character creation in V13. To ensure it works correctly, please delete and reimport the table from the compendium.", {permanent : true})
     }

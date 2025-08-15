@@ -40,7 +40,7 @@ export class SpeciesStage extends ChargenStage {
 
     if (!speciesTable)
     {
-      ui.notifications.error(game.i18n.localize("CHARGEN.ERROR.SpeciesTable"))
+      ui.notifications.error("CHARGEN.ERROR.SpeciesTable", {localize: true, permanent: true})
       throw new Error (game.i18n.localize("CHARGEN.ERROR.SpeciesTable"))
     }
 

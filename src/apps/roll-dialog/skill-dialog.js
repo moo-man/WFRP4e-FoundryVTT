@@ -63,10 +63,15 @@ export default class SkillDialog extends CharacteristicDialog {
         context.title = context.title || game.i18n.format("SkillTest", {skill: skill.name});
         context.title += context.appendTitle || "";
         delete context.appendTitle;
-
         let dialogData = await super.setupData(characteristic, actor, context, options)
         dialogData.fields.characteristic = characteristic;
         foundry.utils.mergeObject(dialogData.data, {skill});
+
+        
+        if (dialogData.context.reload)
+        {
+            dialogData.data.scripts = dialogData.data.scripts.concat(context.weapon?.ammo.getScripts("dialog").filter(s => !s.options.defending));
+        }
 
         
         if (skill.id != "unknown")

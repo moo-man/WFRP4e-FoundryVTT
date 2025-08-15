@@ -781,7 +781,7 @@
     "CHARGEN.ERROR.Create" : "Error Creating Actor: {error}",
     "CHARGEN.ERROR.CareerItem" : "Cannot find Tier 1 Career Item: {career}",
     "CHARGEN.ERROR.CareerItems" : "{num} career Items could not be found (out of {careers})",
-    "CHARGEN.ERROR.SpeciesTable" : "Could not find Species Table",
+    "CHARGEN.ERROR.SpeciesTable" : "Could not find imported Species Table, check <strong>Table Settings</strong> within the system settings to ensure the registered table is correct. If no table is registered, either create one manually or import one. Using <a href='https://moo-man.github.io/WFRP4e-FoundryVTT/pages/premium.html#initializiation'>Initialization</a> will import it for you.",
     "CHARGEN.ERROR.TalentsTableNotFound" : "Could not find Random Talents Table '{key}' for {species} ({subspecies})",
 
     "DIALOG.CastOrChannel" : "Cast or Channel",
