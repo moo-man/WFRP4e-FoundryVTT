@@ -1,11 +1,11 @@
 const sin = this.effect.sourceActor.system.status.sin.value;
 const result = await WFRP_Tables.rollTable("manann-mood-made-meaningless", sin);
-let match = result.text.match(/b>([^<]+)/i);
+let match = result.description.match(/b>([^<]+)/i);
 let key = match[1];
 let roll = new Roll("5d10");
 let value = undefined;
 
-await this.script.message(result.text, {flavor: result.title});
+await this.script.message(result.description, {flavor: result.title});
 
 switch (key) {
   case 'Stromfels Triumphant!':
