@@ -72,19 +72,20 @@ export class OpposedTestMessage extends WarhammerMessageModel
     static async onApplyHack(ev)
     {
         let opposedTest = this.opposedTest;
+        const type = ev.target.innerText;
   
       if (!opposedTest.defenderTest.actor.isOwner)
-        return ui.notifications.error("ErrorHackPermission", {localize : true})
+        return ui.notifications.error("ErrorArmourDamagePermission", {localize : true})
   
       let loc = opposedTest.result.hitloc.value
-      let armour = opposedTest.defenderTest.actor.itemTypes.armour.filter(i => i.system.isEquipped && i.system.protects[loc] && i.system.currentAP[loc] > 0)
+      let armour = opposedTest.defenderTest.actor.physicalNonDamagedArmourAtLocation(loc);
       if (armour.length)
       {
-        let chosen = await ItemDialog.create(armour, 1, "Choose Armour to damage");
+        let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : type});
         if (chosen[0])
         {
           chosen[0].system.damageItem(1, [loc])
-          ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (Hack)</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
+          ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (${type})</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
         }
       }
       else 
