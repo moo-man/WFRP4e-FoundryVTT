@@ -3,7 +3,7 @@ this.script.message(await this.actor.applyBasicDamage(8, {damageType : game.wfrp
 
 let msg = ``
 let weapons = args.actor.itemTypes.weapon.filter(i => !i.system.location.value);
-let armour = args.actor.itemTypes.armour.filter(i => !i.system.location.value);
+let armour = args.actor.itemTags.armour.filter(i => !i.system.location.value);
 for(let item of weapons)
 {
 	if (item.system.properties.qualities.shield)
