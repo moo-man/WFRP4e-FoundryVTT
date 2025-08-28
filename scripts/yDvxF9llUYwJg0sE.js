@@ -15,7 +15,7 @@ if (getProperty(args.data, "system.loaded.value") == true)
     this.item.update({"system.qualities.value" : qualities});
     this.script.notification("Repeater " + repeaterValue);
 }
-else if (getProperty(args.data, "system.loaded.value") == false)
+else if (foundry.utils.getProperty(args.data, "system.loaded.value") == false)
 {
    let qualities = foundry.utils.deepClone(this.item.system.qualities.value).filter(i => i.name != "repeater");
    this.item.update({"system.qualities.value" : qualities});

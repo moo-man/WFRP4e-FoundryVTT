@@ -40,7 +40,7 @@ export class CharacterModel extends StandardActorModel {
 
     async _checkCharacteristicChange(data, options, user)
     {
-      let charChanges = getProperty(options.changed, "system.characteristics")
+      let charChanges = foundry.utils.getProperty(options.changed, "system.characteristics")
       if (charChanges)
       {
         let keys = Object.keys(charChanges);
