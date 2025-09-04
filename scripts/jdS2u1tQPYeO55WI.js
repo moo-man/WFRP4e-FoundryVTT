@@ -13,7 +13,7 @@ if (type == "corrosion")
 	{
 		let msg = ``
 		let weapons = args.actor.itemTypes.weapon.filter(i => i.isEquipped);
-		let armour = args.actor.itemTypes.armour.filter(i => i.isEquipped);
+		let armour = args.actor.itemTags.armour.filter(i => i.isEquipped);
 		let trappings = args.actor.itemTypes.trapping.filter(i => i.isEquipped);
 		for(let item of weapons)
 		{

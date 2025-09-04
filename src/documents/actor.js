@@ -16,6 +16,7 @@ import PrayerTest from "../system/rolls/prayer-test.js";
 import ChannelTest from "../system/rolls/channel-test.js";
 import CastTest from "../system/rolls/cast-test.js";
 import WomCastTest from "../system/rolls/wom-cast-test.js";
+import ItemWFRP4e from "./item.js";
 
 /**
  * Provides the main Actor data computation and organization.
@@ -1405,6 +1406,10 @@ export default class ActorWFRP4e extends WarhammerActor
 
   // @@@@@@@@@@ DERIVED DATA GETTERS
   get armour() { return this.status.armour }
+
+  physicalNonDamagedArmourAtLocation(location) {
+    return this.armour[location]?.layers.filter(a => a.value > 0 && a.source instanceof ItemWFRP4e).map(a => a.source);
+  }
 
   static compendiumBrowserTypes({chosen = new Set()} = {}) {
     // @todo let systems define categories in data models and change this to generate categories more dynamically

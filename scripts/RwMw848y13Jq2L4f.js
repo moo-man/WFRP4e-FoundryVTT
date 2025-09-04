@@ -6,7 +6,7 @@ if (test.failed)
 }
 
 let msg = ``
-let armour = args.actor.itemTypes.armour.filter(i => i.system.isMetal && i.system.isEquipped);
+let armour = args.actor.itemTags.armour.filter(i => i.system.isMetal && i.system.isEquipped);
 for(let item of armour)
 {
 	for(let key in item.system.AP)

@@ -22,6 +22,9 @@
             - <a class="table-click action-link {{#if this.nulled}}nulled{{/if}} {{this.class}}" data-action="clickTable" data-column="{{this.column}}" style="{{this.style}}" data-table="{{this.key}}" data-modifier="{{this.modifier}}"><i class="fas fa-list"></i> {{this.label}} {{#if this.modifier}}({{numberFormat this.modifier sign=true}}){{/if}}</a>
             {{/each}}
 
+            {{#if test.canUseCriticalDeflection}}
+                <br/><a class="action-link" data-action="applyCriticalDeflection">{{localize "CHAT.CriticalDeflection"}}</a>
+            {{/if}}
         
             {{#if test.result.misfire}}
             - <a class ="table-click  action-link fumble" data-action="clickTable" data-damage="{{test.result.misfireDamage}}" data-table = "misfire"><i class="fas fa-list"></i> {{test.result.misfire}}</a>

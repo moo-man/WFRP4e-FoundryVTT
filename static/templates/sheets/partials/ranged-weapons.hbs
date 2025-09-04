@@ -17,7 +17,7 @@
                             </div>
                             <a data-action="combatDropdown" data-property="group">{{this.WeaponGroup}}</a>
                             <select data-action="editProperty" data-path="system.currentAmmo.value">
-                                {{selectOptions this.ammoList  selected=this.currentAmmo.value blank="-" nameAttr="_id" labelAttr="name"}}
+                                {{selectOptions this.ammoList  selected=this.currentAmmo.value blank="-" valueAttr="_id" labelAttr="name"}}
                             </select>
                             <a data-action="stepProperty" data-reversed="true" data-path="system.damageToItem.value" class="prevent-context {{#if this.damageToItem.value}}damaged{{/if}}" data-tooltip="{{localize 'SHEET.WeaponDamage'}}: {{this.damageToItem.value}}">+{{this.DamageString}}</a>
                             <a class="small" data-action="combatDropdown" data-property="range">{{this.Range}} {{localize "yds"}}</a>

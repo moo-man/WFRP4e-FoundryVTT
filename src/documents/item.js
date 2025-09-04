@@ -318,7 +318,7 @@ export default class ItemWFRP4e extends WarhammerItem
   get skillToUse()         { return this.system.skillToUse }   
   get loading()            { return this.system.loading }   
   get repeater()           { return this.system.repeater }   
-  get reloadingTest()      { return this.actor.items.get(getProperty(this.data, "flags.wfrp4e.reloading")) }   
+  get reloadingTest()      { return this.actor.items.get(foundry.utils.getProperty(this.data, "flags.wfrp4e.reloading")) }   
   get protects()           { return this.system.protects }   
   get properties()         { return this.system.properties }   
   get originalProperties() { return this.system.originalProperties }   

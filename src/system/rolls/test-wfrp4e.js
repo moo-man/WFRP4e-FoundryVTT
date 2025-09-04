@@ -1,3 +1,4 @@
+
 import WFRP_Utility from "../utility-wfrp4e.js";
 import WFRP_Audio from "../audio-wfrp4e.js";
 import CrewTest from "../crew-test.js"
@@ -495,7 +496,7 @@ export default class TestWFRP extends WarhammerTestBase {
           let AP = target.status.armour[this.result.hitloc.result].value
           if (AP) {
             this.result.tables.critical.modifier = -10 * AP
-            this.result.other.push(`Critical Mitigation: Damage AP on target's ${this.result.hitloc.description}`)
+            this.result.other.push(`<a class="action-link" data-action="applyCriticalDeflection">Critical Mitigation: Damage AP</a>`)
           }
         }
       }
@@ -778,13 +779,13 @@ export default class TestWFRP extends WarhammerTestBase {
 
       if (itemData.system.SL.current >= itemData.system.SL.target) {
 
-        if (getProperty(itemData, "flags.wfrp4e.reloading")) {
+        if (foundry.utils.getProperty(itemData, "flags.wfrp4e.reloading")) {
           let actor
-          if (getProperty(itemData, "flags.wfrp4e.vehicle"))
-            actor = WFRP_Utility.getSpeaker(getProperty(itemData, "flags.wfrp4e.vehicle"))
+          if (foundry.utils.getProperty(itemData, "flags.wfrp4e.vehicle"))
+            actor = WFRP_Utility.getSpeaker(foundry.utils.getProperty(itemData, "flags.wfrp4e.vehicle"))
 
           actor = actor ? actor : this.actor
-          let weapon = actor.items.get(getProperty(itemData, "flags.wfrp4e.reloading"))
+          let weapon = actor.items.get(foundry.utils.getProperty(itemData, "flags.wfrp4e.reloading"))
           await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
         }
 
