@@ -29,7 +29,6 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
       rollAvailability : this._onRollAvailability,
       pay : this._onPay,
       postItemProperty: this._postItemProperty,
-      quantity: this._onQuantity
     });
   }
 
@@ -93,10 +92,10 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
           _id : hasItem.id,
           "system.quantity.value" : hasItem.system.quantity.value + this.itemData.system.quantity.value,
         }], {fromMessage: this.parent.id});
-        ui.notifications.notify(game.i18n.format("MARKET.ItemAppended", { item: this.itemData.name, actor : actor.name, quantity: hasItem.system.quantity.value }));
+        ui.notifications.info("MARKET.ItemAppended", {format: { item: this.itemData.name, actor : actor.name, quantity: hasItem.system.quantity.value }});
       } else {
         await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id});
-        ui.notifications.notify(game.i18n.format("MARKET.ItemAdded", { item: this.itemData.name, actor : actor.name }));
+        ui.notifications.info("MARKET.ItemAdded", {format: { item: this.itemData.name, actor : actor.name }});
       }
     }
   }
@@ -135,20 +134,6 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     let itemData = foundry.utils.deepClone(this.itemData);
     itemData.system.price = haggledPrice;
 
-    let content = await this.constructor._renderHTMLFromItemData(itemData, this.postQuantity, this.retrievedBy);
-    this.parent.update({content, "system.itemData" : itemData});
-  }
-
-  /**
-   * Increases or decreases the quantity of the item by 1
-   *
-   * @param {Event} ev Click event
-   * @param {HTMLElement} target Button/element clicked
-   */
-  static async _onQuantity(ev, target)
-  {
-    let itemData = foundry.utils.deepClone(this.itemData);
-    itemData.system.quantity.value += target.dataset.type == "up" ? 1 : -1;
     let content = await this.constructor._renderHTMLFromItemData(itemData, this.postQuantity, this.retrievedBy);
     this.parent.update({content, "system.itemData" : itemData});
   }
@@ -194,7 +179,6 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
       img : itemData.img,
       properties : new Item.implementation(itemData).system.chatData(),
       postQuantity,
-      originalItemQuantity: originalItem && originalItem.system.quantity.value !== itemData.system.quantity.value ? originalItem.system.quantity.value : 0,
       retrievedBy : retrievedBy.join(", ")
     };
 

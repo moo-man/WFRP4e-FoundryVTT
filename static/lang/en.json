@@ -1135,7 +1135,6 @@
     "MARKET.NotifyUserMustBePlayer": "Must be a player to click on PAY",
     "MARKET.ItemAdded" : "{item} added to {actor}",
     "MARKET.ItemAppended" : "{actor} now has {quantity} {item}s",
-    "MARKET.OriginalQuantity" : "Original item quantity for stated price:",
     "Post Quantity" : "Post Quantity",
 
     "WFRP4E.TrappingType.Weapon" : "Weapons",
