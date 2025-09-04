@@ -28,7 +28,7 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
       haggle : this._onHaggle,
       rollAvailability : this._onRollAvailability,
       pay : this._onPay,
-      postItemProperty: this._postItemProperty,
+      postItemProperty: this._postItemProperty
     });
   }
 
@@ -173,7 +173,6 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
    */
   static async _renderHTMLFromItemData(itemData, postQuantity, retrievedBy=[])
   {
-    const originalItem = await fromUuid(itemData._stats.compendiumSource);
     let messageData = {
       item : itemData,
       img : itemData.img,
