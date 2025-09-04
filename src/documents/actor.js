@@ -254,14 +254,8 @@ export default class ActorWFRP4e extends WarhammerActor
       await test.roll();
     }
     else {
-      let skill = this.itemTags["skill"].find(i => i.name == item.test.value)
-      if (skill) {
-        let test = await this.setupSkill(skill, context, options);
-        await test.roll();
-      } 
-      else {
-        ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
-      }
+      let test = await this.setupSkill(item.test.value, context, options);
+      await test.roll();
     }
   }
 
