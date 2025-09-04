@@ -84,4 +84,14 @@ export class GenericAspectModel extends BaseItemModel
     {
         return null;
     }
+
+    get listHeader()
+    {
+        return null;
+    }
+
+    get listContent() 
+    {
+        return null;
+    }
 }

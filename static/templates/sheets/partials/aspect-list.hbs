@@ -20,6 +20,11 @@
                             <a class="label" data-action="toggleSummary">{{this.name}}</a>
                         </div>
                         {{/if}}
+
+                        {{#if this.system.listContent}}
+                            {{{this.system.listContent}}}
+                        {{/if}}
+
                         <div class="list-controls">
                             <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
                         </div>

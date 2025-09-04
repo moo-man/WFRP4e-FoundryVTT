@@ -16,10 +16,8 @@
                         <div class="list-name">
                             <a class="label" data-action="rollTest" data-type="extendedTest">{{this.name}}</a>
                         </div>
-                        <div class="large flex">
-                            <div class="progress-bar">
-                                <div class="fill" style="width: {{pct this.system.SL.current this.system.SL.target}}%"></div>
-                            </div>
+                        <div class="large flex progress-bar">
+                            <div class="fill" style="width: {{pct this.system.SL.current this.system.SL.target}}%"></div>
                         </div>
                         <div><a class="prevent-context" data-action="stepProperty" data-path="system.SL.current" data-uuid="{{this.uuid}}">{{this.system.SL.current}} / {{this.system.SL.target}} {{localize "SuccessLevels"}}</a></div>
                         <div class="list-controls">

@@ -3,6 +3,8 @@
 
 .wfrp4e.item.sheet.application:not(.no-theme) 
 {
+    --color-text-primary: var(--color-grey1);
+    
     border: 1px solid;
     border-image: url(./ui/backgrounds/item-sheet.webp) 4 repeat;
     border-image-slice: 59;
