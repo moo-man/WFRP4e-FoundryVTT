@@ -1102,6 +1102,11 @@ export default class ActorWFRP4e extends WarhammerActor
     fear.system.SL.target = value;
 
     foundry.utils.setProperty(fear, "flags.wfrp4e.fearName", name)
+    
+    let coolSkill = this.itemTags["skill"].find(i => i.name == game.i18n.localize("NAME.Cool")) 
+    if (!coolSkill) {
+      foundry.utils.setProperty(fear, "system.test.value", game.i18n.localize("CHAR.WP"))
+    }
 
     return this.createEmbeddedDocuments("Item", [fear], {condition: true}).then(items => {
       this.setupExtendedTest(items[0], {appendTitle : ` - ${items[0].name}`});
