@@ -2,9 +2,10 @@ export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV
 {
   static DEFAULT_OPTIONS = {
     tag: "form",
-    classes : ["warhammer", "standard-form"],
+    classes : ["warhammer"],
     window: {
-      title: "Trade"
+      title: "Trade",
+      contentClasses: ["standard-form"]
     },
     form: {
       submitOnChange: false,
@@ -18,7 +19,8 @@ export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV
     static PARTS = {
       form: {
         template: "systems/wfrp4e/templates/apps/trade/trade-dialog.hbs",
-        scrollable: [""]
+        scrollable: [""],
+        classes : ["standard-form"]
       },
       footer: {
         template: "templates/generic/form-footer.hbs"
@@ -47,6 +49,7 @@ export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV
       let context = await super._prepareContext(options);
       context.cargo = this.cargoData
       context.gazetteer = this.gazetteer
+      context.settlements = this.gazetteer.map(i => i.name);
       context.tradeType = this.tradeType;
       context.seasons = game.wfrp4e.trade.seasons
       context.buttons = [{ type: "submit", label: "Submit", icon: "fa-solid fa-save" }]
@@ -64,7 +67,7 @@ export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV
         let selected = this.gazetteer[Number(settlementIndex)]
         settlementData = {
           wealth : Number(selected.w),
-          size : Number(selected),
+          size : Number(selected.size),
           trade : selected.isTrade,
           produces : selected.produces,
           season
@@ -194,6 +197,9 @@ export default class TradeDialog extends HandlebarsApplicationMixin(ApplicationV
         {
           key = string.split("(")[0].trim();
           parenValue = string.split("(")[1].split(")")[0];
+
+          key = warhammer.utility.findKey(key, game.wfrp4e.trade.tradeData[this.tradeType].cargoTypes)
+
         }
         else 
         {
