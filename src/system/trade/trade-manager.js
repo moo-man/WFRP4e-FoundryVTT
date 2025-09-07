@@ -15,10 +15,10 @@ export default class TradeManager
     }
 
     seasons = {
-        "spring": "Spring",
-        "summer": "Summer",
-        "autumn": "Autumn",
-        "winter": "Winter"
+        "spring": "SEASON.Spring",
+        "summer": "SEASON.Summer",
+        "autumn": "SEASON.Autumn",
+        "winter": "SEASON.Winter"
     }
 
     get cargoTypes() {
@@ -60,7 +60,7 @@ export default class TradeManager
 
         if (foundry.utils.isEmpty(buttons))
         {
-            ui.notifications.error("No Trade Data found, see console for details");
+            ui.notifications.error("TRADE.ERROR.NoTradeData", {localize: true});
             throw new Error("No Trade Data found: The Death on the Reik module is required for River trading, and the Sea of Claws module is required for Maritime trading. These modules provide the base data needed to compute trading results. ")
         }
 
@@ -70,8 +70,8 @@ export default class TradeManager
         }
 
         return foundry.applications.api.DialogV2.wait({
-            window : {title : "Trade"},
-            content : "Choose the type of Trade",
+            window : {title : game.i18n.localize("DIALOG.TRADE.Title")},
+            content : game.i18n.localize("DIALOG.TRADE.TradeType"),
             buttons
         })
     }
@@ -100,7 +100,7 @@ export default class TradeManager
     {
         if (!cargo.system.cargoType.value)
         {
-            return ui.notifications.error("This cargo does not have a Cargo Type defined")
+            return ui.notifications.error("TRADE.ERROR.MissingCargoType", {localize: true});
         }
 
 
@@ -108,7 +108,7 @@ export default class TradeManager
         
         if (!this.gazetteers[type]?.length)
         {
-            return ui.notifications.error("TRADE.ErrorNoGazetteer");
+            return ui.notifications.error("TRADE.ERROR.NoGazetteer", {localize: true});
         }
 
         let settlementData = await new Promise(resolve => {
@@ -138,8 +138,7 @@ export default class TradeManager
 
         let cargoData = message.getFlag("wfrp4e", "cargoData")
         let actor = game.user.character;
-        if (!actor) return ui.notifications.error("Please assign a character.");
-    
+        if (!actor) return ui.notifications.error("TRADE.ERROR.MissingCharacter", {localize: true});
         // Perform the total amount of money to pay and get the available amount from the PCs
         let toPay
         if (cargoData.system.price.gc.toString().includes("."))

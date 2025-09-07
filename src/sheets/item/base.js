@@ -20,7 +20,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
       controls : [
         {
           icon : 'fa-solid fa-comment',
-          label : "Post to Chat",
+          label : "OPTION.Post",
           action : "postToChat"
         },
       ]
@@ -137,7 +137,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     let getParent = this._getParent.bind(this);
     return [
       {
-        name: "Edit",
+        name: game.i18n.localize("OPTION.Edit"),
         icon: '<i class="fas fa-edit"></i>',
         condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => {
@@ -147,7 +147,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
         }
       },
       {
-        name: "Remove",
+        name: game.i18n.localize("OPTION.Remove"),
         icon: '<i class="fas fa-times"></i>',
         condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => 
@@ -158,7 +158,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
         }
       },
       {
-        name: "Duplicate",
+        name: game.i18n.localize("OPTION.Duplicate"),
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => 

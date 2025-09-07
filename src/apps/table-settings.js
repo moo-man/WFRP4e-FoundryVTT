@@ -4,7 +4,7 @@ export default class TableSettings extends HandlebarsApplicationMixin(Applicatio
         tag: "form",
         classes: ["warhammer", "standard-form", "table-settings"],
         window: {
-            title: "Table Settings Configuration",
+            title: "Menu.TableSettingsWindow",
             resizable : true,
         },
         position : {

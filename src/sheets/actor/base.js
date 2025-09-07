@@ -12,7 +12,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       controls : [
         {
           icon : 'fa-solid fa-gear',
-          label : "Actor Settings",
+          label : "ACTOR.Settings",
           action : "configureActor"
         }
       ]
@@ -315,7 +315,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     let getParent = this._getParent.bind(this);
     return [
       {
-        name: "Edit",
+        name: game.i18n.localize("OPTION.Edit"),
         icon: '<i class="fas fa-edit"></i>',
         condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
         callback: async li => {
@@ -325,7 +325,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
-        name: "Remove",
+        name: game.i18n.localize("OPTION.Remove"),
         icon: '<i class="fas fa-times"></i>',
         condition: li => {
           let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid
@@ -352,7 +352,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
-        name: "Post to Chat",
+        name: game.i18n.localize("OPTION.Post"),
         icon: '<i class="fas fa-comment"></i>',
         condition: li => {
           let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
@@ -371,7 +371,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
-        name: "Duplicate",
+        name: game.i18n.localize("OPTION.Duplicate"),
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => {
           let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
@@ -390,7 +390,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
-        name: "Split",
+        name: game.i18n.localize("OPTION.Split"),
         icon: '<i class="fa-solid fa-split"></i>',
         condition: li => {
           let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
@@ -484,7 +484,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     }
     catch (e)
     {
-      ui.notifications.error("Error Adding Condition Data: " + e);
+      ui.notifications.error(game.i18n.format("ERROR.AddingConditionData", { error: e }));
     }
   }
 
@@ -633,7 +633,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             ChatMessage.create({
               content : html,
               speaker : {alias : this.actor.token?.name || this.actor.prototypeToken.name},
-              flavor : "Group Advantage Action"
+              flavor : game.i18n.localize("CHAT.GroupAdvantageAction")
             })
     
             if (action.test)
@@ -647,7 +647,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
       else 
       {
-        return ui.notifications.error("Not enough Advantage!")
+        return ui.notifications.error(game.i18n.localize("ERROR.NotEnoughAdvantage"));
       }
 
 
@@ -694,14 +694,14 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
             html += `<div class="action">
               <button data-action="useGroupAction" data-index="${i}">${action.name}</button>
               <p>${action.description}</p>
-              <p class="cost"><strong>Cost</strong>: ${action.cost}</p>
+              <p class="cost"><strong>${game.i18n.localize("OPTION.Cost")}</strong>: ${action.cost}</p>
               <p class="effect">${action.effect}</p>
               </div><hr>`
           })
         }
         else 
         {
-          html = "No Actions Available"
+          html = game.i18n.localize("ERROR.NoActionsAvailable");
         }
 
         this._toggleDropdownAt(actions, await TextEditor.enrichHTML(html));
@@ -847,8 +847,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       let propertyDescriptions = foundry.utils.mergeObject(foundry.utils.deepClone(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions);
       if (key)
       {
-        let description = propertyDescriptions[key]?.replace("(Rating)", value) || `Description for ${ev.target.text} was not found`;
-        
+        let description = propertyDescriptions[key]?.replace(`(${game.i18n.localize("PROPERTY.Rating")})`, value) || game.i18n.format(`SHEET.DescriptionForPropertyWasNotFound`, { property: ev.target.text });
+
         this._toggleDropdown(ev, description)
       }
     }
