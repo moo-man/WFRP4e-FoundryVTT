@@ -805,7 +805,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (owningUser?.id != game.user.id)
     {
-        return SocketHandlers.executeOnOwnerAndWait(this, "applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid});
+        return SocketHandlers.call("applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid}, owningUser.id);
     }
 
     let newWounds = this.status.wounds.value;

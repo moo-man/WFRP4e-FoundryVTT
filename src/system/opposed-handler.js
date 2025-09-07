@@ -207,7 +207,7 @@ export default class OpposedHandler {
       await this.message.update(updateData)
     }
     else if (this.message) {
-      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData });
+      await SocketHandlers.call("updateMessage", { id: this.message.id, updateData }, "GM");
     }
   }
 
@@ -261,7 +261,7 @@ export default class OpposedHandler {
       content = content.replace(loser, `${loser} loser`)
 
       if (!game.user.isGM)
-        await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData: {content} });
+        await SocketHandlers.call("updateMessage", { id: this.message.id, updateData: {content} }, "GM");
       else
         await this.message.update({content});
     }
@@ -278,7 +278,7 @@ export default class OpposedHandler {
         scene: canvas.scene.id,
         opposeFlag: { opposeMessageId: this.data.messageId }
       }
-      await SocketHandlers.executeOnUserAndWait("GM", "target", payload);
+      await SocketHandlers.call("target", payload, "GM");
     }
     else {
       // Add oppose data flag to the target
