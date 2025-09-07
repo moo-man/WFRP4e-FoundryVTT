@@ -1,5 +1,3 @@
-import WFRP_Utility from "../system/utility-wfrp4e";
-
 export default class BugReportFormWfrp4e extends Application {
 
     

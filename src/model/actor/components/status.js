@@ -1,6 +1,4 @@
 import { MountModel } from "./mount";
-import { ManannMoodModel } from "./vehicle/mood";
-import { MoraleModel } from "./vehicle/morale";
 
 let fields = foundry.data.fields;
 

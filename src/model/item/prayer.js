@@ -1,5 +1,4 @@
 import Advancement from "../../system/advancement";
-import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 

@@ -1,6 +1,4 @@
 import OpposedHandler from "../system/opposed-handler.js";
-import WFRP_Utility from "../system/utility-wfrp4e.js";
-
 
 export default function() {
 

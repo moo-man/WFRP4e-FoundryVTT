@@ -1,4 +1,3 @@
-import WFRP_Utility from "../system/utility-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
 import MooHouseRules from "../system/moo-house.js"
 

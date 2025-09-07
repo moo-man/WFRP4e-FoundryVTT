@@ -1,4 +1,3 @@
-import SkillTest from "../../system/rolls/skill-test";
 import CharacteristicDialog from "./characteristic-dialog";
 
 export default class SkillDialog extends CharacteristicDialog {

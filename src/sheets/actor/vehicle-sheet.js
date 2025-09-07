@@ -2,10 +2,7 @@ import VehicleCrew from "../../apps/vehicle-crew";
 import VehicleCumulativeModifiersConfig from "../../apps/vehicle-modifiers";
 import VehicleMoveConfig from "../../apps/vehicle-move";
 import { StandardActorModel } from "../../model/actor/standard";
-import WFRP_Audio from "../../system/audio-wfrp4e";
-import WFRP_Utility from "../../system/utility-wfrp4e";
 import BaseWFRP4eActorSheet from "./base";
-import StandardWFRP4eActorSheet from "./standard-sheet";
 
 export default class ActorSheetWFRP4eVehicle extends BaseWFRP4eActorSheet
 {
