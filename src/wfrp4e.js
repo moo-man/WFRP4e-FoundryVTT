@@ -261,4 +261,3 @@ Hooks.once("init", function () {
 
 registerHooks()
 loadScripts();
-socketHandlers();

@@ -117,12 +117,7 @@
                                 {{#if (eq @../key "ingredient")}}
                                 <div class="flex">
                                     <select data-action="editProperty" data-path="system.spellIngredient.value">
-                                        {{#select system.spellIngredient.value}}
-                                        <option>-</option>
-                                        {{#each ../../items.spell.lore}}
-                                        <option value="{{this.id}}">{{this.name}}</option>
-                                        {{/each}}
-                                        {{/select}}
+                                        {{selectOptions @root.items.spell.lore selected=system.spellIngredient.value blank="" valueAttr="id" labelAttr="name"}}
                                     </select>
                                 </div>
                                 {{/if}}

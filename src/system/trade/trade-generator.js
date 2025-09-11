@@ -286,7 +286,7 @@ export default class TradeGenerator
         if (buyer || halfBuyer || quarterBuyer)
         {
             let offerPrices = game.wfrp4e.trade.tradeData[this.tradeType].offerPrice
-            let offerIndex = Math.clamped(this.settlement.wealth + this.settlement.size + demand, 0, offerPrices.length - 1)
+            let offerIndex = Math.clamp(this.settlement.wealth + this.settlement.size + demand, 0, offerPrices.length - 1)
             let offerPriceMultiplier = offerPrices[offerIndex];
 
             let offerPrice = price + (price * offerPriceMultiplier);

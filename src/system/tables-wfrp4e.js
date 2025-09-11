@@ -93,7 +93,7 @@ export default class WFRP_Tables {
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult?.flags?.wfrp4e || {}
       let result = {
-        result : rollResult?.getChatText(),
+        result : await rollResult?.getHTML(),
         roll : displayTotal,
         total : rollValue,
         name : rollResult?.name,
@@ -238,7 +238,7 @@ export default class WFRP_Tables {
   static formatHitloc(result, roll) {
     let flags = result.flags.wfrp4e || {}
     return {
-      description : result.getChatText(),
+      description : result.description,
       result : flags.loc,
       roll
     }
@@ -396,22 +396,11 @@ export default class WFRP_Tables {
     // If the roll is an item, don't post the link to chat, post the item to chat
     if (result.object?.documentUuid)
     {
-      let collection = game.packs.get(result.object.documentCollection)
-
-      if (collection)
-        await collection.getDocuments()
-
-      if (!collection)
-        collection = game.collections.get(result.object.documentCollection)
-
-      if (collection)
+      let document = await fromUuid(result.object.documentUuid);
+      if (document?.documentName == "Item")
       {
-        let item = collection.get(result.object.documentId)
-        if (item && item.documentName == "Item")
-        {
-          await item.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
-          return null;
-        }
+        await document.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
+        return null;
       }
 
     }

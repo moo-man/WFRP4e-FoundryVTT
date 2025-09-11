@@ -7,5 +7,5 @@ if (
     weapon?.system.properties.qualities.fast
     )
 {
-    await args.opposedTest.swap(this.effect.label);
+    await args.opposedTest.swap(this.effect.name);
 }
