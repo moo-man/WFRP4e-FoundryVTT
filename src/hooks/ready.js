@@ -1,6 +1,7 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import FoundryOverrides from "../system/overrides.js";
 import MooHouseRules from "../system/moo-house.js"
+import socketHandlers from "../system/socket-handlers.js";
 
 export default function () {
   Hooks.on("ready", async () => {
@@ -32,7 +33,7 @@ export default function () {
       }
     }
 
-    SocketHandlers.register.bind(SocketHandlers)();
+    SocketHandlers.register(socketHandlers);
 
     Object.defineProperty(game.user, "isUniqueGM", {
       get: function () { return game.user.id == game.users.activeGM.id }
