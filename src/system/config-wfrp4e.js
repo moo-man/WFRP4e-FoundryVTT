@@ -2698,6 +2698,12 @@ WFRP4E.badgeInfo.notes = "https://github.com/moo-man/WFRP4e-FoundryVTT/releases"
 WFRP4E.badgeInfo.issues = "https://github.com/moo-man/WFRP4e-FoundryVTT/issues";
 WFRP4E.badgeInfo.wiki = "https://moo-man.github.io/WFRP4e-FoundryVTT/pages/home.html";
 
+WFRP4E.bugReporterConfig = {
+    repoEndpoint: "https://api.github.com/repos/moo-man/WFRP4e-FoundryVTT",
+    troubleshooting : "https://moo-man.github.io/WFRP4e-FoundryVTT/pages/troubleshooting.html",
+    successMessage : "The longbeards hear you, thank you for your submission into the Dammaz Kron, these wrongs must be righted! If you wish to monitor or follow up with additional details like screenshots, you can find your issue here: @URL",
+}
+
 // To migrate
 // "invoke => manual"
 // "oneTime" => "immediate"

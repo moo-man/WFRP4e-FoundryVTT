@@ -1,4 +1,4 @@
-this.actor.createEmbeddedDocuments("Item", [expandObject({
+this.actor.createEmbeddedDocuments("Item", [foundry.utils.expandObject({
     name : "Ghostly Flame",
     type : "weapon",
     img : this.effect.img,

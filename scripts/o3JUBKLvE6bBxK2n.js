@@ -5,7 +5,7 @@ if (test.failed)
     await this.actor.addCondition("prone")
     let injury = await fromUuid("Compendium.wfrp4e-core.items.ZhMADOqoo0y8Q9bx");
     injury = injury.toObject()
-    let toes = Math.clamped(Math.abs(test.result.SL) + 1, 1, 5)
+    let toes = Math.clamp(Math.abs(test.result.SL) + 1, 1, 5)
     injury.system.location.key = this.item.system.location.key[0] + injury.system.location.value
     if (injury.system.location.key[0] == "r")
     {

@@ -21,7 +21,7 @@ export class CorruptionMessageModel extends WarhammerMessageModel {
 
   static createCorruptionMessage(strength, {skill, source=""}={}, chatData={})
   {
-      renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength, skill : skill?.capitalize(), source}).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/corruption.hbs", { strength, skill : skill?.capitalize(), source}).then(html => {
       ChatMessage.create(foundry.utils.mergeObject({ 
         type : "corruption", 
         content: html, 

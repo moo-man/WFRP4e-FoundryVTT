@@ -92,7 +92,6 @@ export default function () {
     CONFIG.statusEffects = game.wfrp4e.config.statusEffects;
 
     MooHouseRules();
-    canvas.tokens.placeables.forEach(t => t.drawEffects())
 
     game.wfrp4e.tags.createTags();
   })

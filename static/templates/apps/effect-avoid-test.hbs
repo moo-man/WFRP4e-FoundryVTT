@@ -2,11 +2,7 @@
     <label>{{localize "Characteristic"}}</label>
     <div class="form-fields">
         <select name="system.transferData.avoidTest.characteristic">
-            {{#select system.transferData.avoidTest.characteristic}}
-                {{#each (config "characteristics")}}
-                    <option value="{{@key}}">{{this}}</option>
-                {{/each}}
-            {{/select}}
+            {{selectOptions (config "characteristics") selected=system.transferData.avoidTest.characteristic}}
         </select>
     </div>
 </div>
@@ -21,12 +17,7 @@
     <label>{{localize "Difficulty"}}</label>
     <div class="form-fields">
         <select name="system.transferData.avoidTest.difficulty">
-        {{#select system.transferData.avoidTest.difficulty}}
-            <option value=""></option>
-            {{#each (config "difficultyLabels")}}
-              <option value="{{@key}}">{{this}}</option>
-            {{/each}}
-        {{/select}}
+            {{selectOptions (config "difficultyLabels") selected=system.transferData.avoidTest.difficulty blank=""}}
         </select>
     </div>
 </div>
