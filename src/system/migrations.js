@@ -190,7 +190,7 @@ export default class Migration {
         // Update the Owned Item
         if (!foundry.utils.isEmpty(itemUpdate)) {
           itemUpdate._id = i.id;
-          arr.push(expandObject(itemUpdate));
+          arr.push(foundry.utils.expandObject(itemUpdate));
         }
 
         return arr;
@@ -522,7 +522,7 @@ export default class Migration {
         // Update the Owned Item
         if (!foundry.utils.isEmpty(effectUpdate)) {
           effectUpdate._id = e.id;
-          arr.push(expandObject(effectUpdate));
+          arr.push(foundry.utils.expandObject(effectUpdate));
         }
 
         return arr;

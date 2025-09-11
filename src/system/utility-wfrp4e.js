@@ -1,6 +1,5 @@
 import MarketWFRP4e from "../apps/market-wfrp4e.js";
 import { CorruptionMessageModel } from "../model/message/corruption.js";
-import { PayMessageModel } from "../model/message/pay.js";
 import { PsychMessageModel } from "../model/message/psych.js";
 import { XPMessageModel } from "../model/message/xp.js";
 
@@ -552,7 +551,7 @@ export default class WFRP_Utility {
   static alterDifficulty(difficulty, steps) {
     let difficulties = Object.keys(game.wfrp4e.config.difficultyLabels)
     let difficultyIndex = difficulties.findIndex(d => d == difficulty) + steps
-    difficultyIndex = Math.clamped(difficultyIndex, 0, difficulties.length - 1)
+    difficultyIndex = Math.clamp(difficultyIndex, 0, difficulties.length - 1)
     return difficulties[difficultyIndex]
   }
 
@@ -789,9 +788,7 @@ export default class WFRP_Utility {
       FXMASTER.filters.switch("morrslieb", "color", CONFIG.MorrsliebObject)
     }
     else {
-      game.socket.emit("system.wfrp4e", {
-        type: "morrslieb"
-      })
+      SocketHandlers.call("morrslieb", null, "ALL")
       canvas.draw();
     }
   }

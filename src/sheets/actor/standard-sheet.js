@@ -240,7 +240,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
         if (this.actor.type != "character" && (await foundry.applications.api.DialogV2.confirm({ content: game.i18n.localize("SpecChar"), window : {title: game.i18n.localize("Species Characteristics") }})) )
         {
-            mergeObject(update, {system: { characteristics, "details.move.value" : WFRP_Utility.speciesMovement(speciesKey) || 4 }})
+          foundry.utils.mergeObject(update, {system: { characteristics, "details.move.value" : WFRP_Utility.speciesMovement(speciesKey) || 4 }})
         }
     } 
     catch(e) 
