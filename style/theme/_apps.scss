@@ -85,5 +85,9 @@ body:not(.no-theme):not(.theme-light) {
             }
 
         }
+
+        &.bug-report {
+            --issue : var(--color-warm);
+        }
     }
 }

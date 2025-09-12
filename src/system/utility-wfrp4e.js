@@ -588,7 +588,7 @@ export default class WFRP_Utility {
             modifier: modifier,
             showRoll: true,
             messageId
-          }, target.dataset.column)).result;
+          }, target.dataset.column));
       }
 
       chatOptions["content"] = html;

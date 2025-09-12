@@ -93,7 +93,7 @@ export default class WFRP_Tables {
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult?.flags?.wfrp4e || {}
       let result = {
-        result : await rollResult?.getHTML(),
+        result : rollResult?.getChatText(),
         roll : displayTotal,
         total : rollValue,
         name : rollResult?.name,
@@ -104,7 +104,7 @@ export default class WFRP_Tables {
 
 
       // If table result text is a UUID link, add a text property with just the label
-      result.description = WFRP_Utility.extractLinkLabel(result.result)
+      result.text = WFRP_Utility.extractLinkLabel(result.result)
 
       foundry.utils.mergeObject(result, flags)
 
