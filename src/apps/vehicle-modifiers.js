@@ -4,7 +4,7 @@ export default class VehicleCumulativeModifiersConfig extends HandlebarsApplicat
         tag: "form",
         classes: ["warhammer", "standard-form", "vehicle-modifiers"],
         window: {
-            title: "Vehicle Modifiers",
+            title: "SHEET.VehicleModifiersTitle",
             resizable: true,
         },
         position: {

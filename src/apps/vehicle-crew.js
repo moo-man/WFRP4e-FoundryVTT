@@ -4,7 +4,7 @@ export default class VehicleCrew extends DraggableApp(HandlebarsApplicationMixin
         tag: "form",
         classes: ["warhammer", "standard-form", "vehicle-crew"],
         window: {
-            title: "Vehicle Crew",
+            title: "SHEET.VehicleCrewTitle",
             resizable: true,
         },
         position: {
