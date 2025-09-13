@@ -1,4 +1,3 @@
-import { PhysicalItemModel } from "./components/physical";
 import {EquippableItemModel} from "./components/equippable.js";
 let fields = foundry.data.fields;
 

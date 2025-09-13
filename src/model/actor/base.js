@@ -1,5 +1,3 @@
-import WFRP_Utility from "../../system/utility-wfrp4e";
-import {StandardDetailsModel} from "./components/details.js";
 
 let fields = foundry.data.fields;
 /**
