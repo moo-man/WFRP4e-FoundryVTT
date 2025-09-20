@@ -1,0 +1,30 @@
+.application.journal-entry-page {
+    --border: var(--color-cool-3);
+    .endeavour-fields {
+        border-color: var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        .test-data {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            > * {
+                text-align: center;
+            }
+        }
+
+        .effect {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            &.droppable {
+                flex: 2;
+                border: 1px dashed var(--border);
+                border-radius: 10px;
+                padding: 10px;
+                text-align: center;
+            }
+        }
+    }
+}

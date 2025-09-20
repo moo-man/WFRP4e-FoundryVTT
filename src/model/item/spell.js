@@ -146,7 +146,7 @@ export class SpellModel extends OvercastItemModel {
 
     async _onUpdate(data, options, user)
     {
-      if (this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
+      if (game.user.id == user && this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
       {
         if (options.changed.system.memorized.value)
         {

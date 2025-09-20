@@ -1,0 +1,41 @@
+<fieldset class="endeavour-fields">
+    <legend>Endeavour</legend>
+    <div class="test-data">
+
+        <div>
+            <label>{{localize "Characteristic"}}</label>
+            <select name="flags.wfrp4e.endeavour.test.characteristic">
+                {{selectOptions (config "characteristics") selected=test.characteristic blank=""}}
+            </select>
+        </div>
+        <div>
+            <label>{{localize "Skill"}}</label>
+            <input type="text" name="flags.wfrp4e.endeavour.test.skill" value="{{test.skill}}">
+        </div>
+        <div>
+            <label>{{localize "Difficulty"}}</label>
+            <select name="flags.wfrp4e.endeavour.test.difficulty">
+                {{selectOptions (config "difficultyLabels") selected=test.difficulty blank=""}}
+            </select>
+        </div>
+    </div>
+
+    <div class="flexrow">
+        <div class="script">
+            <button data-action="configureScript">Configure Script<i class="fa-solid fa-gear-complex-code"></i></button>
+        </div>
+
+        {{#if effect}}
+        <div class="effect">
+            <a data-action="openEffect">Effect: <strong>{{effect.name}}</strong></a>
+            <a data-action="removeEffect"><i class="fas fa-xmark"></i></a>
+        </div>
+        {{else}}
+        <div class="effect droppable">
+            Drag and drop an Active Effect. This will be applied to an Actor performing the Endeavour.
+        </div>
+        {{/if}}
+        </div>
+    </div>
+
+</fieldset>

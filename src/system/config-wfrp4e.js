@@ -1872,6 +1872,12 @@ WFRP4E.PrepareSystemItems = function() {
             img: "icons/svg/invisible.svg",
             statuses: ["invisible"],
             system: {}
+        },
+        "blind" : {
+            name: "Blind",
+            img: "icons/svg/blind.svg",
+            statuses: ["blind"],
+            system: {}
         }
     })
 
@@ -2385,6 +2391,31 @@ if (test.succeeded) {
             }
         },
         blackpowder: {
+            img : "systems/wfrp4e/icons/blank.png",
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            system: {
+                transferData : {
+                    type : "target",
+                    documentType : "Actor"
+                },
+                scriptData: [
+                    {
+                        label: "@effect.name",
+                        trigger: "immediate",
+                        script: `
+                            test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                            await test.roll();
+                            if (test.failed)
+                            {
+                                this.actor.addCondition("broken");
+                            }
+                            return false;
+                        `
+                    }
+                ]
+            }
+        },
+        engineering: {
             img : "systems/wfrp4e/icons/blank.png",
             name: game.i18n.localize("EFFECT.BlackpowderShock"),
             system: {

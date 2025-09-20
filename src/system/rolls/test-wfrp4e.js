@@ -465,7 +465,7 @@ export default class TestWFRP extends WarhammerTestBase {
       this.result.tables.critical = {
         label : this.result.critical,
         class : "critical-roll",
-        modifier : this.result.critModifier,
+        modifier : this.result.critModifier || 0,
         key: `crit${this.result.hitloc.result}`
       }
     }

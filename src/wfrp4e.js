@@ -108,6 +108,7 @@ import { XPMessageModel } from "./model/message/xp.js";
 import { CorruptionMessageModel } from "./model/message/corruption.js";
 import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
+import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -155,6 +156,8 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
+
+  DocumentSheetConfig.registerSheet(CONFIG.JournalEntryPage.documentClass, "wfrp4e", EndeavourJournalSheet, {label : "Endeavour Journal Page"}) 
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
