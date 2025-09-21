@@ -36,7 +36,7 @@
                 {{#if items.talent.length}}
                     <div class="overview-list">
                         <label class="list-label">{{localize "Talents"}}:</label>
-                        {{#each items.talent}}
+                        {{#each talents}}
                             <a data-action="overviewDropdown" class="context-menu-alt" data-click="right" data-uuid="{{this.uuid}}">{{this.name}} </a>
                             <a class="talents advances">{{this.Advances}}</a>
                             ,
