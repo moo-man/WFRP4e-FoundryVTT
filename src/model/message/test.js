@@ -152,11 +152,11 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
                 let armour = target.physicalNonDamagedArmourAtLocation(hitLoc)
                 if (armour.length)
                 {
-                    let chosen = await ItemDialog.create(armour, 1, {text : "Choose Armour to damage", title : `${type} - ${target.name}`});
+                    let chosen = await ItemDialog.create(armour, 1, {text : game.i18n.localize("DIALOG.ChooseArmour"), title : `${type} - ${target.name}`});
                     if (chosen[0])
                     {
                         chosen[0].system.damageItem(1, [hitLoc]);
-                        ChatMessage.create({content: `<p>1 Damage applied to @UUID[${chosen[0].uuid}]{${chosen[0].name}} (${type})</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
+                        ChatMessage.create({content: `<p>${game.i18n.format("CHAT.DamageToArmour",  {item: `@UUID[${chosen[0].uuid}]{${chosen[0].name}}`, type: type} )}</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
                     }
                 }
                 else
