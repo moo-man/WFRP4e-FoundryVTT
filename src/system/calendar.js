@@ -1,8 +1,8 @@
 export default function()
 {
 return {
-    name: "Imperial Calendar",
-    description: "The calendar as defined by the Empire, dating from the year of Sigmar's coronation.",
+    name: game.i18n.localize("Imperial Calendar"),
+    description: game.i18n.localize("Imperial Calendar Description"),
     years: {
       yearZero: 2512,
       firstWeekday: 1,

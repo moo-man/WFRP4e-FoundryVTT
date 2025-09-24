@@ -96,29 +96,29 @@ export default class TradeGenerator
     
         if (this.settlement.produces.includes(cargo.system.cargoType.value))
         {
-            message = "This good is already produced at <b>" + this.settlement.name + "</b>"
+            message = game.i18n.format("TRADE.AlreadyProduced", { settlement: this.settlement.name });
         }
         else if (cargo.system.origin.value == this.settlement.name)
         {
-            message = "You cannot sell cargo in the same settlement you bought it from."
+            message = game.i18n.localize("TRADE.SellInSameSettlement");
         }
         else if (score1 <= targetScore) 
         {
           let sellPrice = price + (price * game.wfrp4e.trade.tradeData[this.tradeType].wealthAvailability[this.settlement.wealth].offered);
           sellPrice += sellPrice * ((d20() - 10) / 100);
           sellPrice = Math.round(sellPrice);
-          message = "A merchant is willing to buy the whole cargo for " + `<a class="money-drag" data-amt="${sellPrice}g"><strong>${sellPrice} GC</strong></a>`
+          message = game.i18n.format("TRADE.MerchantBuyWholeCargo", { sellPrice });
         } 
         else if (score2 <= targetScore) 
         {
           let sellPrice = price / 2 + (price / 2 * game.wfrp4e.trade.tradeData[this.tradeType].wealthAvailability[this.settlement.wealth].offered);
           sellPrice += sellPrice * ((d20() - 10) / 100);
           sellPrice = Math.round(sellPrice);
-          message = "A merchant is willing to buy half the size of the cargo for " + `<a class="money-drag" data-amt="${sellPrice}g"><strong>${sellPrice} GC</strong</a>`
+          message = game.i18n.format("TRADE.MerchantBuyHalfCargo", { sellPrice });
         } 
         else 
         {
-          message = "You cannot find anyone who wants to buy this cargo in <b>" + this.settlement.name + "</b>";
+          message = game.i18n.format("TRADE.NoBuyer", { settlement: this.settlement.name });
         }
         return ChatMessage.create(game.wfrp4e.utility.chatDataSetup(message));
     }
@@ -247,7 +247,7 @@ export default class TradeGenerator
 
         if (cargo.system.origin.value == this.settlement.name)
         {
-            message = "<p>You cannot sell cargo in the same settlement you bought it from.</p>"
+            message = game.i18n.localize("TRADE.SellInSameSettlement");
             buyer = false;
             halfBuyer = false;
             quarterBuyer = false;
@@ -256,31 +256,30 @@ export default class TradeGenerator
         {
             if (halfRoll) 
             {
-                rollMessage = `Rolled ${roll}, ${halfRoll} vs ${target}`;
+                rollMessage = game.i18n.format("TRADE.RollMessageHalf", { roll, halfRoll, target });
             }
             else 
             {
-                rollMessage = `Rolled ${roll} vs ${target}`;
+                rollMessage = game.i18n.format("TRADE.RollMessage", { roll, target });
             }
 
             if (buyer) 
             {
-                message = `<p>A buyer was found at <strong>${this.settlement.name}</strong>`
+                message = game.i18n.format("TRADE.BuyerFound", { settlement: this.settlement.name });
             }
             else if (halfBuyer)
             {
-                message = `<p>A buyer was found at <strong>${this.settlement.name}</strong>, but they are only willing to buy half the cargo.`
+                message = game.i18n.format("TRADE.BuyerFoundHalf", { settlement: this.settlement.name });
             }
             else
             {
-                message = `<p>No buyer was found at <strong>${this.settlement.name}</strong>`
+                message = game.i18n.format("TRADE.BuyerNotFound", { settlement: this.settlement.name });
                 if (quarterBuyer)
                 {
-                    message += `, but it's possible to offload to a merchant who will buy at a quarter price.</p>`
+                    message += game.i18n.localize("TRADE.BuyerNotFoundBut");
                 }
             }
-
-            message += ` (${rollMessage})</p>`
+            message = `<p>${message} (${rollMessage})</p>`
         }
 
         if (buyer || halfBuyer || quarterBuyer)
@@ -303,7 +302,7 @@ export default class TradeGenerator
                 offerPrice /= 4;
             }
 
-            message += "<p>They are willing to pay " + `<a class="money-drag" data-amt="${offerPrice}g"><strong>${offerPrice} GC</strong></a></p>`
+            message += game.i18n.localize("TRADE.OfferPrice", { offerPrice });
 
             //TODO:  Add haggling (136)
         }
@@ -392,7 +391,7 @@ export default class TradeGenerator
 
     static async buyCargo(cargoData) {
         let actor = game.user.character;
-        if (!actor) return ui.notifications.error("Please assign a character.");
+        if (!actor) return ui.notifications.error("ERROR.NoCharacter", {localize: true});
     
         // Perform the total amount of money to pay and get the available amount from the PCs
         let toPay

@@ -11,7 +11,7 @@ export default function() {
 
     Hooks.on("getHeaderControlsRollTableSheet", (sheet, controls) => {
         controls.push({
-            label : "Configure Table Key",
+            label : game.i18n.localize("DIALOG.TABLES.ButtonLabel"),
             icon : "fa-solid fa-key",
             action : "configureKey" 
         });
@@ -20,17 +20,17 @@ export default function() {
             let column = this.document.getFlag("wfrp4e", "column");
 
             new foundry.applications.api.DialogV2({
-              window: { title: "Table Key & Column" },
+              window: { title: game.i18n.localize("DIALOG.TABLES.Title") },
               content: `
               <div class="form-group">
-                <label>Key</label>
+                <label>${game.i18n.localize("DIALOG.TABLES.Key")}</label>
               <div class="form-fields">
               <input type="text" value="${key}" name="key"/>
               </div>
               </div>
 
               <div class="form-group">
-                <label>Column</label>
+                <label>${game.i18n.localize("DIALOG.TABLES.Column")}</label>
               <div class="form-fields">
               <input type="text" value="${column}" name="column"/>
               </div>

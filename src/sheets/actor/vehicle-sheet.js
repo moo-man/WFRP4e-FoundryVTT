@@ -112,7 +112,7 @@ export default class ActorSheetWFRP4eVehicle extends BaseWFRP4eActorSheet
     let document = await Actor.implementation.fromDropData(data);
     if (document?.system instanceof StandardActorModel) {
       if (document.pack) {
-        return ui.notification.error("Cannot use Compendium Actors with Vehicles")
+        return ui.notification.error("ERROR.CannotUseCompendiumActorsWithVehicles", {localize: true});
       }
     }
     this.actor.update(this.actor.system.passengers.add(document))

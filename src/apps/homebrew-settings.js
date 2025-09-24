@@ -6,7 +6,7 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
         tag: "form",
         classes: ["warhammer", "standard-form", "homebrew-config"],
         window: {
-            title: "Homebrew Settings Configuration",
+            title: "Menu.HomebrewSettingsWindow",
             resizable : true,
         },
         position : {

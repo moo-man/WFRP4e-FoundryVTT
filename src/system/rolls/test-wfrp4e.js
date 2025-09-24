@@ -484,7 +484,7 @@ export default class TestWFRP extends WarhammerTestBase {
   async postTest() {
 
     if (this.result.critical && this.item.properties?.qualities.warpstone) {
-      this.result.other.push(`@Corruption[minor]{Minor Exposure to Corruption}`)
+      this.result.other.push(`@Corruption[minor]{${game.i18n.localize("CORRUPTION.MinorExposure")}}`)
     }
     
     //@HOUSE
@@ -496,7 +496,7 @@ export default class TestWFRP extends WarhammerTestBase {
           let AP = target.status.armour[this.result.hitloc.result].value
           if (AP) {
             this.result.tables.critical.modifier = -10 * AP
-            this.result.other.push(`<a class="action-link" data-action="applyCriticalDeflection">Critical Mitigation: Damage AP</a>`)
+            this.result.other.push(`<a class="action-link" data-action="applyCriticalDeflection">${game.i18n.format("ROLL.CriticalMitigation", {location: this.result.hitloc.description})}</a>`)
           }
         }
       }
@@ -1172,7 +1172,8 @@ export default class TestWFRP extends WarhammerTestBase {
 
       if (game.settings.get("wfrp4e", "SLMethod") != "default")
       {
-        testBreakdown += "<p>SL Evaluated with " + (game.settings.get("wfrp4e", "SLMethod") == "fast" ? "Fast SL" : "Degrees of Success") + "</p>"
+        const testEvaluation = game.i18n.format("CHAT.SLEvaluatedWith", { method: (game.settings.get("wfrp4e", "SLMethod") == "fast" ? game.i18n.localize("CHAT.FastSL") : game.i18n.localize("CHAT.DegreesOfSuccess")) });
+        testBreakdown += `<p>${testEvaluation}</p>`;
       }
 
       if (breakdown.modifier)
