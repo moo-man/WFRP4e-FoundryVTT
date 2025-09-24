@@ -1134,6 +1134,7 @@
     "MARKET.NotifyNoActor": "No Character is selected or associated with the current user",
     "MARKET.NotifyUserMustBePlayer": "Must be a player to click on PAY",
     "MARKET.ItemAdded" : "{item} added to {actor}",
+    "MARKET.ItemAppended" : "{actor} now has {quantity} {item}s",
     "Post Quantity" : "Post Quantity",
 
     "WFRP4E.TrappingType.Weapon" : "Weapons",
