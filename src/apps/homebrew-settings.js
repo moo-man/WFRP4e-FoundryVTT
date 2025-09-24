@@ -26,6 +26,8 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
         uiaCritsMod : new foundry.data.fields.NumberField({initial: 10, label : "SETTINGS.UIACritsMod", hint : "SETTINGS.UIACritsModHint"}),
         partialChannelling : new foundry.data.fields.BooleanField({label : "SETTINGS.PartialChannelling", hint : "SETTINGS.MooAdvantageHint"}),
         channellingIngredients : new foundry.data.fields.BooleanField({label : "SETTINGS.ChannellingIngredients", hint : "SETTINGS.MooDifficultyHint"}),
+        staticPointBlankRange : new foundry.data.fields.BooleanField({label : "SETTINGS.StaticPointBlankRange", hint : "SETTINGS.StaticPointBlankRangeHint"}),
+        staticPointBlankRangeValue: new foundry.data.fields.NumberField({initial : 4, label : "SETTINGS.StaticPointBlankRangeValue", hint : "SETTINGS.StaticPointBlankRangeValueHint"}),
         unofficialgrimoire : new foundry.data.fields.BooleanField({label : "SETTINGS.UnofficialGrimoire", hint : "SETTINGS.MooCritsFumblesHint"}),
         
         mooAdvantage : new foundry.data.fields.BooleanField({label : "SETTINGS.MooAdvantage", hint : "SETTINGS.MooAdvantageHint"}),
