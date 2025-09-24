@@ -11,6 +11,7 @@ export default class CastTest extends TestWFRP {
     this.preData.malignantInfluence = data.malignantInfluence;
     this.preData.unofficialGrimoire = game.settings.get("wfrp4e", "homebrew").unofficialgrimoire;
     this.preData.overchannelling = data.overchannelling;
+    this.preData.quickcasting = data.quickcasting;
     this.preData.ingredientMode = data.ingredientMode ?? "none";
 
     this.data.context.templates = data.templates || [];
@@ -188,7 +189,7 @@ export default class CastTest extends TestWFRP {
       //@/HOUSE
     }
     //@HOUSE
-    if (this.preData.unofficialGrimoire && this.preData.unofficialGrimoire.quickcasting && miscastCounter > 0) { 
+    if (this.preData.unofficialGrimoire && this.preData.quickcasting && miscastCounter > 0) { 
       game.wfrp4e.utility.logHomebrew("quickcasting");
       this.result.other.push(game.i18n.localize("CHAT.Quickcasting"))
       miscastCounter++;

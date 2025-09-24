@@ -1,5 +1,4 @@
 import TestWFRP from "../../system/rolls/test-wfrp4e";
-import WFRP_Utility from "../../system/utility-wfrp4e";
 import ItemWFRP4e from "../../documents/item.js";
 
 export class WFRPTestMessageModel extends WarhammerTestMessageModel 
