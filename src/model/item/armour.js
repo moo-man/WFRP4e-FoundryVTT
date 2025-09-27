@@ -111,7 +111,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
 
   get isMetal() 
   {
-    return ["plate", "mail", "otherMetal"].includes(this.armorType.value)
+    return ["plate", "mail", "otherMetal", "gromril"].includes(this.armorType.value)
   }
 
   get protects() {
