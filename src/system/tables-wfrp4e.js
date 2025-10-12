@@ -29,8 +29,16 @@ export default class WFRP_Tables {
       game.wfrp4e.tables.formatChatRoll(key, { modifier: modifier, showRoll: true, returnResult: true }, column).then(result => {
         if (!result)
           return
-        msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
-        msg.content += `<p>${result.result}</p>`;
+
+        if (typeof result == "string")
+        {
+          msg.content = result;
+        }
+        else
+        {
+          msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
+          msg.content += `<p>${result.result}</p>`;
+        }
         ChatMessage.create(msg);
       })
     }
@@ -335,6 +343,17 @@ export default class WFRP_Tables {
           hitloc[result.flags.wfrp4e.loc] = result.description
       })
     }
+    else 
+    {
+      hitloc = {
+        head : "Head",
+        lArm : "Left Arm",
+        rArm : "Right Arm",
+        body : "Body",
+        lLeg : "Left Leg",
+        rLeg : "Right Leg"
+      }
+    }
     return hitloc
   }
 
@@ -379,7 +398,7 @@ export default class WFRP_Tables {
     let tableObject = this.findTable(table, column);
 
     if (tableObject && tableObject.columns)
-      return {result : this.promptColumn(table)};
+      return this.promptColumn(table);
 
 
     let result = await this.rollTable(table, options, column);

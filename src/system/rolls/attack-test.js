@@ -158,12 +158,14 @@ export default class AttackTest extends TestWFRP {
 
   get canUseCriticalDeflection() {
     let result = false;
-    const hitLoc = this.data.result.hitloc.result;
-    this.targets.forEach(target => {
-      if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.physicalNonDamagedArmourAtLocation(hitLoc).length > 0) {
-        result = true;
-      }
-    })
+    const hitLoc = this.data.result.hitloc?.result;
+    if (hitLoc) {
+      this.targets.forEach(target => {
+        if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && target.physicalNonDamagedArmourAtLocation(hitLoc).length > 0) {
+          result = true;
+        }
+      })
+    }
     return result;
   }
 }
