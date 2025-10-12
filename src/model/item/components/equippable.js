@@ -1,3 +1,4 @@
+import WFRP_Audio from "../../../system/audio-wfrp4e.js";
 import {PhysicalItemModel} from "./physical.js";
 
 let fields = foundry.data.fields;
@@ -22,6 +23,7 @@ export class EquippableItemModel extends PhysicalItemModel {
     if (game.user.id === user && foundry.utils.hasProperty(data, "system.equipped")) {
       await Promise.all(this.parent.runScripts("equipToggle", {equipped: this.isEquipped}));
       await this.onEquipToggle(data, options, user);
+      WFRP_Audio.PlayContextAudio({ item: this.parent, action: "equip", outcome: this.isEquipped });
     }
   }
 
