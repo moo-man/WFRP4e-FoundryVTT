@@ -42,7 +42,8 @@ export default class CastTest extends TestWFRP {
     //@HOUSE
     if (this.preData.unofficialGrimoire && this.preData.ingredientMode == 'power' && this.hasIngredient) { 
       game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
-      this.preData.canReverse = true;
+      this.preData.canReverse = {allowed : true, if: "success"};
+
     }
     //@HOUSE
   }

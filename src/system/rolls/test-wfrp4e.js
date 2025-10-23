@@ -24,7 +24,7 @@ export default class TestWFRP extends WarhammerTestBase {
         diceDamage: data.diceDamage,
         options: data.context || {},
         other: data.other || [],
-        canReverse: data.canReverse || false,
+        reversal: data.reversal || {allowed : false, if: "better"}, // if better/worse/success/failure
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
@@ -196,22 +196,56 @@ export default class TestWFRP extends WarhammerTestBase {
 
     let description = "";
 
-    if (this.preData.canReverse) {
+    if (this.preData.reversal.allowed) {
       let reverseRoll = this.result.roll.toString();
-      if (this.result.roll >= automaticFailure || (this.result.roll > target && this.result.roll > automaticSuccess)) {
-        if (reverseRoll.length == 1)
-          reverseRoll = reverseRoll[0] + "0"
-        else {
-          reverseRoll = reverseRoll[1] + reverseRoll[0]
+      if (reverseRoll.length == 1)
+        reverseRoll = reverseRoll[0] + "0"
+      else {
+        reverseRoll = reverseRoll[1] + reverseRoll[0]
+      }
+
+      reverseRoll = Number(reverseRoll);
+
+
+      let reverse = false;
+      if (this.preData.reversal.if == "better" || !this.preData.reversal.if)
+      {
+        if (reverseRoll < this.result.roll)
+        {
+          reverse = true;
         }
-        reverseRoll = Number(reverseRoll);
-        if (reverseRoll <= automaticSuccess || reverseRoll <= target) {
+        }
+        if (this.preData.reversal.if == "worse")
+        {
+          if (reverseRoll > this.result.roll)
+          {
+            reverse = true;
+          }
+        }
+
+        if (this.preData.reversal.if == "success")
+        {
+          if (reverseRoll <= automaticSuccess || reverseRoll <= target)
+          {
+            reverse = true;
+          }
+        }
+        
+        if (this.preData.reversal.if == "failure")
+        {
+          if (reverseRoll >= automaticFailure || reverseRoll > target)
+          {
+            reverse = true;
+          }
+        }
+        
+        if (reverse) 
+        {
+          this.result.originalRoll = this.result.roll;
           this.result.roll = reverseRoll
           this.result.reversed = true;
-          this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
-    }
 
 
     let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
