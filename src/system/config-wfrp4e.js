@@ -1231,6 +1231,14 @@ WFRP4E.systemEffects = {}
 WFRP4E.vehicleSystemEffects = {}
 WFRP4E.groupAdvantageActions = [];
 
+WFRP4E.careerLevels = {
+    1 : 1,
+    2 : 2, 
+    3 : 3,
+    4 : 4,
+    5 : 5
+}
+
 WFRP4E.PrepareSystemItems = function() {
 
     this.systemItems = foundry.utils.mergeObject(this.systemItems, {
@@ -2750,6 +2758,7 @@ WFRP4E.scriptTriggers = {
     "preUpdate" : "Pre Update",
     "update" : "On Update",
     "equipToggle" : "Equip Toggle",
+    "targeted" : "Targeted",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",

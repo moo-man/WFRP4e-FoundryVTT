@@ -21,7 +21,7 @@ export class CareerModel extends BaseItemModel
         });
         schema.level = new fields.SchemaField({
             // value: new fields.NumberField({min: 1, choices : [1, 2, 3, 4], initial : 1})
-            value: new fields.NumberField({min: 1, choices : {1 : "1", 2 : "2", 3 : "3", 4 : "4"}, initial : 1})
+            value: new fields.NumberField({min: 1,  choices: game.wfrp4e.config.careerLevels, initial : 1})
         });
         schema.status = new fields.SchemaField({
             standing: new fields.NumberField({min: 1}),

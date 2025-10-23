@@ -169,7 +169,10 @@
 
             input {
                 color: var(--color-grey1);
-                background: rgba(0, 0, 0, 0.05)
+                &:not([type=checkbox])
+                {
+                    background: rgba(0, 0, 0, 0.05)
+                }
             }
 
             select {
@@ -224,6 +227,15 @@
                     color: var(--color-grey1);
                 }
             }
+        }
+
+
+        .sheet-button {
+            @include styled-button();
+            height: 1.5rem;
+            padding: 0px 6px;
+            line-height: 1.5rem;
+            min-height: 1.5rem;
         }
 
         .sheet-effect-buttons {

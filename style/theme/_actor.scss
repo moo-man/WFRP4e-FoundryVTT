@@ -307,14 +307,12 @@
             }
         }
 
-        section.tab[data-tab=notes] .experience-log {
-            .header {
+        section.tab[data-tab=notes] .sheet-list-header {
                 @include shadowed(#6b3a0f87);
                 color: var(--color-grey2);
                 background: none;
                 border: 1px solid var(--color-faded);
                 border-bottom: none;
-            }
         }
 
         .overview-content {
