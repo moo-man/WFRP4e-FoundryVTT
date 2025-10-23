@@ -1,4 +1,4 @@
-export default class TableSettings extends HandlebarsApplicationMixin(ApplicationV2)
+export default class TableSettings extends WHFormApplication
 {
     static DEFAULT_OPTIONS = {
         tag: "form",
@@ -12,6 +12,7 @@ export default class TableSettings extends HandlebarsApplicationMixin(Applicatio
         },
         form: {
             submitOnChange: true,
+            closeOnSubmit: false,
             handler: this._onSubmit
         }
     }
@@ -20,7 +21,8 @@ export default class TableSettings extends HandlebarsApplicationMixin(Applicatio
     static PARTS = {
         form: {
             template: "systems/wfrp4e/templates/apps/table-settings.hbs",
-            scrollable: [""]
+            scrollable: [""],
+            classes: ["standard-form"]
         }
     };
 
