@@ -159,6 +159,20 @@
                         <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
                     </div>
                     </div>
+                    {{#if this.system.requiredTrappingStatus.length}}
+                    <div class="required-trappings">
+                        {{#each this.system.requiredTrappingStatus}}
+                            <a data-action="toggleOwnedTrapping" class="trapping {{#if this.owned}}owned{{/if}}" data-index="{{this.index}}">
+                                {{#if this.owned}}
+                                <i class="far fa-check"></i>
+                                {{else}}
+                                <i class="far fa-xmark"></i>
+                                {{/if}}
+                                {{this.name}}
+                            </a>
+                        {{/each}}
+                    </div>
+                    {{/if}}
                     {{> sheetButtons document=this}}
                     <div class="dropdown-content collapsed">
 

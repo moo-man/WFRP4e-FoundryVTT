@@ -16,7 +16,8 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
           rollIncome : this._onRollIncome,
           changeCareer : this._onChangeCareer,
           onRest : this._onRest,
-          deleteExp : this._onDeleteExp
+          deleteExp : this._onDeleteExp,
+          toggleOwnedTrapping : this._onToggleTrapping
         },
         window : {
           resizable : true
@@ -173,6 +174,23 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       new CareerSelector(this.document).render(true);
     }
 
+    static _onToggleTrapping(ev, target)
+    {
+      let career = this._getDocument(ev)
+      let trappingIndex = Number(target.dataset.index);
+
+      // If trapping not owned, set to owned, otherwise remove flag
+      // This cannot unselect a trapping *actually* owned by the actor
+      if (career.system.trappingsOwned.includes(trappingIndex))
+      {
+        career.update({"system.trappingsOwned" : career.system.trappingsOwned.filter(i => i != trappingIndex)})
+      }
+      else 
+      {
+        career.update({"system.trappingsOwned" : career.system.trappingsOwned.concat(trappingIndex)})
+      }
+    }
+
     static async _onRest(ev) {
       let skill = this.actor.itemTags.skill.find(s => s.name == game.i18n.localize("NAME.Endurance"));
       let options = {rest: true, tb: this.actor.characteristics.t.bonus, skipTargets: true}
@@ -192,6 +210,13 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
     static async _onRollIncome(ev)
     {
       let career = this._getDocument(ev)
+
+      if (career.system.requiredTrappingStatus.length && career.system.requiredTrappingStatus.some(t => !t.owned))
+      {
+        ui.notifications.error("SHEET.RequiredTrappingsError", {localize: true})
+        return;
+      }
+
       let skills = career.system.incomeSkill.map(i => career.system.skills[i]).map(i => this.actor.itemTypes.skill.find(sk => sk.name == i)).filter(i => i);
       let skill;
       if (skills.length == 0)
