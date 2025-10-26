@@ -671,7 +671,6 @@
     "ExtendedTest.Remove" : "Remove",
     "Completed": "Completed",
     "ExtendedError1": "Please enter a positive integer for the Extended Test's Target",
-    "ExtendedError2": "Could not find characteristic or skill to match: {name}",
 
     "XP": "XP",
     "EXP": "EXP",
@@ -850,6 +849,7 @@
     "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",
     "DIALOG.ItemDialog" : "Item Dialog",
     "DIALOG.ChoosePassenger" : "Choose Passenger",
+    "DIALOG.ChooseArmour" : "Choose Armour to damage",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -860,6 +860,7 @@
     "CHAT.ApplyDamageBasic" : "@DAMAGE damage applied to <b>{name}</b>",
     "CHAT.ApplyHack" : "Apply Hack",
     "CHAT.CriticalDeflection" : "Critical Deflection",
+	"CHAT.DamageToArmour" : "1 Damage applied to {item} ({type})",
     "CHAT.DamageShield" : "Shield",
     "CHAT.CriticalsNullified" : "Criticals Nullified",
     "CHAT.DamageAP" : "Damage 1 AP on",
