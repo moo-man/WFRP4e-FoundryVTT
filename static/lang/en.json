@@ -250,6 +250,7 @@
     "SHEET.NestedWarning" : "Cannot add container past the 4th nested container.",
     "SHEET.LocationWarning" : "Remove the container before changing its location",
     "SHEET.SkillMissingWarning" : "The Skill used for Income was not found on this Actor",
+    "SHEET.RequiredTrappingsError" : "Cannot roll Income without having all Required Trappings in this career!",
     "SHEET.NonCurrentCareer" : "This is not your current career.",
     "SHEET.AddSkillTitle" : "Add Career Skill",
     "SHEET.AddSkillPrompt" : "Do you want to add this skill?",
@@ -374,6 +375,7 @@
     "ITEM.SkillModifierTT" : "Show the modifier in the Skills 'penalty' box",
     "ITEM.PrayerType" : "Prayer Type",
     "ITEM.TalentMax" : "Talent Max",
+    "ITEM.Custom" : "Custom",
     "ITEM.TalentTests" : "Talent Tests",
     "ITEM.IsGrouped" : "Is Grouped",
     "ITEM.CostModifier" : "XP Cost Modifier",
@@ -565,6 +567,7 @@
     "Career Class" : "Career Class",
     "Career Tier" : "Career Tier",
     "Earning Skill" : "Earning Skill",
+    "Required Trappings" : "Required Trappings",
     "Age" : "Age",
     "CharacterHeight" : "Height",
     "Weight" : "Weight",
@@ -2271,8 +2274,14 @@
                     "tests.value" : {
                         "label" : "Tests"
                     },
-                    "max.value" : {
-                        "label" : "Max"
+                    "max" : {
+                        "value" : {
+                            "label" : "Max"
+                        },
+                        "formula" : {
+                            "label" : "Formula",
+                            "hint" : "e.g. @characteristics.int.bonus + @characteristics.wp.bonus"
+                        }
                     },
                     "advances.force" : {
                         "label" : "Force Advancement Indicator",

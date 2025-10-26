@@ -345,7 +345,8 @@ WFRP4E.talentMax = {
     "dex": "CHARBonus.Dex",
     "int": "CHARBonus.Int",
     "wp": "CHARBonus.WP",
-    "fel": "CHARBonus.Fel"
+    "fel": "CHARBonus.Fel",
+    "custom": "ITEM.Custom"
 }
 
 
