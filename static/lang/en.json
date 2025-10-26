@@ -668,7 +668,6 @@
     "ExtendedTest.Remove" : "Remove",
     "Completed": "Completed",
     "ExtendedError1": "Please enter a positive integer for the Extended Test's Target",
-    "ExtendedError2": "Could not find characteristic or skill to match: {name}",
 
     "XP": "XP",
     "EXP": "EXP",
