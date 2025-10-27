@@ -19,6 +19,7 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
+    context.lores = game.wfrp4e.config.magicLores;
       if (game.wfrp4e.config.magicLores[this.document.system.lore.value]) 
       {
         context.loreValue = game.wfrp4e.config.magicLores[this.document.system.lore.value]
