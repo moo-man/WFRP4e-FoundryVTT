@@ -60,7 +60,7 @@
                 {{#if items.mutation.length}}
                     <div class="overview-list">
                         <label class="list-label">{{localize "Corruption&Mutation"}}:</label>
-                        {{#each items.mutations}}
+                        {{#each items.mutation}}
                             <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.name}}, </a>
                         {{/each}}
                     </div>

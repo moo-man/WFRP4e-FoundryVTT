@@ -1135,7 +1135,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-ua3" : "Ubersreik Adventures III",
     "wfrp4e-tribes" : "Tribes & Tribulations",
     "wfrp4e-owb3" : "Places & Perils",
-    "wfrp4e-dslf" : "Deft Steps Light Fingers"
+    "wfrp4e-dslf" : "Deft Steps Light Fingers",
+    "wfrp4e-dwarfs" : "Dwarf Bundle"
 }
 
 WFRP4E.copyrightText = `

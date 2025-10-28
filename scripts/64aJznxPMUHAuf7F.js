@@ -1,4 +1,4 @@
-if (this.item.flags.runeOfLuck) return
+if (this.item.flags.runeOfLuck || this.actor.type != "character") return
 
 const currentFortune = this.actor.status.fortune.value
 const runesOfLuck = this.item.effects.contents.filter(e => e.name == this.effect.name)
