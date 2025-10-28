@@ -388,7 +388,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     let extraMessages = [];
 
-    let weaponProperties = opposedTest.attackerTest.item?.properties || {}
+    let weaponProperties = foundry.utils.deepClone(opposedTest.attackerTest.item?.properties) || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack

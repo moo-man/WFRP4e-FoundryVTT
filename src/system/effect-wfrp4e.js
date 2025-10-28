@@ -125,9 +125,9 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
     get sourceTest() 
     {
         let testData = this.system.sourceData.test.data
-        let message = game.messages.get(testData.context?.messageId);
         if (testData)
         {
+            let message = game.messages.get(testData.context?.messageId);
             return message ? message.system.test : TestWFRP.recreate(testData);    
         }
     }

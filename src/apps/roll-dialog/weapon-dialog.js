@@ -48,6 +48,7 @@ export default class WeaponDialog extends AttackDialog {
       
       context.title = context.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
       context.title += context.appendTitle || "";
+      context.hitloc = true; // Weapons should always have a hit location
       delete context.appendTitle;
       
       let dialogData;

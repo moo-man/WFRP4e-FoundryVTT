@@ -1,0 +1,1 @@
+return args.target?.Species == this.effect.specifier;

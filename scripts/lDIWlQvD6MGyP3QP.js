@@ -1,0 +1,1 @@
+return this.effect.sourceActor.effects.filter(i => i.isCondition).length > 0

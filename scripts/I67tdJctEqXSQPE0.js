@@ -1,0 +1,1 @@
+this.effect.update({"disabled": false})

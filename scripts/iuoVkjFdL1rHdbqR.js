@@ -1,0 +1,1 @@
+return this.item.equipped.value && ["weapon", "cast"].includes(args.type)

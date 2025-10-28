@@ -1,0 +1,1 @@
+return (args.skill?.name == undefined || args.item?.skillToUse?.name != args.skill?.name)

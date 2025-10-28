@@ -1,0 +1,1 @@
+return args.targets[0].actor.appliedEffects.filter(e => e.name == game.i18n.localize("Flying")).length > 0

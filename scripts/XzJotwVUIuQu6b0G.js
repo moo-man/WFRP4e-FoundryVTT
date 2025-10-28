@@ -1,0 +1,1 @@
+return !args.context.whirlwind || !args.weapon || !this.actor.has(game.i18n.localize("NAME.DualWielder"), "talent") || this.actor.noOffhand

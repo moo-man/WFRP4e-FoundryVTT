@@ -1,0 +1,1 @@
+return !["weapon", "cast"].includes(args.type) || (!this.item.equipped.value)

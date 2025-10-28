@@ -116,12 +116,17 @@ export class TrappingStage extends ChargenStage {
     this.render(true);
   }
 
-  _updateObject(ev, formData) {
-
+  async getItems()
+  {
     // Of the trappings not found, only keep the ones that are marked as "keep", and create a new miscellaneous trapping item for them
     let missing = this.context.missing.filter(i => i.choice == "keep").map(i => new Item.implementation({ name: i.string, img : "systems/wfrp4e/icons/blank.png", type: "trapping", system: { "trappingType.value": "misc" } }));
 
-    this.data.items.trappings = missing.concat(this.context.class, this.context.career, this.context.added);
+    return missing.concat(this.context.class, this.context.career, this.context.added);
+  }
+
+  async _updateObject(ev, formData) {
+
+    this.data.items.trappings = await this.getItems();
     this.data.items.income = this.context.income.item;
     super._updateObject(ev, formData)
   }

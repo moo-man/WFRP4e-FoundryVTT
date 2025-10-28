@@ -1,0 +1,1 @@
+return args.weapon || args.skill?.name === "Dodge";
