@@ -1,7 +1,6 @@
 import Advancement from "../../system/advancement";
 import WFRP_Audio from "../../system/audio-wfrp4e";
 import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
-import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
 let fields = foundry.data.fields;
 
