@@ -291,7 +291,7 @@ export class SpellModel extends OvercastItemModel {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
         let target = this.Target;
-        if (target?.includes("AoE"))
+        if (target?.toString()?.includes("AoE"))
           target = `<a class='aoe-template' data-id="${this.id}" data-actor-id="${this.parent.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
         data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
         data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
