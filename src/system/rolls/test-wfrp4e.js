@@ -200,6 +200,10 @@ export default class TestWFRP extends WarhammerTestBase {
       let reverseRoll = this.result.roll.toString();
       if (reverseRoll.length == 1)
         reverseRoll = reverseRoll[0] + "0"
+      else if (reverseRoll == "100")
+      {
+        reverseRoll = "100";
+      }
       else {
         reverseRoll = reverseRoll[1] + reverseRoll[0]
       }
@@ -210,14 +214,14 @@ export default class TestWFRP extends WarhammerTestBase {
       let reverse = false;
       if (this.preData.reversal.if == "better" || !this.preData.reversal.if)
       {
-        if (reverseRoll < this.result.roll)
+        if (this._rollIsBetter(reverseRoll))
         {
           reverse = true;
         }
         }
         if (this.preData.reversal.if == "worse")
         {
-          if (reverseRoll > this.result.roll)
+          if (!this._rollIsBetter(reverseRoll))
           {
             reverse = true;
           }
@@ -225,7 +229,7 @@ export default class TestWFRP extends WarhammerTestBase {
 
         if (this.preData.reversal.if == "success")
         {
-          if (reverseRoll <= automaticSuccess || reverseRoll <= target)
+          if (!this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(reverseRoll))
           {
             reverse = true;
           }
@@ -233,7 +237,7 @@ export default class TestWFRP extends WarhammerTestBase {
         
         if (this.preData.reversal.if == "failure")
         {
-          if (reverseRoll >= automaticFailure || reverseRoll > target)
+          if (this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(reverseRoll))
           {
             reverse = true;
           }
@@ -1242,6 +1246,37 @@ export default class TestWFRP extends WarhammerTestBase {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
 
+  }
+
+
+  _rollIsSuccessful(roll)
+  {
+    return roll <= this.result.target || roll <= game.settings.get("wfrp4e", "automaticSuccess");
+  }
+
+  _rollIsBetter(roll)
+  {
+    if (game.settings.get("wfrp4e", "SLMethod") == "fast") 
+    {
+      // If both are successful, the better one is the higher number
+      if (this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(roll))
+      {
+        return roll > this.result.roll
+      }
+      // If Both failed, the better one is the lower one
+      else if (!this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(roll))
+      {
+          return roll < this.result.roll
+      }
+      else // if either but not both failed, only return true if argument is successful (can assume the original roll failed)
+      {
+        return this._rollIsSuccessful(roll);
+      }
+    }
+    else
+    {
+      return roll < this.result.roll;
+    }
   }
 
 
