@@ -478,7 +478,7 @@ export default class ActorWFRP4e extends WarhammerActor
           zzapIgnored += layer.value;
           layer.ignored = true;
       }
-      else if (penetrating && layer.source?.system?.tags.has("armour")) // If penetrating - ignore 1 or all armor depending on material
+      else if (penetrating && layer.source?.system?.tags?.has("armour")) // If penetrating - ignore 1 or all armor depending on material
       {
         if (!game.settings.get("wfrp4e", "homebrew").mooPenetrating)
         {
