@@ -797,7 +797,7 @@ export default class WFRP_Utility {
   {
     if (!game.user.isGM)
     {
-      game.socket.emit("system.wfrp4e", {type : "changeGroupAdvantage", payload : {players, enemies}})
+      SocketHandlers.call("changeGroupAdvantage", {players, enemies})
     }
     else if (game.user.isUniqueGM)
     {
