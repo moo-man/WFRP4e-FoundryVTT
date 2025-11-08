@@ -213,7 +213,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         }
 
         
-        if (this.parent.isOwned && foundry.utils.getProperty(options.changed, "system.equipped.value")) {
+        if (this.parent.isOwned && this.parent.actor.typee == "character" && foundry.utils.getProperty(options.changed, "system.equipped.value")) {
             let actor = this.parent.actor;
             let maxEquipPoints = actor.system.settings.equipPoints;
             let currentEquipPoints = actor.itemTypes.weapon.filter(i => i.system.isEquipped).reduce((points, weapon) => points + weapon.system.equipPoints, 0);
