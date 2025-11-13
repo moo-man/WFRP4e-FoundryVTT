@@ -6,14 +6,10 @@
         <legend>{{localize "Status"}}</legend>
         <div class="form-group">
             <label>{{localize "Tier"}}</label>
-            <select name="system.status.tier">
-                {{selectOptions (config "statusTiers") selected=source.system.status.tier}}
-            </select>
+            {{formInput fields.status.fields.tier value=source.system.status.tier}}
             <label>{{localize "Standing"}}</label>
-            <input type="number" name="system.status.standing" value="{{system.status.standing}}">
+            {{formInput fields.status.fields.standing value=source.system.status.standing}}
         </div>
-        {{!-- {{formGroup fields.status.fields.tier value=source.system.status.tier}} --}}
-        {{!-- {{formGroup fields.status.fields.standing value=source.system.status.standing}} --}}
     </fieldset>
     <div class="form-group characteristics">
         <div class="career-list">
