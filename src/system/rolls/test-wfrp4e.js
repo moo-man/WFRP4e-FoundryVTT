@@ -174,6 +174,8 @@ export default class TestWFRP extends WarhammerTestBase {
       this.preData.roll = data.roll || this.result.roll;
     }
 
+    this.context.edited = true;
+
     this.roll();
   }
 
