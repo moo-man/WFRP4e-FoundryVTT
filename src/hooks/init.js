@@ -3,7 +3,6 @@ import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
-import { PayMessageModel } from "../model/message/pay.js";
 import TokenRulerWFRP from "../canvas/token-ruler.js";
 
 

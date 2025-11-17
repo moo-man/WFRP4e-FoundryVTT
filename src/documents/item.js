@@ -1,5 +1,4 @@
 import { PostedItemMessageModel } from "../model/message/posted-item.js";
-import WFRP_Utility from "../system/utility-wfrp4e.js";
 
 /**
  * @extends Item

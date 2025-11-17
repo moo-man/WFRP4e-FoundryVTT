@@ -1,5 +1,4 @@
 import Advancement from "../../system/advancement";
-import WFRP_Utility from "../../system/utility-wfrp4e";
 import { BaseItemModel } from "./components/base";
 let fields = foundry.data.fields;
 
