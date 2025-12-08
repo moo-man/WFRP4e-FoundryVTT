@@ -1,0 +1,1 @@
+return !["s","t","wp","fel"].includes(args.fields.characteristic)

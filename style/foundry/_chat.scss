@@ -93,7 +93,9 @@
             }
             > span:first-of-type{
                 flex: 1;
-                text-align: right;
+                display: flex;
+                justify-content: end;
+                gap: 1rem;
             }
             >span:last-of-type
             {

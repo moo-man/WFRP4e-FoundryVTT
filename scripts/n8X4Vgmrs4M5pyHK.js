@@ -1,0 +1,1 @@
+return !this.actor.isOpposing || this.actor.attacker.test.item.attackType != "melee" || !this.item.equipped.value

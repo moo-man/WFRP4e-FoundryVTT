@@ -3,7 +3,15 @@
         </div>
     
         <div class="hide-option comparison">
-            <span class="{{#if test.isCritical}}critical{{/if}} {{#if test.isFumble}}fumble{{/if}}">{{test.result.roll}}</span>
+            <span class="{{#if test.isCritical}}critical{{/if}} {{#if test.isFumble}}fumble{{/if}}">
+            {{#if test.result.reversed}}
+            {{test.result.originalRoll}}
+            <i class="fa-solid fa-shuffle"></i>
+            {{/if}}
+
+            {{test.result.roll}}
+
+            </span>
             <span>vs</span>
             <span>{{test.result.target}}</span>
         </div>

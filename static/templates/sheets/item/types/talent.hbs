@@ -1,6 +1,11 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     {{formGroup fields.tests.fields.value value=source.system.tests.value}}
     {{formGroup fields.max.fields.value value=source.system.max.value}}
+
+    {{#if (eq source.system.max.value "custom")}}
+        {{formGroup fields.max.fields.formula value=source.system.max.formula}}
+    {{/if}}
+
     {{#if item.isOwned}}
         {{formGroup fields.advances.fields.force value=source.system.advances.force}}
     {{/if}}

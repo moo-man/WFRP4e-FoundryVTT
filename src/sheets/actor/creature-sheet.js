@@ -80,7 +80,14 @@ export default class ActorSheetWFRP4eCreature extends StandardWFRP4eActorSheet
     
         context.trained = this.actor.itemTags.skill.filter(i => i.advances.value > 0).sort(WFRP_Utility.nameSorter);
         context.includedTraits = this.actor.itemTags.trait.filter(i => i.included).sort(WFRP_Utility.nameSorter);
-    
+        context.talents = [];
+        for(let talent of context.items.talent)
+        {
+          if (!context.talents.find(existing => existing.name == talent.name))
+          {
+            context.talents.push(talent);
+          }
+        }
         
         context.overviewButtons = this.actor.items.contents.reduce((buttons, item) => {
           let add = [];

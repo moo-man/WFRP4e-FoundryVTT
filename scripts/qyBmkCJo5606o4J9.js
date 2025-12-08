@@ -1,0 +1,1 @@
+this.item.system.flaws.value = this.item.system.flaws.value.filter(i => i.name != "weakpoints")

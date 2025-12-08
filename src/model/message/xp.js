@@ -31,7 +31,7 @@ export class XPMessageModel extends WarhammerMessageModel {
   static createXPMessage(amount, reason)
   {
 
-      renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { amount, reason}).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/experience.hbs", { amount, reason}).then(html => {
       ChatMessage.create({ 
         type : "xp", 
         content: html, 

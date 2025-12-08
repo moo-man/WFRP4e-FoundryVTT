@@ -99,7 +99,7 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
       if (game.user.isGM)
         this.update(conditionResult)
       else
-        await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.id, updateData: conditionResult });
+        await SocketHandlers.call("updateMessage", { id: this.id, updateData: conditionResult }, "GM");
     }
 
     static _onPostProperty(ev, target)

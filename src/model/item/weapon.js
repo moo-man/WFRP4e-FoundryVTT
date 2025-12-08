@@ -212,6 +212,20 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             data["system.offhand.value"] = false;
         }
 
+        
+        if (this.parent.isOwned && this.parent.actor.typee == "character" && foundry.utils.getProperty(options.changed, "system.equipped.value")) {
+            let actor = this.parent.actor;
+            let maxEquipPoints = actor.system.settings.equipPoints;
+            let currentEquipPoints = actor.itemTypes.weapon.filter(i => i.system.isEquipped).reduce((points, weapon) => points + weapon.system.equipPoints, 0);
+            if (currentEquipPoints + this.equipPoints > maxEquipPoints)
+            {
+                ui.notifications.error("ErrorLimitedWeapons", {localize: true});
+                AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false);
+                throw new Error(game.i18n.localize("ErrorLimitedWeapons"))
+            }
+        }
+        
+
         if (foundry.utils.hasProperty(options, "changed.system.loaded"))
         {
             let loaded = data.system.loaded; 

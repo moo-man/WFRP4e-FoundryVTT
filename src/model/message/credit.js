@@ -87,7 +87,7 @@ export class CreditMessageModel extends WarhammerMessageModel {
         reason
     }
 
-      renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", {
         gc: parsedMoney.gc,
         ss: parsedMoney.ss,
         bp: parsedMoney.bp,
@@ -116,7 +116,7 @@ export class CreditMessageModel extends WarhammerMessageModel {
 
     templateData.splits = (await Promise.all(splits.map(fromUuid))).map(i => i?.name);
 
-    let content = await renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", templateData)
+    let content = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-credit.hbs", templateData)
 
     this.parent.update({content});
   }

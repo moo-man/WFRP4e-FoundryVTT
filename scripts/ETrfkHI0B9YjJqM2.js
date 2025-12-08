@@ -1,0 +1,1 @@
+return this.item.equipped.value && this.actor.isOpposing && this.actor.attacker.test.item.attackType == "melee"

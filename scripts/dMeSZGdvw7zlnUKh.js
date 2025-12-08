@@ -1,0 +1,1 @@
+return args.characteristic != "wp" && !args.context.terror  && !args.extendedTest?.flags.wfrp4e?.fear

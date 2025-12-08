@@ -34,7 +34,7 @@ export class PsychMessageModel extends WarhammerMessageModel {
         title += ` - ${source}`
     }
 
-    renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { title}).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { title}).then(html => {
       ChatMessage.create({ 
         type : "psych", 
         content: html, 
@@ -69,7 +69,7 @@ export class PsychMessageModel extends WarhammerMessageModel {
         title += ` - ${source}`
     }
 
-    renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { title}).then(html => {
+    foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/fear.hbs", { title}).then(html => {
       ChatMessage.create({ 
         type : "psych", 
         content: html, 

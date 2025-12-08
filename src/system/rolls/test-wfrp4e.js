@@ -24,7 +24,7 @@ export default class TestWFRP extends WarhammerTestBase {
         diceDamage: data.diceDamage,
         options: data.context || {},
         other: data.other || [],
-        canReverse: data.canReverse || false,
+        reversal: data.reversal || {allowed : false, if: "better"}, // if better/worse/success/failure
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
@@ -174,6 +174,8 @@ export default class TestWFRP extends WarhammerTestBase {
       this.preData.roll = data.roll || this.result.roll;
     }
 
+    this.context.edited = true;
+
     this.roll();
   }
 
@@ -196,22 +198,60 @@ export default class TestWFRP extends WarhammerTestBase {
 
     let description = "";
 
-    if (this.preData.canReverse) {
+    if (this.preData.reversal.allowed) {
       let reverseRoll = this.result.roll.toString();
-      if (this.result.roll >= automaticFailure || (this.result.roll > target && this.result.roll > automaticSuccess)) {
-        if (reverseRoll.length == 1)
-          reverseRoll = reverseRoll[0] + "0"
-        else {
-          reverseRoll = reverseRoll[1] + reverseRoll[0]
+      if (reverseRoll.length == 1)
+        reverseRoll = reverseRoll[0] + "0"
+      else if (reverseRoll == "100")
+      {
+        reverseRoll = "100";
+      }
+      else {
+        reverseRoll = reverseRoll[1] + reverseRoll[0]
+      }
+
+      reverseRoll = Number(reverseRoll);
+
+
+      let reverse = false;
+      if (this.preData.reversal.if == "better" || !this.preData.reversal.if)
+      {
+        if (this._rollIsBetter(reverseRoll))
+        {
+          reverse = true;
         }
-        reverseRoll = Number(reverseRoll);
-        if (reverseRoll <= automaticSuccess || reverseRoll <= target) {
+        }
+        if (this.preData.reversal.if == "worse")
+        {
+          if (!this._rollIsBetter(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+
+        if (this.preData.reversal.if == "success")
+        {
+          if (!this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+        
+        if (this.preData.reversal.if == "failure")
+        {
+          if (this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+        
+        if (reverse) 
+        {
+          this.result.originalRoll = this.result.roll;
           this.result.roll = reverseRoll
           this.result.reversed = true;
-          this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
-    }
 
 
     let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
@@ -465,7 +505,7 @@ export default class TestWFRP extends WarhammerTestBase {
       this.result.tables.critical = {
         label : this.result.critical,
         class : "critical-roll",
-        modifier : this.result.critModifier,
+        modifier : this.result.critModifier || 0,
         key: `crit${this.result.hitloc.result}`
       }
     }
@@ -900,7 +940,7 @@ export default class TestWFRP extends WarhammerTestBase {
         await this.message.update(messageData)
       }
       else {
-        await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : messageData });
+        await SocketHandlers.call("updateMessage", { id: this.message.id, updateData : messageData }, "GM");
       }
       await this.updateMessageData()
     }
@@ -915,7 +955,7 @@ export default class TestWFRP extends WarhammerTestBase {
       await this.message.update(update)
 
     else if (this.message) {
-      await SocketHandlers.executeOnUserAndWait("GM", "updateMessage", { id: this.message.id, updateData : update });
+      await SocketHandlers.call("updateMessage", { id: this.message.id, updateData : update }, "GM");
     }
   }
 
@@ -1208,6 +1248,37 @@ export default class TestWFRP extends WarhammerTestBase {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
 
+  }
+
+
+  _rollIsSuccessful(roll)
+  {
+    return roll <= this.result.target || roll <= game.settings.get("wfrp4e", "automaticSuccess");
+  }
+
+  _rollIsBetter(roll)
+  {
+    if (game.settings.get("wfrp4e", "SLMethod") == "fast") 
+    {
+      // If both are successful, the better one is the higher number
+      if (this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(roll))
+      {
+        return roll > this.result.roll
+      }
+      // If Both failed, the better one is the lower one
+      else if (!this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(roll))
+      {
+          return roll < this.result.roll
+      }
+      else // if either but not both failed, only return true if argument is successful (can assume the original roll failed)
+      {
+        return this._rollIsSuccessful(roll);
+      }
+    }
+    else
+    {
+      return roll < this.result.roll;
+    }
   }
 
 

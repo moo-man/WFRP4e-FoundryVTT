@@ -1,12 +1,13 @@
 
 
-export default class HomebrewConfig extends HandlebarsApplicationMixin(ApplicationV2)
+export default class HomebrewConfig extends WHFormApplication
 {
     static DEFAULT_OPTIONS = {
         tag: "form",
         classes: ["warhammer", "standard-form", "homebrew-config"],
         window: {
             title: "Homebrew Settings Configuration",
+            contentClasses: ["standard-form"],
             resizable : true,
         },
         position : {
@@ -14,6 +15,7 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
         },
         form: {
             submitOnChange: true,
+            closeOnSubmit: false,
             handler: this._onSubmit
         }
     }
@@ -24,9 +26,9 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
         channelingNegativeSLTests : new foundry.data.fields.BooleanField({label : "SETTINGS.ChannelingNegativeSL", hint : "SETTINGS.ChannelingNegativeSLHint"}),
         advantageBonus : new foundry.data.fields.NumberField({initial : 10, label : "SETTINGS.AdvantageBonus", hint : "SETTINGS.AdvantageBonusHint"}),
         uiaCritsMod : new foundry.data.fields.NumberField({initial: 10, label : "SETTINGS.UIACritsMod", hint : "SETTINGS.UIACritsModHint"}),
-        partialChannelling : new foundry.data.fields.BooleanField({label : "SETTINGS.PartialChannelling", hint : "SETTINGS.MooAdvantageHint"}),
-        channellingIngredients : new foundry.data.fields.BooleanField({label : "SETTINGS.ChannellingIngredients", hint : "SETTINGS.MooDifficultyHint"}),
-        unofficialgrimoire : new foundry.data.fields.BooleanField({label : "SETTINGS.UnofficialGrimoire", hint : "SETTINGS.MooCritsFumblesHint"}),
+        partialChannelling : new foundry.data.fields.BooleanField({label : "SETTINGS.PartialChannelling", hint : "SETTINGS.PartialChannellingHint"}),
+        channellingIngredients : new foundry.data.fields.BooleanField({label : "SETTINGS.ChannellingIngredients", hint : "SETTINGS.ChannellingIngredientsHint"}),
+        unofficialgrimoire : new foundry.data.fields.BooleanField({label : "SETTINGS.UnofficialGrimoire", hint : ""}),
         
         mooAdvantage : new foundry.data.fields.BooleanField({label : "SETTINGS.MooAdvantage", hint : "SETTINGS.MooAdvantageHint"}),
         mooDifficulty : new foundry.data.fields.BooleanField({label : "SETTINGS.MooDifficulty", hint : "SETTINGS.MooDifficultyHint"}),
@@ -54,7 +56,8 @@ export default class HomebrewConfig extends HandlebarsApplicationMixin(Applicati
     static PARTS = {
         form: {
             template: "systems/wfrp4e/templates/apps/homebrew-settings.hbs",
-            scrollable: [""]
+            scrollable: [""],
+            classes: ["standard-form"]
         }
     };
 

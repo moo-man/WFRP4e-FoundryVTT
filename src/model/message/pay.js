@@ -74,7 +74,7 @@ export class PayMessageModel extends WarhammerMessageModel {
         QtSS: parsedPayRequest.ss,
         QtBP: parsedPayRequest.bp
       };
-      renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.hbs", cardData).then(html => {
+      foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/market/market-pay.hbs", cardData).then(html => {
         let chatData = game.wfrp4e.utility.chatDataSetup(html, "roll", false, {forceWhisper: player, flavor : (product && "For: " + product), alias : game.i18n.localize("MARKET.PayRequest")});
         foundry.utils.mergeObject(chatData, mergeChatData)
         chatData.type = "pay";

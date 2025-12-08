@@ -1,6 +1,7 @@
 @use "./mixins/index" as mixins;
 @use "./sheets/sheet";
 @use "./sheets/temp";
+@use "./sheets/journal";
 @use "./sheets/light";
 @use "./sheets/actors/index" as actors;
 @use "./sheets/items/index" as items;

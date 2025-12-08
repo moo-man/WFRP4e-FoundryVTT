@@ -1,4 +1,4 @@
 if (args.test.spell.name == "Warp Lightning")
 {
-    args.test.preData.canReverse = true;
+    args.test.preData.reversal = {allowed : true, if: "better"};
 }

@@ -102,7 +102,7 @@ export class OvercastItemModel extends BaseItemModel {
     }
 
     let damage = this.Damage
-    let target = this.Target
+    let target = this.Target?.toString()
     let duration = this.Duration
     let range = this.Range
 

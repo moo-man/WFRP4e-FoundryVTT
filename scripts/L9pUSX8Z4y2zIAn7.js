@@ -1,0 +1,1 @@
+this.actor.system.characteristics.int.value = 50

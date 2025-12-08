@@ -560,7 +560,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     {
       enrichment.conditions[c] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(game.wfrp4e.config.conditionDescriptions[c]);
     }
-    return expandObject(enrichment)
+    return foundry.utils.expandObject(enrichment)
   }
 
     /**
@@ -625,7 +625,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         if (action)
           {
-            let html = await TextEditor.enrichHTML(`
+            let html = await foundry.applications.ux.TextEditor.enrichHTML(`
             <p><strong>${action.name}</strong>: ${action.description}</p>
             <p>${action.effect}</p>
             `)
@@ -704,7 +704,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           html = "No Actions Available"
         }
 
-        this._toggleDropdownAt(actions, await TextEditor.enrichHTML(html));
+        this._toggleDropdownAt(actions, await foundry.applications.ux.TextEditor.enrichHTML(html));
       }
     }
 

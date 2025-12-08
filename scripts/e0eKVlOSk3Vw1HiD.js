@@ -1,0 +1,1 @@
+return args.characteristic != "wp" || args.type != "characteristic"

@@ -67,6 +67,20 @@ export class StandardActorModel extends BaseActorModel {
 
     }
 
+    async _onUpdate(data, options, user)
+    {
+        await super._onUpdate(data, options, user);
+
+        if (foundry.utils.getProperty(options, "changed.flags.oppose.opposeMessageId", game.user.id == warhammer.utility.getActiveDocumentOwner(this.parent)?.id))
+        {
+            let attacker = this.parent.attacker;
+            if (attacker)
+            {
+                this.parent.runScripts("targeted", {attacker})
+            }
+        }
+    }
+
     /**
      * @return {ItemWFRP4e|undefined}
      */
@@ -206,7 +220,7 @@ export class StandardActorModel extends BaseActorModel {
         if (!game.settings.get("wfrp4e", "useGroupAdvantage")) {
             if (game.settings.get("wfrp4e", "capAdvantageIB")) {
                 this.status.advantage.max = this.characteristics.i.bonus
-                this.status.advantage.value = Math.clamped(this.status.advantage.value, 0, this.status.advantage.max)
+                this.status.advantage.value = Math.clamp(this.status.advantage.value, 0, this.status.advantage.max)
             }
             else
                 this.status.advantage.max = game.settings.get("wfrp4e", "advantagemax");

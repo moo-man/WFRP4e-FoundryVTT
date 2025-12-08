@@ -244,9 +244,8 @@ export default class ActorWFRP4e extends WarhammerActor
       return ui.notifications.error(game.i18n.localize("ExtendedError1"))
 
     context.extended = item.uuid;
-    context.rollMode = defaultRollMode;
     context.hitLocation = false;
-    context.fields = {difficulty : item.system.difficulty.value || "challenging"}
+    context.fields = {difficulty : item.system.difficulty.value || "challenging", rollMode : context.fields?.rollMode || defaultRollMode}
 
     let characteristic = warhammer.utility.findKey(item.test.value, game.wfrp4e.config.characteristics)
     if (characteristic) {
@@ -254,14 +253,8 @@ export default class ActorWFRP4e extends WarhammerActor
       await test.roll();
     }
     else {
-      let skill = this.itemTags["skill"].find(i => i.name == item.test.value)
-      if (skill) {
-        let test = await this.setupSkill(skill, context, options);
-        await test.roll();
-      } 
-      else {
-        ui.notifications.error(`${game.i18n.format("ExtendedError2", { name: item.test.value })}`)
-      }
+      let test = await this.setupSkill(item.test.value, context, options);
+      await test.roll();
     }
   }
 
@@ -272,7 +265,7 @@ export default class ActorWFRP4e extends WarhammerActor
     if (!extendedTest) {
 
       //ui.notifications.error(game.i18n.localize("ITEM.ReloadError"))
-      await this.checkReloadExtendedTest(weapon, this.actor);
+      await this.checkReloadExtendedTest(weapon, this);
       return
     }
     await this.setupExtendedTest(extendedTest, { reload: true, weapon, appendTitle: " - " + game.i18n.localize("ITEM.Reloading") }, options);
@@ -395,7 +388,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     let extraMessages = [];
 
-    let weaponProperties = opposedTest.attackerTest.item?.properties || {}
+    let weaponProperties = foundry.utils.deepClone(opposedTest.attackerTest.item?.properties) || {}
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -485,7 +478,7 @@ export default class ActorWFRP4e extends WarhammerActor
           zzapIgnored += layer.value;
           layer.ignored = true;
       }
-      else if (penetrating && layer.source?.type == "armour") // If penetrating - ignore 1 or all armor depending on material
+      else if (penetrating && layer.source?.system?.tags?.has("armour")) // If penetrating - ignore 1 or all armor depending on material
       {
         if (!game.settings.get("wfrp4e", "homebrew").mooPenetrating)
         {
@@ -805,7 +798,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (owningUser?.id != game.user.id)
     {
-        return SocketHandlers.executeOnOwnerAndWait(this, "applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid});
+        return SocketHandlers.call("applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid}, owningUser.id);
     }
 
     let newWounds = this.status.wounds.value;

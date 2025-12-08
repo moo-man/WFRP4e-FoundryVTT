@@ -12,7 +12,7 @@ export default class SkillDialog extends CharacteristicDialog {
 
     get extendedTest() 
     {
-        return fromUuidSync(this.options.extended);
+        return fromUuidSync(this.context.extended);
     }
 
     get skill() 

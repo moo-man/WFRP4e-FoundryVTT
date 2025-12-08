@@ -111,7 +111,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
 
   get isMetal() 
   {
-    return ["plate", "mail", "otherMetal"].includes(this.armorType.value)
+    return ["plate", "mail", "otherMetal", "gromril"].includes(this.armorType.value)
   }
 
   get protects() {
@@ -167,7 +167,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
         let update = {};
         for(let loc of location)
         {
-          update[`system.APdamage.${loc}`] = Math.clamped(this.APdamage[loc] + value, 0, this.AP[loc])
+          update[`system.APdamage.${loc}`] = Math.clamp(this.APdamage[loc] + value, 0, this.AP[loc])
         }
         return this.parent.update(update);
     }

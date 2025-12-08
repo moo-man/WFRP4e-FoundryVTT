@@ -345,7 +345,8 @@ WFRP4E.talentMax = {
     "dex": "CHARBonus.Dex",
     "int": "CHARBonus.Int",
     "wp": "CHARBonus.WP",
-    "fel": "CHARBonus.Fel"
+    "fel": "CHARBonus.Fel",
+    "custom": "ITEM.Custom"
 }
 
 
@@ -1134,7 +1135,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-ua3" : "Ubersreik Adventures III",
     "wfrp4e-tribes" : "Tribes & Tribulations",
     "wfrp4e-owb3" : "Places & Perils",
-    "wfrp4e-dslf" : "Deft Steps Light Fingers"
+    "wfrp4e-dslf" : "Deft Steps Light Fingers",
+    "wfrp4e-dwarfs" : "Dwarf Bundle"
 }
 
 WFRP4E.copyrightText = `
@@ -1230,6 +1232,14 @@ WFRP4E.systemItems = {};
 WFRP4E.systemEffects = {}
 WFRP4E.vehicleSystemEffects = {}
 WFRP4E.groupAdvantageActions = [];
+
+WFRP4E.careerLevels = {
+    1 : 1,
+    2 : 2, 
+    3 : 3,
+    4 : 4,
+    5 : 5
+}
 
 WFRP4E.PrepareSystemItems = function() {
 
@@ -1872,6 +1882,12 @@ WFRP4E.PrepareSystemItems = function() {
             img: "icons/svg/invisible.svg",
             statuses: ["invisible"],
             system: {}
+        },
+        "blind" : {
+            name: "Blind",
+            img: "icons/svg/blind.svg",
+            statuses: ["blind"],
+            system: {}
         }
     })
 
@@ -2409,6 +2425,31 @@ if (test.succeeded) {
                 ]
             }
         },
+        engineering: {
+            img : "systems/wfrp4e/icons/blank.png",
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            system: {
+                transferData : {
+                    type : "target",
+                    documentType : "Actor"
+                },
+                scriptData: [
+                    {
+                        label: "@effect.name",
+                        trigger: "immediate",
+                        script: `
+                            test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                            await test.roll();
+                            if (test.failed)
+                            {
+                                this.actor.addCondition("broken");
+                            }
+                            return false;
+                        `
+                    }
+                ]
+            }
+        },
         blast: {
             name : game.i18n.localize("PROPERTY.Blast"),
             img : "systems/wfrp4e/icons/blank.png",
@@ -2698,6 +2739,12 @@ WFRP4E.badgeInfo.notes = "https://github.com/moo-man/WFRP4e-FoundryVTT/releases"
 WFRP4E.badgeInfo.issues = "https://github.com/moo-man/WFRP4e-FoundryVTT/issues";
 WFRP4E.badgeInfo.wiki = "https://moo-man.github.io/WFRP4e-FoundryVTT/pages/home.html";
 
+WFRP4E.bugReporterConfig = {
+    repoEndpoint: "https://api.github.com/repos/moo-man/WFRP4e-FoundryVTT",
+    troubleshooting : "https://moo-man.github.io/WFRP4e-FoundryVTT/pages/troubleshooting.html",
+    successMessage : "The longbeards hear you, thank you for your submission into the Dammaz Kron, these wrongs must be righted! If you wish to monitor or follow up with additional details like screenshots, you can find your issue here: @URL",
+}
+
 // To migrate
 // "invoke => manual"
 // "oneTime" => "immediate"
@@ -2713,6 +2760,7 @@ WFRP4E.scriptTriggers = {
     "preUpdate" : "Pre Update",
     "update" : "On Update",
     "equipToggle" : "Equip Toggle",
+    "targeted" : "Targeted",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",

@@ -1,2 +1,2 @@
 if (args.test.characteristicKey == "wp")
-   args.test.preData.canReverse = true
+   args.test.preData.reversal = {allowed: true, if: "better"};

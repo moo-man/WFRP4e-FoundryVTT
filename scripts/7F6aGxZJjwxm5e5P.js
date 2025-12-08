@@ -1,7 +1,7 @@
 if (args.test.result.castOutcome == "failure")
 {
     ValueDialog.create({text : "Enter Wounds Lost to gain SL", title : this.effect.name}, "0").then(async value => {
-        value = Math.clamped(value, 0, 3)
+        value = Math.clamp(value, 0, 3)
         if (value == 0)
         {
             return;          

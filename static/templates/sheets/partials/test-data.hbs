@@ -1,0 +1,23 @@
+<div class="form-group">
+    <label>{{localize "Characteristic"}}</label>
+    <div class="form-fields">
+        <select name="characteristic">
+            {{selectOptions (config "characteristics") selected=characteristic blank=""}}
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label>{{localize "Skill"}}</label>
+    <div class="form-fields">
+        <input type="text" name="skill" value="{{skill}}">
+        </select>
+    </div>
+</div>
+<div class="form-group">
+    <label>{{localize "Difficulty"}}</label>
+    <div class="form-fields">
+        <select name="difficulty">
+            {{selectOptions (config "difficultyLabels") selected=difficulty blank=""}}
+        </select>
+    </div>
+</div>

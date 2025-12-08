@@ -176,7 +176,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     enrichment["system.description.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
     enrichment["system.gmdescription.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
 
-    return expandObject(enrichment)
+    return foundry.utils.expandObject(enrichment)
   }
 
 

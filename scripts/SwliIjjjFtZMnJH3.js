@@ -1,0 +1,1 @@
+return !args.weapon?.system.properties.qualities.hack || args.weapon?.system?.isRanged

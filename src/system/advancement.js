@@ -247,9 +247,9 @@ export default class Advancement
 
     let costKey = currentlyKnown
     if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
-      costKey++ // Not sure if this is right, but arcane and petty seem to scale different per th example given
+      costKey-- // Not sure if this is right, but arcane and petty seem to scale different per th example given
 
-    cost = Math.ceil(costKey / bonus) * 100
+    cost = Math.ceil(Math.max(1, costKey) / bonus) * 100
 
     if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
 

@@ -21,7 +21,7 @@ export class CareerModel extends BaseItemModel
         });
         schema.level = new fields.SchemaField({
             // value: new fields.NumberField({min: 1, choices : [1, 2, 3, 4], initial : 1})
-            value: new fields.NumberField({min: 1, choices : {1 : "1", 2 : "2", 3 : "3", 4 : "4"}, initial : 1})
+            value: new fields.NumberField({min: 1,  choices: game.wfrp4e.config.careerLevels, initial : 1})
         });
         schema.status = new fields.SchemaField({
             standing: new fields.NumberField({min: 1}),
@@ -45,6 +45,8 @@ export class CareerModel extends BaseItemModel
         schema.talents = new fields.ArrayField(new fields.StringField());
         schema.trappings = new fields.ArrayField(new fields.StringField());
         schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
+        schema.requiredTrappings = new fields.ArrayField(new fields.NumberField());
+        schema.trappingsOwned = new fields.ArrayField(new fields.NumberField()); // Manual toggle for owning a trapping
         schema.previousCareer = new fields.EmbeddedDataField(DocumentReferenceModel)
         return schema;
     }
@@ -206,6 +208,22 @@ export class CareerModel extends BaseItemModel
         }
     }
 
+    computeOwned()
+    {
+      this.requiredTrappingStatus = [];
+      if (this.current.value)
+      {
+        for(let trappingIndex of this.requiredTrappings)
+        {
+          let name = this.trappings[trappingIndex];
+          this.requiredTrappingStatus.push({
+            name, 
+            owned : this.trappingsOwned.includes(trappingIndex) || this.parent.actor.items.find(i => i.name.toLowerCase() == name.toLowerCase()),
+            index : trappingIndex
+          })
+        }
+      }
+    }
 
     async _promptCareerAdvance()
     {

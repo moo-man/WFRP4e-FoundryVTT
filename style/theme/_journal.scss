@@ -1,5 +1,6 @@
 @use "./mixins" as *;
 @use "../mixins/border" as *;
+@use "../mixins/button" as *;
 
 .application.journal-entry:not(.no-theme) {
 
@@ -9,6 +10,7 @@
 
     &.classic-font {
         font-family: var(--primary-font);
+
         blockquote {
             font-family: var(--primary-font);
         }
@@ -32,8 +34,7 @@
 
     }
 
-    .journal-entry-content 
-    {
+    .journal-entry-content {
         background: url(./ui/backgrounds/parchment-texture.webp);
         border: 10px solid transparent;
         border-image: url(./ui/backgrounds/journal-sheet-content.webp) repeat;
@@ -42,10 +43,10 @@
     }
 
     .journal-sidebar {
-        input[type="search"]
-        {
+        input[type="search"] {
             @include search();
         }
+
         nav {
             padding-left: 1rem;
         }
@@ -66,12 +67,12 @@
         }
 
 
-        .toc li
-        {
-            
+        .toc li {
+
             &.category {
                 background-color: var(--color-warm-half);
                 line-height: 1.5rem;
+
                 strong {
                     font-family: var(--header-font);
                     text-transform: unset;
@@ -92,6 +93,7 @@
             //     mask-image: linear-gradient(270deg, black 100%, transparent 0%);
             // }
         }
+
         .action-buttons {
             button {
                 @include wfrp-button;
@@ -115,21 +117,27 @@
 
     .journal-page-header {
         font-family: var(--primary-font);
+
         h1 {
             @include h1;
         }
+
         h2 {
             @include h2;
         }
+
         h3 {
             @include h3;
         }
+
         h4 {
             @include h4;
         }
+
         h5 {
             @include h5;
         }
+
         h6 {
             @include h6;
         }
@@ -152,8 +160,8 @@
     .edit-container button {
         @include shadowed(#6b3a0f2b, 10px);
         background: var(--color-faded-bg);
-        border-color : var(--color-faded);
-        color : var(--color-warm);
+        border-color: var(--color-faded);
+        color: var(--color-warm);
 
         &:hover {
             color: var(--color-cream);
@@ -161,5 +169,23 @@
             border-color: var(--color-cream);
         }
     }
+
+    button[data-action=performEndeavour]
+    {
+        @include styled-button;
+    }
+}
+
+
+.application.journal-entry-page {
+    --border: var(--color-warm-half);
+
+    .endeavour-fields {
+
+        .effect.droppable {
+            border-color: var(--color-warm);
+        }
+    }
+
 
 }

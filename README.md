@@ -170,6 +170,8 @@ npm run pack
 
 - [Deft Steps Light Fingers](https://foundryvtt.com/packages/wfrp4e-dslf/) - A supplement for playing Characters in the Rogue or Ranger class.
 
+- [Dwarf Bundle](https://foundryvtt.com/packages/wfrp4e-dwarfs/) - Explore the rich history of the Dwarfs' mountain strongholds and their time-honoured traditions in this comprehensive guide for those who want to delve deep into the heart of Karaz Ankor!
+
 **Unofficial**
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!

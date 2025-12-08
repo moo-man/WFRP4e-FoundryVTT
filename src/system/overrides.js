@@ -18,49 +18,36 @@ export default function () {
     /**
    * Draw the active effects and overlay effect icons which are present upon the Token
    */
-     foundry.canvas.placeables.Token.prototype.drawEffects = async function()
+     foundry.canvas.placeables.Token.prototype._drawEffects = async function()
      {
-         const wasVisible = this.effects.visible;
-         this.effects.visible = false;
-         this.effects.removeChildren().forEach(c => c.destroy());
-         this.effects.bg = this.effects.addChild(new PIXI.Graphics());
-         this.effects.bg.visible = false;
-         this.effects.overlay = null;
-     
-         // Categorize new effects
-         const tokenEffects = this.document.effects;
-         const actorEffects = this.actor?.temporaryEffects || [];
-         let overlay = {
-           src: this.document.overlayEffect,
-           tint: null
-         };
-     
-         // Draw status effects
-         if ( tokenEffects.length || actorEffects.length ) {
-           const promises = [];
-     
-           // Draw actor effects first
-           for ( let f of actorEffects ) {
-             if ( !f.img ) continue;
-             const tint = Color.from(f.tint ?? null);
-             if ( f.getFlag("core", "overlay") ) {
-               if ( overlay ) promises.push(this._drawEffect(overlay.src, overlay.tint));
-               overlay = {src: f.img, tint};
-               continue;
-             }
-             promises.push(this._drawEffect(f.img, tint,  f.system.condition.value));
-           }
-     
-           // Next draw token effects
-           for ( let f of tokenEffects ) promises.push(this._drawEffect(f, null));
-           await Promise.all(promises);
-         }
-     
-         // Draw overlay effect
-         this.effects.overlay = await this._drawOverlay(overlay.src, overlay.tint);
-         this.effects.bg.visible = true;
-         this.effects.visible = wasVisible;
-         this._refreshEffects();
+        this.effects.renderable = false;
+
+        // Clear Effects Container
+        this.effects.removeChildren().forEach(c => c.destroy());
+        this.effects.bg = this.effects.addChild(new PIXI.Graphics());
+        this.effects.bg.zIndex = -1;
+        this.effects.overlay = null;
+    
+        // Categorize effects
+        const activeEffects = this.actor?.temporaryEffects || [];
+        const overlayEffect = activeEffects.findLast(e => e.img && e.getFlag("core", "overlay"));
+    
+        // Draw effects
+        const promises = [];
+        for ( const [i, effect] of activeEffects.entries() ) {
+          if ( !effect.img ) continue;
+          const promise = effect === overlayEffect
+            ? this._drawOverlay(effect.img, effect.tint)
+            : this._drawEffect(effect.img, effect.tint, effect.system.condition.value);
+          promises.push(promise.then(e => {
+            if ( e ) e.zIndex = i;
+          }));
+        }
+        await Promise.allSettled(promises);
+    
+        this.effects.sortChildren();
+        this.effects.renderable = true;
+        this.renderFlags.set({refreshEffects: true});
        }
     
     /* -------------------------------------------- */
@@ -74,10 +61,9 @@ export default function () {
      */
     foundry.canvas.placeables.Token.prototype._drawEffect = async function(src, tint, value) {
       if ( !src ) return;
-      let tex = await foundry.canvas.loadTexture(src, {fallback: "icons/svg/hazard.svg"});
-      let icon = new PIXI.Sprite(tex);
-      if ( tint ) icon.tint = tint;
-
+      const tex = await foundry.canvas.loadTexture(src, {fallback: "icons/svg/hazard.svg"});
+      const icon = new PIXI.Sprite(tex);
+      icon.tint = tint ?? 0xFFFFFF;
       // Add WFRPE Counter
       if(value)
       {
@@ -88,7 +74,6 @@ export default function () {
         text.scale.y = 20;
         icon.addChild(text)
       }
-      
       return this.effects.addChild(icon);
     }
 }
