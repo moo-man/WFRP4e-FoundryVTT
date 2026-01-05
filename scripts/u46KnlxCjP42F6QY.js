@@ -2,7 +2,7 @@ let table = await fromUuid("RollTable.uATmVS40DQLC1woJ");
 
 if (table)
 {
-    table.roll();
+    table.draw();
 }
 else 
 {
