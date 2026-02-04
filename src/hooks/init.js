@@ -527,6 +527,11 @@ export default function() {
     CONFIG.Token.movement.actions.crawl.canSelect = (token) => token?.actor?.system.canCrawl;
     CONFIG.Token.movement.actions.fly.canSelect = (token) => token?.actor?.system.canFly;
     CONFIG.Token.movement.actions.swim.canSelect = (token) => token?.actor?.system.canSwim;
-    CONFIG.Token.rulerClass = TokenRulerWFRP;
+
+    // Warhammer lib might remove this class (Disable Token Ruler setting)
+    if (CONFIG.Token.rulerClass)
+    {
+      CONFIG.Token.rulerClass = TokenRulerWFRP;
+    }
   });
 }
