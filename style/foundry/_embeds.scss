@@ -1,0 +1,33 @@
+.wfrp4e-embed {
+    &.career {
+        table {
+            margin-bottom: 1rem;
+            thead {
+                background: none;
+                text-align: center;
+                border: rgba(0, 0, 0, 0.5);
+            }
+            td {
+                padding: 0px 1rem;
+                height: 1rem;
+                text-align: center;
+                font-size: var(--font-size-20);
+               &.tier1 {
+                background: none;
+               } 
+               &.tier2 {
+                background: #c38358;
+               }
+               &.tier3 {
+                background: #c7c8ca;
+               }
+               &.tier4 {
+                background: #ffe400;
+               }
+               &.tier5 {
+                background: #00aeef;
+               }
+            }
+        }
+    }
+}

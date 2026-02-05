@@ -360,4 +360,96 @@ export class CareerModel extends BaseItemModel
         //     data.trappings = {list : data.trappings};
         // }
       }
+
+      async toEmbed(config, options={})
+      {
+          let tiers = (await Promise.all(config.tiers?.split(",").map(i => fromUuid(i.trim())) || [])).map(t => t).concat(this.parent).sort((a, b) => a.system.level.value - b.system.level.value);
+
+  
+          // Replace characteristic true/false with career level, otherwise leave it as it was (possibly set by previous tier)
+          let characteristics = foundry.utils.deepClone(tiers[0].system.characteristics);
+          for (let c in characteristics)
+          {
+            characteristics[c] = "";
+          }
+          for(let tier of tiers)
+          {
+            for (let c in tier.system.characteristics)
+            {
+              if (tier.system.characteristics[c] && !characteristics[c])
+              {
+                characteristics[c] = tier.system.level.value;
+              }
+            }
+          }
+
+          let tierIcons = {
+            "1" : "✠",
+            "2" : "♟",
+            "3" : "♜",
+            "4" : "♛",
+            "5" : "♚"
+          }
+
+          let tierHTML = [];
+
+          let skillLookup = await warhammer.utility.findAllItems("skill", null, true)
+          skillLookup.forEach(i => {
+            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+          })
+
+          let talentLookup = await warhammer.utility.findAllItems("talent", null, true)
+          talentLookup.forEach(i => {
+            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+          })
+
+
+          let skillIndex = 0; // Used to remove skills already listed in lower tiers
+
+          for(let tier of tiers)
+          {
+            let thisTierSkill = tier.system.skills.slice(skillIndex); // Slice off any previous tier skills
+            skillIndex = tier.system.skills.length;                   // Set skill cutoff for next tier
+
+            let skillLinks = thisTierSkill.map(name => {
+              let baseName = name.split("(")[0].trim();
+              let found = skillLookup.find(i => i.name == name);
+              if (!found)
+              {
+                found = skillLookup.find(i => i.baseName == baseName)
+              }
+              return `@UUID[${found?.uuid || "unknown"}]{${name}}`;
+            })
+
+            let skillText = skillLinks.join(", ");
+
+            let talentLinks = tier.system.talents.map(name => {
+              let baseName = name.split("(")[0].trim();
+              let found = talentLookup.find(i => i.name == name);
+              if (!found)
+              {
+                found = talentLookup.find(i => i.baseName == baseName)
+              }
+              return `@UUID[${found?.uuid || "unknown"}]{${name}}`;
+            })
+
+            let talentText = talentLinks.join(", ")
+
+            let html = `<h3>${tierIcons[tier.system.level.value]} @UUID[${tier.uuid}]{${tier.name}}</h3>
+            <p><strong>Status</strong>: ${game.wfrp4e.config.statusTiers[tier.system.status.tier]} ${tier.system.status.standing}</p>
+            <p><strong>Skills</strong>: ${skillText}</p>
+            <p><strong>Talents</strong>: ${talentText}</p>
+            <p><strong>Trappings</strong>: ${tier.system.trappings.join(", ")}</p>
+            `
+
+            tierHTML.push(html);
+          }
+
+          let content = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/embeds/career.hbs", {item: this.parent, tierHTML, characteristics, species : config.species})
+          
+          let div = document.createElement("div");
+          div.style = config.style;
+          div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+          return div;
+        }  
 }
