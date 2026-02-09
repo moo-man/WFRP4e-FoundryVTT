@@ -21,6 +21,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       randomize: this._randomize,
       advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
       stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
+      chooseLore: this._onChooseLore,
     },
   }
 
@@ -313,6 +314,13 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
   static _onContextMenushowMount(ev) {
     this.actor.mount.sheet.render(true)
+  }
+
+  static async _onChooseLore(ev, target)
+  {
+    let item = await this._getDocumentAsync(ev, target);
+    item.update({"system.lore.chosen" : target.dataset.lore})
+
   }
 
   static _randomize(ev)

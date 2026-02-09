@@ -1039,7 +1039,7 @@ export default class TestWFRP extends WarhammerTestBase {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, {aoe: false, formulaOverride: overcastData.valuePerOvercast.additional})) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break
@@ -1389,8 +1389,10 @@ export default class TestWFRP extends WarhammerTestBase {
   get token() { return WFRP_Utility.getToken(this.context.speaker) }
 
   get item() {
-    if (typeof this.data.preData.item == "string")
+    if (typeof this.data.preData.item == "string" && this.actor.items.get(this.data.preData.item))
       return this.actor.items.get(this.data.preData.item)
+    else if (this.data.preData.itemData)
+      return new CONFIG.Item.documentClass(this.data.preData.itemData, { parent: this.actor })
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
   }

@@ -10,6 +10,9 @@
     --property-icon : var(--color-cool-3);
     --tag-border: var(--color-cool-3);
     --tag-bg: transparent;
+
+    --chosen-lore: var(--color-level-success-bg);
+    --chosen-lore-text: var(--color-light-2);
     
     section.tab {
         overflow-y: auto
@@ -271,6 +274,28 @@
         .group-action {
             width: 100%;
 
+        }
+    }
+
+    
+    .choose-lore {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.2rem;
+        .lore {
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--attribute-border);
+            background: none;
+            &.chosen {
+                background: var(--chosen-lore);
+                color: var(--chosen-lore-text);
+            }
         }
     }
 }

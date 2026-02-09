@@ -16,9 +16,15 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     {
         await super._onCreate(document, options, user);
         let test = this.system.test;
-        if (test)
+        if (test && document.type == "test")
         {
           test.postTestGM(document)
+        }
+
+        // If a spell is used, update the cast message to point to the use message
+        if (this.type == "magic" && game.user.id == user)
+        {
+          this.system.sourceTest?.updateMessageData({context : {itemMessage: this.id}})
         }
     }
 

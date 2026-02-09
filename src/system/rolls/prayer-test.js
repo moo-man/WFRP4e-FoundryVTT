@@ -6,6 +6,10 @@ export default class PrayerTest extends TestWFRP {
     super(data, actor)
     if (!data)
       return
+
+    // Target is set in the dialog for prayer tests, add modifiers then compute target number
+    this.preData.target += this.targetModifiers;
+
     this.computeTargetNumber();
 
   }
@@ -13,6 +17,13 @@ export default class PrayerTest extends TestWFRP {
   static fromData(...args)
   {
     return new this(...args);
+  }
+
+  async roll() {
+    // The casting test shouldn't have targets, so save them and pass them to the spell use message
+    this.context._targets = this.context.targets;
+    this.context.targets = [];
+    return super.roll();
   }
 
   computeTargetNumber() {
@@ -43,6 +54,10 @@ export default class PrayerTest extends TestWFRP {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
     this.result.overcast = foundry.utils.duplicate(this.item.overcast)
+    if (!this.result.overcast.usage)
+    {
+      this.result.overcast.usage = this.item.system.computeOvercastingData(this.actor);
+    }
 
     // Test itself failed
     if (this.failed) {
@@ -144,6 +159,23 @@ export default class PrayerTest extends TestWFRP {
       await super._overcast(choice)
     }
   }
+
+    // This test should not show any effects to apply, those should be on the prayer use message
+    get damageEffects() 
+    {
+        return [];
+    }
+  
+    get targetEffects() 
+    {
+        return [];
+    }
+  
+    get areaEffects() 
+    {
+        return [];
+    }
+  
 
   get prayer() {
     return this.item

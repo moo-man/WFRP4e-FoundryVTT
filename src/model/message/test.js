@@ -1,8 +1,10 @@
 import TestWFRP from "../../system/rolls/test-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import ItemWFRP4e from "../../documents/item.js";
+import { MagicUseMessageModel } from "./magic.js";
+import WFRPEffectMessageMixin from "./effect-message.js";
 
-export class WFRPTestMessageModel extends WarhammerTestMessageModel 
+export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMessageModel)
 {
     get test() 
     {
@@ -14,9 +16,9 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         return foundry.utils.mergeObject(super.actions, {
             overcastClick : this.onOvercastClick,
             overcastReset : this.onOvercastReset,
-            moveVortex : this.onMoveVortex,
             applyCriticalDeflection : this.onApplyCriticalDeflection,
-            applyHealing: this.onApplyHealing
+            applyHealing: this.onApplyHealing,
+            useMagic: this.onUseMagic
         });
     }
 
@@ -51,11 +53,12 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
       image.src = await this.getHeaderToken();
       image.style.zIndex = 1;
       div.appendChild(image);
-      if (this.test.actor.isMounted && this.test.actor.mount)
+      let test = this.test;
+      if (test.actor.isMounted && test.actor.mount)
       {
         div.classList.add("mounted");
         let mount = document.createElement("img");
-        mount.src = this.test.actor.mount.getActiveTokens()[0]?.document?.texture.src
+        mount.src = test.actor.mount.getActiveTokens()[0]?.document?.texture.src
         mount.style.zIndex = 0;
         div.appendChild(mount);
     }
@@ -64,33 +67,6 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
       warhammer.utility.replacePopoutTokens(html);
     }
 
-  static async onPlaceAreaEffect(event, target) {
-    if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
-    
-    let effectUuid = target.dataset.uuid;
-    let test = this.test
-    let radius;
-    if (test?.result.overcast?.usage.target)
-    {
-      radius = test.result.overcast.usage.target.current;
-
-      if (test.spell)
-      {
-        radius /= 2; // Spells define their diameter, not radius
-      }
-    }
-
-    let effect = await fromUuid(effectUuid)
-    let effectData = effect.convertToApplied(test);
-    if (!(await effect.runPreApplyScript({effectData})))
-    {
-        return;
-    }
-    let template = await AreaTemplate.fromEffect(effectUuid, this.parent.id, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
-    await template.drawPreview(event);
-  }
-  
       // Respond to overcast button clicks
   static onOvercastClick(event, target) {
     event.preventDefault();
@@ -142,15 +118,6 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
         await actor.modifyWounds(parseInt(amount));
         ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: "Rest & Recover"});
     }
-  };
-
-  static onMoveVortex(event)
-  {
-    let msg = this.parent;
-    if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
-    let test = this.test
-    test.moveVortex();
   }
 
     static async onApplyCriticalDeflection(ev)
@@ -178,6 +145,11 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
                 }
             }
         }
+    }
+
+    static onUseMagic(ev, target)
+    {
+      MagicUseMessageModel.create({test: this.test});
     }
 
 }

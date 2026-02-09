@@ -152,7 +152,7 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+            opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
               .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
@@ -173,7 +173,7 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
+            opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP})
               .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
@@ -194,7 +194,7 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+            opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB})
               .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
@@ -215,7 +215,7 @@ export default function () {
             if (!opposedTest.defenderTest.actor.isOwner)
               return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
 
-            opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+            opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL})
               .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, message.id));
           }
         }
@@ -338,7 +338,7 @@ export default function () {
               if (!opposedTest.defenderTest.actor.isOwner) {
                 ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
               } else {
-                opposedTest.defender.applyDamage(opposedTest.resultMessage.system.opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+                opposedTest.defender.applyDamage(null, {opposedTest: opposedTest.resultMessage.system.opposedTest, damageType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
                   .then(updateMsg => OpposedHandler.updateOpposedMessage(updateMsg, opposedTest.resultMessage.id));
               }
             }

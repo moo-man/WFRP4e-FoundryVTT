@@ -105,6 +105,7 @@ import { CorruptionMessageModel } from "./model/message/corruption.js";
 import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
+import { MagicUseMessageModel } from "./model/message/magic.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -194,6 +195,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["xp"] = XPMessageModel;
   CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
   CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
+  CONFIG.ChatMessage.dataModels["magic"] = MagicUseMessageModel;
 
   game.wfrp4e = {
     apps: {

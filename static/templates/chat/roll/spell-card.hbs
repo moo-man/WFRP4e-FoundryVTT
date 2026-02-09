@@ -12,4 +12,8 @@
     {{else}}
         {{> systems/wfrp4e/templates/partials/overcasts.hbs}}
     {{/if}}
+
+    {{#if (eq test.result.castOutcome "success")}}
+        <a class='chat-button' data-action="useMagic">{{localize "CHAT.CastSpell" spell=test.spell.name}}</a>
+    {{/if}}
 </div>
