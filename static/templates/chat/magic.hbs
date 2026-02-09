@@ -1,0 +1,69 @@
+<div class="item-use">
+    <div class="item-dropdown">
+        <div class="item-header" data-action="expandItem">
+            {{#unless noImage}}
+                <img src="{{item.img}}">
+            {{/unless}}
+            <p>{{item.name}}</p>
+        </div>
+        <div class="item-description">
+            <div class="description-expander">
+                <div class="public">
+                    {{{description.public}}}
+                </div>
+                <div class="gm-only">
+                    {{{description.gm}}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="item-data">
+        <div class="target">
+            <p><strong>{{localize "Target"}}</strong>:
+            {{#if testData.target.AoE}}
+                <a class="action-link" data-type="diameter" data-action="placeTemplate" data-id="{{item.uuid}}" data-actor-id="{{actor.id}}" ><i class="fas fa-ruler-combined"></i> {{testData.target.text}}</a>
+            {{else}}
+             <p>{{testData.target.text}}</p>
+            {{/if}}
+        </div>
+        <div class="range">
+            <p><strong>{{localize "Range"}}</strong>: {{testData.range.text}}</p>
+        </div>
+        <div class="duration">
+            <p><strong>{{localize "Duration"}}</strong>: {{testData.duration.text}}</p>
+        </div>
+        <div class="damage">
+            <p><strong>{{localize "Damage"}}</strong>: {{testData.damage}}</p>
+        </div>
+    </div>
+
+    {{#each testData.other}}
+        <p>{{{this}}}</p>
+    {{/each}}
+
+    <div class="targets">
+        {{#each targets}}
+            <div class="target" data-uuid="{{this.uuid}}" data-id="{{this.id}}" data-tooltip="{{this.name}}" data-tooltip-direction="LEFT">
+                <i class="fa-solid fa-crosshairs"></i>
+                <img src="{{this.texture.src}}">
+                {{#if (lookup ../damageApplied this.id)}}
+                    <p>{{{lookup ../damageApplied this.id}}}</p>
+                {{/if}}
+            </div>
+        {{/each}}
+    </div>
+
+</div>
+
+
+{{#each damageMessages}}
+    <p>{{this}}</p>
+{{/each}}
+
+{{#if testData.damage}}
+    <button data-action="applyDamage">{{localize "CHATOPT.ApplyDamage"}}</button>
+{{/if}}
+
+
+{{> effectButtons this}}

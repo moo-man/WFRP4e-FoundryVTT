@@ -2795,6 +2795,7 @@ WFRP4E.scriptTriggers = {
     "rollChannellingTest" : "Roll Channelling Test",
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
+    "castSpellPrayer" : "Cast Spell or Prayer",
     "preOpposedAttacker" : "Pre-Opposed Attacker",
     "preOpposedDefender" : "Pre-Opposed Defender",
     "opposedAttacker" : "Opposed Attacker",

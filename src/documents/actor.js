@@ -347,23 +347,26 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  async applyDamage(opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL) {
-    if (!opposedTest.result.damage)
+  async applyDamage(damage, {opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, weaponProperties={}, loc="body", createMessage=false}={}) {
+    if (!damage && !opposedTest?.result.damage?.value)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
-    // If no damage value, don't attempt anything
-    if (!opposedTest.result.damage.value)
-      return game.i18n.localize("CHAT.DamageAppliedErrorTiring");
+    
     // Get actor/tokens for those in the opposed test
     let actor = this
-    let attacker = opposedTest.attacker
+    let attacker = opposedTest?.attacker
     let soundContext = { item: {}, action: "hit" };
 
+    if (loc == "roll")
+    {
+      loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN})).result
+    }
+
     // Start wound loss at the damage value
-    let totalWoundLoss = opposedTest.result.damage.value
+    let totalWoundLoss = damage || opposedTest?.result.damage.value
     let newWounds = actor.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let AP = foundry.utils.deepClone(actor.status.armour[opposedTest.result.hitloc.value]);
+    let AP = foundry.utils.deepClone(actor.status.armour[opposedTest?.result.hitloc.value || loc]);
     let ward = actor.status.ward.value;
     let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
     let abort = false
@@ -388,7 +391,11 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     let extraMessages = [];
 
-    let weaponProperties = foundry.utils.deepClone(opposedTest.attackerTest.item?.properties) || {}
+    if (opposedTest)
+    {
+      foundry.utils.mergeObject(weaponProperties, foundry.utils.deepClone(opposedTest?.attackerTest.item?.properties) || {}, {overwrite: false}); 
+    }
+
     // If weapon is undamaging
     let undamaging = false;
     // If weapon has Hack
@@ -405,8 +412,8 @@ export default class ActorWFRP4e extends WarhammerActor
 
     let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
-    await Promise.all(attacker.runScripts("preApplyDamage", args))
-    await Promise.all(opposedTest.attackerTest.item?.runScripts("preApplyDamage", args))
+    await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
+    await Promise.all(opposedTest?.attackerTest.item?.runScripts("preApplyDamage", args) || [])
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -423,9 +430,9 @@ export default class ActorWFRP4e extends WarhammerActor
     // Reduce damage by TB
     if (applyTB) 
     {
-      if (this.type == "vehicle" && attacker.type != "vehicle" && opposedTest.attackerTest.item?.system.isMelee)
+      if (this.type == "vehicle" && attacker?.type != "vehicle" && opposedTest?.attackerTest.item?.system.isMelee)
       {
-        let tbModifier = game.wfrp4e.config.vehicleActorSizeComparison[this.system.details.size.value][attacker.system.details.size.value]
+        let tbModifier = game.wfrp4e.config.vehicleActorSizeComparison[this.system.details.size.value][attacker?.system.details.size.value || "avg"]
 
         if (tbModifier > 0)
         {
@@ -447,15 +454,15 @@ export default class ActorWFRP4e extends WarhammerActor
 
     // Determine its qualities/flaws to be used for damage calculation
     penetrating = weaponProperties?.qualities?.penetrating
-    undamaging = weaponProperties?.flaws?.undamaging && !opposedTest.result.damaging;
+    undamaging = weaponProperties?.flaws?.undamaging && !opposedTest?.result.damaging;
     hack = weaponProperties?.qualities?.hack
     impale = weaponProperties?.qualities?.impale
     pummel = weaponProperties?.qualities?.pummel
     zzap = weaponProperties?.qualities?.zzap
     
     // see if armor flaws should be triggered
-    let ignorePartial = opposedTest.attackerTest.result.roll % 2 == 0 || opposedTest.attackerTest.result.critical
-    let ignoreWeakpoints = opposedTest.attackerTest.result.critical && impale
+    let ignorePartial = opposedTest?.attackerTest.result.roll % 2 == 0 || opposedTest?.attackerTest.result.critical
+    let ignoreWeakpoints = opposedTest?.attackerTest.result.critical && impale
     let zzapIgnored = zzap ? 1 : 0 // start zzap out at 1;
 
     // Mitigate damage with armor one layer at a time
@@ -548,13 +555,13 @@ export default class ActorWFRP4e extends WarhammerActor
     //@/HOUSE
 
     // If using a shield, add that AP as well
-    if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
+    if (game.settings.get("wfrp4e", "uiaShields") && !opposedTest?.defenderTest.context.unopposed) // UIA shields don't need to be used, just equipped
     {
       modifiers.ap.shield = this.status.armour.shield
     }
-    else if (opposedTest.defenderTest.weapon) // RAW Shields required the shield to be used
+    else if (opposedTest?.defenderTest.weapon) // RAW Shields required the shield to be used
     {
-      if (opposedTest.defenderTest.weapon.properties.qualities.shield)
+      if (opposedTest?.defenderTest.weapon.properties.qualities.shield)
       {
         modifiers.ap.shield = this.status.armour.shield
       }
@@ -570,7 +577,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     
     //@HOUSE
-    if (game.settings.get("wfrp4e", "homebrew").mooShieldAP && opposedTest.defenderTest.failed && modifiers.ap.shield) {
+    if (game.settings.get("wfrp4e", "homebrew").mooShieldAP && opposedTest?.defenderTest.failed && modifiers.ap.shield) {
       game.wfrp4e.utility.logHomebrew("mooShieldAP")
       modifiers.ap.details.push(game.i18n.format("BREAKDOWN.ShieldMoo", {ignored: modifiers.ap.shield}))
       modifiers.ap.shield = 0;
@@ -578,8 +585,8 @@ export default class ActorWFRP4e extends WarhammerActor
     //@/HOUSE
 
     await Promise.all(actor.runScripts("computeTakeDamageModifiers", args))
-    await Promise.all(attacker.runScripts("computeApplyDamageModifiers", args))
-    await Promise.all(opposedTest.attackerTest.item?.runScripts("computeApplyDamageModifiers", args))
+    await Promise.all(attacker?.runScripts("computeApplyDamageModifiers", args) || [])
+    await Promise.all(opposedTest?.attackerTest.item?.runScripts("computeApplyDamageModifiers", args) || [])
 
     modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
     if (undamaging && modifiers.ap.used)
@@ -610,8 +617,8 @@ export default class ActorWFRP4e extends WarhammerActor
     }
 
     try {
-      if (opposedTest.attackerTest.weapon.attackType == "melee") {
-        if ((opposedTest.attackerTest.weapon.Qualities.concat(opposedTest.attackerTest.weapon.Flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
+      if (opposedTest?.attackerTest.weapon.attackType == "melee") {
+        if ((opposedTest?.attackerTest.weapon.Qualities.concat(opposedTest?.attackerTest.weapon.Flaws)).every(p => [game.i18n.localize("PROPERTY.Pummel"), game.i18n.localize("PROPERTY.Slow"), game.i18n.localize("PROPERTY.Damaging")].includes(p)))
           soundContext.outcome = "warhammer" // special sound for warhammer :^)
         else if (AP.used) {
           soundContext.item.type = "armour"
@@ -636,8 +643,8 @@ export default class ActorWFRP4e extends WarhammerActor
     catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
     let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
-    await Promise.all(attacker.runScripts("applyDamage", scriptArgs))
-    await Promise.all(opposedTest.attackerTest.item?.runScripts("applyDamage", scriptArgs))
+    await Promise.all(attacker?.runScripts("applyDamage", scriptArgs) || [])
+    await Promise.all(opposedTest?.attackerTest.item?.runScripts("applyDamage", scriptArgs) || [])
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
     ward = scriptArgs.ward
     abort = scriptArgs.abort
@@ -652,7 +659,7 @@ export default class ActorWFRP4e extends WarhammerActor
     updateMsg += "</span>"
     updateMsg += " " + totalWoundLoss;
 
-    let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${opposedTest.result.damage.value}</p><hr>`
+    let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${damage || opposedTest.result.damage.value}</p><hr>`
 
     if (modifiers.tb)
     {
@@ -715,22 +722,22 @@ export default class ActorWFRP4e extends WarhammerActor
       let critAmnt = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
         let critModifier = (Math.abs(newWounds)) * critAmnt;
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
       else if (game.settings.get("wfrp4e", "homebrew").mooCritModifiers) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         if (critModifier)
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
         else
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
       }
       //@/HOUSE
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus && !game.settings.get("wfrp4e", "uiaCrits"))
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${opposedTest.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
     if (hack)
     {
@@ -741,7 +748,7 @@ export default class ActorWFRP4e extends WarhammerActor
       newWounds = 0; // Do not go below 0 wounds
 
 
-    let item = opposedTest.attackerTest.item
+    let item = opposedTest?.attackerTest.item
     if (item?.properties && item?.properties.qualities.slash && updateMsg.includes("critical-roll"))
     {
       updateMsg += `<br>${game.i18n.format("PROPERTY.SlashAlert", {value : parseInt(item?.properties.qualities.slash.value)})}`
@@ -766,7 +773,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (totalWoundLoss > 0)
     {
-      let damageEffects = opposedTest.attackerTest?.damageEffects;
+      let damageEffects = opposedTest?.attackerTest?.damageEffects || [];
       let filtered = [];
       for(let effect of damageEffects)
       {
@@ -775,15 +782,21 @@ export default class ActorWFRP4e extends WarhammerActor
           filtered.push(effect);
         }
       }
-      await actor.applyEffect({effectUuids: filtered.map(i => i.uuid), messageId : opposedTest.attackerTest.message.id});
+      await actor.applyEffect({effectUuids: filtered.map(i => i.uuid), messageId : opposedTest?.attackerTest.message.id});
     }
 
     // Update actor wound value
     actor.update({ "system.status.wounds.value": newWounds })
 
-    return updateMsg;
+    if (!createMessage)
+    {
+      return updateMsg;
+    }
+    else
+    {
+      ChatMessage.create({content: updateMsg});
+    }
   }
-
 
 
   /**
@@ -799,6 +812,10 @@ export default class ActorWFRP4e extends WarhammerActor
     if (owningUser?.id != game.user.id)
     {
         return SocketHandlers.call("applyDamage", {damage, options : {damageType, minimumOne, loc, suppressMsg, hideDSN}, actorUuid : this.uuid}, owningUser.id);
+    }
+    else 
+    {
+      return this.applyDamage(damage, {damageType, loc, minimumOne, createMessage: !suppressMsg, hideDSN})
     }
 
     let newWounds = this.status.wounds.value;

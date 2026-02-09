@@ -219,7 +219,67 @@
             align-items: center;
         }
 
-    }
+        .item-use {
+            .item-dropdown {
+                background: rgba(0, 0, 0, 0.1);
+                padding: 0.5rem;
+
+                .item-header {
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 1rem;
+
+                    img {
+                        height: 50px;
+                    }
+
+                    p {
+                        font-size: var(--font-size-18);
+                        font-weight: bold;
+                    }
+                }
+
+                .item-description {
+                    display: grid;
+                    grid-template-rows: 0fr;
+                    transition: grid-template-rows 250ms;
+
+                    >* {
+                        overflow: hidden
+                    }
+
+                    &.expanded {
+                        grid-template-rows: 1fr;
+                    }
+                }
+            }
+
+            .item-data {
+                display: flex;
+                flex-wrap: wrap;
+
+                >* {
+                    width: 50%;
+                    text-align: center;
+                }
+            }
+
+            .targets {
+                .target {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.2rem;
+                    margin: 0.5rem 0px;
+                    img {
+                        width: 2rem;
+                        height: 2rem;
+                    }
+                }
+            }
+
+        }
+        
 
 
     .vortex-table,
@@ -244,4 +304,5 @@
         .vortex-table .selected-position {
             background-color: skyblue;
           }
+    }
 }

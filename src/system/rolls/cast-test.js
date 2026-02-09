@@ -14,6 +14,7 @@ export default class CastTest extends TestWFRP {
     this.preData.ingredientMode = data.ingredientMode ?? "none";
 
     this.data.context.templates = data.templates || [];
+    this.data.context.itemMessage = null;
 
     this.computeTargetNumber();
   }
@@ -21,6 +22,14 @@ export default class CastTest extends TestWFRP {
   static fromData(...args)
   {
     return new this(...args);
+  }
+
+  
+  async roll() {
+    // The casting test shouldn't have targets, so save them and pass them to the spell use message
+    this.context._targets = this.context.targets;
+    this.context.targets = [];
+    return super.roll();
   }
 
   computeTargetNumber() {
@@ -385,7 +394,6 @@ export default class CastTest extends TestWFRP {
     }
   }
 
-
   async postTest() {
     //@/HOUSE
     if (this.preData.unofficialGrimoire) {
@@ -445,6 +453,22 @@ export default class CastTest extends TestWFRP {
       }
     }
     //@/HOUSE
+  }
+
+  // Channelling should not show any effects to apply 
+  get damageEffects() 
+  {
+      return [];
+  }
+
+  get targetEffects() 
+  {
+      return [];
+  }
+
+  get areaEffects() 
+  {
+      return [];
   }
 
   get hasIngredient() {

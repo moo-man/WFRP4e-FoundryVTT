@@ -1,6 +1,7 @@
 import TestWFRP from "../../system/rolls/test-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import ItemWFRP4e from "../../documents/item.js";
+import { MagicUseMessageModel } from "./magic.js";
 
 export class WFRPTestMessageModel extends WarhammerTestMessageModel 
 {
@@ -16,6 +17,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
             overcastReset : this.onOvercastReset,
             moveVortex : this.onMoveVortex,
             applyCriticalDeflection : this.onApplyCriticalDeflection,
+            useMagic: this.onUseMagic
         });
     }
 
@@ -165,6 +167,11 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
                 }
             }
         }
+    }
+
+    static onUseMagic(ev, target)
+    {
+      MagicUseMessageModel.create({test: this.test});
     }
 
 }
