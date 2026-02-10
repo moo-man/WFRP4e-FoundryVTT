@@ -216,11 +216,14 @@ export class CareerModel extends BaseItemModel
         for(let trappingIndex of this.requiredTrappings)
         {
           let name = this.trappings[trappingIndex];
-          this.requiredTrappingStatus.push({
-            name, 
-            owned : this.trappingsOwned.includes(trappingIndex) || this.parent.actor.items.find(i => i.name.toLowerCase() == name.toLowerCase()),
-            index : trappingIndex
-          })
+          if (name)
+          {
+            this.requiredTrappingStatus.push({
+              name, 
+              owned : this.trappingsOwned.includes(trappingIndex) || this.parent.actor.items.find(i => i.name.toLowerCase() == name.toLowerCase()),
+              index : trappingIndex
+            })
+          }
         }
       }
     }

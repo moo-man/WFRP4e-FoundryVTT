@@ -39,6 +39,7 @@ export class MagicUseMessageModel extends WarhammerMessageModel {
           AoE: new fields.BooleanField({}),
         }),
         other: new fields.ArrayField(new fields.StringField()),
+        loreChosen: new fields.StringField(),
         hitloc: new fields.SchemaField({
           description: new fields.StringField(),
           result: new fields.StringField(),
@@ -238,6 +239,7 @@ export class MagicUseMessageModel extends WarhammerMessageModel {
         range,
         duration,
         target,
+        lore: test.context.loreChosen,
         other: [],
         hitloc: test.result.hitloc
       }

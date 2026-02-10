@@ -455,7 +455,7 @@ export default class CastTest extends TestWFRP {
     //@/HOUSE
   }
 
-  // Channelling should not show any effects to apply 
+  // Casting should not show any effects to apply, those should be on the spell use message
   get damageEffects() 
   {
       return [];
