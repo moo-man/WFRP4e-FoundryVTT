@@ -430,7 +430,8 @@ export class CareerModel extends BaseItemModel
               return `@UUID[${found?.uuid || "unknown"}]{${name}}`;
             })
 
-            let skillText = skillLinks.join(", ");
+            let skillText = skillLinks.join(", ")
+            let income = tier.system.incomeSkill.map(i => tier.system.skills[i]).filter(i => i).join(", ");
 
             let talentLinks = tier.system.talents.map(name => {
               let baseName = name.split("(")[0].trim();
@@ -447,6 +448,7 @@ export class CareerModel extends BaseItemModel
             let html = `<h3>${tierIcons[tier.system.level.value]} @UUID[${tier.uuid}]{${tier.name}}</h3>
             <p><strong>Status</strong>: ${game.wfrp4e.config.statusTiers[tier.system.status.tier]} ${tier.system.status.standing}</p>
             <p><strong>Skills</strong>: ${skillText}</p>
+            ${tier.system.level.value == 1 ? `<p><strong>Income</strong>: ${income}</p>` : ""}
             <p><strong>Talents</strong>: ${talentText}</p>
             <p><strong>Trappings</strong>: ${tier.system.trappings.join(", ")}</p>
             `

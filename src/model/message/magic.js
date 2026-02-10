@@ -2,10 +2,12 @@
  * Decouples the use of spells and miracles from their Test, allowing them to be "cast" without the need of a Test
  */
 import CastTest from "../../system/rolls/cast-test.js";
+import PrayerTest from "../../system/rolls/prayer-test.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
+import WFRPEffectMessageMixin from "./effect-message.js";
 let fields = foundry.data.fields;
 
-export class MagicUseMessageModel extends WarhammerMessageModel {
+export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessageModel) {
   static defineSchema() 
   {
       let schema = {};
@@ -118,7 +120,7 @@ export class MagicUseMessageModel extends WarhammerMessageModel {
         addSpeakers.push({token: token.id, actor: token.actor.id, scene: token.parent.id, alias: token.name})
       }
 
-      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage);
+      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage, {opposedTest: {attackerTest: this.test, defenderTest: {context: {unopposed: true}}, result: this.testData}});
     }
     let targetSpeakers = this.targetSpeakers.concat(addSpeakers)
     await this.parent.update({"system.damageApplied" : damageApplied, "system.targetSpeakers" : targetSpeakers});
@@ -256,6 +258,10 @@ export class MagicUseMessageModel extends WarhammerMessageModel {
       if (test instanceof CastTest)
       {
          item = test.spell;
+      }
+      else if (test instanceof PrayerTest)
+      {
+        item = test.prayer;
       }
       else if (!["prayer", "spell"].includes(item?.type))
       {

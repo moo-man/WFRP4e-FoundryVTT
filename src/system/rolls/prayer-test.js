@@ -15,6 +15,13 @@ export default class PrayerTest extends TestWFRP {
     return new this(...args);
   }
 
+  async roll() {
+    // The casting test shouldn't have targets, so save them and pass them to the spell use message
+    this.context._targets = this.context.targets;
+    this.context.targets = [];
+    return super.roll();
+  }
+
   computeTargetNumber() {
     let skill = this.item.system.getSkillToUse(this.actor);
     if (!skill)
@@ -144,6 +151,23 @@ export default class PrayerTest extends TestWFRP {
       await super._overcast(choice)
     }
   }
+
+    // This test should not show any effects to apply, those should be on the prayer use message
+    get damageEffects() 
+    {
+        return [];
+    }
+  
+    get targetEffects() 
+    {
+        return [];
+    }
+  
+    get areaEffects() 
+    {
+        return [];
+    }
+  
 
   get prayer() {
     return this.item
