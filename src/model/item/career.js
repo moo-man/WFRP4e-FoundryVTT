@@ -398,12 +398,18 @@ export class CareerModel extends BaseItemModel
 
           let skillLookup = await warhammer.utility.findAllItems("skill", null, true)
           skillLookup.forEach(i => {
-            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+            if (!(i instanceof Item))
+            {
+              i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+            }
           })
 
           let talentLookup = await warhammer.utility.findAllItems("talent", null, true)
           talentLookup.forEach(i => {
-            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+            if (!(i instanceof Item))
+            {
+              i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+            }
           })
 
 
