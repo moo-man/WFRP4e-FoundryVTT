@@ -120,7 +120,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         addSpeakers.push({token: token.id, actor: token.actor.id, scene: token.parent.id, alias: token.name})
       }
 
-      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage, {opposedTest: {attackerTest: this.test, defenderTest: {context: {unopposed: true}}, result: this.testData}});
+      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage);
     }
     let targetSpeakers = this.targetSpeakers.concat(addSpeakers)
     await this.parent.update({"system.damageApplied" : damageApplied, "system.targetSpeakers" : targetSpeakers});
@@ -168,14 +168,58 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
    * @param {Object} test Casting Test
    * @param {*} testData Customized test data
    */
-  static async _formatTestResult({test, testData={}, item}={})
+  static async _formatResult({test, testData={}, item}={})
   {
       let range;
       let duration;
       let target;
 
-      // If range is standard (X yards) and is overcastable
-      if (test.result.overcast.usage.range)
+      if (test)
+      {
+        let testResult = await this._formatTestResult(test);
+        range = testResult.range
+        duration = testResult.duration
+        target = testResult.target
+      }
+      else 
+      {
+        range = {
+          value: "",
+          unit: "",
+          text: "",
+        }
+        duration = {
+          value: "",
+          unit: "",
+          text: "",
+        }
+        target = {
+          value: "",
+          unit: "",
+          text: "",
+          AoE: false,
+        }
+      }
+
+
+      return {
+        damage: test?.result.damage || 0,
+        range,
+        duration,
+        target,
+        other: [],
+        hitloc: test?.result  .hitloc
+      }
+  }
+  
+
+  static async _formatTestResult(test)
+  {
+    let range;
+    let duration;
+    let target;
+    // If range is standard (X yards) and is overcastable
+    if (test.result.overcast.usage.range)
       {
         range = {
           value: test.result.overcast.usage.range.current,
@@ -187,7 +231,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else 
       {
         range = {
-          text: item.system.range.value
+          text: test.item.system.range.value
         }
       }
 
@@ -205,7 +249,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else       
       {
         duration = {
-          text: item.system.duration.value
+          text: test.item.system.duration.value
         }
       }
 
@@ -232,20 +276,14 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else       
       {
         target = {
-          text: item.system.target.value
+          text: test.item.system.target.value
         }
       }
-
-      return {
-        damage: test.result.damage || 0,
-        range,
-        duration,
-        target,
-        lore: test.context.loreChosen,
-        other: [],
-        hitloc: test.result.hitloc
-      }
+      
+      return {range, duration, target};
   }
+
+  
 
     /**
      * 
@@ -253,7 +291,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
      * @param {Item} item Create directly from spell or miracle item
      * @param {Item} source Source of the spell, if any (like a magic item that casts a spell)
      */
-    static async create({test, item, source}, testData={}) 
+    static async create({test, item, source, actor}, testData={}) 
     {
       if (test instanceof CastTest)
       {
@@ -268,11 +306,19 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         throw Error("Spell or prayer not provided")
       }
 
+      actor = actor || test?.actor || source?.actor;
+      if (!test && item)
+      {
+        if (!item.parent)
+        {
+          item = new Item.implementation(item.toObject(), {parent: actor || source?.parent})
+        }
+      }
+
       let itemData = item.toObject();
-      let actor = test?.actor || source?.actor;
       let targeted = Array.from(game.user.targets).map(i => i.document).filter(i => i.actor).map(token => ({token: token.id, actor: token.actor.id, scene: token.parent.id, alias: token.name}))
       let targets = targeted.length ? targeted : (test?.context._targets || [])
-      testData = await this._formatTestResult({test, testData, item})
+      testData = await this._formatResult({test, testData, item})
 
       await Promise.all(item.runScripts("castSpellPrayer", {test, source, testData, targetSpeakers : targets}));
       let content = await this._renderHTMLContent({item, testData, actor, targetSpeakers: targets});
@@ -289,7 +335,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
           testData,
           targetSpeakers: targets,
         },
-        speaker : test.context.speaker
+        speaker : test?.context.speaker || {alias: actor.prototypeToken.name}
       }, game.settings.get("core", "rollMode")))
     }
 

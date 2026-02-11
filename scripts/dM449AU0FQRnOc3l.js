@@ -1,4 +1,4 @@
-if (args.opposedTest.result.hitloc.value == "head")
+if (args.loc == "head")
 {
   args.abort = "Missed - Headless"
 }

@@ -34,6 +34,8 @@ This is very similar to [Apply Damage](./applyDamage.md), but this trigger runs 
 
 `args.AP` - The data of the location taking damage. See [Armour Calculation](./APCalc.md) to see the object structure.
 
+`args.loc` - Location key for the hit location being damaged
+
 `args.modifiers` - Modifiers for armour, toughness, and damage. Note that these modifiers have *already been applied* and modifications in this trigger will not be reflected in the damage values. See [Compute Apply Damage Modifiers](./computeApplyDamageModifiers.md) to see the object structure (modifiers generally should be changed in that trigger, not this one).
 
 `args.extraMessages` - Array of strings that can be added to for displaying in chat.
@@ -51,7 +53,7 @@ This is very similar to [Apply Damage](./applyDamage.md), but this trigger runs 
 **Usage**: Add Bleeding if the location struct was the left leg
 
 ```js
-if (args.opposedTest.result.hitloc.value == "lLeg" && args.totalWoundLoss > 0)
+if (args.loc == "lLeg" && args.totalWoundLoss > 0)
 {
     args.actor.addCondition("bleeding", 1);
     this.script.notification("Added Bleeding")

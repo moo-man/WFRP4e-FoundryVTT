@@ -410,7 +410,7 @@ export default class ActorWFRP4e extends WarhammerActor
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
+    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
     await Promise.all(opposedTest?.attackerTest.item?.runScripts("preApplyDamage", args) || [])
@@ -641,7 +641,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
     }
     catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
-    let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
+    let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker?.runScripts("applyDamage", scriptArgs) || [])
     await Promise.all(opposedTest?.attackerTest.item?.runScripts("applyDamage", scriptArgs) || [])
