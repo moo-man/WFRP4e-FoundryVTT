@@ -1,2 +1,2 @@
-if (!args.opposedTest.attackerTest.item?.system?.isMagical)
+if (!args.sourceItem?.system?.isMagical)
 	args.abort = `<strong>${this.effect.name}</strong>: Ignored`

@@ -347,9 +347,19 @@ export default class ActorWFRP4e extends WarhammerActor
    * @param {Object} opposedData  Test results, all the information needed to calculate damage
    * @param {var}    damageType   enum for what the damage ignores, see config.js
    */
-  async applyDamage(damage, {opposedTest, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, weaponProperties={}, loc="body", createMessage=false}={}) {
+  async applyDamage(damage, {opposedTest, sourceTest, sourceItem, damageType = game.wfrp4e.config.DAMAGE_TYPE.NORMAL, weaponProperties={}, loc="body", createMessage=false}={}) {
     if (!damage && !opposedTest?.result.damage?.value)
       return `<b>Error</b>: ${game.i18n.localize("CHAT.DamageAppliedError")}`
+
+    if (!sourceTest && opposedTest)
+    {
+      sourceTest = opposedTest.attackerTest;
+    }
+
+    if (!sourceItem)
+    {
+      sourceItem = sourceTest.item;
+    }
     
     // Get actor/tokens for those in the opposed test
     let actor = this
@@ -361,12 +371,17 @@ export default class ActorWFRP4e extends WarhammerActor
       loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN})).result
     }
 
+    if (opposedTest?.result.hitloc.value)
+    {
+      loc = opposedTest.result.hitloc.value;
+    }
+
     // Start wound loss at the damage value
     let totalWoundLoss = damage || opposedTest?.result.damage.value
     let newWounds = actor.status.wounds.value;
     let applyAP = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
     let applyTB = (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP || damageType == game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
-    let AP = foundry.utils.deepClone(actor.status.armour[opposedTest?.result.hitloc.value || loc]);
+    let AP = foundry.utils.deepClone(actor.status.armour[loc]);
     let ward = actor.status.ward.value;
     let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
     let abort = false
@@ -722,22 +737,22 @@ export default class ActorWFRP4e extends WarhammerActor
       let critAmnt = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
         let critModifier = (Math.abs(newWounds)) * critAmnt;
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE
       else if (game.settings.get("wfrp4e", "homebrew").mooCritModifiers) {
         game.wfrp4e.utility.logHomebrew("mooCritModifiers")
         let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
         if (critModifier)
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
         else
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
       }
       //@/HOUSE
       else if (Math.abs(newWounds) < actor.characteristics.t.bonus && !game.settings.get("wfrp4e", "uiaCrits"))
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
       else
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc || opposedTest?.result.hitloc.value}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
     }
     if (hack)
     {
