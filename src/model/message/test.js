@@ -16,6 +16,7 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
             overcastReset : this.onOvercastReset,
             moveVortex : this.onMoveVortex,
             applyCriticalDeflection : this.onApplyCriticalDeflection,
+            applyHealing: this.onApplyHealing
         });
     }
 
@@ -130,6 +131,18 @@ export class WFRPTestMessageModel extends WarhammerTestMessageModel
     }
     //@/HOUSE
   }
+
+  static async onApplyHealing(ev, target) 
+  {
+    let actor = this.test?.actor;
+    let amount = target.dataset.amount;
+
+    if (actor && amount)
+    {
+        await actor.modifyWounds(parseInt(amount));
+        ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: "Rest & Recover"});
+    }
+  };
 
   static onMoveVortex(event)
   {

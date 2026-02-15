@@ -572,7 +572,6 @@ export default class TestWFRP extends WarhammerTestBase {
 
     if (this.options.rest) {
       this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
-      this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
   }
 
