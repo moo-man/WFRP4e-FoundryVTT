@@ -9,7 +9,7 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     async _preCreate(data, options, user)
     {
         await super._preCreate(data, options, user);
-        this.updateSource({"content" : this.constructor.addEffectButtons(data.content)})
+        this.updateSource({"content" : this.constructor.addEffectButtons(this.content)})
     }
 
     async _onCreate(document, options, user)
