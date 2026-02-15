@@ -358,7 +358,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (!sourceItem)
     {
-      sourceItem = sourceTest.item;
+      sourceItem = sourceTest?.item;
     }
     
     // Get actor/tokens for those in the opposed test

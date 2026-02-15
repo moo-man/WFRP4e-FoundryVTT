@@ -120,7 +120,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         addSpeakers.push({token: token.id, actor: token.actor.id, scene: token.parent.id, alias: token.name})
       }
 
-      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage, {sourceTest: this.test});
+      damageApplied[token.id] = await token.actor.applyDamage(this.testData.damage, {sourceTest: this.test, sourceItem: this.item});
     }
     let targetSpeakers = this.targetSpeakers.concat(addSpeakers)
     await this.parent.update({"system.damageApplied" : damageApplied, "system.targetSpeakers" : targetSpeakers});
@@ -186,24 +186,24 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         range = {
           value: "",
           unit: "",
-          text: "",
+          text: item.system.Range,
         }
         duration = {
           value: "",
           unit: "",
-          text: "",
+          text: item.system.Duration,
         }
         target = {
           value: "",
           unit: "",
-          text: "",
+          text: item.system.Target,
           AoE: false,
         }
       }
 
 
       return {
-        damage: test?.result.damage || 0,
+        damage: test?.result.damage || item.system.Damage,
         range,
         duration,
         target,

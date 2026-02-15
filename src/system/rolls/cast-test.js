@@ -412,8 +412,8 @@ export default class CastTest extends TestWFRP {
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {
       if (this.item.system.overcast.initial.type == "SL") {
-        foundry.utils.setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
-        foundry.utils.setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", false, this.spell.system.overcast.initial.additional)) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
       }
     }
 

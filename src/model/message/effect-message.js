@@ -22,8 +22,9 @@ const WFRPEffectMessageMixin = (cls) => class extends cls
     if (!this.canEdit)
       return ui.notifications.error("CHAT.EditError")
     
-    let effectUuid = target.dataset.uuid;
-    let test = this.test
+    let effect = await this._getEffect(target.dataset);
+    let test = this.test;
+    let item = this.item;
     let radius;
     if (test?.result.overcast?.usage.target)
     {
@@ -34,14 +35,21 @@ const WFRPEffectMessageMixin = (cls) => class extends cls
         radius /= 2; // Spells define their diameter, not radius
       }
     }
+    else
+    {
+      radius = parseInt(item.system.computeSpellPrayerFormula("target", {aoe: false, actor: this.actor}));
+      if (item.type == "spell")
+      {
+        radius /= 2;
+      }
+    }
 
-    let effect = await fromUuid(effectUuid)
     let effectData = effect.convertToApplied(test);
     if (!(await effect.runPreApplyScript({effectData})))
     {
         return;
     }
-    let template = await AreaTemplate.fromEffect(effectUuid, this.parent.id, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
+    let template = await AreaTemplate.fromEffect({effectData}, this.parent.id, radius, foundry.utils.diffObject(effectData, effect.convertToApplied(test)));
     await template.drawPreview(event);
   }
 

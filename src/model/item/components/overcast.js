@@ -222,24 +222,25 @@ export class OvercastItemModel extends BaseItemModel {
    * @param   {boolean} aoe       Whether or not it's calculating AoE (changes string return)
    * @returns {String}  formula   processed formula
    */
-  computeSpellPrayerFormula(type, aoe = false, formulaOverride) {
+  computeSpellPrayerFormula(type, {formulaOverride, actor, aoe=false}={}) {
     let formula = formulaOverride || this[type]?.value
     try {
       if (Number.isNumeric(formula))
         return formula
 
       formula = formula.toLowerCase();
+      actor = actor || this.parent.actor;
 
       // Do not process these special values
       if (formula != game.i18n.localize("You").toLowerCase() && formula != game.i18n.localize("Special").toLowerCase() && formula != game.i18n.localize("Instant").toLowerCase()) {
         // Iterate through characteristics
         let labels = game.wfrp4e.config.characteristics;
-        let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
+        let sortedCharacteristics = Object.entries(actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
         sortedCharacteristics.forEach(arr => {
           let ch = arr[0];
           // Handle characteristic with bonus first
-          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.parent.actor.characteristics[ch].bonus);
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.parent.actor.characteristics[ch].value);
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), actor.system.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actor.system.characteristics[ch].value);
         });
 
         let total = 0;
