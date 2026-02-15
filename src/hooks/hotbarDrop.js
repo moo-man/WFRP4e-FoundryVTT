@@ -1,7 +1,7 @@
 export default function () {
   // Needs to be syncrhonous to return false
   Hooks.on("hotbarDrop", (bar, data, slot) => {
-    if (data.type == "Item" || data.type == "Actor") {
+    if (data.type == "Item" || data.type == "Actor" || data.type == "ActiveEffect") {
       handleMacroCreation(bar, data, slot)
       return false;
     }
@@ -39,6 +39,32 @@ async function handleMacroCreation(bar, data, slot) {
         name: "Display " + document.name,
         type: "script",
         img: document.prototypeToken.texture.src,
+        command: command
+      }, {displaySheet: false})
+    }
+  }
+  else if (document.documentName == "ActiveEffect")
+  {
+    let command;
+    let manualIndex = document.system.scripts.findIndex(s => s.trigger == "manual");
+    if (document.system.testIndependent)
+    {
+      command = `(await fromUuid("${document.uuid}")).performEffectApplication()`;
+    }
+    else if (manualIndex != -1)
+    {
+      command = `(await fromUuid("${document.uuid}")).system.scripts[${manualIndex}].execute()`;
+    }
+    else 
+    {
+      throw Error("Item does not have any effects that can be applied through a macro")
+    }
+    macro = game.macros.contents.find(m => (m.name === document.name) && (m.command === command));
+    if (!macro) {
+      macro = await Macro.create({
+        name: document.name,
+        type: "script",
+        img: document.img,
         command: command
       }, {displaySheet: false})
     }
