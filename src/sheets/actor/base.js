@@ -849,7 +849,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       {
         let description = propertyDescriptions[key]?.replace("(Rating)", value) || `Description for ${ev.target.text} was not found`;
         
-        this._toggleDropdown(ev, description)
+        this._toggleDropdown(ev, await foundry.applications.ux.TextEditor.enrichHTML(description))
       }
     }
 
