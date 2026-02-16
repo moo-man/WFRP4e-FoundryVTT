@@ -157,6 +157,17 @@
         }
     }
 
+    figure.journal-page-content
+    {
+            img {
+                box-shadow: none;
+            }
+            figcaption {
+                color: black;
+                font-style: normal;
+            }
+    }
+
     .edit-container button {
         @include shadowed(#6b3a0f2b, 10px);
         background: var(--color-faded-bg);
