@@ -369,7 +369,7 @@ export default class ActorWFRP4e extends WarhammerActor
     let abort = false
 
     // Start message update string
-    let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'hide-option'>: `;
+    let updateMsg = `<b>${game.i18n.localize("CHAT.DamageApplied")}</b><span class = 'applied-breakdown'>: `;
 
     let modifiers = {
       tb : 0,
@@ -649,7 +649,6 @@ export default class ActorWFRP4e extends WarhammerActor
     }
 
     newWounds -= totalWoundLoss
-    updateMsg += "</span>"
     updateMsg += " " + totalWoundLoss;
 
     let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${opposedTest.result.damage.value}</p><hr>`
@@ -706,6 +705,7 @@ export default class ActorWFRP4e extends WarhammerActor
     tooltip += `<hr><p><strong>${game.i18n.localize("Wounds")}</strong>: ${totalWoundLoss}</p>`
 
     updateMsg += ` <a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
+    updateMsg += "</span>"
 
     WFRP_Audio.PlayContextAudio(soundContext)
 

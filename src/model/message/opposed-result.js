@@ -47,6 +47,12 @@ export class OpposedTestMessage extends WarhammerMessageModel
     async onRender(html)
     {
       warhammer.utility.replacePopoutTokens(html);
+
+      // Remove applied damage tooltip
+      if (!game.wfrp4e.utility.getSpeaker(this.opposedTestData.defenderTestData?.context.speaker || {})?.isOwner)
+      {
+        html.querySelector(".applied-breakdown")?.remove();
+      }
     }
 
     static get actions() 
