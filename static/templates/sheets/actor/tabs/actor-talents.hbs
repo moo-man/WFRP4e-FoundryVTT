@@ -55,13 +55,17 @@
                         <div class="flex large">{{this.tests.value}}</div>
             
                             <div>
+                            {{#if (eq this.actor.type "character")}}
                                 {{#if this.system.advances.indicator}}
-                                <a style="visibility: hidden;">+</a>
+                                    <a style="visibility: hidden;">+</a>
                                 {{/if}}
-                                {{this.Advances}} / {{this.Max}}    
+                                    {{this.Advances}} / {{this.Max}}    
                                 {{#if this.system.advances.indicator}}
-                                <a class="advancement-indicator" data-action="advanceTalent" data-tooltip="{{this.system.cost}} XP" data-type="talent">+</a>
+                                    <a class="advancement-indicator" data-action="advanceTalent" data-tooltip="{{this.system.cost}} XP" data-type="talent">+</a>
                                 {{/if}}
+                            {{else}}
+                                    <a data-action="advanceTalent" class="prevent-context">{{this.Advances}} / {{this.Max}}</a>
+                            {{/if}}
                             </div>
                             <div class="list-controls">
                                 <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>

@@ -19,6 +19,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       dismount : this._dismount,
       showMount : this._showMount,
       randomize: this._randomize,
+      advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
       stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
     },
   }
@@ -335,6 +336,33 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       warhammer.utility.log("Could not randomize: " + error, true)
     }
   }
+
+  static async _onAdvanceTalent(ev) 
+  {
+
+    let talent = this._getDocument(ev);
+
+    if(!talent)
+    {
+      return;
+    }
+
+    if (ev.button == 0) {
+      Item.implementation.create(talent.toObject(), {parent: this.document});
+    }
+    else if (ev.button == 2) {
+      if (talent.Advances == 1)
+      {
+        talent.deleteDialog();
+      }
+      else 
+      {
+        talent.delete();
+      }
+    }
+
+
+}
 
   static async _onStepAilment(ev)
   {
