@@ -379,4 +379,5 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
   }
 
+
 }

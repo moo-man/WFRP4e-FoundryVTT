@@ -122,6 +122,12 @@
                                 </div>
                                 {{/if}}
 
+                                {{#if (eq @../key "cargo")}}
+                                <div>
+                                    <button  type="button" data-action="sellCargo">{{localize "VEHICLE.SellCargo"}}</button>
+                                </div>
+                                {{/if}}
+
                                 {{#if ../this.toggle}}
                                     {{#if this.isEquipped}}
                                         <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-check-circle"></i></a>
@@ -129,6 +135,8 @@
                                         <a data-action="toggleProperty" data-path="system.equipped.value"><i class="far fa-circle"></i></a>
                                     {{/if}}
                                 {{/if}}
+
+
                                 <a class="small prevent-context" data-action="stepProperty" data-path="system.quantity.value">{{this.system.quantity.value}}</a>
                                 <div class="small">{{this.system.encumbrance.total}}</div>
                                 <div class="list-controls">
