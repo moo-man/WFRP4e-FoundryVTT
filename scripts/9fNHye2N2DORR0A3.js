@@ -1,1 +1,1 @@
-return !args.item.name.includes("Weapon")
+return !args.item?.name?.includes("Weapon")
