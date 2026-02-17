@@ -772,22 +772,6 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
                 label: game.i18n.localize("Channel"),
                 callback: async btn => {
                   return this.actor.setupChannell(spell, options);
-                  // TODO: move this elsewhere
-                  // await test.roll();
-                  // if (test.context.channelUntilSuccess) {
-                  //   await warhammer.utility.sleep(200);
-                  //   do {
-                  //     if (test.item.cn.SL >= test.item.cn.value) {
-                  //       break;
-                  //     }
-                  //     if (test.result.minormis || test.result.majormis || test.result.catastrophicmis) {
-                  //       break;
-                  //     }
-                  //     test.context.messageId = null; // Clear message so new message is made
-                  //     await test.roll();
-                  //     await warhammer.utility.sleep(200);
-                  //   } while (true);
-                  // }
                 }
               }
             ],
