@@ -19,8 +19,10 @@ export default class PrayerDialog extends SkillDialog {
 
     static async setupData(prayer, actor, context={}, options={})
     {
-        let skill = actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+        let skill = context.skill || actor.itemTags["skill"].find(i => i.name.toLowerCase() == game.i18n.localize("NAME.Pray").toLowerCase());
+        let characteristic = context.characteristic || skill?.system?.characteristic?.key || "fel";
 
+            
         if (!skill)
         {
             skill = {
@@ -45,7 +47,16 @@ export default class PrayerDialog extends SkillDialog {
 
         data.prayer = prayer
 
+        if (!skill || skill.id == "unknown")
+            data.target = actor.system.characteristics[characteristic].value
+        else
+           data.target = skill.system.total.value
+
         data.scripts = data.scripts.concat(prayer.getScripts("dialog").filter(s => !s.options.defending))
+
+        // Needed if the actor doesn't own the prayer;
+        data.itemData = prayer.toObject();
+        
         return dialogData;
     }
 

@@ -6,6 +6,10 @@ export default class PrayerTest extends TestWFRP {
     super(data, actor)
     if (!data)
       return
+
+    // Target is set in the dialog for prayer tests, add modifiers then compute target number
+    this.preData.target += this.targetModifiers;
+
     this.computeTargetNumber();
 
   }
@@ -50,6 +54,10 @@ export default class PrayerTest extends TestWFRP {
     let SL = this.result.SL;
     let currentSin = this.actor.status.sin.value
     this.result.overcast = foundry.utils.duplicate(this.item.overcast)
+    if (!this.result.overcast.usage)
+    {
+      this.result.overcast.usage = this.item.system.computeOvercastingData(this.actor);
+    }
 
     // Test itself failed
     if (this.failed) {

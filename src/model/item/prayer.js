@@ -148,7 +148,7 @@ export class PrayerModel extends OvercastItemModel
     computeOwned()
     {
         super.computeOwned();
-        this.computeOvercastingData();
+        this.overcast.usage = this.computeOvercastingData(this.parent.parent);
     }
 
     getSkillToUse(actor) {

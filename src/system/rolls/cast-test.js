@@ -16,6 +16,9 @@ export default class CastTest extends TestWFRP {
     this.data.context.templates = data.templates || [];
     this.data.context.itemMessage = null;
 
+    // Target is set in the dialog for cast tests, add modifiers then compute target number
+    this.preData.target += this.targetModifiers;
+
     this.computeTargetNumber();
   }
 
@@ -30,17 +33,6 @@ export default class CastTest extends TestWFRP {
     this.context._targets = this.context.targets;
     this.context.targets = [];
     return super.roll();
-  }
-
-  computeTargetNumber() {
-
-      let skill = this.item.system.getSkillToUse(this.actor);
-      if (!skill)
-        this.result.target = this.actor.characteristics.int.value
-      else
-        this.result.target = skill.total.value
-
-    super.computeTargetNumber();
   }
 
   async runPreEffects() {
@@ -70,6 +62,10 @@ export default class CastTest extends TestWFRP {
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
     this.result.overcast = foundry.utils.duplicate(this.item.overcast)
+    if (!this.result.overcast.usage)
+    {
+      this.result.overcast.usage = this.item.system.computeOvercastingData(this.actor);
+    }
     this.result.tooltips.miscast = []
     
     //@HOUSE
@@ -412,8 +408,8 @@ export default class CastTest extends TestWFRP {
     // Set initial extra overcasting options to SL if checked
     if (this.result.overcast.enabled) {
       if (this.item.system.overcast.initial.type == "SL") {
-        foundry.utils.setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
-        foundry.utils.setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.initial", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, actor: this.actor, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
+        foundry.utils.setProperty(this.result, "overcast.usage.other.current", parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula("", {aoe: false, actor: this.actor, formulaOverride: this.spell.system.overcast.initial.additional})) || 0))
       }
     }
 
@@ -431,18 +427,22 @@ export default class CastTest extends TestWFRP {
 
       if (this.result.castOutcome == "success" || !game.settings.get("wfrp4e", "homebrew").mooCastAfterChannelling)
       {
-        let items = [this.item]
+        // Only if this spell is an item on the casting actor
+        if (this.item.parent?.uuid == this.actor.uuid)
+        {
+          let items = [this.item]
 
-        // If WoM Channelling, SL of spells are shared, so remove all channelled SL of spells with the same lore
-        if (game.settings.get("wfrp4e", "useWoMChannelling"))
-        {
-          items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
-          items.forEach(i => i.system.cn.SL = 0)
-          await this.actor.updateEmbeddedDocuments("Item", items);
-        }
-        else 
-        {
-          await this.item.update({ "system.cn.SL": 0 })
+          // If WoM Channelling, SL of spells are shared, so remove all channelled SL of spells with the same lore
+          if (game.settings.get("wfrp4e", "useWoMChannelling"))
+          {
+            items = this.actor.items.filter(s => s.type == "spell" && s.system.lore.value == this.spell.system.lore.value).map(i => i.toObject())
+            items.forEach(i => i.system.cn.SL = 0)
+            await this.actor.updateEmbeddedDocuments("Item", items);
+          }
+          else 
+          {
+            await this.item.update({ "system.cn.SL": 0 })
+          }
         }
       }
 

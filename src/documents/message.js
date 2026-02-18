@@ -16,7 +16,7 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     {
         await super._onCreate(document, options, user);
         let test = this.system.test;
-        if (test)
+        if (test && document.type == "test")
         {
           test.postTestGM(document)
         }

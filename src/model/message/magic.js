@@ -20,6 +20,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         test : new fields.StringField(), // Message ID for casting test
         uuid : new fields.DocumentUUIDField(), // If spell came  from an Item (like a ring or scroll)
         item : new fields.DocumentUUIDField(), // Spell UUID
+        actor : new fields.DocumentUUIDField(), // Actor UUID
       });
 
       schema.testData = new fields.SchemaField({
@@ -40,8 +41,8 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
           text: new fields.StringField({}),
           AoE: new fields.BooleanField({}),
         }),
+        SL: new fields.NumberField(),
         other: new fields.ArrayField(new fields.StringField()),
-        loreChosen: new fields.StringField(),
         hitloc: new fields.SchemaField({
           description: new fields.StringField(),
           result: new fields.StringField(),
@@ -63,7 +64,21 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
   
   get sourceTest()
   {
-    return game.messages.get(this.sourceData.test)?.system.test;
+    // If no test available, create fake test data with the same format
+    return game.messages.get(this.sourceData.test)?.system.test ?? {
+      result : {
+        SL : this.testData.SL,
+        hitloc: this.testData.hitloc,
+        damage: this.testData.damage,
+        slOver: 0,
+        overcast: {
+          usage: this.item.system.computeOvercastingData({actor: this.actor})
+        }
+      },
+      context: {
+
+      }
+    };
   }
 
   get test() 
@@ -73,7 +88,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
 
   get actor()
   {
-    return this.test?.actor || this.item.actor || fromUuidSync(this.sourceData.uuid)?.actor;
+    return fromUuidSync(this.sourceData.actor);
   }
 
   static get actions() {
@@ -164,6 +179,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
   }
 
   /**
+   * Formats data from a test (or no test) into being usable by this model
    * 
    * @param {Object} test Casting Test
    * @param {*} testData Customized test data
@@ -174,6 +190,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       let duration;
       let target;
 
+
       if (test)
       {
         let testResult = await this._formatTestResult(test);
@@ -181,7 +198,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         duration = testResult.duration
         target = testResult.target
       }
-      else 
+      else // If no test, just use base values
       {
         range = {
           value: "",
@@ -197,29 +214,32 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
           value: "",
           unit: "",
           text: item.system.Target,
-          AoE: false,
+          AoE: item.system.target.aoe,
         }
       }
 
+      let damage = item.system.Damage;
 
-      return {
-        damage: test?.result.damage || item.system.Damage,
+      return { // If damage exists, add SL (if any), otherwise, stick with 0
+        damage: test?.result.damage || (damage > 0 ? damage + (testData.SL || 0) : damage),
         range,
         duration,
         target,
         other: [],
-        hitloc: test?.result  .hitloc
+        SL : testData.SL || parseInt(test?.result.SL) || 0,
+        hitloc: test?.result.hitloc
       }
   }
   
 
+  // If spell is from a test, use overcast data to get the properties of the spell
   static async _formatTestResult(test)
   {
     let range;
     let duration;
     let target;
     // If range is standard (X yards) and is overcastable
-    if (test.result.overcast.usage.range)
+    if (test.result.overcast.usage?.range)
       {
         range = {
           value: test.result.overcast.usage.range.current,
@@ -231,13 +251,13 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else 
       {
         range = {
-          text: test.item.system.range.value
+          text: test.item.system.computeSpellPrayerFormula("range", {actor: test.actor})
         }
       }
 
 
       // If duration is standard (X yards) and is overcastable
-      if (test.result.overcast.usage.duration)
+      if (test.result.overcast.usage?.duration)
       {
         duration = {
           value: test.result.overcast.usage.duration.current,
@@ -249,13 +269,13 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else       
       {
         duration = {
-          text: test.item.system.duration.value
+          text: test.item.system.computeSpellPrayerFormula("duration", {actor: test.actor})
         }
       }
 
 
       // If target is standard (numeric or AoE) and is overcastable
-      if (test.result.overcast.usage.target)
+      if (test.result.overcast.usage?.target)
       {
 
         if (test.result.overcast.usage.target)
@@ -276,7 +296,8 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       else       
       {
         target = {
-          text: test.item.system.target.value
+          text: test.item.system.computeSpellPrayerFormula("target", {aoe: test.item.system.target.aoe, actor: test.actor}),
+          AoE: test.item.system.target.aoe
         }
       }
       
@@ -284,8 +305,37 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
   }
 
   
+  /**
+   * Convenience helper to cast a spell or prayer (doesn't need to be owned)
+   * 
+   * @param {Item} item Spell or prayer being cast
+   * @param {Actor} actor Actor casting the test
+   * @param {Object} context Test context data
+   * @param {Object} options dialog application options
+   * @returns 
+   */
+  static async test(item, actor, context, options)
+  {
+    if (item?.type == "prayer")
+    {
+      let test = await actor.setupPrayer(item, context, options);
+      await test?.roll();
+      return test;
+    }
+    else if (item?.type == "spell")
+    {
+      let test = await actor.setupCast(item, context, options);
+      await test?.roll();
+      return test;
+    }
+    else if (!["prayer", "spell"].includes(item?.type))
+    {
+      throw Error("Spell or prayer not provided")
+    }
+  }
 
     /**
+     * Creates a use of a spell or prayer without the need of a test
      * 
      * @param {Object} test Spellcasting or miracle test
      * @param {Item} item Create directly from spell or miracle item
@@ -331,6 +381,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
             test: test?.message?.id,
             uuid : source?.uuid,
             item: item.uuid,
+            actor: actor.uuid
           },
           testData,
           targetSpeakers: targets,

@@ -1390,8 +1390,10 @@ export default class TestWFRP extends WarhammerTestBase {
   get token() { return WFRP_Utility.getToken(this.context.speaker) }
 
   get item() {
-    if (typeof this.data.preData.item == "string")
+    if (typeof this.data.preData.item == "string" && this.actor.items.get(this.data.preData.item))
       return this.actor.items.get(this.data.preData.item)
+    else if (this.data.preData.itemData)
+      return new CONFIG.Item.documentClass(this.data.preData.itemData, { parent: this.actor })
     else
       return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
   }

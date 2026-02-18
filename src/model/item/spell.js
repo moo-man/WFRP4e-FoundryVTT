@@ -186,7 +186,7 @@ export class SpellModel extends OvercastItemModel {
       }
 
       get Duration() {
-        let duration = this.computeSpellPrayerFormula("duration", {aoe: this.range?.aoe})
+        let duration = this.computeSpellPrayerFormula("duration")
         if (this.duration?.extendable)
           duration += "+"
         return duration
@@ -197,7 +197,7 @@ export class SpellModel extends OvercastItemModel {
       }
 
       get Damage() {
-        return parseInt(this.computeSpellDamage(this.damage.value, this.magicMissile.value) || 0)
+        return parseInt(this.computeSpellDamage(this.damage.value, {isMagicMissile: this.magicMissile.value}) || 0)
       }    
     
     
@@ -242,7 +242,7 @@ export class SpellModel extends OvercastItemModel {
         }
         else 
         {
-          this.computeOvercastingData();
+          this.overcast.usage = this.computeOvercastingData(this.parent.parent);
         }
     }
 

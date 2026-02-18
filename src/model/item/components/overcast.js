@@ -59,22 +59,24 @@ export class OvercastItemModel extends BaseItemModel {
    * @param   {boolean} isMagicMissile  Whether or not it's a magic missile - used in calculating additional damage
    * @returns {String}  Processed formula
    */
-      computeSpellDamage(formula, isMagicMissile) {
+      computeSpellDamage(formula, {actor, isMagicMissile}) {
       try {
       if (formula) {
           formula = formula.toLowerCase();
 
+          actor = actor || this.parent.actor;
+
           if (isMagicMissile) {// If it's a magic missile, damage includes willpower bonus
-          formula += "+" + this.parent.actor.characteristics["wp"].bonus
+          formula += "+" + actor.system.characteristics["wp"].bonus
           }
 
           let labels = game.wfrp4e.config.characteristics;
-          let sortedCharacteristics = Object.entries(this.parent.actor.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
+          let sortedCharacteristics = Object.entries(actor.system.characteristics).sort((a,b) => -1 * labels[a[0]].localeCompare(labels[b[0]]));
           sortedCharacteristics.forEach(arr => {
           let ch = arr[0];
           // Handle characteristic with bonus first
-          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), this.parent.actor.characteristics[ch].bonus);
-          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), this.parent.actor.characteristics[ch].value);
+          formula = formula.replace(game.wfrp4e.config.characteristicsBonus[ch].toLowerCase(), actor.system.characteristics[ch].bonus);
+          formula = formula.replace(game.wfrp4e.config.characteristics[ch].toLowerCase(), actor.system.characteristics[ch].value);
           });
 
           return (0, eval)(formula);
@@ -82,7 +84,7 @@ export class OvercastItemModel extends BaseItemModel {
       return 0;
       }
       catch (e) {
-        console.error(`Spell from ${this.parent?.actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
+        console.error(`Spell from ${actor?.name} threw error: ${e}.\n Arguments:`, this, formula);
         if (ui.notifications) {
           throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
         }
@@ -92,7 +94,7 @@ export class OvercastItemModel extends BaseItemModel {
 
 
   // Don't really like this here as it uses assumed subclass data, but it'll do for now
-  computeOvercastingData() {
+  computeOvercastingData(actor) {
     let usage = {
       damage: undefined,
       range: undefined,
@@ -101,10 +103,10 @@ export class OvercastItemModel extends BaseItemModel {
       other: undefined,
     }
 
-    let damage = this.Damage
-    let target = this.Target?.toString()
-    let duration = this.Duration
-    let range = this.Range
+    let damage = parseInt(this.computeSpellDamage(this.damage.value, {actor, isMagicMissile: this.magicMissile?.value}) || 0)
+    let target = this.computeSpellPrayerFormula("target", {actor, aoe: this.target.aoe})?.toString();
+    let duration = this.computeSpellPrayerFormula("duration", {actor})
+    let range = this.computeSpellPrayerFormula("range", {actor})
 
     if (this.magicMissile?.value) {
       usage.damage = {
@@ -201,7 +203,7 @@ export class OvercastItemModel extends BaseItemModel {
       usage.other = other;
     }
 
-    this.overcast.usage = usage
+    return usage
 
     // Perhaps not the best implementation, but if a spell range (or other) says "maximum", don't allow overcasting
     function includesMaximum(string) {
