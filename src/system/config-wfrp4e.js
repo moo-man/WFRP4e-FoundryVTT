@@ -1055,8 +1055,9 @@ WFRP4E.overCastTablesPerWind = {
     }
 }
 
-WFRP4E.overCastTable = function(wind) {
-    return WFRP4E.overCastTablesPerWind[wind] || WFRP4E.overCastTablesPerWind["default"]
+WFRP4E.overCastTable = function(lore) {
+    const wind = WFRP4E.magicWind[lore];
+    return WFRP4E.overCastTablesPerWind[wind] || WFRP4E.overCastTablesPerWind["default"];
 }
 
 WFRP4E.species = {};

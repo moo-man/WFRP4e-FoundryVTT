@@ -1,5 +1,4 @@
 import { BaseItemModel } from "./base";
-import MarketWFRP4e from "../../../apps/market-wfrp4e.js";
 let fields = foundry.data.fields;
 
 export class PhysicalItemModel extends BaseItemModel

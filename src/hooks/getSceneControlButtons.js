@@ -1,5 +1,4 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
-import canvas from "./canvas.js";
 
 export default function() {
   /**

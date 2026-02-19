@@ -1,7 +1,5 @@
-import WeaponTest from "../../system/rolls/weapon-test";
 import AttackDialog from "./attack-dialog";
 import CharacteristicDialog from "./characteristic-dialog";
-import SkillDialog from "./skill-dialog";
 
 export default class WeaponDialog extends AttackDialog {
 

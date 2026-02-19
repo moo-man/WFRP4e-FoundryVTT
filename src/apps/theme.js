@@ -1,5 +1,3 @@
-let fields = foundry.data.fields;
-
 export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(ApplicationV2)
 {
   static DEFAULT_OPTIONS = {
