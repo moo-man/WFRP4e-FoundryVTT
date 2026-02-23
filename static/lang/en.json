@@ -1854,6 +1854,8 @@
     "EFFECT.BlackpowderShock" : "Blackpowder Shock",
     "EFFECT.CharacteristicsModifier" : "Characteristics (Modifier)",
     "EFFECT.CharacteristicsInitial" : "Characteristics (Initial)",
+    "EFFECT.CharacteristicsBonus" : "Characteristics (Bonus Modifier)",
+    "EFFECT.BonusModifier" : "Bonus Modifier",
     "EFFECT.CalculationBonusModifiers" : "Calculation Bonus Modifiers",
     "EFFECT.CalculationBonusModifier" : "CBM",
 

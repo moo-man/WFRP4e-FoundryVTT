@@ -2757,7 +2757,7 @@ WFRP4E.scriptTriggers = {
     "immediate" : "Immediate",
     "dialog" : "Dialog",
     "addItems" : "Add Items",
-    "preUpdate" : "Pre Update",
+    "preUpdateDocument" : "Pre-Update Document",
     "update" : "On Update",
     "equipToggle" : "Equip Toggle",
     "targeted" : "Targeted",
