@@ -63,10 +63,10 @@
     "requires": [{
       "id": "warhammer-lib",
       "type": "module",
-      "manifest": "https://raw.githubusercontent.com/moo-man/WarhammerLibrary-FVTT/2.8.0/module.json",
+      "manifest": "https://raw.githubusercontent.com/moo-man/WarhammerLibrary-FVTT/2.9.1/module.json",
       "compatibility": {
-        "minimum" : "2.8.0",
-        "verified": "2.8.0"
+        "minimum" : "2.9.1",
+        "verified": "2.9.1"
       }
     }]
   },
