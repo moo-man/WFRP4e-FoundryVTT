@@ -71,7 +71,7 @@ jobs:
       - name: Foundry Release API
         uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://api.foundryvtt.com/_api/packages/release_version'
+          url: 'https://foundryvtt.com/_api/packages/release_version'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json", "Authorization" : "${{ secrets.FOUNDRY_KEY }}"}'
           data: '{"dry_run": false, "id" : "${{steps.systemID.outputs.prop}}", "release": {"version" :  "${{steps.tag.outputs.tag}}", "manifest": "https://raw.githubusercontent.com/${{github.repository}}/${{steps.tag.outputs.tag}}/system.json", "notes" : "https://github.com/${{github.repository}}/releases/tag/${{steps.tag.outputs.tag}}", "compatibility" : {"minimum": "${{steps.minimum.outputs.prop}}", "verified": "${{steps.verified.outputs.prop}}", "maximum": "${{steps.maximum.outputs.prop}}"} } }'

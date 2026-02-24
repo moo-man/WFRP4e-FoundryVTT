@@ -1392,7 +1392,7 @@ export default class TestWFRP extends WarhammerTestBase {
       return this.actor.items.get(this.data.preData.item)
     else if (this.data.preData.itemData)
       return new CONFIG.Item.documentClass(this.data.preData.itemData, { parent: this.actor })
-    else
+    else if (typeof this.data.preData.item == "object")
       return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
   }
 
