@@ -12,4 +12,15 @@
     {{else}}
         {{> systems/wfrp4e/templates/partials/overcasts.hbs}}
     {{/if}}
+
+    {{#if test.result.dispel}}
+    <p style="text-align:center"><strong>Dispelled!</strong> ({{numberFormat test.result.dispel.SL sign=true}})</p>
+    {{/if}}
+
+    {{#if (eq test.result.castOutcome "success")}}
+        <a class='chat-button' data-action="useMagic">{{localize "CHAT.CastSpell" spell=test.spell.name}}</a>
+        {{#unless test.result.dispel}}
+            <a class='chat-button' style="margin-top: 0.5rem;" data-action="dispel">{{localize "CHAT.Dispel"}}</a>
+        {{/unless}}
+    {{/if}}
 </div>

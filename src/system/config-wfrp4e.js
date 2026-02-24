@@ -1136,7 +1136,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-tribes" : "Tribes & Tribulations",
     "wfrp4e-owb3" : "Places & Perils",
     "wfrp4e-dslf" : "Deft Steps Light Fingers",
-    "wfrp4e-dwarfs" : "Dwarf Bundle"
+    "wfrp4e-dwarfs" : "Dwarf Bundle",
+    "wfrp4e-helf" : "High Elf Bundle"
 }
 
 WFRP4E.copyrightText = `
@@ -2762,7 +2763,7 @@ WFRP4E.scriptTriggers = {
     "immediate" : "Immediate",
     "dialog" : "Dialog",
     "addItems" : "Add Items",
-    "preUpdate" : "Pre Update",
+    "preUpdateDocument" : "Pre-Update Document",
     "update" : "On Update",
     "equipToggle" : "Equip Toggle",
     "targeted" : "Targeted",
@@ -2800,6 +2801,7 @@ WFRP4E.scriptTriggers = {
     "rollChannellingTest" : "Roll Channelling Test",
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
+    "castSpellPrayer" : "Cast Spell or Prayer",
     "preOpposedAttacker" : "Pre-Opposed Attacker",
     "preOpposedDefender" : "Pre-Opposed Defender",
     "opposedAttacker" : "Opposed Attacker",

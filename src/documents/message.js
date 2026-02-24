@@ -9,16 +9,27 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     async _preCreate(data, options, user)
     {
         await super._preCreate(data, options, user);
-        this.updateSource({"content" : this.constructor.addEffectButtons(data.content)})
+        this.updateSource({"content" : this.constructor.addEffectButtons(this.content)})
     }
 
     async _onCreate(document, options, user)
     {
         await super._onCreate(document, options, user);
         let test = this.system.test;
-        if (test)
+        if (test && document.type == "test")
         {
           test.postTestGM(document)
+        }
+
+        if (test.context.dispel)
+        {
+          test.handleDispel();
+        }
+
+        // If a spell is used, update the cast message to point to the use message
+        if (this.type == "magic" && game.user.id == user)
+        {
+          this.system.sourceTest?.updateMessageData({context : {itemMessage: this.id}})
         }
     }
 
@@ -41,11 +52,6 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
     async renderHTML(options)
     {
         let html = await super.renderHTML(options);
-        if (this.getFlag("wfrp4e", "socketResult"))
-        {
-          html.classList.add("socket-result");
-          html.style.display = "none";
-        }
         GenericActions.addEventListeners(html, this);
         return html;
     }

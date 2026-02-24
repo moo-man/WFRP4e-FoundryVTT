@@ -36,7 +36,7 @@ export default function () {
         description : "Post a prompt to receive money.",
         args : ["amount", "mode", "split", "target", "reason"],
         defaultArg : "amount",
-        examples : "<br><span font-family:'monospaced'</span>/credit 100gc reason=Completing the Bounty split=3</span>",
+        examples : "<br><span font-family:'monospaced'>/credit 100gc reason=Completing the Bounty split=3</span>",
         notes : "Mode can be set to 'split' or 'each', if unspecified, only a single reward is available to take (split=1). If the mode is set to split, and the split argument is not defined, it splits the amount between all active players.",
         callback : (amount, mode, split, target, reason) => CreditMessageModel.handleCreditCommand(amount, mode, {split, target, reason})
       },
@@ -96,6 +96,7 @@ export default function () {
         description : "Roll an Availability Test",
         args : ["rarity", "size", "modifier"],
         defaultArg : "rarity",
+        examples: "<br><span font-family:'monospaced'>/avail common size=town<br>/avail rare size=city modifier=20</span>",
         callback : (rarity, size, modifier) => {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`

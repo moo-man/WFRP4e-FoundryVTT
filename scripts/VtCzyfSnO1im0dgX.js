@@ -1,0 +1,1 @@
+args.actor.system.status.carries.max = Math.floor(args.actor.system.status.carries.max * 1.25);

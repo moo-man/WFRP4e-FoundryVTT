@@ -1,0 +1,1 @@
+return this.effect.name !== game.i18n.localize("WFRP4E.YenluiLight")

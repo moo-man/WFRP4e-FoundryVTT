@@ -1,1 +1,1 @@
-args.prefillModifiers.modifier -= 20
+args.fields.modifier -= 20

@@ -93,6 +93,28 @@
         }
     }
 
+    .name-list {
+        border-color: var(--color-faded);
+        --name-bg: none;
+        label {
+            background: none;
+            @include shadowed();
+        }
+        .list-content {
+            border-color: var(--color-faded);
+            input {
+                @include shadowed();
+                border-color: var(--color-faded);
+                background: none;
+                color: var(--color-grey1);
+            }
+
+            .floating {
+                background: var(--color-warm);
+                color: var(--color-cream);
+            }
+        }
+    }
     .career-list {
         label {
             @include shadowed();

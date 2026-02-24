@@ -481,7 +481,7 @@
                     "wfrp4e": {
                         "effectTrigger": "applyDamage",
                         "effectApplication": "damage",
-                        "script": "if (args.opposedTest.attackerTest.result.critical)\n   args.actor.addCondition(\"ablaze\")",
+                        "script": "if (args.opposedTest?.attackerTest.result.critical)\n   args.actor.addCondition(\"ablaze\")",
                         "hide": false,
                         "preventDuplicateEffects": false
                     }

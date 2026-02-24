@@ -45,6 +45,27 @@ export default class ChannelTest extends TestWFRP {
     Hooks.call("wfrp4e:rollChannelTest", this, this.context.chatOptions)
   }
 
+  async roll() {
+    await super.roll();
+    
+    if (this.context.channelUntilSuccess) {
+      while(true)
+      {
+        if (this.item.cn.SL >= this.item.cn.value) 
+        {
+          break;
+        }
+        if (this.result.minormis || this.result.majormis || this.result.catastrophicmis) 
+        {
+          break;
+        }
+        await warhammer.utility.sleep(200);
+        this.context.messageId = null; // Clear message so new message is made
+        await this.roll();
+      }
+    }
+  }
+
   async computeResult() {
     await super.computeResult();
     let miscastCounter = 0;
@@ -213,8 +234,6 @@ export default class ChannelTest extends TestWFRP {
 
   async postTest() {
     //@/HOUSE
-
-    
       if (this.preData.unofficialGrimoire) {
         game.wfrp4e.utility.logHomebrew("unofficialgrimoire");
         if (this.preData.ingredientMode != 'none' && this.hasIngredient && this.item.ingredient?.quantity.value > 0 && !this.context.edited && !this.context.reroll) {

@@ -117,21 +117,19 @@ export class CharacterModel extends StandardActorModel {
           this.details.career = career
           career.system.untrainedSkills = [];
           career.system.untrainedTalents = [];
-
           
-          let availableCharacteristics = career.system.characteristics
           for (let char in this.characteristics) 
           {
-            if (availableCharacteristics[char])
+            let fromCareer = this.parent.itemTypes.career.find(i => i.system.current.value && i.system.characteristics[char]);
+            if (fromCareer)
             {
-                this.characteristics[char].career = true;
+                this.characteristics[char].career = fromCareer
                 if (this.characteristics[char].advances >= career.system.level.value * 5) 
                 {
                   this.characteristics[char].complete = true;
                 }
               }
           }
-
                   
           // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
           for (let sk of career.system.skills.concat(career.system.addedSkills)) 

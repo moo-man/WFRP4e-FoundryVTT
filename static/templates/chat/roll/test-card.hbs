@@ -57,13 +57,11 @@
         {{/if}}
 
         {{#if test.otherText}}
-            {{#if test.result.woundsHealed}}
-            <div class="wounds-healed-drag">
-            {{else}}
-            <div>
-            {{/if}}
-            <span>{{{test.otherText}}}</span>
-            </div>
+            {{{test.otherText}}}
+        {{/if}}
+
+        {{#if test.result.woundsHealed}}
+        <a class="chat-button" data-action="applyHealing" data-amount="{{test.result.woundsHealed}}">Apply Healing</a>
         {{/if}}
 
 

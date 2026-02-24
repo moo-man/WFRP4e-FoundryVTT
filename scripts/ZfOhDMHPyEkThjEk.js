@@ -1,0 +1,1 @@
+foundry.utils.setProperty(args, "context.context.failure", [`<strong>${this.effect.name}</strong>: Can Reroll!`])

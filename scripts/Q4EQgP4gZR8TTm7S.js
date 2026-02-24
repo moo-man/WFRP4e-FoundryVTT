@@ -6,4 +6,4 @@ if (args.item?.system.attackType)
 if (args.actor.has(game.i18n.localize("NAME.SecondSight"), "talent"))
     penalty += 10
 
-args.prefillModifiers.modifier += penalty
+args.fields.modifier += penalty

@@ -1,0 +1,1 @@
+await this.effect.update({duration:{rounds: this.actor.system.characteristics.ws.bonus}});

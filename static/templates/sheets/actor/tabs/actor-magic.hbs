@@ -81,6 +81,15 @@
                         </div>
                     </div>
                     {{/if}}
+                    {{#if (gt this.system.lore.value.length 1)}}
+                    <div class="choose-lore">
+                        {{#each this.system.lore.value}}
+                            <a data-action="chooseLore" class="lore {{this}} {{#if (eq ../system.lore.chosen this)}}chosen{{/if}}" data-lore="{{this}}">
+                                {{configLookup "magicLores" this}}
+                            </a>
+                        {{/each}}
+                    </div>
+                    {{/if}}
                     {{> sheetButtons document=this}}
                     <div class="dropdown-content collapsed">
 

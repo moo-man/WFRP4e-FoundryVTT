@@ -1,1 +1,1 @@
- args.prefillModifiers.slBonus += 1
+ args.fields.slBonus += 1

@@ -47,6 +47,12 @@ export class OpposedTestMessage extends WarhammerMessageModel
     async onRender(html)
     {
       warhammer.utility.replacePopoutTokens(html);
+
+      // Remove applied damage tooltip
+      if (!game.wfrp4e.utility.getSpeaker(this.opposedTestData.defenderTestData?.context.speaker || {})?.isOwner)
+      {
+        html.querySelector(".applied-breakdown")?.remove();
+      }
     }
 
     static get actions() 
@@ -65,7 +71,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
       if (!opposedTest.defenderTest.actor.isOwner)
         return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
   
-      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageeType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
       this.updateResultMessage(damageMsg);
     }
   

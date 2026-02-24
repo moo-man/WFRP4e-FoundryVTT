@@ -1,4 +1,4 @@
-if (args.opposedTest.attackerTest.preData.charging) 
+if (args.opposedTest?.attackerTest.preData.charging) 
 {
   let mostProtectedLoc;
   let mostProtectedValue = 0;

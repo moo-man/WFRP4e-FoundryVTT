@@ -1,0 +1,1 @@
+args.fields.modifier += ((this.effect.sourceTest?.result.slOver * 10) || 10)

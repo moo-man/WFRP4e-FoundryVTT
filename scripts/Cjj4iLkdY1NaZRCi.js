@@ -1,4 +1,4 @@
-if ((args.opposedTest.attackerTest.item && args.opposedTest.attackerTest.item.isMelee) || (args.opposedTest.attackerTest.item && !args.opposedTest.attackerTest.item.name.includes("Ranged")))
+if ((args.sourceItem && args.sourceItem.isMelee) || (args.sourceItem && !args.sourceItem.name.includes("Ranged")))
 {
     let choice = await foundry.applications.api.DialogV2.confirm({window : {title : this.effect.name}, content : `<p>Apply damage with <strong>${this.effect.name}</strong> to attacker?`})
 
