@@ -18,7 +18,8 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
             overcastReset : this.onOvercastReset,
             applyCriticalDeflection : this.onApplyCriticalDeflection,
             applyHealing: this.onApplyHealing,
-            useMagic: this.onUseMagic
+            useMagic: this.onUseMagic,
+            dispel: this.onDispel
         });
     }
 
@@ -72,7 +73,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
     event.preventDefault();
     let msg = this.parent
     if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
+      return ui.notifications.error("CHAT.EditError", {localize: true})
 
     let test = msg.system.test
     let overcastChoice = target.dataset.overcast;
@@ -94,7 +95,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
     event.preventDefault();
     let msg = this.parent
     if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
+      return ui.notifications.error("CHAT.EditError", {localize: true})
 
     let test = this.test
     // Reset overcast and rerender card
@@ -150,6 +151,27 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
     static onUseMagic(ev, target)
     {
       MagicUseMessageModel.create({test: this.test});
+    }
+
+    static async onDispel(ev, target)
+    {
+      let actor = selectedWithFallback()[0];
+
+      if (!actor)
+      {
+        return ui.notifications.warn("No character assigned or Token selected")
+      }
+
+
+      try {
+        let test = await actor.setupDispel(this.test)
+        test.roll();
+
+      }
+      catch(e)
+      {
+        ui.notifications.error(e.message);
+      }
     }
 
 }

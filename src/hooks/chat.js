@@ -30,6 +30,10 @@ export default function() {
       {
         html.querySelector(".opposed-options")?.remove();
       }
+      if (game.actors.get(app.speaker.actor)?.id == game.user.character?.id)
+      {
+        html.querySelector("[data-action='dispel']")?.remove();
+      }
     }
     else {
       html.querySelector(".chat-button-player")?.remove();

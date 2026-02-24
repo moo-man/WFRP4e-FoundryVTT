@@ -57,7 +57,18 @@ export default class CastTest extends TestWFRP {
   }
 
   async computeResult() {
+    if (this.preData.dispel && !this.context.dispelComputed)
+    {
+      this.preData.slBonus -= parseInt(this.preData.dispel.SL);
+      this.context.dispelComputed = true;
+    }
     await super.computeResult();
+
+    if (this.preData.dispel)
+    {
+      this.result.dispel = this.preData.dispel;
+      this.result.dispel.SL *= -1; // Positive dispel SL should show as negative and vice versa
+    }
 
     let miscastCounter = 0;
     let CNtoUse = this.item.cn.value
@@ -453,6 +464,14 @@ export default class CastTest extends TestWFRP {
       }
     }
     //@/HOUSE
+  }
+
+  updateDispel(dispelTest)
+  {
+    this.preData.dispel = dispelTest.result;
+    this.preData.roll = Math.trunc(this.result.roll);
+    this.context.dispelComputed = false;
+    this.roll();
   }
 
   // Casting should not show any effects to apply, those should be on the spell use message

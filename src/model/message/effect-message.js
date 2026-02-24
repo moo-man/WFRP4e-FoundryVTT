@@ -20,7 +20,7 @@ const WFRPEffectMessageMixin = (cls) => class extends cls
 
   static async onPlaceAreaEffect(event, target) {
     if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
+      return ui.notifications.error("CHAT.EditError", {localize: true})
     
     let effect = await this._getEffect(target.dataset);
     let test = this.test;
@@ -56,7 +56,7 @@ const WFRPEffectMessageMixin = (cls) => class extends cls
   static onMoveVortex(event)
   {
     if (!this.canEdit)
-      return ui.notifications.error("CHAT.EditError")
+      return ui.notifications.error("CHAT.EditError", {localize: true})
     let test = this.test
     test.moveVortex();
   }

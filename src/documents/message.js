@@ -21,6 +21,11 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
           test.postTestGM(document)
         }
 
+        if (test.context.dispel)
+        {
+          test.handleDispel();
+        }
+
         // If a spell is used, update the cast message to point to the use message
         if (this.type == "magic" && game.user.id == user)
         {

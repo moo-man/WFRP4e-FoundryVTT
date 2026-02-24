@@ -9,6 +9,7 @@ export default class SkillTest extends TestWFRP {
       return
     this.data.preData.options.characteristicToUse = data.characteristicToUse
     this.data.preData.skillName = data.skillName
+    this.data.context.dispel = data.context.dispel;
     this.computeTargetNumber();
   }
 
@@ -62,6 +63,18 @@ export default class SkillTest extends TestWFRP {
 
 
     await super.roll();
+  }
+
+  handleDispel()
+  {
+    let dispelTarget = game.messages.get(this.context.dispel)
+    if (dispelTarget)
+    {
+      if (game.user.id == getActiveDocumentOwner(dispelTarget)?.id)
+      {
+        dispelTarget.system.test.updateDispel(this);
+      }
+    }
   }
 
   get skill() {

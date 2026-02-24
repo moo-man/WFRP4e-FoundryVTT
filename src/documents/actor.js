@@ -217,6 +217,18 @@ export default class ActorWFRP4e extends WarhammerActor
     return this._setupTest(TraitDialog, TraitTest, trait, context, options, false)
   }
 
+  async setupDispel(test)
+  {
+    let skill = this.itemTypes.skill.find(i => i.name.toLowerCase() == `${game.i18n.localize("NAME.Language")} (${game.i18n.localize("SPEC.Magick")})`.toLowerCase());
+
+    if (!skill)
+    {
+      throw new Error(`${this.name} does not have Language (Magick)!`)
+    }
+
+    return  this.setupSkill(skill.name, {dispel: test.message.id, appendTitle: ` - Dispel`});
+  }
+
   setupItem(id, context={}, options)
   {
     let item = this.items.get(id);
