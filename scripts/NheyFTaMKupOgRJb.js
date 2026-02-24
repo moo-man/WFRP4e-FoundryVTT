@@ -1,0 +1,1 @@
+await this.actor.addEffectItems(["Compendium.wfrp4e-core.items.Item.0LdHytqyNmg2pcAX", "Compendium.wfrp4e-core.items.Item.4AqSkJnFPqNuTkos", "Compendium.wfrp4e-core.items.Item.x8jsChg17VQ9XgiK"], this.effect)

@@ -1136,7 +1136,8 @@ WFRP4E.premiumModules = {
     "wfrp4e-tribes" : "Tribes & Tribulations",
     "wfrp4e-owb3" : "Places & Perils",
     "wfrp4e-dslf" : "Deft Steps Light Fingers",
-    "wfrp4e-dwarfs" : "Dwarf Bundle"
+    "wfrp4e-dwarfs" : "Dwarf Bundle",
+    "wfrp4e-helf" : "High Elf Bundle"
 }
 
 WFRP4E.copyrightText = `

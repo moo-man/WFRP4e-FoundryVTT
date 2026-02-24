@@ -1014,6 +1014,7 @@
     "CHAT.CommandLine.Help.Link" : "See the <a href={link}>Wiki</a> for more information on the features in this system",
     "Commands" : "Commands",
     "CHAT.CastSpell" : "Cast {spell}",
+    "CHAT.Dispel" : "Dispel",
     "CHAT.InvokePrayer" : "Invoke {prayer}",
 
     "ErrorSpeciesSkills" : "Could not add skills for species",

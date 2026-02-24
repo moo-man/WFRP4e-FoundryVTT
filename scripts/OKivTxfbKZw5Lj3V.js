@@ -1,0 +1,1 @@
+return args.type === "cast" && ["daemonology", "necromancy"].includes(args.spell?.system.lore.value);

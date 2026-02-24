@@ -1,0 +1,1 @@
+return ![game.i18n.localize("NAME.Intimidate"), game.i18n.localize("NAME.Leadership")].includes(args.skill?.name);

@@ -1,0 +1,1 @@
+this.actor.deleteEmbeddedDocuments("Item", [this.effect.getFlag("wfrp4e", "disease")].filter(i => i));

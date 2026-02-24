@@ -1,0 +1,1 @@
+args.actor.system.characteristics.t.initial += 30;
