@@ -368,7 +368,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     if (loc == "roll")
     {
-      loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN})).result
+      loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN: true})).result
     }
 
     if (opposedTest?.result.hitloc.value)
@@ -425,7 +425,7 @@ export default class ActorWFRP4e extends WarhammerActor
     // if weapon has pummel - only used for audio
     let pummel = false
 
-    let args = { actor, attacker, opposedTest, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
+    let args = { actor, attacker, opposedTest, sourceTest, sourceItem, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
     await Promise.all(opposedTest?.attackerTest.item?.runScripts("preApplyDamage", args) || [])
@@ -656,7 +656,7 @@ export default class ActorWFRP4e extends WarhammerActor
       }
     }
     catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
-    let scriptArgs = { actor, attacker, opposedTest, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
+    let scriptArgs = { actor, attacker, opposedTest, sourceTest, sourceItem, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker?.runScripts("applyDamage", scriptArgs) || [])
     await Promise.all(opposedTest?.attackerTest.item?.runScripts("applyDamage", scriptArgs) || [])
@@ -809,7 +809,14 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     else
     {
-      ChatMessage.create({content: updateMsg});
+      if (typeof createMessage == "object")
+      {
+        ChatMessage.create(foundry.utils.mergeObject({content: updateMsg}, createMessage));
+      }
+      else 
+      {
+        ChatMessage.create({content: updateMsg})
+      }
     }
   }
 
