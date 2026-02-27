@@ -22,7 +22,7 @@
         <div class="target">
             <p><strong>{{localize "Target"}}</strong>:
             {{#if testData.target.AoE}}
-                <a class="action-link" data-type="diameter" data-action="placeTemplate" data-id="{{item.uuid}}" data-actor-id="{{actor.id}}" ><i class="fas fa-ruler-combined"></i> {{testData.target.text}}</a>
+                <a class="action-link" {{#if (eq item.type "spell")}}data-type="diameter"{{else}}data-type="radius"{{/if}} data-action="placeTemplate" data-id="{{item.uuid}}" data-actor-id="{{actor.id}}" ><i class="fas fa-ruler-combined"></i> {{testData.target.text}}</a>
             {{else}}
              <p>{{testData.target.text}}</p>
             {{/if}}
