@@ -21,7 +21,7 @@ export default class ChatMessageWFRP extends WarhammerChatMessage
           test.postTestGM(document)
         }
 
-        if (test.context.dispel)
+        if (test?.context?.dispel)
         {
           test.handleDispel();
         }
