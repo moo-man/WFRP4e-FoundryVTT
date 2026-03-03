@@ -135,7 +135,7 @@ export class SpellModel extends OvercastItemModel {
 
       if (foundry.utils.hasProperty(options, "changed.system.cn.SL") && game.settings.get("wfrp4e", "useWoMChannelling") && !options.updateWoM)
       {
-        let items = this.parent.actor?.items.filter(s => s.type == "spell" && s.system.lore.value == this.lore.value && s.id != this.parent.id).map(s => {
+        let items = this.parent.actor?.items.filter(s => s.type == "spell" && s.system.lore.value[0] == this.lore.value[0] && s.id != this.parent.id).map(s => {
           return {
             _id : s.id,
             "system.cn.SL" : options.changed.system.cn.SL

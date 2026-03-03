@@ -35,10 +35,8 @@ if (broken)
 }
 ```
 
-{: .question}
-Why don't we use [Pre Update](./preUpdate) to prevent the update entirely?
-
-The Pre-Update trigger is meant for *data* updates to the Actor, i.e. editing any sort of properties on the Actor itself, not its Embedded Documents.
+{: .important}
+Using [Pre-Update Document](./preUpdateDocument) to accomplish this is more complicated, but a better result. 
 
 ---
 
