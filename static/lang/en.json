@@ -30,6 +30,7 @@
     "TYPES.Item.vehicleTest" : "Vehicle Crew Test",
     "TYPES.Item.vehicleRole" : "Vehicle Role",
     "TYPES.Item.template" : "Template",
+    "TYPES.Item.species" : "Species",
 
     "SHEETS.Item.ammunition" : "Ammunition Sheet",
     "SHEETS.Item.armour" : "Armour Sheet",
@@ -2580,6 +2581,30 @@
                         },
                         "post": {
                             "label": "Alter Name Suffix"
+                        }
+                    }
+                }
+            },
+            "species" : {
+                "FIELDS" : {
+                    "movement" : {
+                        "label" : "Movement"
+                    },
+                    "fate" : {
+                        "label" : "Fate"
+                    },
+                    "resilience" : {
+                        "label" : "Resilience"
+                    },
+                    "extra" : {
+                        "label" : "Extra"
+                    },
+                    "size" : {
+                        "label" : "Size"
+                    },
+                    "talents" : {
+                        "random" : {
+                            "label" : "Random"
                         }
                     }
                 }

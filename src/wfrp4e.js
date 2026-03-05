@@ -106,6 +106,8 @@ import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
+import { SpeciesModel } from "./model/item/species.js";
+import SpeciesSheet from "./sheets/item/species-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -152,6 +154,7 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
+  DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", SpeciesSheet, { types: ["species"], makeDefault: true });
   DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
 
   DocumentSheetConfig.registerSheet(CONFIG.JournalEntryPage.documentClass, "wfrp4e", EndeavourJournalSheet, {label : "Endeavour Journal Page"}) 
@@ -184,6 +187,7 @@ Hooks.once("init", function () {
   CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
   CONFIG.Item.dataModels["cargo"] = CargoModel
   CONFIG.Item.dataModels["template"] = TemplateModel
+  CONFIG.Item.dataModels["species"] = SpeciesModel
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;

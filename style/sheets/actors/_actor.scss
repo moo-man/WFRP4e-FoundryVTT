@@ -73,6 +73,22 @@
         }
     }
 
+    .singleton-input
+    {
+        display: flex;
+        align-items: center;
+        height: 1rem;
+        color: var(--color-grey1);
+        justify-content: space-between;
+        a.singleton {
+            background: none;
+            border: none;
+            line-height: 1.5rem;
+            height: 1.5rem;
+            padding: 0 0.1rem;
+        }
+    }
+
     .characteristic-grid {
         display: grid;
         height: 3rem;

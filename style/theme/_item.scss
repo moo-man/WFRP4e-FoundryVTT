@@ -154,4 +154,43 @@
     }
 
 
+    &.species {
+        table {
+            th,
+            td {
+                padding: 0px;
+                text-align: center;
+            }
+            tr.header {
+                border-bottom: 1px solid black;
+            }
+        }   
+
+        .species-characteristic-inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5rem;
+            input{
+                background: none;
+                height: 1.5rem;
+                padding: 0px;
+            }
+
+            &.dice {
+                input {
+                    width: 1rem;
+                }
+            }
+        }
+
+        .choice-group {
+            margin-bottom: 0px;
+        }
+        .talent .talent-number {
+            flex: 0.5;
+            .form-fields { flex: 0 0 2rem }
+        }
+    }
+
 }

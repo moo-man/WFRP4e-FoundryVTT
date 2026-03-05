@@ -1,0 +1,58 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    <table>
+        <tbody>
+            <tr class="header">
+                {{#each (config "characteristicsAbbrev")}}
+                    <th>{{this}}</th>
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each system.characteristics}}
+                    <td>
+                        <div class="species-characteristic-inputs">
+                            <input type="number" name="system.characteristics.{{@key}}.base" value="{{this.base}}">
+                        </div>
+                    </td>
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each system.characteristics}}
+                    <td>+</td>
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each system.characteristics}}
+                <td>
+
+                    <div class="species-characteristic-inputs dice">
+                        <input type="number" name="system.characteristics.{{@key}}.dice" value="{{this.dice}}">
+                        d10
+                    </div>
+                </td>
+                {{/each}}
+            </tr>
+
+
+        </tbody>
+    </table>
+
+
+    {{> nameListInput label="Skills" list=system.skills.list path="system.skills"}}
+
+    {{> choiceDisplay label="Talents" path="talents.choices" display=system.talents.choices.textDisplay}}
+    <div class="flexrow talent" style="gap: 0.5rem">
+        {{formGroup fields.talents.fields.random value=source.system.talents.random classes="talent-number"}}
+        {{> documentReference label="Table" document=system.talents.table}}
+    </div>
+
+
+
+
+    {{formGroup fields.movement value=source.system.movement}}
+    {{formGroup fields.fate value=source.system.fate}}
+    {{formGroup fields.resilience value=source.system.resilience}}
+    {{formGroup fields.extra value=source.system.extra}}
+
+    {{formGroup fields.size value=source.system.size}}
+    {{> documentReference label="Career Table" document=system.careers}}
+</section>

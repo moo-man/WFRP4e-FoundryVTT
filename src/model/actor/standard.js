@@ -11,6 +11,8 @@ let fields = foundry.data.fields;
  * Encompasses player characters and NPCs
  */
 export class StandardActorModel extends BaseActorModel {
+    
+    static singletonItemPaths = {"species" : "species"}
     static preventItemTypes = ["vehicleMod", "vehicleRole", "vehicleTest"];
 
     static metadata = Object.freeze(foundry.utils.mergeObject(super.metadata, {
@@ -25,6 +27,7 @@ export class StandardActorModel extends BaseActorModel {
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);
         schema.status = new fields.EmbeddedDataField(StandardStatusModel);
         schema.details = new fields.EmbeddedDataField(StandardDetailsModel);
+        schema.species = new fields.EmbeddedDataField(SingletonItemModel);
         schema.settings = new fields.SchemaField({
             equipPoints : new fields.NumberField({initial : 2}),
             autoCalc : new fields.SchemaField({

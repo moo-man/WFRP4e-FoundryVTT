@@ -5,7 +5,11 @@
             <label>{{localize "Name"}}</label>
         </div>
         <div class="detail-group">
-            <input type="text" data-action="editSpecies" value="{{actor.Species}}">
+            {{#if actor.system.species.document}}
+            <div class="singleton-input"><a class="singleton" name="system.species.name">{{system.species.name}}</a> <a data-action="unset" data-path="system.species"><i class="fas fa-xmark"></i></a></div>
+            {{else}}
+            <input type="text" name="system.species.name" value="{{system.species.name}}">
+            {{/if}}
             <label>{{localize "Species"}}</label>
         </div>
         <div class="detail-group">
