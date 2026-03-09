@@ -306,7 +306,14 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
     get properties() {
         // Kinda jank, but if some properties have been added by scripts, we need to recreate the properties object
-        let _totalProperties = this.qualities.value.length + this.flaws.value.length + (this.ammo?.system.properties._totalProperties || 0);
+        let ammo = this.ammo;
+        let _totalProperties = this.qualities.value.length + this.flaws.value.length;
+
+        if (ammo && ammo.id != this.parent.id)
+        {
+            _totalProperties += ammo.system.properties._totalProperties;
+        }
+
         if (this._properties && this._properties._totalProperties == _totalProperties)
         {
             return this._properties;
@@ -321,8 +328,8 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
             properties.unusedQualities = properties.qualities
             properties.qualities = {}
-            if (this.ammo)
-                properties.qualities = this.ammo.properties.qualities
+            if (ammo)
+                properties.qualities = ammo.properties.qualities
         }
 
         if (this.parent.isOwned) {
