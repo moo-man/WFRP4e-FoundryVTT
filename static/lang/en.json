@@ -293,6 +293,7 @@
     "SHEET.RangedWeaponHeader" : "Ranged Weapon(s)",
     "SHEET.ArmourAP" : "Armour AP",
     "SHEET.ArmourPenalties" : "Armour Penalties",
+    "SHEET.SpellcasterArmourPenalties" : "Spellcaster wearing armour Penalties",
     "SHEET.ShieldAP" : "Shield AP",
     "SHEET.TB" : "Toughness Bonus",
     "SHEET.CreateItem" : "Create Item",

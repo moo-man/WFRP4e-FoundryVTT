@@ -105,6 +105,37 @@ export default class ChannellingDialog extends SkillDialog {
         return dialogData;
     }
 
+    computeFields() {
+        super.computeFields();
+        let talentMetal = this.actor.has("Arcane Magic (Metal)", "talent");
+        let talentBeasts = this.actor.has("Arcane Magic (Beasts)", "talent");
+        let wearingArmour = {
+            head: 0,
+            lArm: 0,
+            rArm: 0,
+            lLeg: 0,
+            rLeg: 0,
+            body: 0,
+        };
+        let debuff = 0;
+        for (let a of this.actor.itemTags["armour"].filter(i => i.isEquipped)) {
+            if ((a.system.isMetal && !talentMetal) || (a.system.isLeather && !talentBeasts)) {
+                const currentAP = a.system.currentAP;
+                for (let loc in currentAP) {
+                    wearingArmour[loc] = currentAP[loc] + wearingArmour[loc];
+                }
+            }
+        }
+        for (let loc in wearingArmour) {
+            debuff = Math.max(debuff, wearingArmour[loc]);
+        }
+
+        if (debuff > 0) {
+            this.fields.slBonus += -debuff;
+            this.tooltips.add("slBonus", -debuff, game.i18n.localize("SHEET.SpellcasterArmourPenalties"));
+        }
+    }
+
     _getSubmissionData()
     {
         let data = super._getSubmissionData();
