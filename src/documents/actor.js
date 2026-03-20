@@ -440,7 +440,7 @@ export default class ActorWFRP4e extends WarhammerActor
     let args = { actor, attacker, opposedTest, sourceTest, sourceItem, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
-    await Promise.all(opposedTest?.attackerTest.item?.runScripts("preApplyDamage", args) || [])
+    await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
     damageType = args.damageType
     applyAP = args.applyAP 
     applyTB = args.applyTB
@@ -613,7 +613,7 @@ export default class ActorWFRP4e extends WarhammerActor
 
     await Promise.all(actor.runScripts("computeTakeDamageModifiers", args))
     await Promise.all(attacker?.runScripts("computeApplyDamageModifiers", args) || [])
-    await Promise.all(opposedTest?.attackerTest.item?.runScripts("computeApplyDamageModifiers", args) || [])
+    await Promise.all(sourceItem?.runScripts("computeApplyDamageModifiers", args) || [])
 
     modifiers.ap.used = Math.max(0, modifiers.ap.value - modifiers.ap.ignored)
     if (undamaging && modifiers.ap.used)
@@ -671,7 +671,7 @@ export default class ActorWFRP4e extends WarhammerActor
     let scriptArgs = { actor, attacker, opposedTest, sourceTest, sourceItem, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker?.runScripts("applyDamage", scriptArgs) || [])
-    await Promise.all(opposedTest?.attackerTest.item?.runScripts("applyDamage", scriptArgs) || [])
+    await Promise.all(sourceItem?.runScripts("applyDamage", scriptArgs) || [])
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
     ward = scriptArgs.ward
     abort = scriptArgs.abort
