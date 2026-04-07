@@ -35,7 +35,16 @@ export default class CastDialog extends SkillDialog {
         }
     };
 
-
+    async _prepareContext(options)
+    {
+        let context = await super._prepareContext(options);
+        context.ingredientModes = {
+            none : "IngredientNone",
+            power : "IngredientPower",
+            control : "IngredientControl"
+        }
+        return context;
+    }
 
     static async setupData(spell, actor, context={}, options={})
     {

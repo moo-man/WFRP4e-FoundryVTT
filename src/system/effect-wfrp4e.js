@@ -184,16 +184,23 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 
     get radius()
     {
-        let sizeMod = 0;
-        if (this.actor)
+        if (game.release.generation == 13)
         {
-            let size = game.wfrp4e.config.tokenSizes[this.actor.system.details.size.value]
-            if (size > 1)
+            let sizeMod = 0;
+            if (this.actor)
             {
-                sizeMod = size;
+                let size = game.wfrp4e.config.tokenSizes[this.actor.system.details.size.value]
+                if (size > 1)
+                {
+                    sizeMod = size;
+                }
             }
+            return super.radius + sizeMod
         }
-        return super.radius + sizeMod
+        else 
+        {
+            return super.radius;
+        }
     }
 
     static _triggerMigrations(trigger)
@@ -208,8 +215,57 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         }
         return migrations[trigger] || trigger;
     }
-}
 
+    get changeKeys()
+    {
+        return {choices: [{value: "system.characteristics.ws.modifier", label: game.i18n.localize("CHAR.WS") + " (" + game.i18n.localize("Modifier"), group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.bs.modifier", label: game.i18n.localize("CHAR.BS") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.s.modifier", label: game.i18n.localize("CHAR.S") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.t.modifier", label: game.i18n.localize("CHAR.T") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.i.modifier", label: game.i18n.localize("CHAR.I") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.ag.modifier", label: game.i18n.localize("CHAR.Ag") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.dex.modifier", label: game.i18n.localize("CHAR.Dex") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.int.modifier", label: game.i18n.localize("CHAR.Int") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.wp.modifier", label: game.i18n.localize("CHAR.WP") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.fel.modifier", label: game.i18n.localize("CHAR.Fel") + " (" + game.i18n.localize("Modifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsModifier")},
+        {value: "system.characteristics.ws.initial", label: game.i18n.localize("CHAR.WS") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.bs.initial", label: game.i18n.localize("CHAR.BS") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.s.initial", label: game.i18n.localize("CHAR.S") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.t.initial", label: game.i18n.localize("CHAR.T") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.i.initial", label: game.i18n.localize("CHAR.I") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.ag.initial", label: game.i18n.localize("CHAR.Ag") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.dex.initial", label: game.i18n.localize("CHAR.Dex") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.int.initial", label: game.i18n.localize("CHAR.Int") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.wp.initial", label: game.i18n.localize("CHAR.WP") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.fel.initial", label: game.i18n.localize("CHAR.Fel") + " (" + game.i18n.localize("Initial") + ")", group: game.i18n.localize("EFFECT.CharacteristicsInitial")},
+        {value: "system.characteristics.ws.bonusMod", label: game.i18n.localize("CHAR.WS") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.bs.bonusMod", label: game.i18n.localize("CHAR.BS") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.s.bonusMod", label: game.i18n.localize("CHAR.S") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.t.bonusMod", label: game.i18n.localize("CHAR.T") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.i.bonusMod", label: game.i18n.localize("CHAR.I") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.ag.bonusMod", label: game.i18n.localize("CHAR.Ag") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.dex.bonusMod", label: game.i18n.localize("CHAR.Dex") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.int.bonusMod", label: game.i18n.localize("CHAR.Int") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.wp.bonusMod", label: game.i18n.localize("CHAR.WP") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.fel.bonusMod", label: game.i18n.localize("CHAR.Fel") + " (" + game.i18n.localize("EFFECT.BonusModifier") + ")", group: game.i18n.localize("EFFECT.CharacteristicsBonus")},
+        {value: "system.characteristics.ws.calculationBonusModifier", label: game.i18n.localize("CHAR.WS") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.bs.calculationBonusModifier", label: game.i18n.localize("CHAR.BS") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.s.calculationBonusModifier", label: game.i18n.localize("CHAR.S") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.t.calculationBonusModifier", label: game.i18n.localize("CHAR.T") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.i.calculationBonusModifier", label: game.i18n.localize("CHAR.I") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.ag.calculationBonusModifier", label: game.i18n.localize("CHAR.Ag") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.dex.calculationBonusModifier", label: game.i18n.localize("CHAR.Dex") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.int.calculationBonusModifier", label: game.i18n.localize("CHAR.Int") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.wp.calculationBonusModifier", label: game.i18n.localize("CHAR.WP") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.characteristics.fel.calculationBonusModifier", label: game.i18n.localize("CHAR.Fel") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
+        {value: "system.details.move.value", label: "Move", group: game.i18n.localize("Other")}], 
+        groups: ['EFFECT.CharacteristicsModifier',
+        'EFFECT.CharacteristicsInitial',
+        'EFFECT.CharacteristicsBonus',
+        'EFFECT.CalculationBonusModifiers',
+        "Other"].map(i => game.i18n.localize(i))};
+    }
+}
 
 function _migrateEffect(data, context)
 {

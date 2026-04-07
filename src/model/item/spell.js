@@ -178,7 +178,12 @@ export class SpellModel extends OvercastItemModel {
 
 
       get ingredientList() {
-        return this.parent.actor?.itemTags["trapping"].filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id)
+        return this.parent.actor?.itemTags["trapping"].filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id).map(i => {
+          return {
+            name: i.name + ` (${i.system.quantity.value})`,
+            id: i.id
+          }
+        })
       }
 
       get Target() {

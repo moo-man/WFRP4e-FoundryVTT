@@ -922,12 +922,12 @@ export default class TestWFRP extends WarhammerTestBase {
       if (messageData.sound)
         warhammer.utility.log(`Playing Sound: ${messageData.sound}`)
 
+      this.context.messageId = foundry.utils.randomID();
       messageData.system = {testData : this.data};
       messageData.type = "test";
-      let message = await ChatMessage.create(messageData)
+      messageData._id = this.context.messageId;
 
-      this.context.messageId = message.id
-      await this.updateMessageData()
+      let message = await ChatMessage.create(messageData, {keepId : true})
     }
     else // Update message 
     {

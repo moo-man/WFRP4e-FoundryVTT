@@ -23,7 +23,7 @@
     <label>{{localize "DIALOG.RollMode"}}</label>
     <div class="form-fields">
       <select name="rollMode">
-        {{selectOptions (config "rollModes") labelAttr="label" localize=true selected=fields.rollMode}}
+        {{selectOptions rollModes localize=true selected=fields.rollMode}}
       </select>
     </div>
   </div>

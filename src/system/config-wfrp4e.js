@@ -2835,6 +2835,8 @@ WFRP4E.syncTriggers = [
     "getInitiativeFormula"
 ];
 
+WFRP4E.areaDurations = defaultWarhammerConfig.areaDurations;
+
 WFRP4E.triggerMapping = {
     "update" : "updateDocument",
     "addItems" : "onCreate",

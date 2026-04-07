@@ -11,11 +11,7 @@
         <label>{{localize "Initial"}}</label>
         <div class="form-fields">
             <select name="system.overcast.initial.type">
-                {{#select system.overcast.initial.type}}
-                    <option value="value">{{localize "Value"}}</option>
-                    <option value="SL">{{localize "SL"}}</option>
-                    <option value="characteristic">{{localize "Characteristic"}}</option>
-                {{/select}}
+            {{selectOptions overcastTypes selected=system.overcast.initial.type}}
             </select>
 
 
@@ -46,11 +42,7 @@
         <label>{{localize "ITEM.ValuePerOvercast"}}</label>
         <div class="form-fields">
             <select name="system.overcast.valuePerOvercast.type">
-                {{#select system.overcast.valuePerOvercast.type}}
-                    <option value="value">{{localize "Value"}}</option>
-                    <option value="SL">{{localize "SL"}}</option>
-                    <option value="characteristic">{{localize "Characteristic"}}</option>
-                {{/select}}
+                {{selectOptions overcastTypes selected=system.overcast.initial.type}}
             </select>
 
 

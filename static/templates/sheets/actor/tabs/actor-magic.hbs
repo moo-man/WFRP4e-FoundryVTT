@@ -52,12 +52,7 @@
 
                         <div class="flex">
                             <select data-action="editProperty" data-uuid="{{this.uuid}}" data-path="system.currentIng.value">
-                            {{#select this.system.currentIng.value}}
-                            <option value="">{{localize "None"}}</option>
-                            {{#each this.system.ingredientList as |ingredient|}}
-                            <option value="{{ingredient.id}}">{{ingredient.name}} ({{ingredient.quantity.value}})</option>
-                            {{/each}}
-                            {{/select}}
+                            {{selectOptions this.system.ingredientList selected=this.system.currentIng.value}}
                             </select>
                         </div>
 

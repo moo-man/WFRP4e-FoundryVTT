@@ -72,7 +72,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         damage: this.testData.damage,
         slOver: 0,
         overcast: {
-          usage: this.item.system.computeOvercastingData({actor: this.actor})
+          usage: this.item.system.computeOvercastingData(this.actor)
         }
       },
       context: {

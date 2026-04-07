@@ -23,7 +23,11 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
     context.loreNames = this.document.system.lore.value.map(i => {
       return game.wfrp4e.config.magicLores[i] ? game.wfrp4e.config.magicLores[i] : i
     })
-
+    context.overcastTypes = {
+      value : "Value",
+      SL : "SL",
+      characteristic : "Characteristic"
+    }
     return context;
   }
 

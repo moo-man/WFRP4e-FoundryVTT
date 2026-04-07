@@ -359,7 +359,7 @@ body:not(.no-theme) {
 
 
     // All general apps - if dark theme is used, add basic theming (avoid journal, actor, or items)
-    &.theme-dark .application:not(.journal-entry, .actor, .item) {
+    &.theme-dark .application:not(.journal-entry, .actor, .item, .menu-dialog) {
 
         &.standard-form {
             .window-content {
