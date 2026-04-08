@@ -220,7 +220,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             if (currentEquipPoints + this.equipPoints > maxEquipPoints)
             {
                 ui.notifications.error("ErrorLimitedWeapons", {localize: true});
-                AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false);
+                foundry.audio.AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false);
                 throw new Error(game.i18n.localize("ErrorLimitedWeapons"))
             }
         }
