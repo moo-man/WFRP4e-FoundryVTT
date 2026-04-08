@@ -2835,7 +2835,10 @@ WFRP4E.syncTriggers = [
     "getInitiativeFormula"
 ];
 
-WFRP4E.areaDurations = defaultWarhammerConfig.areaDurations;
+WFRP4E.areaDurations = {
+    "instantaneous" : "WH.TransferData.AreaDurationInstantaneous",
+    "sustained" : "WH.TransferData.AreaDurationSustained"
+};
 
 WFRP4E.triggerMapping = {
     "update" : "updateDocument",
