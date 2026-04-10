@@ -52,7 +52,7 @@
 
                         <div class="flex">
                             <select data-action="editProperty" data-uuid="{{this.uuid}}" data-path="system.currentIng.value">
-                            {{selectOptions this.system.ingredientList selected=this.system.currentIng.value}}
+                            {{selectOptions this.system.ingredientList selected=this.system.currentIng.value labelAttr="name" valueAttr="id" blank=""}}
                             </select>
                         </div>
 
