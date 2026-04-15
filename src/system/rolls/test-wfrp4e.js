@@ -536,7 +536,7 @@ export default class TestWFRP extends WarhammerTestBase {
           let AP = target.status.armour[this.result.hitloc.result].value
           if (AP) {
             this.result.tables.critical.modifier = -10 * AP
-            this.result.other.push(`<a class="action-link" data-action="applyCriticalDeflection">${game.i18n.format("ROLL.CriticalMitigation", {location: this.result.hitloc.description})}</a>`)
+            this.result.other.push(`<a class="action-link" data-action="applyCriticalDeflection">${game.i18n.localize("ROLL.CriticalMitigation")}</a>`)
           }
         }
       }

@@ -18,35 +18,35 @@ export default function () {
   Hooks.once("init", () => {
     game.wfrp4e.commands = new ChatCommands({
       table : {
-        description: game.i18n.localize("CommandLine.Tables.Title"),
+        description: game.i18n.localize("CHAT.CommandLine.Help.Tables.Title"),
         args : ["table", "modifier", "column"],
         defaultArg : "table",
-        examples : game.i18n.localize("CommandLine.Tables.Usage.Example"),
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Tables.Usage.Example"),
         callback: (table, modifier, column) => WFRP_Tables.handleTableCommand(table, {modifier, column})
       },
       pay: {
-        description: game.i18n.localize("CommandLine.Pay.Title"),
-        notes: game.i18n.localize("CommandLine.Pay.Usage.Note"),
+        description: game.i18n.localize("CHAT.CommandLine.Help.Pay.Title"),
+        notes: game.i18n.localize("CHAT.CommandLine.Help.Pay.Usage.Note"),
         args: ["amount", "for", "target"],
         defaultArg: "amount",
-        examples : game.i18n.localize("CommandLine.Pay.Usage.Example"),
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Pay.Usage.Example"),
         callback: (amount, product, target) => PayMessageModel.handlePayCommand(amount, { target, product })
       },
       credit : {
-        description : game.i18n.localize("CommandLine.Credit.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Credit.Title"),
         args : ["amount", "mode", "split", "target", "reason"],
         defaultArg : "amount",
-        examples : game.i18n.localize("CommandLine.Credit.Usage.Example"),
-        notes : game.i18n.localize("CommandLine.Credit.Usage.Note"),
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Credit.Usage.Example"),
+        notes : game.i18n.localize("CHAT.CommandLine.Help.Credit.Usage.Note"),
         callback : (amount, mode, split, target, reason) => CreditMessageModel.handleCreditCommand(amount, mode, {split, target, reason})
       },
       char: {
-        description: game.i18n.localize("CommandLine.CharacterGeneration.Title"),
+        description: game.i18n.localize("CHAT.CommandLine.Help.CharacterGeneration.Title"),
         args: [],
         callback: () => CharGenWfrp4e.start()
       },
       cond : {
-        description: game.i18n.localize("CommandLine.Conditions.Title"),
+        description: game.i18n.localize("CHAT.CommandLine.Help.Conditions.Title"),
         args : ["condition"],
         defaultArg: "condition",
         callback: (condition) => {
@@ -66,7 +66,7 @@ export default function () {
         }
       },
       prop : {
-        description: game.i18n.localize("COMMAND.ShowQualityOrFlaw"),
+        description: game.i18n.localize("CHAT.CommandLine.Help.Properties.Title"),
         args : ["property"],
         defaultArg : "property",
         callback : (property) => {
@@ -82,8 +82,8 @@ export default function () {
         }
       },
       name : {
-        description : game.i18n.localize("CommandLine.NameGeneration.Title"),
-        notes : game.i18n.localize("CommandLine.NameGeneration.Usage.Note"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.NameGeneration.Title"),
+        notes : game.i18n.localize("CHAT.CommandLine.Help.NameGeneration.Usage.Note"),
         args : ["gender", "species"],
         defaultArg : "gender",
         callback : (gender, species) => {
@@ -93,10 +93,10 @@ export default function () {
         }
       },
       avail : {
-        description : game.i18n.localize("CommandLine.AvailabilityTest.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.AvailabilityTest.Title"),
         args : ["rarity", "size", "modifier"],
         defaultArg : "rarity",
-        examples : game.i18n.localize("CommandLine.AvailabilityTest.Usage.Example"),
+        examples : game.i18n.localize("CHAT.CommandLine.Help.AvailabilityTest.Usage.Example"),
         callback : (rarity, size, modifier) => {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
@@ -104,7 +104,7 @@ export default function () {
         }
       },
       corruption : {
-        description : game.i18n.localize("CommandLine.Corruption.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Corruption.Title"),
         args : ["strength", "skill", "source"],
         defaultArg : "strength",
         callback: (strength, skill, source) => {
@@ -112,7 +112,7 @@ export default function () {
         }
       },
       fear : {
-        description : game.i18n.localize("CommandLine.Fear.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Fear.Title"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -120,7 +120,7 @@ export default function () {
         }
       },
       terror : {
-        description : game.i18n.localize("CommandLine.Terror.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Terror.Title"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -128,7 +128,7 @@ export default function () {
         }
       },
       exp : {
-        description : game.i18n.localize("CommandLine.Exp.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Exp.Title"),
         args : ["amount", "reason"],
         defaultArg : "amount",
         callback: (amount, reason) => {
@@ -136,7 +136,7 @@ export default function () {
         }
       },
       travel : {
-        description : game.i18n.localize("CommandLine.Travel.Title"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Travel.Title"),
         args : ["from", "to"],
         defaultArg : "from",
         callback: (from, to) => {
@@ -144,7 +144,7 @@ export default function () {
         }
       },
       trade : {
-        description : game.i18n.localize("COMMAND.PromptTradeDialog"),
+        description : game.i18n.localize("CHAT.CommandLine.Help.Trade.Title"),
         args : [],
         callback: () => {
           game.wfrp4e.trade.attemptBuy();

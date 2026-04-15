@@ -101,7 +101,7 @@
     "PostBug": "Submit a Grudge",
     "Theme": {
       "Reset": "Reset",
-      "Save": "Save"
+      "Save": "Save Changes"
     }
   },
   "Career": "Career",
@@ -311,15 +311,15 @@
     "CommandLine": {
       "Help": {
         "AvailabilityTest": {
-          "Title": "Availability Test",
+          "Title": "Roll an Availability Test",
           "Usage": {
             "Command": "/avail",
-            "Example": "<br>/avail common size=town<br>/avail rare size=city modifier=20",
+            "Example": "<br><span font-family:'monospaced'>/avail common size=town<br>/avail rare size=city modifier=20</span>",
             "Note": "rolls an availability test to determine the availability and the stock of an item."
           }
         },
         "CharacterGeneration": {
-          "Title": "Character Generation",
+          "Title": "Start Character Creation",
           "Usage": {
             "Command": "/char",
             "Example": "/char",
@@ -328,7 +328,7 @@
         },
         "Commands": "Tables,Conditions,Properties,CharacterGeneration,NameGeneration,AvailabilityTest,Pay,Credit,Corruption,Travel,Exp",
         "Conditions": {
-          "Title": "Conditions",
+          "Title": "Show Condition Description",
           "Usage": {
             "Command": "/cond <condition-name>",
             "Example": "<br>/cond ablaze<br>/cond unconsc",
@@ -336,7 +336,7 @@
           }
         },
         "Corruption": {
-          "Title": "Corruption",
+          "Title": "Prompt Corruption Test",
           "Usage": {
             "Command": "/corruption",
             "Example": "<br>/corruption minor<br>/corruption moderate",
@@ -344,20 +344,23 @@
           }
         },
         "Credit": {
-          "Title": "Credit",
+          "Title": "Post a prompt to receive money.",
           "Usage": {
             "Command": "/credit",
-            "Example": "<br>/credit 3gc2bp<br>/credit 10bp450ss each<br>/credit 1bp420ss John<br>/credit 1gc12ss Kastor Lieberung",
-            "Note": "This command is GM only. An amount of money entered by the GM will be sent to actors/players, with the following options: <ul><li><strong>/credit amount split (default)</strong>: Display as chat card for all users, with a button for them to receive payment. Example: /credit 12gc2bp</li><li><strong>/credit amount player_name</strong>: Display a chat card for the designated player only.</li><li><strong>/credit amount actor_name </strong>: Automatically adds money to the designated actor. Only a part of the actor name can be used, so if the actor's name is Kastor Lieberung, then you can write /credit 12ss kastor.</li></ul>"
+            "Example": "<br><span font-family:'monospaced'>/credit 100gc reason=Completing the Bounty split=3</span>",
+            "Note": "Mode can be set to 'split' or 'each', if unspecified, only a single reward is available to take (split=1). If the mode is set to split, and the split argument is not defined, it splits the amount between all active players."
           }
         },
         "Exp": {
-          "Title": "Experience",
+          "Title": "Prompt XP Reward",
           "Usage": {
             "Command": "/exp",
             "Example": "<br>/exp 50<br>/exp 100 Defeating the boss",
             "Note": "Use this to reward exp to your players. Their exp log will automatically be filled out with the reason given."
           }
+        },
+        "Fear": {
+            "Title": "Prompt Fear Test"
         },
         "Label": {
           "Command": "Command",
@@ -366,23 +369,23 @@
         },
         "Link": "See the <a href={link}>Wiki</a> for more information on the features in this system",
         "NameGeneration": {
-          "Title": "Name Generation",
+          "Title": "Generate a name",
           "Usage": {
             "Command": "/name",
             "Example": "<br>/name dwarf<br>/name helf male<br>/name welf female",
-            "Note": "Generates a name in chat (Also accessible by clicking the <Name> label on a an NPC or creature sheet)"
+            "Note": "Core Species Keys: <span font-family:'monospaced'</span>human</span> <span font-family:'monospaced'</span>dwarf</span> <span font-family:'monospaced'</span>helf</span> <span font-family:'monospaced'</span>welf</span> <span font-family:'monospaced'</span>halfling</span>"
           }
         },
         "Pay": {
-          "Title": "Pay",
+          "Title": "Post a prompt for payment.",
           "Usage": {
             "Command": "/pay",
-            "Example": "<br>/pay 3gc2bp<br>/pay 10bp450ss",
-            "Note": "This command offers 3 options: <ul><li><strong>/pay amount</strong>: (If GM) Display a chat card for all users, with a button for them to pay, or (if Player) pay the amount specified by the user's assigned actor. Example: /pay 12gc2bp</li><li><strong>/pay amount player_name </strong>: GM only. Display a chat card for the designated player only.</li><li><strong>/pay amount actor_name</strong>: GM only. Automatically reduces the money of the designated actor with the amount. Only a part of the actor name can be used, if the actor's name is Kastor Lieberung, then you can write /pay 12ss kastor. If the actor has a connected player, a chat card will ask him to approve the command. If the actor is not owned by a player (or the player is not connected), the amount is deduced automatically.</li></ul>"
+            "Example": "<br><span font-family:'monospaced'</span>/pay 12ss for=Room and Board</span>",
+            "Note": "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount"
           }
         },
         "Properties": {
-          "Title": "Item Properties",
+          "Title": "Show a Quality or Flaw",
           "Usage": {
             "Command": "/prop <property-name>",
             "Example": "<br>/prop impact<br>/prop shoddy",
@@ -390,15 +393,21 @@
           }
         },
         "Tables": {
-          "Title": "Tables",
+          "Title": "Roll on a table",
           "Usage": {
             "Command": "/table <table-name> <column> <modifier>",
-            "Example": "<br>/table critarm +20<br>/table career human",
+            "Example": "<br><span font-family:'monospaced'</span>/table critarm</span><br><span font-family:'monospaced'</span>/table mutatephys modifier=20 column=khorne</span>",
             "Note": "/table <anything-unrecognized> will pull up the table help menu"
           }
         },
+        "Terror": {
+          "Title": "Prompt Terror Test"
+        },
+        "Trade": {
+            "Title": "Prompt Trade Dialog"
+        },
         "Travel": {
-          "Title": "Travel",
+          "Title": "Post Travel Distance Tool",
           "Usage": {
             "Command": "/travel",
             "Example": "<br>/travel<br>/travel Altdorf Kemperbad",
@@ -532,95 +541,6 @@
   "CN": "CN",
   "Combat": "Combat",
   "comma separated": "comma separated",
-  "COMMAND": {
-    "PromptTradeDialog": "Open Trade Dialog",
-    "ShowQualityOrFlaw": "Show Quality or Flaw"
-  },
-  "CommandLine": {
-    "AvailabilityTest": {
-      "Title": "Test Item Availability",
-      "Usage": {
-        "Example": "/avail common size=town",
-        "Note": "Check the availability of an item based on rarity and settlement size"
-      }
-    },
-    "CharacterGeneration": {
-      "Title": "Start Character Generation",
-      "Usage": {
-        "Note": "Opens the character generation wizard"
-      }
-    },
-    "Conditions": {
-      "Title": "Lookup Condition",
-      "Usage": {
-        "Example": "/cond blinded",
-        "Note": "Posts a condition's description to the chat"
-      }
-    },
-    "Corruption": {
-      "Title": "Apply Corruption",
-      "Usage": {
-        "Example": "/corruption minor",
-        "Note": "Prompts selected characters to make a corruption test"
-      }
-    },
-    "Credit": {
-      "Title": "Credit Money",
-      "Usage": {
-        "Example": "/credit 5gc",
-        "Note": "Credits money to a character"
-      }
-    },
-    "Exp": {
-      "Title": "Grant Experience",
-      "Usage": {
-        "Example": "/exp 100",
-        "Note": "Grants experience points to selected characters"
-      }
-    },
-    "Fear": {
-      "Title": "Test Fear",
-      "Usage": {
-        "Example": "/fear 2",
-        "Note": "Prompts selected characters to take a Fear test"
-      }
-    },
-    "NameGeneration": {
-      "Title": "Generate Name",
-      "Usage": {
-        "Example": "/name male dwarf",
-        "Note": "Generates a random name based on gender and species"
-      }
-    },
-    "Pay": {
-      "Title": "Pay Amount",
-      "Usage": {
-        "Example": "/pay 5gc",
-        "Note": "Deducts money from a character's inventory"
-      }
-    },
-    "Tables": {
-      "Title": "Roll on Table",
-      "Usage": {
-        "Example": "/table critical",
-        "Note": "Rolls on a WFRP table and posts the result to chat"
-      }
-    },
-    "Terror": {
-      "Title": "Test Terror",
-      "Usage": {
-        "Example": "/terror 1",
-        "Note": "Prompts selected characters to take a Terror test"
-      }
-    },
-    "Travel": {
-      "Title": "Calculate Travel Distance",
-      "Usage": {
-        "Example": "/travel Altdorf Nuln",
-        "Note": "Calculates the travel distance between two locations"
-      }
-    }
-  },
   "Commands": "Commands",
   "Complete": "Complete",
   "Completed": "Completed",
@@ -710,7 +630,7 @@
     "QuickcastingTooltip": "If you forfeit your Move and all Free Actions, you may use your Turn to quickly Channel and Cast in the same Action. Because you are rushing, increase the severity of any suffered Miscast by one table (ie, from Minor to Major or Major to Catastrophic). ",
     "RevertExperience": "Revert Experience Points?",
     "RollMode": "Roll Mode",
-    "SelectLore": "Select Lore",
+    "SelectLore": "Select a Lore",
     "ShowTable": "Table Visibility",
     "ShowTableHint": "Show table to players in sidebar and /table menu",
     "SLBonus": "SL Bonus",
@@ -720,15 +640,15 @@
     "TableLookup": "Table Lookup",
     "TableModifier": "Table Modifier",
     "TABLES": {
-      "ButtonLabel": "Configure Table",
-      "Column": "Column Name",
-      "Key": "Table Key",
-      "Title": "Configure Table Key"
+      "ButtonConfigureKey": "Configure Table Key",
+      "Column": "Column",
+      "Key": "Key",
+      "Title": "Table Key & Column"
     },
     "TalentBonus": "Talent Bonuses",
     "TRADE": {
-      "Title": "Select Trade Type",
-      "TradeType": "Choose a trade type"
+      "Title": "Trade",
+      "TradeType": "Choose the type of Trade"
     },
     "UseIngredient": "Choose how to use ingredient (if available)",
     "UseIngredientTooltip": "You may focus your magic through an appropriate material component before discharging your spell. Ingredients react differently depending on how you funnel your magic through them. Before you cast or channel, you must choose whether to use the ingredient for Power or Control. Ingredients are consumed even when the spell fails. <br/> Power Ingredient: When used during a Channelling Test, a power ingredient doubles the number of SL aquired on success (see overchannelling). When used during a Casting Test, a power ingredient allows you to reverse the dice and choose the result for your Casting Test. However, if the units die after reverse of your Casting Test exceeds your Willpower Bonus, the energy exceeds your grasp and you unleash a Minor Miscast. <br/> Control Ingredient: When used during a Channelling or Casting Test, a control ingredient acts as a target for out-of-control magic. Reduce the severity of one suffered Miscast by one table: ie, from Catastrophic to Major, Major to Minor, or Minor to none.",
@@ -818,9 +738,6 @@
     "SystemEffects": "System Effects",
     "TabWFRP": "WFRP",
     "Target": "Target: ",
-    "TestsRelatedToHearing": "Tests related to hearing",
-    "TestsRelatedToMovementOfAnyKind": "Tests related to movement of any kind",
-    "TestsRelatedToSight": "Tests related to sight",
     "TestsToAffect": "Tests to affect",
     "Thirst": "Thirst",
     "Tooltip": "Effects which affect dialog values"
@@ -833,21 +750,21 @@
     "AddingConditionData": "Error Adding Condition Data: {error}",
     "AMMO_MODS": "Ammunition '{type}' value could not be resolved, aborting. Check console (F12) for details`",
     "CannotUseArm": "Cannot use arm!",
-    "CannotUseCompendiumActorsWithVehicles": "Cannot use compendium actors with vehicles",
+    "CannotUseCompendiumActorsWithVehicles": "Cannot use Compendium Actors with Vehicles",
     "Column": "Must specify column to roll on",
     "EFFECT": "Error when running effect {effect}, please see the console (F12)",
     "EffectNotFound": "Effect not found on Test Item",
     "Experience": "Experience values must be numeric.",
     "Found": "{name} could not be found",
     "ID": "ID for {name} already exists in collection. This Document has been given a unique ID.",
-    "NoActionsAvailable": "No actions available",
+    "NoActionsAvailable": "No Actions Available",
     "NoAvailableActors": "No available owned Actors to choose!",
-    "NoCharacter": "No character assigned to the current user",
+    "NoCharacter": "Please assign a character!",
     "NoContentFound": "No content found",
     "NoOwnedCrew": "You do not own any crew members that belong to this role",
     "NoSkill": "Could not find skill (or specialization of) {skill} in compendum or world",
     "NoTalent": "Could not find talent (or specialization of) {talent} in compendum or world",
-    "NotEnoughAdvantage": "Not enough Advantage to perform this action",
+    "NotEnoughAdvantage": "Not enough Advantage!",
     "Opposed": "Need both attacker and defender test to compute opposed result",
     "ParseDisease": "Could not parse disease roll",
     "ParseInjury": "Could not parse injury roll",
@@ -941,7 +858,7 @@
   "Hours": "hours",
   "Human": "Human",
   "Imperial Calendar": "Imperial Calendar",
-  "Imperial Calendar Description": "The Official Calendar of the Empire",
+  "Imperial Calendar Description": "The calendar as defined by the Empire, dating from the year of Sigmar's coronation.",
   "Import or update the content from the WFRP4e Core Module": "Import or update the content from the WFRP4e Core Module",
   "Import Results": "Import Results",
   "Impressive": "Impressive",
@@ -954,7 +871,7 @@
   "IncubationPlaceholder": "Text regarding disease incubation",
   "Infinite": "Infinite",
   "INFO": {
-    "NoTargetsDirectingOffhandAttack": "No targets selected for offhand attack, using existing targets"
+    "NoTargetsDirectingOffhandAttack": "No Targets - Directing offhand attack at the same target as the primary attack"
   },
   "IngredientControl": "Control",
   "IngredientNone": "None",
@@ -1112,8 +1029,8 @@
   "Memorized": "Memorized",
   "Mental": "Mental",
   "Menu": {
-    "HomebrewSettingsWindow": "Homebrew Settings",
-    "TableSettingsWindow": "Table Settings"
+    "HomebrewSettingsWindow": "Homebrew Settings Configuration",
+    "TableSettingsWindow": "Table Settings Configuration"
   },
   "minor": "Minor",
   "Minor": "Minor",
@@ -1421,7 +1338,7 @@
     "ChannelSuccess": "Channel Succeeded",
     "CritCast": "Critical Cast",
     "CritChannel": "Critical Channel",
-    "CriticalMitigation": "Critical Mitigation: Damage AP on {location}",
+    "CriticalMitigation": "Critical Mitigation: Damage AP",
     "Failure": "Failure",
     "HitAnotherEngagedTarget": "<b>Oops! You hit wrong target, select random engaged actor and apply normal damage</b>",
     "HitLocation": "Hit Location",
@@ -1666,6 +1583,7 @@
     "CreatureSheetNoTheme": "Creature Sheet (No Theme)",
     "DamageValue": "Damage Value",
     "DeleteItem": "Delete Item",
+    "DescriptionForPropertyWasNotFound": "Description for {property} was not found.",
     "DisabledEffects": "Disabled Effects",
     "Dismount": "Dismount",
     "Dodge": "Dodge",
@@ -1690,6 +1608,7 @@
     "InvokeEffect": "Invoke {effect}",
     "ItemSheetEditableDisabled": "Editing this Item has been disabled while under the effects of {effects}. Disable or delete these effects on the owning Actor.",
     "LoadingSkills": "Loading Skills",
+    "LoadingSpells": "Loading Spells",
     "LocationAP": "Location AP",
     "LocationWarning": "Remove the container before changing its location",
     "LoreSpell": "Lore Spell",
@@ -1918,12 +1837,12 @@
   "Total": "Total",
   "ToughnessDesc": "Toughness",
   "TRADE": {
-    "AlreadyProduced": "{settlement} already produces this cargo type",
+    "AlreadyProduced": "This good is already produced at <b>{settlement}</b>",
     "BuyCargo": "Buy this cargo!",
-    "BuyerFound": "Buyer found in {settlement}!",
-    "BuyerFoundHalf": "Buyer found in {settlement}, but only for half the cargo",
-    "BuyerNotFound": "No buyer found in {settlement}",
-    "BuyerNotFoundBut": ", but may be interested at a quarter of the price",
+    "BuyerFound": "<p>A buyer was found at <strong>{settlement}</strong>",
+    "BuyerFoundHalf": "<p>A buyer was found at <strong>{settlement}</strong>, but they are only willing to buy half the cargo.",
+    "BuyerNotFound": "<p>No buyer was found at <strong>{settlement}</strong>",
+    "BuyerNotFoundBut": ", but it's possible to offload to a merchant who will buy at a quarter price.</p>",
     "Cancel": "Cancel",
     "CargoBought": "Cargo has been bought by <b>{name}</b>",
     "CargoDescr": "Bought from <b>{name}</b> in {town}",
@@ -1934,32 +1853,31 @@
     "Demand": "Demand",
     "Encumbrance": "Encumbrance",
     "ERROR": {
-      "MissingCargoType": "Cargo type not set",
-      "MissingCharacter": "No character assigned to the current user",
+      "MissingCargoType": "This cargo does not have a Cargo Type defined",
+      "MissingCharacter": "Please assign a character.",
       "NoGazetteer": "No gazetteer data available",
-      "NoTradeData": "No trade data modules loaded. The Death on the Reik module is required for River trading, and the Sea of Claws module is required for Maritime trading."
+      "NoTradeData": "No Trade Data found, see console for details."
     },
-    "ErrorNoGazetteer": "No gazetteer data available",
     "ManageCargo": "Manage Trade",
     "Maritime": "Maritime",
-    "MerchantBuyHalfCargo": "Merchant buys half the cargo for {sellPrice} GC",
-    "MerchantBuyWholeCargo": "Merchant buys the entire cargo for {sellPrice} GC",
+    "MerchantBuyHalfCargo": "A merchant is willing to buy half the size of the cargo for <a class='money-drag' data-amt='{sellPrice}g'><strong>{sellPrice} GC</strong</a>",
+    "MerchantBuyWholeCargo": "A merchant is willing to buy the whole cargo for <a class='money-drag' data-amt='{sellPrice}g'><strong>{sellPrice} GC</strong></a>",
     "MerchantData": "The cargo is sold by <b>{name}</b>, a {gender} {species} merchant (Haggle: {haggle})",
     "MerchantDataBuy": "<h2>Cargo Purchase</h2><b>{cargoName}</b><br><b>Enc:</b> {cargoSize}<br><b>Price</b>: {cargoPrice} GC",
     "MerchantTest": "<strong>Merchant Test</strong>: {SL} SL (Rolled {roll})",
     "Modifier": "Modifier to apply (+/- X%)",
-    "NoBuyer": "No buyer found in {settlement}",
+    "NoBuyer": "You cannot find anyone who wants to buy this cargo in <b>{settlement}</b>",
     "NoCargoFound": "There is no cargo available in <b>{town}</b> to purchase (Rolled {rolls}).",
     "NotEnoughMoney": "You don't have enough money to buy this cargo!",
-    "OfferPrice": "Offered Price: {offerPrice} GC",
+    "OfferPrice": "<p>They are willing to pay <a class='money-drag' data-amt='{offerPrice}g'><strong>{offerPrice} GC</strong></a></p>",
     "Price": "Current price",
     "Produces": "Produces",
     "Quality": "Quality",
     "River": "River",
-    "RollMessage": "Roll: {roll} vs {target}",
-    "RollMessageHalf": "Rolls: {roll}, {halfRoll} vs {target}",
+    "RollMessage": "Rolled {roll} vs {target}",
+    "RollMessageHalf": "Rolled {roll}, {halfRoll} vs {target}",
     "Season": "Season",
-    "SellInSameSettlement": "Cannot sell in the same settlement of origin",
+    "SellInSameSettlement": "You cannot sell cargo in the same settlement you bought it from.",
     "Settlement": "Settlement",
     "SettlementDetails": "Settlement Details",
     "SettlementName": "Settlement Name",
@@ -2135,16 +2053,16 @@
     "Bow": "Bow",
     "BPandEng": "Blackpowder and Engineering",
     "ConditionEffects": {
-      "BonusToMeleeAttacks": "Bonus to Melee Attacks Against Target",
-      "FailedToRemoveConditions": "Failed to remove conditions",
+      "BonusToMeleeAttacks": "Bonus to melee attacks",
+      "FailedToRemoveConditions": "Failed to remove Conditions.",
       "HalfMovement": "Half Movement",
-      "PenaltyToAllTests": "Penalty to All Tests ({effect})",
-      "PenaltyToAllTestsNotInvolvingRunningAndHiding": "Penalty to All Tests Not Involving Running and Hiding",
-      "RemovedSLConditions": "Removed conditions equal to SL",
-      "RollToRemoveStunned": "Roll to Remove Stunned",
-      "TestsRelatedToHearing": "Tests Related to Hearing",
-      "TestsRelatedToMovement": "Tests Related to Movement",
-      "TestsRelatedToSight": "Tests Related to Sight"
+      "PenaltyToAllTests": "Penalty to all Tests ({effect})",
+      "PenaltyToAllTestsNotInvolvingRunningAndHiding": "Penalty to all Tests not involving running and hiding.",
+      "RemovedSLConditions": "Removed SL + 1 Conditions",
+      "RollToRemoveStunned": "Roll to remove Stunned",
+      "TestsRelatedToHearing": "Tests related to hearing",
+      "TestsRelatedToMovement": "Tests related to movement of any kind",
+      "TestsRelatedToSight": "Tests related to sight"
     },
     "ConditionName": {
       "Ablaze": "Ablaze",

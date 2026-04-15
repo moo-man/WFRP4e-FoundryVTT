@@ -240,7 +240,7 @@ export class TemplateModel extends BaseItemModel
 
     if (this.lores.list.length)
     {
-      let spells = (await warhammer.utility.findAllItems("spell", game.i18n.localize("SHEET.LoadingSkills"), true, ["system.lore.value"])).sort((a, b) => a.name > b.name ? 1 : -1);
+      let spells = (await warhammer.utility.findAllItems("spell", game.i18n.localize("SHEET.LoadingSpells"), true, ["system.lore.value"])).sort((a, b) => a.name > b.name ? 1 : -1);
       for(let lore of this.lores.list)
       {
         if (lore.name == "*")

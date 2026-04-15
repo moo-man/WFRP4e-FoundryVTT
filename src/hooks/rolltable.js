@@ -11,7 +11,7 @@ export default function() {
 
     Hooks.on("getHeaderControlsRollTableSheet", (sheet, controls) => {
         controls.push({
-            label : game.i18n.localize("DIALOG.TABLES.ButtonLabel"),
+            label : game.i18n.localize("DIALOG.TABLES.ButtonConfigureKey"),
             icon : "fa-solid fa-key",
             action : "configureKey" 
         });
