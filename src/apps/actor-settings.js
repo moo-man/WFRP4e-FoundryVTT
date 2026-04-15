@@ -7,7 +7,7 @@ export default class ActorSettings extends WHFormApplication
     classes : ["warhammer", "standard-form"],
     window: {
       contentClasses : ["standard-form"],
-      title:  "ACTOR.Settings.",
+      title:  "ACTOR.Settings",
     },
     form: {
       submitOnChange: true,

@@ -649,10 +649,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
       else 
       {
-        return ui.notifications.error(game.i18n.localize("ERROR.NotEnoughAdvantage"));
+        return ui.notifications.error("ERROR.NotEnoughAdvantage", {localize: true});
       }
-
-
     }
 
     static async _onToggleQuality(ev)

@@ -147,17 +147,6 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
         }
       },
       {
-        name: game.i18n.localize("OPTION.Remove"),
-        icon: '<i class="fas fa-times"></i>',
-        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
-        callback: async li => 
-        {
-          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
-          const document = await fromUuid(uuid);
-          document.delete();
-        }
-      },
-      {
         name: game.i18n.localize("OPTION.Duplicate"),
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
@@ -166,6 +155,17 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
             let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
             const document = await fromUuid(uuid);
             this.item.createEmbeddedDocuments("ActiveEffect", [document.toObject()]);
+        }
+      },
+      {
+        name: game.i18n.localize("OPTION.Remove"),
+        icon: '<i class="fas fa-times"></i>',
+        condition: li => !!li.dataset.uuid || getParent(li, "[data-uuid]"),
+        callback: async li => 
+        {
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
+          const document = await fromUuid(uuid);
+          document.delete();
         }
       }
     ];

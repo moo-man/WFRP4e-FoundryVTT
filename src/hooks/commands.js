@@ -19,7 +19,6 @@ export default function () {
     game.wfrp4e.commands = new ChatCommands({
       table : {
         description: game.i18n.localize("CommandLine.Tables.Title"),
-        notes: game.i18n.localize("CommandLine.Tables.Usage.Note"),
         args : ["table", "modifier", "column"],
         defaultArg : "table",
         examples : game.i18n.localize("CommandLine.Tables.Usage.Example"),
@@ -43,14 +42,11 @@ export default function () {
       },
       char: {
         description: game.i18n.localize("CommandLine.CharacterGeneration.Title"),
-        notes: game.i18n.localize("CommandLine.CharacterGeneration.Usage.Note"),
         args: [],
         callback: () => CharGenWfrp4e.start()
       },
       cond : {
         description: game.i18n.localize("CommandLine.Conditions.Title"),
-        notes: game.i18n.localize("CommandLine.Conditions.Usage.Note"),
-        examples: game.i18n.localize("CommandLine.Conditions.Usage.Example"),
         args : ["condition"],
         defaultArg: "condition",
         callback: (condition) => {
@@ -88,7 +84,6 @@ export default function () {
       name : {
         description : game.i18n.localize("CommandLine.NameGeneration.Title"),
         notes : game.i18n.localize("CommandLine.NameGeneration.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.NameGeneration.Usage.Example"),
         args : ["gender", "species"],
         defaultArg : "gender",
         callback : (gender, species) => {
@@ -99,11 +94,9 @@ export default function () {
       },
       avail : {
         description : game.i18n.localize("CommandLine.AvailabilityTest.Title"),
-        notes : game.i18n.localize("CommandLine.AvailabilityTest.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.AvailabilityTest.Usage.Example"),
         args : ["rarity", "size", "modifier"],
         defaultArg : "rarity",
-        examples: "<br><span font-family:'monospaced'>/avail common size=town<br>/avail rare size=city modifier=20</span>",
+        examples : game.i18n.localize("CommandLine.AvailabilityTest.Usage.Example"),
         callback : (rarity, size, modifier) => {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
@@ -112,8 +105,6 @@ export default function () {
       },
       corruption : {
         description : game.i18n.localize("CommandLine.Corruption.Title"),
-        notes : game.i18n.localize("CommandLine.Corruption.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.Corruption.Usage.Example"),
         args : ["strength", "skill", "source"],
         defaultArg : "strength",
         callback: (strength, skill, source) => {
@@ -122,8 +113,6 @@ export default function () {
       },
       fear : {
         description : game.i18n.localize("CommandLine.Fear.Title"),
-        notes : game.i18n.localize("CommandLine.Fear.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.Fear.Usage.Example"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -132,8 +121,6 @@ export default function () {
       },
       terror : {
         description : game.i18n.localize("CommandLine.Terror.Title"),
-        notes : game.i18n.localize("CommandLine.Terror.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.Terror.Usage.Example"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -142,8 +129,6 @@ export default function () {
       },
       exp : {
         description : game.i18n.localize("CommandLine.Exp.Title"),
-        notes : game.i18n.localize("CommandLine.Exp.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.Exp.Usage.Example"),
         args : ["amount", "reason"],
         defaultArg : "amount",
         callback: (amount, reason) => {
@@ -152,8 +137,6 @@ export default function () {
       },
       travel : {
         description : game.i18n.localize("CommandLine.Travel.Title"),
-        notes : game.i18n.localize("CommandLine.Travel.Usage.Note"),
-        examples : game.i18n.localize("CommandLine.Travel.Usage.Example"),
         args : ["from", "to"],
         defaultArg : "from",
         callback: (from, to) => {
