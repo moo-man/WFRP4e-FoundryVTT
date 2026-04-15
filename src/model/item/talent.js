@@ -7,7 +7,8 @@ export class TalentModel extends BaseItemModel {
     static defineSchema() {
         let schema = super.defineSchema();
         schema.max = new fields.SchemaField({
-            value: new fields.StringField({choices : game.wfrp4e.config.talentMax})
+            value: new fields.StringField({choices : game.wfrp4e.config.talentMax}),
+            formula : new fields.StringField()
         });
         schema.advances = new fields.SchemaField({
             value: new fields.NumberField({initial : 1, min: 1}),
@@ -70,6 +71,24 @@ export class TalentModel extends BaseItemModel {
 
             case 'none':
                 return "-";
+
+            case 'custom': 
+                try {
+                    if (this.max.formula)
+                    {
+                        return Roll.safeEval(Roll.replaceFormulaData(this.max.formula, this.parent.actor.getRollData()))
+                    }
+                    else 
+                    {
+                        return 1;
+                    }
+                }
+                catch (e)
+                {
+                    ui.notifications.error(`Error computing Talent Max for ${this.parent.name}, see console for details`);
+                    console.error(e);
+                    return 1;
+                }
 
             default:
                 return this.parent.actor.characteristics[this.max.value].bonus;

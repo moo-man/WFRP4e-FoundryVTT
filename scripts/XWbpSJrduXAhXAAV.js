@@ -1,0 +1,2 @@
+await this.actor.applyDamage(this.effect.sourceTest.result.damage, {sourceItem: this.effect.sourceItem, sourceTest: this.effect.sourceTest, createMessage: this.script.getChatData()})
+await this.actor.addCondition("ablaze");

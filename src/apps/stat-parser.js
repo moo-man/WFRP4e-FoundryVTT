@@ -14,7 +14,7 @@ export default class StatBlockParser extends FormApplication {
 
     getData() {
 
-        let types = game.system.template.Actor.types
+        let types = game.model.Actor.types
         return { types }
     }
 

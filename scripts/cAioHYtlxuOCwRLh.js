@@ -1,2 +1,2 @@
-let ablaze = Number(args.opposedTest.attackerTest.result.SL) + 1
+let ablaze = Number(args.sourceTest?.result.SL) + 1
 args.actor.addCondition("ablaze", ablaze)

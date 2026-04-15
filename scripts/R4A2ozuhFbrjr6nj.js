@@ -1,0 +1,1 @@
+await this.actor.hasCondition("broken")?.delete();

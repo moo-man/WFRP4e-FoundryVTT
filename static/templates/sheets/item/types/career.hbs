@@ -6,14 +6,10 @@
         <legend>{{localize "Status"}}</legend>
         <div class="form-group">
             <label>{{localize "Tier"}}</label>
-            <select name="system.status.tier">
-                {{selectOptions (config "statusTiers") selected=source.system.status.tier}}
-            </select>
+            {{formInput fields.status.fields.tier value=source.system.status.tier}}
             <label>{{localize "Standing"}}</label>
-            <input type="number" name="system.status.standing" value="{{system.status.standing}}">
+            {{formInput fields.status.fields.standing value=source.system.status.standing}}
         </div>
-        {{!-- {{formGroup fields.status.fields.tier value=source.system.status.tier}} --}}
-        {{!-- {{formGroup fields.status.fields.standing value=source.system.status.standing}} --}}
     </fieldset>
     <div class="form-group characteristics">
         <div class="career-list">
@@ -72,7 +68,7 @@
         </div>
     </div>
 
-        <div class="form-group trappings" data-group="trappings">
+    <div class="form-group trappings" data-group="trappings">
         <div class="career-list">
         <label>{{localize "Trappings"}}</label>
             <div class="list-container" data-path="system.trappings">
@@ -81,6 +77,24 @@
                     <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
                 {{/each}}
                 <input type="text" class="empty" style="width: 3rem" data-action="listCreateValue"  onkeypress="this.style.width = (this.value.length) + 4 + 'ch';" placeholder="+">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="career-list">
+            <label>{{localize "Required Trappings"}}</label>
+            <div class="form-fields">
+                <div class="list-container" data-path="system.requiredTrappings">
+                    {{#each system.requiredTrappings}}
+                    <input class="skill" disabled data-index="{{@key}}" type="text" value="{{lookup ../system.trappings this}}">
+                    <a data-action="listDelete" data-index="{{@key}}"><i class="fa-solid fa-xmark"></i></a>
+                    {{/each}}
+                    <select class="empty" style="width: fit-content" data-action="listCreateValue">
+                        <option></option>
+                        {{selectOptions system.trappings}}
+                    </select>
+                </div>
             </div>
         </div>
     </div>

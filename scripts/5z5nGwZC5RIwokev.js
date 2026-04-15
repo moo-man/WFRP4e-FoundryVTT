@@ -1,0 +1,1 @@
+this.script.message(await this.actor.applyBasicDamage(12, {suppressMsg: true, loc: "roll"}))

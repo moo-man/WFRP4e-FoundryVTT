@@ -346,7 +346,8 @@ WFRP4E.talentMax = {
     "dex": "CHARBonus.Dex",
     "int": "CHARBonus.Int",
     "wp": "CHARBonus.WP",
-    "fel": "CHARBonus.Fel"
+    "fel": "CHARBonus.Fel",
+    "custom": "ITEM.Custom"
 }
 
 
@@ -1135,7 +1136,9 @@ WFRP4E.premiumModules = {
     "wfrp4e-ua3" : "Ubersreik Adventures III",
     "wfrp4e-tribes" : "Tribes & Tribulations",
     "wfrp4e-owb3" : "Places & Perils",
-    "wfrp4e-dslf" : "Deft Steps Light Fingers"
+    "wfrp4e-dslf" : "Deft Steps Light Fingers",
+    "wfrp4e-dwarfs" : "Dwarf Bundle",
+    "wfrp4e-helf" : "High Elf Bundle"
 }
 
 WFRP4E.copyrightText = `
@@ -1231,6 +1234,14 @@ WFRP4E.systemItems = {};
 WFRP4E.systemEffects = {}
 WFRP4E.vehicleSystemEffects = {}
 WFRP4E.groupAdvantageActions = [];
+
+WFRP4E.careerLevels = {
+    1 : 1,
+    2 : 2, 
+    3 : 3,
+    4 : 4,
+    5 : 5
+}
 
 WFRP4E.PrepareSystemItems = function() {
 
@@ -1873,6 +1884,12 @@ WFRP4E.PrepareSystemItems = function() {
             img: "icons/svg/invisible.svg",
             statuses: ["invisible"],
             system: {}
+        },
+        "blind" : {
+            name: "Blind",
+            img: "icons/svg/blind.svg",
+            statuses: ["blind"],
+            system: {}
         }
     })
 
@@ -2358,6 +2375,11 @@ if (test.succeeded) {
                     value : null,
                     numbered: false
                 },
+            },
+            flags: {
+                core: {
+                    overlay: true
+                }
             }
         }
     ]
@@ -2396,6 +2418,31 @@ if (test.succeeded) {
                 scriptData: [
                     {
                         label: game.i18n.localize("EFFECT.BlackpowderShock"),
+                        trigger: "immediate",
+                        script: `
+                            test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
+                            await test.roll();
+                            if (test.failed)
+                            {
+                                this.actor.addCondition("broken");
+                            }
+                            return false;
+                        `
+                    }
+                ]
+            }
+        },
+        engineering: {
+            img : "systems/wfrp4e/icons/blank.png",
+            name: game.i18n.localize("EFFECT.BlackpowderShock"),
+            system: {
+                transferData : {
+                    type : "target",
+                    documentType : "Actor"
+                },
+                scriptData: [
+                    {
+                        label: "@effect.name",
                         trigger: "immediate",
                         script: `
                             test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {appendTitle : " - " + this.effect.name, skipTargets: true, fields : {difficulty : "average"}});
@@ -2717,9 +2764,10 @@ WFRP4E.scriptTriggers = {
     "immediate" : "Immediate",
     "dialog" : "Dialog",
     "addItems" : "Add Items",
-    "preUpdate" : "Pre Update",
+    "preUpdateDocument" : "Pre-Update Document",
     "update" : "On Update",
     "equipToggle" : "Equip Toggle",
+    "targeted" : "Targeted",
     "prePrepareData" : "Pre-Prepare Data",
     "prePrepareItems" : "Pre-Prepare Actor Items",
     "prepareData" : "Prepare Data",
@@ -2754,6 +2802,7 @@ WFRP4E.scriptTriggers = {
     "rollChannellingTest" : "Roll Channelling Test",
     "rollPrayerTest" : "Roll Prayer Test",
     "rollTraitTest" : "Roll Trait Test",
+    "castSpellPrayer" : "Cast Spell or Prayer",
     "preOpposedAttacker" : "Pre-Opposed Attacker",
     "preOpposedDefender" : "Pre-Opposed Defender",
     "opposedAttacker" : "Opposed Attacker",
@@ -2786,6 +2835,11 @@ WFRP4E.syncTriggers = [
     "prepareItem",
     "getInitiativeFormula"
 ];
+
+WFRP4E.areaDurations = {
+    "instantaneous" : "WH.TransferData.AreaDurationInstantaneous",
+    "sustained" : "WH.TransferData.AreaDurationSustained"
+};
 
 WFRP4E.triggerMapping = {
     "update" : "updateDocument",

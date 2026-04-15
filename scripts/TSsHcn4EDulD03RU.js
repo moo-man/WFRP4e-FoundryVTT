@@ -1,0 +1,1 @@
+return !this.actor.hasCondition("fatigued")

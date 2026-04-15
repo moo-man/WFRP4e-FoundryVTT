@@ -1,1 +1,1 @@
-args.prefillModifiers.modifier -= 10 * this.effect.system.condition.value
+args.fields.modifier -= 10 * this.effect.system.condition.value

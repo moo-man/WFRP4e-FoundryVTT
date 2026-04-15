@@ -1,7 +1,7 @@
 // Get the size
 let size = this.actor.sizeNum 
 let diff = "difficult";
-if (size < 5) { // 5 = Monstrous
+if (size < 5) { // 5 = Enormous
    diff = "hard";
 }
 let test = await this.actor.setupSkill(game.i18n.localize("NAME.Cool"), {fields : {difficulty : diff}, appendTitle : ` - ${this.effect.name}`})

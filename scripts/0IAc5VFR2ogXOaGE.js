@@ -1,0 +1,1 @@
+return args.characteristic != "int" || args.type != "characteristic"

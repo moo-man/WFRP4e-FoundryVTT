@@ -1,5 +1,5 @@
 
-        args.prefillModifiers.modifier += 0;
-        args.prefillModifiers.slBonus += 0;
-        args.prefillModifiers.successBonus += 0;
+        args.fields.modifier += 0;
+        args.fields.slBonus += 0;
+        args.fields.successBonus += 0;
         

@@ -167,7 +167,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
             const document = await fromUuid(uuid);
             this.item.createEmbeddedDocuments("ActiveEffect", [document.toObject()]);
         }
-      },
+      }
     ];
   }
 

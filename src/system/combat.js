@@ -67,28 +67,6 @@ export default class CombatHelpersWFRP {
         }
     }
 
-    static async endCombat(combat) {
-        if (!game.user.isUniqueGM)
-            return
-
-        let content = ""
-        let scriptResult = "";
-        for (let script of CombatHelpersWFRP.scripts.endCombat) {
-            scriptResult = await script(combat);
-            if (scriptResult) {
-                content += scriptResult + "<br><br>";
-            }
-        }
-        if (content) {
-            content = `<h2>${game.i18n.localize("CHAT.EndCombat")}</h3>` + content;
-            ChatMessage.create({ content, whisper: ChatMessage.getWhisperRecipients("GM") })
-        }
-        for (let turn of combat.turns) {
-            await Promise.all(turn.actor.runScripts("endCombat", {combat}, true));
-            Hooks.callAll("wfrp4e:endCombat", combat);
-        }
-    }
-
     static async checkFearTerror(combat) {
         if (!game.user.isUniqueGM)
             return
@@ -123,7 +101,7 @@ export default class CombatHelpersWFRP {
         msg += CombatHelpersWFRP.checkSizeFearTerror(combat)
 
         if (msg)
-            await ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "gmroll"))
+            await ChatMessage.create(game.wfrp4e.utility.chatDataSetup(msg, "gmroll", false, {alias: "Fear & Terror"}))
     }
 
     static checkSizeFearTerror(combat) {
@@ -220,7 +198,17 @@ export default class CombatHelpersWFRP {
             content += game.i18n.localize("CHAT.CorruptionTest");
             content += `<br>@Corruption[Minor]<br>@Corruption[Moderate]<br>@Corruption[Major]`
         }
-        return content
+
+        if (content)
+        {
+            ChatMessage.implementation.create({
+                content,
+                speaker: {
+                    alias: "End Combat - Corruption"
+                },
+                whisper: ChatMessage.getWhisperRecipients("GM")
+            })
+        }
     }
 
     static async checkInfection(combat) {
@@ -235,7 +223,16 @@ export default class CombatHelpersWFRP {
                 content += `<br><b>${actor}</b>`
             }
         }
-        return content
+        if (content)
+        {
+            ChatMessage.implementation.create({
+                content,
+                speaker: {
+                    alias: "End Combat - Infections"
+                },
+                whisper: ChatMessage.getWhisperRecipients("GM")
+            })
+        }
     }
 
     static async checkDiseases(combat) {
@@ -263,7 +260,17 @@ export default class CombatHelpersWFRP {
 
             content += game.i18n.localize("CHAT.DiseasesRules");
         }
-        return content
+        
+        if (content)
+        {
+            ChatMessage.implementation.create({
+                content,
+                speaker: {
+                    alias: "End Combat - Diseases"
+                },
+                whisper: ChatMessage.getWhisperRecipients("GM")
+            })
+        }
     }
 
     static async checkEndRoundConditions(combat) {

@@ -1,0 +1,39 @@
+<p><strong>Species:</strong> {{species}}</p>
+<p><strong>Class:</strong> {{item.system.class.value}}</p>
+<h3 style="text-align:center" data-no-toc="true">{{item.system.careergroup.value}} Advance Scheme</h3>
+<table style="height:34px" border="1">
+    <thead>
+        <tr>
+            {{#each characteristics}}
+            <th>
+                <p>{{configLookup "characteristicsAbbrev" @key}}</p>
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            {{#each characteristics}}
+            <td class="tier{{this}}">
+                {{#if (eq this 1)}}
+                <p>✠</p>
+                {{else if (eq this 2)}}
+                <p>♟</p>
+                {{else if (eq this 3)}}
+                <p>♜</p>
+                {{else if (eq this 4)}}
+                <p>♛</p>
+                {{else if (eq this 5)}}
+                <p>♚</p>
+                {{else}}
+                <p>{{this}}</p>
+                {{/if}}
+            </td>
+            {{/each}}
+        </tr>
+    </tbody>
+</table>
+{{#each tierHTML}}
+    {{{this}}}
+<hr>
+{{/each}}

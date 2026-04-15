@@ -170,6 +170,8 @@ npm run pack
 
 - [Deft Steps Light Fingers](https://foundryvtt.com/packages/wfrp4e-dslf/) - A supplement for playing Characters in the Rogue or Ranger class.
 
+- [Dwarf Bundle](https://foundryvtt.com/packages/wfrp4e-dwarfs/) - Explore the rich history of the Dwarfs' mountain strongholds and their time-honoured traditions in this comprehensive guide for those who want to delve deep into the heart of Karaz Ankor!
+
 **Unofficial**
 
 - [The GM Toolkit](https://foundryvtt.com/packages/wfrp4e-gm-toolkit) - Adds advantage automation, extends the Token HUD for more information, and adds useful macros!
@@ -182,6 +184,8 @@ npm run pack
 
 - Fan-made Maps for [Ubersreik](https://foundryvtt.com/packages/wfrp4e-ubersreik-maps), [Enemy In Shadows](https://foundryvtt.com/packages/wfrp4e-eis-maps), [Death on the Reik](https://foundryvtt.com/packages/wfrp4e-dotr-maps), and [Power Behind The Throne](https://foundryvtt.com/packages/wfrp4e-pbth-maps)
 
+- [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!
+  
 **Out of Date or Abandoned**
 
 - [Arcane Marks & Careers](https://foundryvtt.com/packages/arcane-marks-careers) - I've made a module out of my [homebrew supplement](https://drive.google.com/file/d/1uTy2r0EDMdcISFqqyxeIOSadtzz-OTAg/view) which can also serve as an example for others to build off of. It includes a compendium pack of all the careers as well as tables to roll for marks. 
@@ -189,5 +193,3 @@ npm run pack
 - [Character Detail Generator](https://foundryvtt.com/packages/wfrp4e-character-details) - Generates additional information for characters, including birth date and star sign.
 
 - [Eye for an Eye Adventure](https://github.com/CStuartEKerrigan/WFRP-e4e-4e-FVTT) - Converted 3e adventure complete with tokens, maps, audio, and macros!
-
-- [Night of Blood](https://github.com/CStuartEKerrigan/WFRP-Night-of-Blood-4e-FVTT) - The classic Night of Blood Adventure ready to go!

@@ -12,8 +12,9 @@ export class SpellModel extends OvercastItemModel {
         let schema = super.defineSchema();
 
         schema.lore = new fields.SchemaField({
-            value: new fields.StringField(),
+            value: new fields.ArrayField(new fields.StringField()),
             effectString: new fields.StringField(),
+            chosen: new fields.StringField()
         });
         schema.range = new fields.SchemaField({
             value: new fields.StringField(),
@@ -134,7 +135,7 @@ export class SpellModel extends OvercastItemModel {
 
       if (foundry.utils.hasProperty(options, "changed.system.cn.SL") && game.settings.get("wfrp4e", "useWoMChannelling") && !options.updateWoM)
       {
-        let items = this.parent.actor?.items.filter(s => s.type == "spell" && s.system.lore.value == this.lore.value && s.id != this.parent.id).map(s => {
+        let items = this.parent.actor?.items.filter(s => s.type == "spell" && s.system.lore.value[0] == this.lore.value[0] && s.id != this.parent.id).map(s => {
           return {
             _id : s.id,
             "system.cn.SL" : options.changed.system.cn.SL
@@ -146,7 +147,7 @@ export class SpellModel extends OvercastItemModel {
 
     async _onUpdate(data, options, user)
     {
-      if (this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
+      if (game.user.id == user && this.parent.actor?.type == "character" && foundry.utils.hasProperty(options.changed, "system.memorized.value"))
       {
         if (options.changed.system.memorized.value)
         {
@@ -177,15 +178,20 @@ export class SpellModel extends OvercastItemModel {
 
 
       get ingredientList() {
-        return this.parent.actor?.itemTags["trapping"].filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id)
+        return this.parent.actor?.itemTags["trapping"].filter(t => t.trappingType.value == "ingredient" && t.spellIngredient.value == this.parent.id).map(i => {
+          return {
+            name: i.name + ` (${i.system.quantity.value})`,
+            id: i.id
+          }
+        })
       }
 
       get Target() {
-        return this.computeSpellPrayerFormula("target", this.target.aoe)
+        return this.computeSpellPrayerFormula("target", {aoe: this.target.aoe})
       }
 
       get Duration() {
-        let duration = this.computeSpellPrayerFormula("duration", this.range?.aoe)
+        let duration = this.computeSpellPrayerFormula("duration")
         if (this.duration?.extendable)
           duration += "+"
         return duration
@@ -196,7 +202,7 @@ export class SpellModel extends OvercastItemModel {
       }
 
       get Damage() {
-        return parseInt(this.computeSpellDamage(this.damage.value, this.magicMissile.value) || 0)
+        return parseInt(this.computeSpellDamage(this.damage.value, {isMagicMissile: this.magicMissile.value}) || 0)
       }    
     
     
@@ -217,12 +223,19 @@ export class SpellModel extends OvercastItemModel {
     }
 
     computeBase() {
-        let lore = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[this.lore.value])
-        if (lore) {
-            foundry.utils.setProperty(lore, "flags.wfrp4e.path", "system.lore.effect");
-            this.lore.effect = new ActiveEffectWFRP4e(lore, { parent: this.parent });
+
+      this.lore.effects = {};
+      for(let lore of this.lore.value)
+      {
+        let effect = foundry.utils.deepClone(game.wfrp4e.config.loreEffects[lore])
+        if (effect) 
+        {
+          foundry.utils.setProperty(effect, "flags.wfrp4e.lore", lore);
+          foundry.utils.setProperty(effect, "flags.wfrp4e.path", "system.lore.effects." + lore);
+          this.lore.effects[lore] = new ActiveEffectWFRP4e(effect, { parent: this.parent });
         }
-        this._addSpellDescription();
+      }
+      this._addSpellDescription();
     }
 
     computeOwned()
@@ -234,7 +247,7 @@ export class SpellModel extends OvercastItemModel {
         }
         else 
         {
-          this.computeOvercastingData();
+          this.overcast.usage = this.computeOvercastingData(this.parent.parent);
         }
     }
 
@@ -258,7 +271,14 @@ export class SpellModel extends OvercastItemModel {
 
     getOtherEffects()
     {
-        return super.getOtherEffects().concat(this.lore.effect || [])
+      if (this.lore.value.length > 1)
+      {
+        return super.getOtherEffects().concat(this.lore.effects?.[this.lore.chosen || this.lore.value[0]] || [])
+      }
+      else 
+      {
+        return super.getOtherEffects().concat(Object.values(this.lore.effects || {}) || [])
+      }
     }
 
     /**
@@ -291,7 +311,7 @@ export class SpellModel extends OvercastItemModel {
         let data = await super.expandData(htmlOptions);
         data.properties.push(`${game.i18n.localize("Range")}: ${this.Range}`);
         let target = this.Target;
-        if (target?.includes("AoE"))
+        if (target?.toString()?.includes("AoE"))
           target = `<a class='aoe-template' data-id="${this.id}" data-actor-id="${this.parent.actor.id}"><i class="fas fa-ruler-combined"></i>${target}</a>`
         data.properties.push(`${game.i18n.localize("Target")}: ${target}`);
         data.properties.push(`${game.i18n.localize("Duration")}: ${this.Duration}`);
@@ -322,5 +342,15 @@ export class SpellModel extends OvercastItemModel {
         return properties;
       }
 
+
+    /** @inheritdoc */
+    static migrateData(source) 
+    {
+      super.migrateData(source);
+      if (typeof source.lore.value == "string")
+      {
+        source.lore.value = [source.lore.value];
+      }
+    }
 
 }

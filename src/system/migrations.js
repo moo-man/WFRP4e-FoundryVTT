@@ -635,7 +635,6 @@ static _migrateEffectFlags(effect)
         transferData: {
             type : applicationData.type,
             documentType : applicationData.documentType,
-            avoidTest : applicationData.avoidTest,
             testIndependent : applicationData.testIndependent,
             preApplyScript : applicationData.preApplyScript,
             equipTransfer : applicationData.equipTransfer,

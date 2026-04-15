@@ -1,4 +1,4 @@
-let SL = args.opposedTest.attackerTest.result.SL - args.opposedTest.attackerTest.item.cn.value
+let SL = args.sourceTest.result.SL - args.sourceItem.cn.value
 let difficulty = "challenging"
 if (SL >= 1)
    difficulty = "difficult"

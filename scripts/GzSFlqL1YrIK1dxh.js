@@ -7,7 +7,7 @@ let items = await Promise.all(["Compendium.wfrp4e-wom.items.Item.EjGYZ4CgX2jZW7O
 "Compendium.wfrp4e-wom.items.Item.CkMYRYCLrkMnyVm5",
 "Compendium.wfrp4e-wom.items.Item.0Xdm4r7l2EwC4fcg"].map(fromUuid));
 
-let choice = await game.wfrp4e.apps.ItemDialog.create(items, 1, "Select Wind")
+let choice = await ItemDialog.create(items, 1, {title : this.effect.name, text: "Select Wind"})
 //this.actor.createEmbeddedDocuments("Item", items);
 
 this.item.update(choice[0]?.toObject(), {diff: false, recursive : false});

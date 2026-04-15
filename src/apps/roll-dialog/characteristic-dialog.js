@@ -66,6 +66,11 @@ export default class CharacteristicDialog extends RollDialog {
     {
         let context = await super._prepareContext(options);
         // context.data.hitLoc = ["ws", "bs"].includes(context.data.characteristic)
+
+        if (game.release.generation == 13)
+        {
+            context.rollModes = CONFIG.Dice.rollModes;
+        }
         return context;
     }
     

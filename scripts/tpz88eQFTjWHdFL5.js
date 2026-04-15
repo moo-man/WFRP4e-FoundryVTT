@@ -1,0 +1,1 @@
+return args.item?.system?.attackType != "ranged" || this.item != args.item || this.actor.isOpposing

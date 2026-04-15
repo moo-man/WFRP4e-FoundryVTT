@@ -47,6 +47,12 @@ export class OpposedTestMessage extends WarhammerMessageModel
     async onRender(html)
     {
       warhammer.utility.replacePopoutTokens(html);
+
+      // Remove applied damage tooltip
+      if (!game.wfrp4e.utility.getSpeaker(this.opposedTestData.defenderTestData?.context.speaker || {})?.isOwner)
+      {
+        html.querySelector(".applied-breakdown")?.remove();
+      }
     }
 
     static get actions() 
@@ -65,7 +71,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
       if (!opposedTest.defenderTest.actor.isOwner)
         return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
   
-      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(opposedTest, game.wfrp4e.config.DAMAGE_TYPE.NORMAL)
+      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageeType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
       this.updateResultMessage(damageMsg);
     }
   
@@ -81,11 +87,11 @@ export class OpposedTestMessage extends WarhammerMessageModel
       let armour = opposedTest.defenderTest.actor.physicalNonDamagedArmourAtLocation(loc);
       if (armour.length)
       {
-        let chosen = await ItemDialog.create(armour, 1, {text : game.i18n.localize("OPPOSED.ChooseArmourToDamage"), title : type});
+        let chosen = await ItemDialog.create(armour, 1, {text : game.i18n.localize("DIALOG.ChooseArmour"), title : type});
         if (chosen[0])
         {
           chosen[0].system.damageItem(1, [loc])
-          ChatMessage.create({content: game.i18n.format("OPPOSED.DamageAppliedToArmour", {uuid: chosen[0].uuid, name: chosen[0].name, type : type}), speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
+          ChatMessage.create({content: `<p>${game.i18n.format("CHAT.DamageToArmour",  {item: `@UUID[${chosen[0].uuid}]{${chosen[0].name}}`, type: type} )}</p>`, speaker : ChatMessage.getSpeaker({actor : opposedTest.attackerTest.actor})})
         }
       }
       else 

@@ -1,2 +1,2 @@
-args.prefillModifiers.slBonus++;
-args.prefillModifiers.successBonus++;
+args.fields.slBonus++;
+args.fields.successBonus++;

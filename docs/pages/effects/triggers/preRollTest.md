@@ -38,6 +38,7 @@ Below are helpers that are oftenly used
 ```js
 if (args.test.item && args.test.item.name == game.i18n.localize("NAME.ConsumeAlcohol"))
 {
-    args.test.preData.canReverse = true
+    args.data.reversal = {allowed : true, if: "success"};
+
 }
 ```

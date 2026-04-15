@@ -1,4 +1,8 @@
 <div class="wfrp4e chat-card" data-actor-id="{{actorId}}" data-hide = {{hideData}}>
     {{> systems/wfrp4e/templates/chat/roll/test-card.hbs}}
     {{> systems/wfrp4e/templates/partials/overcasts.hbs}}
+
+    {{#if test.succeeded}}
+        <a class='chat-button' data-action="useMagic">{{localize "CHAT.InvokePrayer" prayer=test.prayer.name}}</a>
+    {{/if}}
 </div>

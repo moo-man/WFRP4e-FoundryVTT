@@ -343,8 +343,8 @@ export default class OpposedTest {
     let hasDamaging = false;
     let hasImpact = false;
     if (this.attackerTest.item.properties) {
-      hasDamaging = this.attackerTest.item.properties.qualities.damaging
-      hasImpact = this.attackerTest.item.properties.qualities.impact
+      hasDamaging = !!this.attackerTest.item.properties.qualities.damaging;
+      hasImpact = !!this.attackerTest.item.properties.qualities.impact;
 
       if (this.attackerTest.item.properties.qualities.hullbreaker && this.defender.type == "vehicle")
       {

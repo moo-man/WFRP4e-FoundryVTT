@@ -30,6 +30,10 @@ export default function() {
       {
         html.querySelector(".opposed-options")?.remove();
       }
+      if (game.actors.get(app.speaker.actor)?.id == game.user.character?.id)
+      {
+        html.querySelector("[data-action='dispel']")?.remove();
+      }
     }
     else {
       html.querySelector(".chat-button-player")?.remove();
@@ -40,21 +44,6 @@ export default function() {
     if (html.classList.contains("blind") && !game.user.isGM) {
       html.querySelector(".message-header")?.remove(); // Remove header so Foundry does not attempt to update its timestamp
       html.style.display = "none";
-    }
-
-    // Add drag and drop to character generation results
-    let woundsHealed = html.querySelector(".wounds-healed-drag")
-    if (woundsHealed) 
-    {
-      woundsHealed.draggable = true;
-      woundsHealed.addEventListener('dragstart', ev => {
-        let dataTransfer = {
-          type : "custom",
-          custom : "wounds",
-          wounds : app.system.test.result.woundsHealed
-        }
-        ev.dataTransfer.setData("text/plain", JSON.stringify(dataTransfer));
-      })
     }
 
     // Add drag and drop to character generation results

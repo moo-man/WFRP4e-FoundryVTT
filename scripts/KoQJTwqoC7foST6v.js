@@ -1,0 +1,1 @@
+return args.type === "cast" && args.spell?.system.lore.value === "high";

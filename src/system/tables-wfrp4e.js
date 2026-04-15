@@ -29,8 +29,16 @@ export default class WFRP_Tables {
       game.wfrp4e.tables.formatChatRoll(key, { modifier: modifier, showRoll: true, returnResult: true }, column).then(result => {
         if (!result)
           return
-        msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
-        msg.content += `<p>${result.result}</p>`;
+
+        if (typeof result == "string")
+        {
+          msg.content = result;
+        }
+        else
+        {
+          msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
+          msg.content += `<p>${result.result}</p>`;
+        }
         ChatMessage.create(msg);
       })
     }
@@ -93,7 +101,7 @@ export default class WFRP_Tables {
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult?.flags?.wfrp4e || {}
       let result = {
-        result : await rollResult?.getHTML(),
+        result : rollResult?.getChatText(),
         roll : displayTotal,
         total : rollValue,
         name : rollResult?.name,
@@ -104,7 +112,7 @@ export default class WFRP_Tables {
 
 
       // If table result text is a UUID link, add a text property with just the label
-      result.description = WFRP_Utility.extractLinkLabel(result.result)
+      result.text = WFRP_Utility.extractLinkLabel(result.result)
 
       foundry.utils.mergeObject(result, flags)
 
@@ -287,6 +295,11 @@ export default class WFRP_Tables {
     if (!table)
     {
 
+      if (key == "hitloc")
+      {
+        return this.hitloc;
+      }
+
       warhammer.utility.log("Table not found with settings, finding first table that matches")
 
       // If more than one table with that key, and column is specified, return that column
@@ -379,7 +392,7 @@ export default class WFRP_Tables {
     let tableObject = this.findTable(table, column);
 
     if (tableObject && tableObject.columns)
-      return {result : this.promptColumn(table)};
+      return this.promptColumn(table);
 
 
     let result = await this.rollTable(table, options, column);
@@ -518,36 +531,45 @@ export default class WFRP_Tables {
 
 
   static get hitloc() {
-    return {
-      "name": game.i18n.localize("WFRP4E.LocationsTable"),
-      "die": "1d100",
-      "rows": [{
-        "description": game.i18n.localize("WFRP4E.Locations.head"),
-        "result": "head",
-        "range": [1, 9]
-      }, {
-        "description": game.i18n.localize("WFRP4E.Locations.lArm"),
-        "result": "lArm",
-        "range": [10, 24]
-      }, {
-        "description": game.i18n.localize("WFRP4E.Locations.rArm"),
-        "result": "rArm",
-        "range": [25, 44]
-      }, {
-        "description": game.i18n.localize("WFRP4E.Locations.body"),
-        "result": "body",
-        "range": [45, 79]
-      }, {
-        "description": game.i18n.localize("WFRP4E.Locations.lLeg"),
-        "result": "lLeg",
-        "range": [80, 89]
-      }, {
-        "description": game.i18n.localize("WFRP4E.Locations.rLeg"),
-        "result": "rLeg",
-        "range": [90, 100]
-      }]
-    }
+    return new RollTable.implementation(
+      {
+        name: game.i18n.localize("WFRP4E.LocationsTable"),
+        formula: "1d100",
+        results: [{
+          "name": game.i18n.localize("WFRP4E.Locations.head"),
+          "description": game.i18n.localize("WFRP4E.Locations.head"),
+          "flags" : {"wfrp4e" : {"loc": "head"}},
+          "range": [1, 9]
+        }, {
+          "name": game.i18n.localize("WFRP4E.Locations.lArm"),
+          "description": game.i18n.localize("WFRP4E.Locations.lArm"),
+          "flags" : {"wfrp4e" : {"loc": "lArm"}},
+          "range": [10, 24]
+        }, {
+          "name": game.i18n.localize("WFRP4E.Locations.rArm"),
+          "description": game.i18n.localize("WFRP4E.Locations.rArm"),
+          "flags" : {"wfrp4e" : {"loc": "rArm"}},
+          "range": [25, 44]
+        }, {
+          "name": game.i18n.localize("WFRP4E.Locations.body"),
+          "description": game.i18n.localize("WFRP4E.Locations.body"),
+          "flags" : {"wfrp4e" : {"loc": "body"}},
+          "range": [45, 79]
+        }, {
+          "name": game.i18n.localize("WFRP4E.Locations.lLeg"),
+          "description": game.i18n.localize("WFRP4E.Locations.lLeg"),
+          "flags" : {"wfrp4e" : {"loc": "lLeg"}},
+          "range": [80, 89]
+        }, {
+          "name": game.i18n.localize("WFRP4E.Locations.rLeg"),
+          "description": game.i18n.localize("WFRP4E.Locations.rLeg"),
+          "flags" : {"wfrp4e" : {"loc": "rLeg"}},
+          "range": [90, 100]
+        }]
+      }
+    )
   }
+
 
 
   static get scatter() {

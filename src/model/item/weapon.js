@@ -143,7 +143,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     get Damage() {
 
         let actor = this.parent.actor
-        let damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
+        let damage = this.applyAmmoMods(this.computeWeaponFormula("damage"), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max(((this.damageToItem.value || 0) - (this.properties.qualities.durable?.value || 0)), 0)
 
         //@HOUSE
         if (game.settings.get("wfrp4e", "homebrew").mooSizeDamage && actor.system instanceof StandardActorModel)
@@ -184,7 +184,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             return this.Damage
         }
                                                                                                                                 // Account for Durable, Math.max so durable doesn't go past damageToItem
-        return this.applyAmmoMods(this.computeWeaponFormula("damage", actor.mount), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max((this.damageToItem.value - (this.properties.qualities.durable?.value || 0)), 0)
+        return this.applyAmmoMods(this.computeWeaponFormula("damage", actor.mount), "damage") + (actor.flags[`${this.attackType}DamageIncrease`] || 0) - Math.max(((this.damageToItem.value || 0) - (this.properties.qualities.durable?.value || 0)), 0)
 
       }
 
@@ -211,6 +211,20 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (foundry.utils.hasProperty(data, "system.equipped")) {
             data["system.offhand.value"] = false;
         }
+
+        
+        if (this.parent.isOwned && this.parent.actor.type == "character" && foundry.utils.getProperty(options.changed, "system.equipped.value")) {
+            let actor = this.parent.actor;
+            let maxEquipPoints = actor.system.settings.equipPoints;
+            let currentEquipPoints = actor.itemTypes.weapon.filter(i => i.system.isEquipped).reduce((points, weapon) => points + weapon.system.equipPoints, 0);
+            if (currentEquipPoints + this.equipPoints > maxEquipPoints)
+            {
+                ui.notifications.error("ErrorLimitedWeapons", {localize: true});
+                foundry.audio.AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false);
+                throw new Error(game.i18n.localize("ErrorLimitedWeapons"))
+            }
+        }
+        
 
         if (foundry.utils.hasProperty(options, "changed.system.loaded"))
         {
@@ -244,7 +258,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
     async _onUpdate(data, options,user)
     {
         await super._onUpdate(data, options, user);
-        if (foundry.utils.hasProperty(options, "changed.system.loaded") && this.parent.actor)
+        if (foundry.utils.hasProperty(options, "changed.system.loaded") && this.parent.actor && game.user.id == user)
         {
             this.parent.actor.checkReloadExtendedTest(this.parent);
         }
@@ -292,7 +306,14 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
     get properties() {
         // Kinda jank, but if some properties have been added by scripts, we need to recreate the properties object
-        let _totalProperties = this.qualities.value.length + this.flaws.value.length + (this.ammo?.system.properties._totalProperties || 0);
+        let ammo = this.ammo;
+        let _totalProperties = this.qualities.value.length + this.flaws.value.length;
+
+        if (ammo && ammo.id != this.parent.id)
+        {
+            _totalProperties += ammo.system.properties._totalProperties;
+        }
+
         if (this._properties && this._properties._totalProperties == _totalProperties)
         {
             return this._properties;
@@ -307,8 +328,8 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         if (this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
             properties.unusedQualities = properties.qualities
             properties.qualities = {}
-            if (this.ammo)
-                properties.qualities = this.ammo.properties.qualities
+            if (ammo)
+                properties.qualities = ammo.properties.qualities
         }
 
         if (this.parent.isOwned) {

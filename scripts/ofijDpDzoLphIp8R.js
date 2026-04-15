@@ -1,0 +1,1 @@
+this.actor.addEffectItems("Compendium.wfrp4e-helf.items.Item.PfqCi0tJN1ZxtwVi");

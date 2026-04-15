@@ -35,12 +35,21 @@ export default class CastDialog extends SkillDialog {
         }
     };
 
-
+    async _prepareContext(options)
+    {
+        let context = await super._prepareContext(options);
+        context.ingredientModes = {
+            none : "IngredientNone",
+            power : "IngredientPower",
+            control : "IngredientControl"
+        }
+        return context;
+    }
 
     static async setupData(spell, actor, context={}, options={})
     {
-        let skill = spell.skillToUse;
-        let characteristic = skill?.system?.characteristic?.key || "int";
+        let skill = context.skill || spell.skillToUse;
+        let characteristic = context.characteristic || skill?.system?.characteristic?.key || "int";
         
         context.title = context.title || game.i18n.localize("CastingTest") + " - " + spell.name;
         context.title += context.appendTitle || "";
@@ -61,8 +70,16 @@ export default class CastDialog extends SkillDialog {
         let data = dialogData.data;
         data.spell = spell;
 
+        if (!skill)
+          data.target = actor.system.characteristics[characteristic].value
+        else
+          data.target = skill.system.total.value
+
         data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").filter(s => !s.options.defending))
-    
+
+        // Needed if the actor doesn't own the spell;
+        data.itemData = spell.toObject();
+
         return dialogData;
     }
 

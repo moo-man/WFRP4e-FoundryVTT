@@ -103,6 +103,7 @@ export default function () {
         examples : game.i18n.localize("CommandLine.AvailabilityTest.Usage.Example"),
         args : ["rarity", "size", "modifier"],
         defaultArg : "rarity",
+        examples: "<br><span font-family:'monospaced'>/avail common size=town<br>/avail rare size=city modifier=20</span>",
         callback : (rarity, size, modifier) => {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`

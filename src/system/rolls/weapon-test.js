@@ -100,16 +100,16 @@ export default class WeaponTest extends AttackTest {
   async handleAmmo()
   {
     // Only subtract ammo on the first run, so not when edited, not when rerolled
-    if (this.item.system.ammo && this.item.system.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
+    if (this.item.system.ammo && this.item.system.consumesAmmo.value && !this.context.edited && !this.context.reroll && !this.context.fortuneUsedAddSL) {
       await this.item.system.ammo.update({ "system.quantity.value": this.item.system.ammo.quantity.value - 1 })
     }
-    else if (this.preData.ammoId && this.item.system.consumesAmmo.value && !this.context.edited && !this.context.reroll) {
+    else if (this.preData.ammoId && this.item.system.consumesAmmo.value && !this.context.edited && !this.context.reroll && !this.context.fortuneUsedAddSL) {
       let ammo = this.actor.items.get(this.preData.ammoId)
       await ammo.update({ "system.quantity.value": this.actor.items.get(this.preData.ammoId).quantity.value - 1 })
     }
 
 
-    if (this.item.system.loading && !this.context.edited && !this.context.reroll) {
+    if (this.item.system.loading && !this.context.edited && !this.context.reroll && !this.context.fortuneUsedAddSL) {
       this.item.system.loaded.amt--;
       if (this.item.system.loaded.amt <= 0) {
         this.item.system.loaded.amt = 0

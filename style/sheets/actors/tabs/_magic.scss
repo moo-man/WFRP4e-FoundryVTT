@@ -8,46 +8,52 @@
             .fill {
                 background-color: var(--color-cool-3);
                 border-radius: 2px;
+            }
+        }
 
-                &.fire {
-                    background-color: firebrick;
-                }
+        .lore.chosen,
+        .progress-bar .fill
+        {
+            &.fire {
+                background-color: firebrick;
+            }
 
-                &.heavens {
-                    background-color: skyblue;
-                }
+            &.heavens {
+                background-color: skyblue;
+            }
 
-                &.metal {
-                    background-color: var(--color-warm-1);
-                }
+            &.metal {
+                background-color: var(--color-warm-1);
+            }
 
-                &.shadow {
-                    background-color: grey
-                }
+            &.shadow {
+                background-color: grey
+            }
 
-                &.life {
-                    background-color: green
-                }
+            &.life {
+                background-color: green
+            }
 
-                &.beasts {
-                    background-color: brown;
-                }
+            &.beasts {
+                background-color: brown;
+            }
 
-                &.light {
-                    background-color: azure;
-                }
+            &.light {
+                background-color: azure;
+                color: black;
+            }
 
-                &.death {
-                    background-color: purple;
-                }
+            &.death {
+                background-color: purple;
+            }
 
-                &.necromancy {
-                    background-color: blanchedalmond;
-                }
+            &.necromancy {
+                background-color: blanchedalmond;
+                color: black;
+            }
 
-                &.daemonology {
-                    background-color: darkred;
-                }
+            &.daemonology {
+                background-color: darkred;
             }
         }
     }    

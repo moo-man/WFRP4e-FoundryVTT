@@ -19,14 +19,15 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
   async _prepareContext(options)
   {
     let context = await super._prepareContext(options);
-      if (game.wfrp4e.config.magicLores[this.document.system.lore.value]) 
-      {
-        context.loreValue = game.wfrp4e.config.magicLores[this.document.system.lore.value]
-      }
-      else 
-      {
-        context.loreValue = this.document.system.lore.value;
-      }
+
+    context.loreNames = this.document.system.lore.value.map(i => {
+      return game.wfrp4e.config.magicLores[i] ? game.wfrp4e.config.magicLores[i] : i
+    })
+    context.overcastTypes = {
+      value : "Value",
+      SL : "SL",
+      characteristic : "Characteristic"
+    }
     return context;
   }
 
@@ -35,6 +36,14 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
   {    
     super._addEventListeners();
     this.element.querySelector("[data-action='editLore']")?.addEventListener("change", this.constructor._onEditLore.bind(this));
+    this.element.querySelector(".name-list .empty")?.addEventListener("focusin", this._onAddLore.bind(this))
+  }
+
+  async _onAddLore(ev)
+  {
+    let lores = await ItemDialog.create(ItemDialog.objectToArray(game.wfrp4e.config.magicLores), "unlimited", {text: "Choose Lores to Add", title : "Lore"});
+
+    this.document.update({"system.lore.value" : this.document.system.lore.value.concat(lores.map(i => i.id))})
   }
 
   static _onEditLore(ev)

@@ -35,6 +35,17 @@ export default class ChannellingDialog extends SkillDialog {
         }
     };
 
+    async _prepareContext(options)
+    {
+        let context = await super._prepareContext(options);
+        context.ingredientModes = {
+            none : "IngredientNone",
+            power : "IngredientPower",
+            control : "IngredientControl"
+        }
+        return context;
+    }
+
     static async setupData(spell, actor, context={}, options={})
     {
 
@@ -43,13 +54,30 @@ export default class ChannellingDialog extends SkillDialog {
         {
             skill = actor.itemTags["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
         }
-        else if (spell.system.lore.value == "witchcraft")
+        else if (spell.system.lore.value[0] == "witchcraft")
         {
             skill = actor.itemTags["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
         }
         else 
         {
-            skill = actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value]))
+            if (spell.system.lore.value.length > 1)
+            {
+                let channellingSkills = spell.system.lore.value.map(lore => actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[lore])));
+
+                if (channellingSkills.some(i => !i))
+                {
+                    ui.notifications.notify("Multi-Lore Spell: Lowest channelling skill not found, using Willpower")
+                }
+                else 
+                {
+                    skill = channellingSkills.sort((a, b) => a.system.total.value - b.system.total.value)[0];
+                    ui.notifications.notify(`Multi-Lore Spell: Using lowest Channelling Skill (${skill.specifier})`)
+                }
+            }
+            else 
+            {
+                skill = actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value[0]]));
+            }
         }
 
         if (!skill)

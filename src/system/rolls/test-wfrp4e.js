@@ -24,7 +24,7 @@ export default class TestWFRP extends WarhammerTestBase {
         diceDamage: data.diceDamage,
         options: data.context || {},
         other: data.other || [],
-        canReverse: data.canReverse || false,
+        reversal: data.reversal || {allowed : false, if: "better"}, // if better/worse/success/failure
         postOpposedModifiers: data.postOpposedModifiers || { modifiers: 0, SL: 0 },
         additionalDamage: data.additionalDamage || 0,
         selectedHitLocation : typeof data.hitLocation == "string" ? data.hitLocation : "", // hitLocation could be boolean
@@ -174,6 +174,8 @@ export default class TestWFRP extends WarhammerTestBase {
       this.preData.roll = data.roll || this.result.roll;
     }
 
+    this.context.edited = true;
+
     this.roll();
   }
 
@@ -196,22 +198,60 @@ export default class TestWFRP extends WarhammerTestBase {
 
     let description = "";
 
-    if (this.preData.canReverse) {
+    if (this.preData.reversal.allowed) {
       let reverseRoll = this.result.roll.toString();
-      if (this.result.roll >= automaticFailure || (this.result.roll > target && this.result.roll > automaticSuccess)) {
-        if (reverseRoll.length == 1)
-          reverseRoll = reverseRoll[0] + "0"
-        else {
-          reverseRoll = reverseRoll[1] + reverseRoll[0]
+      if (reverseRoll.length == 1)
+        reverseRoll = reverseRoll[0] + "0"
+      else if (reverseRoll == "100")
+      {
+        reverseRoll = "100";
+      }
+      else {
+        reverseRoll = reverseRoll[1] + reverseRoll[0]
+      }
+
+      reverseRoll = Number(reverseRoll);
+
+
+      let reverse = false;
+      if (this.preData.reversal.if == "better" || !this.preData.reversal.if)
+      {
+        if (this._rollIsBetter(reverseRoll))
+        {
+          reverse = true;
         }
-        reverseRoll = Number(reverseRoll);
-        if (reverseRoll <= automaticSuccess || reverseRoll <= target) {
+        }
+        if (this.preData.reversal.if == "worse")
+        {
+          if (!this._rollIsBetter(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+
+        if (this.preData.reversal.if == "success")
+        {
+          if (!this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+        
+        if (this.preData.reversal.if == "failure")
+        {
+          if (this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(reverseRoll))
+          {
+            reverse = true;
+          }
+        }
+        
+        if (reverse) 
+        {
+          this.result.originalRoll = this.result.roll;
           this.result.roll = reverseRoll
           this.result.reversed = true;
-          this.result.other.push(game.i18n.localize("ROLL.Reverse"))
         }
       }
-    }
 
 
     let baseSL = (Math.floor(target / 10) - Math.floor(this.result.roll / 10));
@@ -465,7 +505,7 @@ export default class TestWFRP extends WarhammerTestBase {
       this.result.tables.critical = {
         label : this.result.critical,
         class : "critical-roll",
-        modifier : this.result.critModifier,
+        modifier : this.result.critModifier || 0,
         key: `crit${this.result.hitloc.result}`
       }
     }
@@ -532,7 +572,6 @@ export default class TestWFRP extends WarhammerTestBase {
 
     if (this.options.rest) {
       this.result.woundsHealed = Math.max(Math.trunc(this.result.SL) + this.options.tb, 0);
-      this.result.other.push(`${this.result.woundsHealed} ${game.i18n.localize("Wounds Healed")}`)
     }
   }
 
@@ -735,12 +774,11 @@ export default class TestWFRP extends WarhammerTestBase {
     if (this.failed) 
     {
       let wpb = this.actor.system.characteristics.wp.bonus;
-      let tableText = game.i18n.localize("CHAT.MutateTable") + "<br>" + game.wfrp4e.config.corruptionTables.map(t => `@Table[${t}]<br>`).join("")
       ChatMessage.create(WFRP_Utility.chatDataSetup(`
       <h3>${game.i18n.localize("CHAT.DissolutionTitle")}</h3> 
       <p>${game.i18n.localize("CHAT.Dissolution")}</p>
       <p>${game.i18n.format("CHAT.CorruptionLoses", { name: this.actor.name, number: wpb })}
-      <p>${tableText}</p>`,
+      <p>${game.i18n.localize("CHAT.DissolutionTable")}</p>`,
         "gmroll", false))  
       this.actor.update({ "system.status.corruption.value": Number(this.actor.system.status.corruption.value) - wpb }, {skipCorruption: true}) // Don't keep checking corruption, causes a possible loop of dialogs
     }
@@ -884,12 +922,12 @@ export default class TestWFRP extends WarhammerTestBase {
       if (messageData.sound)
         warhammer.utility.log(`Playing Sound: ${messageData.sound}`)
 
+      this.context.messageId = foundry.utils.randomID();
       messageData.system = {testData : this.data};
       messageData.type = "test";
-      let message = await ChatMessage.create(messageData)
+      messageData._id = this.context.messageId;
 
-      this.context.messageId = message.id
-      await this.updateMessageData()
+      let message = await ChatMessage.create(messageData, {keepId : true})
     }
     else // Update message 
     {
@@ -1000,7 +1038,7 @@ export default class TestWFRP extends WarhammerTestBase {
         if (overcastData.valuePerOvercast.type == "value")
           overcastData.usage[choice].current += overcastData.valuePerOvercast.value
         else if (overcastData.valuePerOvercast.type == "SL")
-          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, false, overcastData.valuePerOvercast.additional)) || 0))
+          overcastData.usage[choice].current += (parseInt(this.result.SL) + (parseInt(this.item.system.computeSpellPrayerFormula(undefined, {aoe: false, formulaOverride: overcastData.valuePerOvercast.additional})) || 0))
         else if (overcastData.valuePerOvercast.type == "characteristic")
           overcastData.usage[choice].current += (overcastData.usage[choice].increment || 0) // Increment is specialized storage for characteristic data so we don't have to look it up
         break
@@ -1212,6 +1250,37 @@ export default class TestWFRP extends WarhammerTestBase {
   }
 
 
+  _rollIsSuccessful(roll)
+  {
+    return roll <= this.result.target || roll <= game.settings.get("wfrp4e", "automaticSuccess");
+  }
+
+  _rollIsBetter(roll)
+  {
+    if (game.settings.get("wfrp4e", "SLMethod") == "fast") 
+    {
+      // If both are successful, the better one is the higher number
+      if (this._rollIsSuccessful(this.result.roll) && this._rollIsSuccessful(roll))
+      {
+        return roll > this.result.roll
+      }
+      // If Both failed, the better one is the lower one
+      else if (!this._rollIsSuccessful(this.result.roll) && !this._rollIsSuccessful(roll))
+      {
+          return roll < this.result.roll
+      }
+      else // if either but not both failed, only return true if argument is successful (can assume the original roll failed)
+      {
+        return this._rollIsSuccessful(roll);
+      }
+    }
+    else
+    {
+      return roll < this.result.roll;
+    }
+  }
+
+
 
     /**
    * Use a fortune point from the actor to reroll or add sl to a roll
@@ -1320,9 +1389,11 @@ export default class TestWFRP extends WarhammerTestBase {
   get token() { return WFRP_Utility.getToken(this.context.speaker) }
 
   get item() {
-    if (typeof this.data.preData.item == "string")
+    if (typeof this.data.preData.item == "string" && this.actor.items.get(this.data.preData.item))
       return this.actor.items.get(this.data.preData.item)
-    else
+    else if (this.data.preData.itemData)
+      return new CONFIG.Item.documentClass(this.data.preData.itemData, { parent: this.actor })
+    else if (typeof this.data.preData.item == "object")
       return new CONFIG.Item.documentClass(this.data.preData.item, { parent: this.actor })
   }
 

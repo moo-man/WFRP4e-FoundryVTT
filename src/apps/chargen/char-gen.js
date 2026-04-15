@@ -115,7 +115,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
-    this.actor = {type: "character", system: foundry.utils.deepClone(game.system.template.Actor.character), items: [] }
+    this.actor = {type: "character", system: foundry.utils.deepClone(game.model.Actor.character), items: [] }
 
     if (!game.user.isGM)
     {
@@ -378,9 +378,11 @@ export default class CharGenWfrp4e extends FormApplication {
         localStorage.removeItem("wfrp4e-chargen")
       }
       else {
-        const payload =  {id : game.user.id, data : this.actor, options : {skipSpecialisationChoice : true, skipItems : true}}
-        let id = await SocketHandlers.call("createActor", payload, "GM");
-        let actor = game.actors.get(id);
+        let actorId = foundry.utils.randomID()
+        this.actor._id = actorId;
+        const payload =  {id : game.user.id, data : this.actor, options : {skipSpecialisationChoice : true, skipItems : true, keepId : true}}
+        await SocketHandlers.call("createActor", payload, "GM");
+        let actor = game.actors.get(actorId);
         await actor.createEmbeddedDocuments("Item", actorItems, {skipSpecialisationChoice : true})
         if (actor && actor.isOwner) 
         {

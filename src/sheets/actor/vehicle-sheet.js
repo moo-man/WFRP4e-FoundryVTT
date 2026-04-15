@@ -29,7 +29,6 @@ export default class ActorSheetWFRP4eVehicle extends BaseWFRP4eActorSheet
           roleClick : this._onRoleClick,
           moodEventClick : this._onMoodEventsClick,
           rollTest : this._onRollTest,
-          sellCargo : this._onSellCargo
         },
         window : {
           resizable : true
@@ -157,15 +156,6 @@ export default class ActorSheetWFRP4eVehicle extends BaseWFRP4eActorSheet
     }
     else {
       return super._onRollTest(ev, target);
-    }
-  }
-
-  static _onSellCargo(ev)
-  {
-    let item = this._getDocument(ev)
-    if (item?.type == "cargo")
-    {
-      game.wfrp4e.trade.attemptSell(item);
     }
   }
 

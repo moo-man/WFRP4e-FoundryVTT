@@ -1,1 +1,1 @@
-args.data.canReverse = true
+args.data.reversal = {allowed : true, if: "success"};

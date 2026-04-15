@@ -1,0 +1,1 @@
+this.actor.addEffectItems("Compendium.wfrp4e-core.items.Item.EO05HX7jql0g605A", this.effect, {"system.specification.value": this.actor.system.characteristics.ag.value});
