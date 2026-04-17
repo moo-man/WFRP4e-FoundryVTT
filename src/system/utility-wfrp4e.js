@@ -591,8 +591,8 @@ export default class WFRP_Utility {
           }, target.dataset.column));
       }
 
-      chatOptions["content"] = html;
-      chatOptions["type"] = 0;
+      chatOptions.content = html;
+      
       if (!foundry.utils.isEmpty(html))
       {
         ChatMessage.create(chatOptions);
