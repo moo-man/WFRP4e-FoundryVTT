@@ -375,7 +375,7 @@ export default class ActorWFRP4e extends WarhammerActor
     
     // Get actor/tokens for those in the opposed test
     let actor = this
-    let attacker = opposedTest?.attacker
+    let attacker = opposedTest?.attacker || sourceTest?.actor || sourceItem?.actor;
     let soundContext = { item: {}, action: "hit" };
 
     if (loc == "roll")
