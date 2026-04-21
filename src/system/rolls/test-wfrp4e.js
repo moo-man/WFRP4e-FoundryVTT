@@ -970,50 +970,6 @@ export default class TestWFRP extends WarhammerTestBase {
 
 
 
-  /**
-   * Add support for the Dice So Nice module
-   * @param {Object} roll 
-   * @param {String} rollMode 
-   */
-  async _showDiceSoNice(roll, rollMode, speaker) {
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active) {
-
-      if (game.settings.get("dice-so-nice", "hideNpcRolls")) {
-        let actorType = null;
-        if (speaker.actor)
-          actorType = game.actors.get(speaker.actor).type;
-        else if (speaker.token && speaker.scene)
-          actorType = game.scenes.get(speaker.scene).tokens.get(speaker.token).actor.type;
-        if (actorType != "character")
-          return;
-      }
-
-      let whisper = null;
-      let blind = false;
-      let sync = true;
-      switch (rollMode) {
-        case "blindroll": //GM only
-          blind = true;
-        case "gmroll": //GM + rolling player
-          let gmList = game.users.filter(user => user.isGM);
-          let gmIDList = [];
-          gmList.forEach(gm => gmIDList.push(gm.id));
-          whisper = gmIDList;
-          break;
-        case "selfroll":
-          sync = false;
-          break;
-        case "roll": //everybody
-          let userList = game.users.filter(user => user.active);
-          let userIDList = [];
-          userList.forEach(user => userIDList.push(user.id));
-          whisper = userIDList;
-          break;
-      }
-      await game.dice3d.showForRoll(roll, game.user, sync, whisper, blind);
-    }
-  }
-
   // @@@@@@@ Overcast functions placed in root class because it is used by both spells and prayers @@@@@@@
   async _overcast(choice) {
     let overcastData = this.result.overcast
