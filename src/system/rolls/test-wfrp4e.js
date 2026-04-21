@@ -868,8 +868,8 @@ export default class TestWFRP extends WarhammerTestBase {
   async rollDices() {
     if (isNaN(this.preData.roll)) {
       let roll = await new Roll("1d100").roll();
-      await this._showDiceSoNice(roll, this.context.chatOptions.rollMode || "roll", this.context.speaker);
       this.result.roll = roll.total;
+      this.result.rollObject = roll;
     }
     else
       this.result.roll = this.preData.roll;
@@ -899,8 +899,8 @@ export default class TestWFRP extends WarhammerTestBase {
 
     this.result.breakdown.formatted = this.formatBreakdown()
 
-    if (game.modules.get("dice-so-nice") && game.modules.get("dice-so-nice").active && messageData.sound?.includes("dice"))
-      messageData.sound = undefined;
+    if (this.result.rollObject)
+      messageData.rolls = [this.result.rollObject];
 
     let templateData = {
       test: this,
