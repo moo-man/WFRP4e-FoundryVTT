@@ -6,7 +6,7 @@ export default class HomebrewConfig extends WHFormApplication
         tag: "form",
         classes: ["warhammer", "standard-form", "homebrew-config"],
         window: {
-            title: "Homebrew Settings Configuration",
+            title: "Menu.HomebrewSettingsWindow",
             contentClasses: ["standard-form"],
             resizable : true,
         },
