@@ -137,7 +137,7 @@ export default class OpposedHandler {
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
     if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
-      await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+      await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged"), flags: {"dice-so-nice": {linkedTo: this.data.attackerMessageId}} })
       return;
     }
     let chatData = {
@@ -148,6 +148,7 @@ export default class OpposedHandler {
         whisper: this.options.whisper,
         blind: this.options.blind,
         author : getActiveDocumentOwner(defender?.actor)?.id,
+        flags : { "dice-so-nice" : { linkedTo : this.data.attackerMessageId }},
         system : {
           opposedData : this.data
         }

@@ -26,6 +26,9 @@ export class OpposedTestMessage extends WarhammerMessageModel
         user: game.user.id,
         type : "opposed",
         content: html,
+        flags : {
+          "dice-so-nice" : { linkedTo : handler.data.defenderMessageId }
+        },
         system : {
           opposedTestData: opposeData,
           handlerId: handler.message.id,
