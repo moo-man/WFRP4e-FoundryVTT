@@ -111,13 +111,19 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
 
   static async onApplyHealing(ev, target) 
   {
-    let actor = this.test?.actor;
+    let actor = Array.from(game.user.targets)[0]?.actor || this.test?.actor;
+
+    if (this.test.options.rest)
+    {
+      actor = this.test?.actor;
+    }
+
     let amount = target.dataset.amount;
 
-    if (actor && amount)
+    if (actor && actor.isOwner && amount)
     {
         await actor.modifyWounds(parseInt(amount));
-        ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: "Rest & Recover"});
+        ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: this.test.options.rest ? "Rest & Recover" : "Healing"});
     }
   }
 

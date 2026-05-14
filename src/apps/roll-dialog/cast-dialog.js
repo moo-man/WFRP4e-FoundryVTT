@@ -75,7 +75,7 @@ export default class CastDialog extends SkillDialog {
         else
           data.target = skill.system.total.value
 
-        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").filter(s => !s.options.defending))
+        data.scripts = data.scripts.concat(data.spell?.getScripts("dialog").concat(data.spell.ingredient?.getScripts("dialog") || []).filter(s => !s.options.defending))
 
         // Needed if the actor doesn't own the spell;
         data.itemData = spell.toObject();
