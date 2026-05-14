@@ -1,0 +1,1 @@
+if (this.item.attackType == "ranged") args.initiative += "+10"

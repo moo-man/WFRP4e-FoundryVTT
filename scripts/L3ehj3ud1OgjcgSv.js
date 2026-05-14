@@ -1,0 +1,3 @@
+if (!this.item.system.properties.qualities.fast) this.item.system.qualities.value.push({name : 'fast'});
+                                      if (!this.item.system.properties.qualities.precise) this.item.system.qualities.value.push({name : 'precise'})
+                                      if (!this.item.system.properties.qualities.penetrating) this.item.system.qualities.value.push({name : 'penetrating'})

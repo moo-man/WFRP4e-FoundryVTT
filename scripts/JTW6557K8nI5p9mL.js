@@ -1,0 +1,1 @@
+game.wfrp4e.tables.formatChatRoll(`mutatephys`, {showRoll: true});

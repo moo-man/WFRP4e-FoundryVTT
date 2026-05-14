@@ -1,0 +1,1 @@
+return !this.actor.attacker || !this.item.properties.qualities.defensive

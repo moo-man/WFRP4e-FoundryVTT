@@ -1,0 +1,1 @@
+if (!this.item.system.properties.qualities.pummel) this.item.system.qualities.value.push({name : 'pummel'});if (!this.item.system.properties.qualities.hack) this.item.system.qualities.value.push({name : 'hack'})

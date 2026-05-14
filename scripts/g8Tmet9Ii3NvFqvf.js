@@ -1,0 +1,1 @@
+this.actor.addCondition("bleeding", 1 + this.actor.system.status.sin?.value || 0)
