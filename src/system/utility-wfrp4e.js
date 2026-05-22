@@ -583,7 +583,7 @@ export default class WFRP_Utility {
       }
       else if (target.dataset.table) 
       {
-        let criticalLocation = game.messages.get(messageId)?.system?.test?.result.hitloc.result;
+        let criticalLocation = game.messages.get(messageId)?.system?.test?.result.hitloc?.result;
         html = (await game.wfrp4e.tables.formatChatRoll(target.dataset.table,
           {
             modifier: modifier,
