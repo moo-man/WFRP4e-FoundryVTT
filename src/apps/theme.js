@@ -94,8 +94,8 @@ export default class WFRP4eThemeConfig extends HandlebarsApplicationMixin(Applic
       setting: this.#setting,
       fields: WFRP4eThemeConfig.#schema.fields,
       buttons: [
-        { type: "reset", label: "Reset", icon: "fa-solid fa-undo", action: "reset" },
-        { type: "submit", label: "Save Changes", icon: "fa-solid fa-save" }
+        { type: "reset", label: "BUTTON.Theme.Reset", icon: "fa-solid fa-undo", action: "reset" },
+        { type: "submit", label: "BUTTON.Theme.Save", icon: "fa-solid fa-save" }
       ]
     };
   }

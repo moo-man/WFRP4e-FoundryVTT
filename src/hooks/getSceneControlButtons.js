@@ -10,7 +10,7 @@ export default function() {
       button: true,
       icon: "fas fa-circle",
       name: "morrslieb",
-      title: game.canvas.scene?.getFlag("wfrp4e", "morrslieb") ? "Morrslieb - Currently On " : "Morrslieb - Currently Off",
+      title: game.canvas.scene?.getFlag("wfrp4e", "morrslieb") ? game.i18n.localize("Morrslieb - Currently On") : game.i18n.localize("Morrslieb - Currently Off"),
       onClick: WFRP_Utility.toggleMorrslieb
     }
   })

@@ -18,35 +18,35 @@ export default function () {
   Hooks.once("init", () => {
     game.wfrp4e.commands = new ChatCommands({
       table : {
-        description: "Roll on a table",
+        description: game.i18n.localize("CHAT.CommandLine.Help.Tables.Title"),
         args : ["table", "modifier", "column"],
         defaultArg : "table",
-        examples : "<br><span font-family:'monospaced'</span>/table critarm</span><br><span font-family:'monospaced'</span>/table mutatephys modifier=20 column=khorne</span>",
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Tables.Usage.Example"),
         callback: (table, modifier, column) => WFRP_Tables.handleTableCommand(table, {modifier, column})
       },
       pay: {
-        description: "Post a prompt for payment.",
-        notes: "If a player, pay some amount from the assigned Actor. If a GM, post a message prompting to a pay some amount",
+        description: game.i18n.localize("CHAT.CommandLine.Help.Pay.Title"),
+        notes: game.i18n.localize("CHAT.CommandLine.Help.Pay.Usage.Note"),
         args: ["amount", "for", "target"],
         defaultArg: "amount",
-        examples : "<br><span font-family:'monospaced'</span>/pay 12ss for=Room and Board</span>",
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Pay.Usage.Example"),
         callback: (amount, product, target) => PayMessageModel.handlePayCommand(amount, { target, product })
       },
       credit : {
-        description : "Post a prompt to receive money.",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Credit.Title"),
         args : ["amount", "mode", "split", "target", "reason"],
         defaultArg : "amount",
-        examples : "<br><span font-family:'monospaced'>/credit 100gc reason=Completing the Bounty split=3</span>",
-        notes : "Mode can be set to 'split' or 'each', if unspecified, only a single reward is available to take (split=1). If the mode is set to split, and the split argument is not defined, it splits the amount between all active players.",
+        examples : game.i18n.localize("CHAT.CommandLine.Help.Credit.Usage.Example"),
+        notes : game.i18n.localize("CHAT.CommandLine.Help.Credit.Usage.Note"),
         callback : (amount, mode, split, target, reason) => CreditMessageModel.handleCreditCommand(amount, mode, {split, target, reason})
       },
       char: {
-        description: "Start Character Creation",
+        description: game.i18n.localize("CHAT.CommandLine.Help.CharacterGeneration.Title"),
         args: [],
         callback: () => CharGenWfrp4e.start()
       },
       cond : {
-        description: "Show Condition Description",
+        description: game.i18n.localize("CHAT.CommandLine.Help.Conditions.Title"),
         args : ["condition"],
         defaultArg: "condition",
         callback: (condition) => {
@@ -55,7 +55,7 @@ export default function () {
                 // Don't require spelling, match the closest condition to the input
                 let closest = WFRP_Utility.matchClosest( game.wfrp4e.config.conditions, conditionInput);
                 if (! game.wfrp4e.config.conditionDescriptions) {
-                  ui.notifications.error("No content found")
+                  ui.notifications.error("ERROR.NoContentFound", {localize: true})
                   return false
                 }
                 let description =  game.wfrp4e.config.conditionDescriptions[closest];
@@ -66,7 +66,7 @@ export default function () {
         }
       },
       prop : {
-        description: "Show a Quality or Flaw",
+        description: game.i18n.localize("CHAT.CommandLine.Help.Properties.Title"),
         args : ["property"],
         defaultArg : "property",
         callback : (property) => {
@@ -82,8 +82,8 @@ export default function () {
         }
       },
       name : {
-        description : "Generate a name",
-        notes : "Core Species Keys: <span font-family:'monospaced'</span>human</span> <span font-family:'monospaced'</span>dwarf</span> <span font-family:'monospaced'</span>helf</span> <span font-family:'monospaced'</span>welf</span> <span font-family:'monospaced'</span>halfling</span>",
+        description : game.i18n.localize("CHAT.CommandLine.Help.NameGeneration.Title"),
+        notes : game.i18n.localize("CHAT.CommandLine.Help.NameGeneration.Usage.Note"),
         args : ["gender", "species"],
         defaultArg : "gender",
         callback : (gender, species) => {
@@ -93,10 +93,10 @@ export default function () {
         }
       },
       avail : {
-        description : "Roll an Availability Test",
+        description : game.i18n.localize("CHAT.CommandLine.Help.AvailabilityTest.Title"),
         args : ["rarity", "size", "modifier"],
         defaultArg : "rarity",
-        examples: "<br><span font-family:'monospaced'>/avail common size=town<br>/avail rare size=city modifier=20</span>",
+        examples : game.i18n.localize("CHAT.CommandLine.Help.AvailabilityTest.Usage.Example"),
         callback : (rarity, size, modifier) => {
     
           // Call generator class to start the test, create message, send to chat, return false to not display user input of `/avail`
@@ -104,7 +104,7 @@ export default function () {
         }
       },
       corruption : {
-        description : "Prompt Corruption Test",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Corruption.Title"),
         args : ["strength", "skill", "source"],
         defaultArg : "strength",
         callback: (strength, skill, source) => {
@@ -112,7 +112,7 @@ export default function () {
         }
       },
       fear : {
-        description : "Prompt Fear Test",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Fear.Title"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -120,7 +120,7 @@ export default function () {
         }
       },
       terror : {
-        description : "Prompt Terror Test",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Terror.Title"),
         args : ["rating", "source"],
         defaultArg : "rating",
         callback: (rating, source) => {
@@ -128,7 +128,7 @@ export default function () {
         }
       },
       exp : {
-        description : "Prompt XP Reward",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Exp.Title"),
         args : ["amount", "reason"],
         defaultArg : "amount",
         callback: (amount, reason) => {
@@ -136,7 +136,7 @@ export default function () {
         }
       },
       travel : {
-        description : "Post Travel Distance Tool",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Travel.Title"),
         args : ["from", "to"],
         defaultArg : "from",
         callback: (from, to) => {
@@ -144,7 +144,7 @@ export default function () {
         }
       },
       trade : {
-        description : "Prompt Trade Dialog",
+        description : game.i18n.localize("CHAT.CommandLine.Help.Trade.Title"),
         args : [],
         callback: () => {
           game.wfrp4e.trade.attemptBuy();

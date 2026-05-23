@@ -30,7 +30,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
           opposedTestData: opposeData,
           handlerId: handler.message.id,
         },
-        speaker : {alias : "Opposed Result"},
+        speaker : {alias : game.i18n.localize("OPPOSED.Result")},
         author : getActiveDocumentOwner(opposedTest.defender)?.id,
         whisper: options.whisper,
         blind: options.blind,
@@ -119,7 +119,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
       else 
       {
         targets = attackerTest.targetTokens.map(i => i.object);
-        ui.notifications.info("No Targets - Directing offhand attack at the same target as the primary attack")
+        ui.notifications.info("INFO.NoTargetsDirectingOffhandAttack", { localize: true });
       }
   
       let offhandWeapon = attackerTest.actor.itemTags["weapon"].find(w => w.offhand.value);
