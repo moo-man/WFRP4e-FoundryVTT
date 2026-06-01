@@ -494,8 +494,8 @@ export default function() {
         color: { value:"#4cb53a", apply: true },
         gamma: 1.0,
         contrast: 1.0,
-        brightness: 1.0,
-        saturation: 0.2
+        brightness: 0.6,
+        saturation: 0.8
     }
 
     CONFIG.fontDefinitions.CaslonAntique = {editor : true, fonts : []}
