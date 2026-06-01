@@ -170,5 +170,7 @@ export class VehicleModel extends BaseActorModel {
                 list : data.passengers
             }
         }
+
+        return data;
     }
 }

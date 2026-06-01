@@ -1,0 +1,13 @@
+{{#each test.result.actions}}
+        <button class="chat-button" type="button"
+        data-action="executeAction"
+        data-effect-path="{{this.effectPath}}" 
+        data-effect-id="{{this.effectId}}" 
+        data-script-index="{{this.scriptIndex}}" 
+        data-action-index="{{@key}}" 
+        data-item-uuid="{{this.itemUuid}}">
+        {{this.label}}
+        </button>
+{{/each}}
+
+{{> effectButtons test}}

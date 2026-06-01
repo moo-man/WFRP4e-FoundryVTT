@@ -1,0 +1,48 @@
+{{#if test.result.overcasts.allowed}}
+    <div class="overcasting">
+        <p class="overcast-count">{{test.result.overcasts.available}}/{{test.result.overcasts.total}} {{localize "Overcasts"}} <a data-action="overcastReset" title="{{localize 'CHAT.OvercastReset'}}"><i class="fas fa-undo"></i></a></p>
+        <div class="overcast-options">
+
+            {{#if test.result.overcasts.options.damage.allowed}}
+                <div class="overcast-section">
+                    <a class='chat-button' data-action="overcastClick" {{#unless test.result.overcasts.options.damage.available}}style="opacity: 0.5" {{/unless}} data-overcast="damage">{{test.result.overcasts.options.damage.label}}</a>
+                    <a class="overcast-value damage">{{test.result.overcasts.options.damage.value}}</a>
+                </div>
+            {{/if}}
+
+
+            {{#if test.result.overcasts.options.targets.allowed}}
+                <div class="overcast-section">
+                    <a class='chat-button' data-action="overcastClick" {{#unless test.result.overcasts.options.targets.available}}style="opacity: 0.5" {{/unless}} data-overcast="targets">{{test.result.overcasts.options.targets.label}}</a>
+                    {{#if test.result.overcasts.options.targets.aoe}}
+                        <a class="overcast-value action-link targets" data-type="diameter" data-action="placeTemplate" data-id="{{test.context.item}}" data-actor-id="{{test.actor.id}}"><i class="fas fa-ruler-combined"></i> {{test.result.overcasts.options.targets.value}}
+                            {{test.result.overcasts.options.targets.unit}}</a>
+                    {{else}}
+                        <a class="overcast-value targets">{{test.result.overcasts.options.targets.value}} </a>
+                    {{/if}}
+                </div>
+            {{/if}}
+
+            {{#if test.result.overcasts.options.duration.allowed}}
+                <div class="overcast-section">
+                    <a class='chat-button' data-action="overcastClick" {{#unless test.result.overcasts.options.duration.available}}style="opacity: 0.5" {{/unless}} data-overcast="duration">{{test.result.overcasts.options.duration.label}}</a>
+                    <a class="overcast-value duration">{{test.result.overcasts.options.duration.value}} {{test.result.overcasts.options.duration.unit}}</a>
+                </div>
+            {{/if}}
+
+            {{#if test.result.overcasts.options.range.allowed}}
+                <div class="overcast-section">
+                    <a class='chat-button' data-action="overcastClick" {{#unless test.result.overcasts.options.range.available}}style="opacity: 0.5" {{/unless}} data-overcast="range">{{test.result.overcasts.options.range.label}}</a>
+                    <a class="overcast-value range">{{test.result.overcasts.options.range.value}} {{test.result.overcasts.options.range.unit}}</a>
+                </div>
+            {{/if}}
+
+            {{#each test.result.overcasts.options.other}}
+                <div class="overcast-section">
+                    <a class='chat-button' data-action="overcastClick" {{#unless this.available}}style="opacity: 0.5" {{/unless}} data-overcast="{{@key}}">{{this.label}}</a>
+                    <a class="overcast-value other">{{this.value}}</a>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+{{/if}}

@@ -154,9 +154,22 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             let SBsToAdd = actor.sizeNum - 3
             damage += (actor.characteristics.s.bonus * SBsToAdd)
           }
-    
         }
         //@/HOUSE
+        else if (game.wfrp5e) // TODO: temporary? Remove in favor of a Size item script?
+        {
+          if (this.damage.value.includes("SB"))
+          {
+            if (actor.sizeNum > 3)
+            {
+                damage += (actor.characteristics.s.bonus);
+            }
+            if (actor.sizeNum > 5)
+            {
+                damage += (actor.characteristics.s.bonus);
+            }
+          }
+        }
     
         return parseInt(damage || 0)
       }
@@ -326,8 +339,13 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
         //TODO: Don't like having to check for type here
         if (this.parent.isOwned && !this.skillToUse && this.parent.actor.type != "vehicle") {
-            properties.unusedQualities = properties.qualities
-            properties.qualities = {}
+
+            // 5e specifies only melee loses qualities
+            if (!game.wfrp5e || this.isMelee)
+            {
+                properties.unusedQualities = properties.qualities
+                properties.qualities = {}
+            }
             if (ammo)
                 properties.qualities = ammo.properties.qualities
         }
@@ -397,27 +415,27 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
         rangeBands[`${game.i18n.localize("Point Blank")}`] = {
             range: [0, Math.ceil(range / 10)],
-            modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Point Blank"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Point Blank"]
         }
         rangeBands[`${game.i18n.localize("Short Range")}`] = {
             range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
-            modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Short Range"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Short Range"]
         }
         rangeBands[`${game.i18n.localize("Normal")}`] = {
             range: [Math.ceil(range / 2) + 1, range],
-            modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Normal"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Normal"]
         }
         rangeBands[`${game.i18n.localize("Long Range")}`] = {
             range: [range + 1, range * 2],
-            modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Long Range"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Long Range"]
         }
         rangeBands[`${game.i18n.localize("Extreme")}`] = {
             range: [range * 2 + 1, range * 3],
-            modifier: game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Extreme"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
             difficulty: game.wfrp4e.config.rangeModifiers["Extreme"]
         }
 
@@ -727,9 +745,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
     static migrateData(data)
     {
-        super.migrateData(data);
+        data = super.migrateData(data);
         if (data.equipped && typeof data.equipped !== 'object') {
             data.equipped = {value: data.equipped};
         }
+        return data;
     }
 }

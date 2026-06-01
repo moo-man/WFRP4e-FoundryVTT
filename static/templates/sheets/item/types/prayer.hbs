@@ -17,6 +17,11 @@
         {{formGroup fields.damage.fields.addSL value=source.system.damage.addSL}}
     </fieldset>
 
-    {{> extraOvercast}}
+            {{#if (settings "editionSettings.use5e")}}
+            {{> extraOvercast5e}}
+        {{else}}
+            {{> extraOvercast}}
+        {{/if}}
+
     
 </section>

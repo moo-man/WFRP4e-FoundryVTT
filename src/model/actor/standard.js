@@ -64,6 +64,7 @@ export class StandardActorModel extends BaseActorModel {
         await this._handleGroupAdvantage(data, options)
         this._handleWoundsUpdate(data, options)
         this._handleAdvantageUpdate(data, options)
+        this._handleMomentumUpdate(data, options)
 
     }
 
@@ -158,6 +159,10 @@ export class StandardActorModel extends BaseActorModel {
             }
         }
         this.status.encumbrance.current = this.status.encumbrance.current.toFixed(2);
+        if (game.wfrp5e)
+        {
+            this.status.channelling.winds = this.status.channelling.getWinds(this.parent.itemTypes.spell);
+        }
     }
 
     computeBase() {
@@ -434,6 +439,13 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
+    _handleMomentumUpdate(data, options) {
+        if (foundry.utils.hasProperty(data, "system.status.momentum")) 
+        {
+            options.momentum = data.system.status.momentum;
+        }
+    }
+
     tokenSize() {
         let tokenData = {};
         let tokenSize = game.wfrp4e.config.tokenSizes[this.details.size.value];
@@ -476,6 +488,323 @@ export class StandardActorModel extends BaseActorModel {
                 }
             }
         }
+    }
+
+    async applyDamage(damage, {opposedTest, sourceTest, sourceItem, ignoreAP, ignoreTB, damageType, weaponProperties={}, loc="body", createMessage=false}={})
+    {
+      if (damageType)
+      {
+        if (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP)
+        {
+          ignoreAP = true;
+        }
+        if (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB)
+        {
+          ignoreTB = true;
+        }
+        if (damageType == game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL)
+        {
+          ignoreTB = true;
+          ignoreAP = true;
+        }
+      }
+
+      let applyTB = !ignoreTB;
+      let applyAP = !ignoreAP;
+      let extraMessages = [];
+  
+      if (!sourceTest && opposedTest)
+      {
+        sourceTest = opposedTest.attackerTest;
+      }
+  
+      if (!sourceItem)
+      {
+        sourceItem = sourceTest?.item;
+      }
+  
+      let actor = this.parent;
+      let attacker = opposedTest?.attacker || sourceTest?.actor || sourceItem?.actor;
+  
+      if (loc == "roll")
+      {
+        loc = (await game.wfrp4e.tables.rollTable("hitloc", {hideDSN: true})).result
+      }
+  
+      if (opposedTest?.result.hitloc.value)
+      {
+        loc = opposedTest.result.hitloc.value;
+      }
+  
+      let AP = foundry.utils.deepClone(actor.status.armour[loc]);
+      let abort = false
+      
+      let modifiers = {
+        total: 0,
+        tb : 0,
+        ap : {
+          value : 0,
+          total : 0,
+          ignore : 0,
+          ignored : 0,
+          metal : 0,
+          nonmetal : 0,
+          magical : 0,
+          shield : 0,
+          details : []
+        },
+        other : [], // array of {label : string, value : number, details : string},
+        minimumOne : true, // whether minimumOne should be triggered
+        minimumOneApplied : false // whether minimumOne was triggered (used for the tooltip)
+      }
+
+      if (sourceItem)
+      {
+        foundry.utils.mergeObject(weaponProperties, foundry.utils.deepClone(sourceItem.system.properties) || {}, {overwrite: false}); 
+      }
+
+
+      let armour = {};
+      let armourItems = [];
+      // Organize armour layers into an object with source ID as the key
+      // This allows scripts to easily manipulate the layers
+      for(let layer of AP.layers)
+      {
+        armour[layer.source.id] = {
+            name: layer.source.name,
+            metal: layer.metal,
+            ignored: false,
+            properties: layer.source.system.properties,
+            value: layer.value,
+            source: layer.source,
+            tooltip: ""
+        }
+        if (layer.source?.type == "armour")
+        {
+            // For any armour involved, run item scripts
+            armourItems.push(layer.source);
+        }
+      }
+
+      if (applyTB)
+      {
+        modifiers.tb += actor.system.characteristics.t.bonus;
+      }
+
+      // TODO Ward Roll - Should be removed in favor of a script?
+
+      let ward = actor.system.status.ward.value;
+      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
+  
+      let args = { damage, actor, attacker, opposedTest, sourceTest, sourceItem, applyAP, applyTB, armour, weaponProperties, loc, AP, modifiers, extraMessages, abort, ward, wardRoll}
+      await Promise.all(actor.runScripts("preTakeDamage", args))
+      await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
+      await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
+      await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("preTakeDamage", args)), []));
+
+      damageType = args.damageType;
+      applyAP = args.applyAP;
+      applyTB = args.applyTB;
+      abort = args.abort;
+      damage = args.damage;
+  
+        for(let id in armour)
+        {
+            modifiers.ap.total += armour[id].value;
+            if (armour[id].ignored)
+            {
+                modifiers.ap.ignored += armour[id].value;
+            }
+            else 
+            {
+                modifiers.ap.value += armour[id].value;
+                if (armour[id].metal)
+                {
+                    modifiers.ap.metal += armour[id].value;
+                }
+                else
+                {
+                    modifiers.ap.nonmetal += armour[id].value;
+                }
+            }
+        }
+        
+        // ap.ignored is the recorded amount ignored across everything, 
+        // ap.ignore can be set to ignore a specific amount of AP. 
+        // armour[id].ignored is boolean value that ignores that specific layer (partial/weakpoints) 
+        // ap.ignored = ap.ignore + all the armour layers with ignored set to true
+        modifiers.ap.layers = Object.values(armour);
+        modifiers.ap.ignored += modifiers.ap.ignore;
+        modifiers.ap.value = Math.max(0, modifiers.ap.value - modifiers.ap.ignore);
+
+        await Promise.all(actor.runScripts("computeTakeDamageModifiers", args))
+        await Promise.all(attacker?.runScripts("computeApplyDamageModifiers", args) || [])
+        await Promise.all(sourceItem?.runScripts("computeApplyDamageModifiers", args) || [])
+        await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("computeTakeDamageModifiers", args)), []));
+
+        
+        if (applyTB)
+        {
+            modifiers.total += modifiers.tb;
+        }
+        if (applyAP)
+        {
+            modifiers.total += modifiers.ap.value;
+        }
+
+        modifiers.total += modifiers.other.reduce((acc, current) => acc + current.value, 0)
+        let totalWoundLoss = damage - modifiers.total;
+        if (totalWoundLoss <= 0 && modifiers.minimumOne)
+        {
+            totalWoundLoss = 1;
+            modifiers.minimumOneApplied = true;
+        }
+        else if (totalWoundLoss <= 0)
+        {
+            totalWoundLoss = 0;
+        }
+
+        if (ward && wardRoll)
+        {
+            if (!abort && wardRoll >= ward)
+            {
+                abort = true;
+            }
+
+            extraMessages.push(`<strong>Ward</strong>: ${wardRoll}` + ((wardRoll >= ward) ? " (Warded!)" : ""));
+        }
+
+        if (abort)
+        {
+            if (typeof abort == "string")
+            {
+                extraMessages.push(abort);
+            }
+            totalWoundLoss = 0;
+        }
+
+        args.totalWoundLoss = totalWoundLoss;
+        await Promise.all(actor.runScripts("takeDamage", args));
+        await Promise.all(attacker?.runScripts("applyDamage", args) || []);
+        await Promise.all(sourceItem?.runScripts("applyDamage", args) || []);
+        await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("takeDamage", args)), []));
+      Hooks.call("wfrp4e:applyDamage", args);
+        totalWoundLoss = args.totalWoundLoss
+        
+        let newWounds = this.status.wounds.value - totalWoundLoss;
+
+        let tooltip =  this._createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort});
+        let tooltipHTML = `<a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
+        let tableHTML = this._createTableLinks({newWounds, loc})
+
+        let updateMsg = `
+        <strong>${game.i18n.localize("CHAT.DamageApplied")}</strong> ${totalWoundLoss} 
+        ${tooltipHTML}
+        ${tableHTML}
+        ${extraMessages.length > 0 ?  `<br>${extraMessages.join(`<br>`)}` : ""}
+        `;
+
+        if (totalWoundLoss > 0)
+        {
+            let damageEffects = opposedTest?.attackerTest?.damageEffects || [];
+            let filtered = [];
+            for(let effect of damageEffects)
+            {
+            if (await effect.runPreApplyScript())
+            {
+                filtered.push(effect);
+            }
+            }
+            await actor.applyEffect({effectUuids: filtered.map(i => i.uuid), messageId : opposedTest?.attackerTest.message.id});
+        }
+        await actor.update({ "system.status.wounds.value": newWounds })
+
+
+        if (!createMessage)
+        {
+            return updateMsg;
+        }
+        else
+        {
+            if (typeof createMessage == "object")
+            {
+                ChatMessage.create(foundry.utils.mergeObject({content: updateMsg}, createMessage));
+            }
+            else 
+            {
+                ChatMessage.create({content: updateMsg})
+            }
+        }
+    }
+
+    _createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort})
+    {
+        let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${damage}</p><hr>`
+
+        if (applyTB)
+        {
+            tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: -${modifiers.tb}</p>`
+        }
+        else 
+        {
+            tooltip += `<p><strong>${game.i18n.localize("TBRed")}</strong>: ${game.i18n.localize("BREAKDOWN.Ignored")}</p>`;
+        }
+
+        if (applyAP)
+        {
+            tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: -${modifiers.ap.value}`
+            if (modifiers.ap.ignored)
+            {
+                tooltip += ` (${modifiers.ap.ignored} ${game.i18n.localize("BREAKDOWN.Ignored")})`
+            }
+
+            tooltip += "</p>"
+
+            for(let layer of modifiers.ap.layers)
+            {
+                if (layer.ignored)
+                {
+                    tooltip += `<p style='margin-left : 20px'>Ignored ${layer.name} (${layer.value}) ${layer.tooltip ? (" – " + layer.tooltip) : ""} </p>`
+                }
+            }
+
+            if (modifiers.ap.details.length)
+            {
+                tooltip += `<p style='margin-left : 20px'>${modifiers.ap.details.join("</p><p style='margin-left : 20px'>")}</p>`
+            }
+
+        }
+        else
+        {
+            tooltip += `<p><strong>${game.i18n.localize("AP")}</strong>: ${game.i18n.localize("BREAKDOWN.Ignored")}</p>`
+        }
+
+        if (modifiers.other.length)
+        {
+            tooltip += `<p>${modifiers.other.filter(i => i.value != 0).map(i => `<strong>${i.label}</strong>: ${i.details ? i.details : ""} (${(i.value > 0 ? "+" : "") + i.value})`).join("</p><p>")}</p>`
+        }
+        if (modifiers.minimumOneApplied)
+        {
+            tooltip += `<p>${game.i18n.localize("BREAKDOWN.Minimum1")}</p>`;
+        }
+        tooltip += `<hr><p><strong>${game.i18n.localize("Wounds")}</strong>: ${totalWoundLoss} ${abort ? "(Aborted)" : ""}</p>`
+        return tooltip;
+    }
+
+    _createTableLinks({newWounds, loc})
+    {
+        let html = ""
+        // If damage taken reduces wounds to 0, show Critical
+        if (newWounds < 0) 
+        {
+            let critModifier = (Math.abs(newWounds)) * 10;
+            html += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
+        }
+        // if (hack)
+        // {
+        //     html += `<br><button data-action="applyHack">${game.i18n.localize('CHAT.ApplyHack')}</button>`
+        // }
+        return html;
     }
 
     

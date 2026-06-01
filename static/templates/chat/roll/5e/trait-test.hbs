@@ -1,0 +1,32 @@
+<div class="wfrp4e wfrp5e test-message">
+    {{> testResults}}
+        <div class="damage">
+            <strong>{{localize "Damage"}}</strong>:
+            {{test.result.damage}}
+            <a class="damage-breakdown" style="opacity: 0.5" data-tooltip="{{test.result.breakdown.formatted.damage}}" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>
+    </div>
+
+    {{#if test.item.Qualities.length}}
+    <div class="test-details" >
+    <strong>{{localize "Qualities"}}</strong>: 
+        {{#each test.item.Qualities as |quality q|}}
+        <a data-action="postProperty">{{quality}} </a>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{#if test.item.Flaws.length}}
+    <div class="test-details" >
+        <strong>{{localize "Flaws"}}</strong>: 
+            {{#each test.item.Flaws as |flaw f|}}
+            <a data-action="postProperty">{{flaw}} </a>
+            {{/each}}
+            
+    </div>
+    {{/if}}
+    
+    {{> testButtons}}
+</div>
+
+
+</div>

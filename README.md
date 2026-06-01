@@ -32,7 +32,9 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 8.0**, Compatible with V12, implements the Warhammer Library module.
 
-**Version 9.0**, Current version, Compatible with V13+, all applications supporting AppV2.
+**Version 9.0**, Compatible with V13-14, all applications supporting AppV2.
+
+**Version 10.0**, Current version, Compatible with V14, supports WFRP 5th Edition.
 
 Please feel free to message me on Discord - moo.man
 

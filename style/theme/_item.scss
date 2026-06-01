@@ -154,4 +154,19 @@
     }
 
 
+    .overcast-option {
+        .form-fields {
+            button {
+                --button-background-color: transparent;
+                --button-border-color: transparent;
+                --button-text-color: var(--color-grey2);
+                --button-hover-background-color: transparent;
+                --button-hover-border-color: transparent;
+                --button-hover-text-color: var(--color-warm);
+                outline: none;
+                box-shadow: none;
+            }
+        }
+    }
+
 }

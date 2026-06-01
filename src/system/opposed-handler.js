@@ -1,6 +1,6 @@
 import WFRP_Utility from "./utility-wfrp4e.js";
-import OpposedTest from "./opposed-test.js";
 import { OpposedTestMessage } from "../model/message/opposed-result.js";
+import EditionManager from "../apps/edition-manager.js";
 
 /**
  * Represents an opposed test. This object is stored in the "targeting" messages and is used as a central manager of a single opposed test.
@@ -51,13 +51,24 @@ export default class OpposedHandler {
 
   get defenderTest() {
     if (this.unopposed) {
-      return new game.wfrp4e.rolls.CharacteristicTest({
+
+      let test = !!game.wfrp5e 
+      ? new game.wfrp4e.rolls5e.TestWFRP5e({
+          definedSL: 0,
+          unopposed: true,
+          roll: 0, 
+          target: 0,
+        }, this.target.actor)
+     : new game.wfrp4e.rolls.CharacteristicTest({
         item: "ws",
         SL: 0,
         target: 0,
         roll: 0,
         unopposed: true,
       }, this.target.actor)
+      test.initializeResult?.();
+
+      return test;
     }
     else
       return this.defenderMessage?.system.test;
@@ -102,11 +113,12 @@ export default class OpposedHandler {
       await this.updateMessageData();
   }
 
-  async computeOpposeResult() {
+  async computeOpposeResult(edition="4e") {
     if (!this.attackerTest || !this.defenderTest)
       throw new Error(game.i18n.localize("ERROR.Opposed"))
 
-    this.opposedTest = new OpposedTest(this.attackerTest, this.defenderTest);
+    let opposedClass = EditionManager.getOpposedTest();
+    this.opposedTest = new opposedClass(this.attackerTest, this.defenderTest);
 
     await this.opposedTest.evaluate();
     this.formatOpposedResult();
@@ -115,7 +127,7 @@ export default class OpposedHandler {
   }
 
   async renderMessage() {
-    let attacker = game.canvas.tokens.get(this.attackerTest.context.chatOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
+    let attacker = game.canvas.tokens.get(this.attackerTest.context.speaker.token)?.document ?? this.attacker.prototypeToken;
     let defender
 
     // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
@@ -137,7 +149,7 @@ export default class OpposedHandler {
 
     // Ranged weapon opposed tests automatically lose no matter what if the test itself fails
     if (this.attackerTest.item && this.attackerTest.item.isRanged && this.attackerTest.failed) {
-      await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged") })
+      await ChatMessage.create({ speaker: this.attackerMessage.speaker, content: game.i18n.localize("OPPOSED.FailedRanged"), flags: {"dice-so-nice": {linkedTo: this.data.attackerMessageId}} })
       return;
     }
     let chatData = {
@@ -148,6 +160,7 @@ export default class OpposedHandler {
         whisper: this.options.whisper,
         blind: this.options.blind,
         author : getActiveDocumentOwner(defender?.actor)?.id,
+        flags : { "dice-so-nice" : { linkedTo : this.data.attackerMessageId }},
         system : {
           opposedData : this.data
         }

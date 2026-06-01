@@ -32,10 +32,13 @@ export default class EditTest extends  HandlebarsApplicationMixin(ApplicationV2)
 
     async _prepareContext(options) {
         let context = await super._prepareContext(options);
-        context.roll = this.test.preData.roll;
-        context.hitloc = this.test.preData.hitloc || this.test.result.hitloc?.roll;
-        context.SL = this.test.preData.SL;
-        context.target = this.test.preData.target;
+
+        let testData = this.test.e5 ? this.test.testData : this.test.preData;
+
+        context.roll = testData.roll;
+        context.hitloc = (this.test.e5 ? testData.hitLocation.roll : testData.hitloc) || this.test.result.hitloc?.roll;
+        context.SL = this.test.e5 ? testData.definedSL : testData.SL;
+        context.target = testData.target;
         return context;
     }
 
