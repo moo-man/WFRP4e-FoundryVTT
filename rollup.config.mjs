@@ -3,10 +3,15 @@ import getSystemPath from "./foundry-path.mjs";
 import copy from 'rollup-plugin-copy-watch';
 import postcss from "rollup-plugin-postcss"
 import bakedEnv from 'rollup-plugin-baked-env';
+import simpleGit from 'simple-git';
+
+let latest;
+simpleGit().tags((err, tags) => latest = tags.latest);
 
 let manifest = JSON.parse(fs.readFileSync("./system.json"))
 
 let systemPath = getSystemPath(manifest.id, manifest.compatibility.verified);
+
 
 console.log("Bundling to " + systemPath)
 export default {
@@ -23,7 +28,7 @@ export default {
         copy({
             targets : [
                 {src : "./template.json", dest : systemPath},
-                {src : "./system.json", dest : systemPath},
+                {src : "./system.json", dest : systemPath, transform: (contents) => contents.toString().replaceAll("@VERSION", latest)},
                 {src : "./WFRP-Header.jpg", dest : systemPath},
                 {src : "./static/*", dest : systemPath},
             ],
