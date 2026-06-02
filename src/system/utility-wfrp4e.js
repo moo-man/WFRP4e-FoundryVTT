@@ -563,7 +563,7 @@ export default class WFRP_Utility {
    */
   static async handleTableClick(event, target) {
     let modifier = parseInt(target.dataset.modifier) || 0;
-    let messageId= this.id;
+    let messageId = target.closest("[data-message-id]")?.dataset.messageId;
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
@@ -583,11 +583,13 @@ export default class WFRP_Utility {
       }
       else if (target.dataset.table) 
       {
+        let criticalLocation = game.messages.get(messageId)?.system?.test?.result.hitloc?.result;
         html = (await game.wfrp4e.tables.formatChatRoll(target.dataset.table,
           {
             modifier: modifier,
             showRoll: true,
-            messageId
+            messageId,
+            criticalLocation
           }, target.dataset.column));
       }
 

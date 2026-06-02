@@ -1,0 +1,1 @@
+let char = this.item.attackType == "melee" ? "ws" : "bs"; args.actor.system.characteristics[char].modifier += 20

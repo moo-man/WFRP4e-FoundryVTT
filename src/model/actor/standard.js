@@ -76,7 +76,7 @@ export class StandardActorModel extends BaseActorModel {
             let attacker = this.parent.attacker;
             if (attacker)
             {
-                this.parent.runScripts("targeted", {attacker})
+                this.parent.runScripts("targeted", {attacker, test: attacker.test})
             }
         }
     }

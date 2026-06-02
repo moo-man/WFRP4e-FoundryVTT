@@ -412,6 +412,14 @@ export default class WFRP_Tables {
       let document = await fromUuid(result.object.documentUuid);
       if (document?.documentName == "Item")
       {
+        if (document.type == "critical" && options.criticalLocation)
+        {
+          // Should find a better way to do this
+          let data = document.toObject();
+          data.system.location.key = options.criticalLocation;
+          data.system.location.value = game.wfrp4e.config.locations[options.criticalLocation];
+          document = new Item.implementation(data);
+        }
         await document.postItem(undefined, {"flags.wfrp4e.sourceMessageId" : options.messageId});
         return null;
       }

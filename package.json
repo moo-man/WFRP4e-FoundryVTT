@@ -26,7 +26,7 @@
     "fs": "^0.0.1-security",
     "fs-extra": "^10.1.0",
     "path": "^0.12.7",
-    "rollup": "^4.22.5",
+    "rollup": "^4.59.0",
     "rollup-plugin-baked-env": "^1.0.1",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-copy-watch": "^0.0.1",

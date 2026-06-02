@@ -1,0 +1,1 @@
+let shield = this.item.system.qualities.value.find(q => q.name == 'shield'); shield.value++
