@@ -20,9 +20,9 @@ export default class PrayerSheet extends BaseWFRP4eItemSheet
   {
     let context = await super._prepareContext(options);
     context.overcastTypes = {
-      value : "Value",
-      SL : "SL",
-      characteristic : "Characteristic"
+      value : game.i18n.localize("Value"),
+      SL : game.i18n.localize("SL"),
+      characteristic : game.i18n.localize("Characteristic")
     }
     return context;
   }
