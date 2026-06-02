@@ -459,6 +459,7 @@
     "Wounds" : "Wounds",
     "RestRecover" : "Rest & Recover Wounds",
     "RestRecoverHealed" : "<strong>{actor}</strong> healed {amount} Wounds.",
+    "Healing": "Healing",
     "Modifier" : "Modifier",
     "Modifiers" : "Modifiers",
     "Range" : "Range",
