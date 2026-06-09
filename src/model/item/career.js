@@ -362,6 +362,8 @@ export class CareerModel extends BaseItemModel
         // {
         //     data.trappings = {list : data.trappings};
         // }
+        
+        return data;
       }
 
       async toEmbed(config, options={})

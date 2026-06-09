@@ -727,9 +727,10 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
     static migrateData(data)
     {
-        super.migrateData(data);
+        data = super.migrateData(data);
         if (data.equipped && typeof data.equipped !== 'object') {
             data.equipped = {value: data.equipped};
         }
+        return data;
     }
 }

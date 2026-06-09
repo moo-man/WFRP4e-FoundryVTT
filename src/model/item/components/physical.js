@@ -223,5 +223,7 @@ export class PhysicalItemModel extends BaseItemModel
         {
             data.location.value = ''
         }
+
+        return data;
     }
 }

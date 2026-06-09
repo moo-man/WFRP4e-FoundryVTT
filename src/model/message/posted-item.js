@@ -147,6 +147,7 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
     ChatMessage.create(ChatMessage.applyRollMode({
       type : "item",
       content,
+      speaker: {},
       system : {itemData, originalItemData : itemData, postQuantity : quantity}
     }, game.settings.get("core", "rollMode")))
 

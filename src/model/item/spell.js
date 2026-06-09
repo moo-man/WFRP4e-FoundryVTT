@@ -344,13 +344,14 @@ export class SpellModel extends OvercastItemModel {
 
 
     /** @inheritdoc */
-    static migrateData(source) 
+    static migrateData(data) 
     {
-      super.migrateData(source);
-      if (typeof source.lore.value == "string")
+      super.migrateData(data);
+      if (typeof data.lore.value == "string")
       {
-        source.lore.value = [source.lore.value];
+        data.lore.value = [data.lore.value];
       }
+      return data;
     }
 
 }

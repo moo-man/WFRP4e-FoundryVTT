@@ -52,10 +52,55 @@
     "type": 1,
     "diagonals": 4
   },
+  "documentTypes": {
+    "Actor" : {
+      "character" : {"htmlFields" : ["details.biography.value", "details.gmnotes.value"]},
+      "npc" : {"htmlFields" : ["details.biography.value", "details.gmnotes.value"]},
+      "creature" : {"htmlFields" : ["details.biography.value", "details.gmnotes.value"]},
+      "vehicle" : {"htmlFields": ["details.description.value", "details.gmdescription.value"]}
+    },
+    "Item" : {
+      "ammunition" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "armour" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "career" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "cargo" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "container" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "critical" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "disease" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "extendedTest" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "injury" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "money" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "mutation" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "prayer" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "psychology" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "skill" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "spell" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "talent" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "trait" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "trapping" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "vehicleMod" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "vehicleRole" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "vehicleTest" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "weapon" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "template" : {"htmlFields": ["description.value", "gmdescription.value"]}
+    },
+    "ChatMessage": {
+      "test" : {},
+      "handler" : {},
+      "opposed" : {},
+      "item" : {},
+      "pay" : {},
+      "credit" : {},
+      "xp" : {},
+      "corruption" : {},
+      "psych" : {},
+      "magic" : {}
+    }
+  },
   "primaryTokenAttribute": "status.wounds",
   "secondaryTokenAttribute": "status.advantage",
   "compatibility" : {
-    "minimum" : 13,
+    "minimum" : 14,
     "verified" : 14,
     "maximum" : 14
   },
