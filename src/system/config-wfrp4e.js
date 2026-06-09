@@ -2064,7 +2064,7 @@ WFRP4E.PrepareSystemItems = function() {
                             formula = scriptArgs.formula;
                             msg = scriptArgs.msg;
                             let roll = await new Roll(formula, this).roll({allowInteractive : false});
-                            let terms = roll.terms.map(i => (i instanceof Die ? (i.formula + " (" + i.total + ")") : (i.total))).join("")
+                            let terms = roll.terms.map(i => (i instanceof foundry.dice.terms.Die ? (i.formula + " (" + i.total + ")") : (i.total))).join("")
                             msg = msg.replace("@FORMULA", terms);
 
                             let damageMsg = ("<br>" + await this.actor.applyBasicDamage(roll.total, {loc: leastProtectedLoc, suppressMsg : true})).split("")
@@ -2733,8 +2733,6 @@ if (test.succeeded) {
 WFRP4E.effectTextStyle = CONFIG.canvasTextStyle.clone();
 WFRP4E.effectTextStyle.fontSize = "30";
 WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
-
-WFRP4E.rollModes = CONFIG.Dice.rollModes;
 
 WFRP4E.transferDocumentTypes = defaultWarhammerConfig.transferDocumentTypes;
 
