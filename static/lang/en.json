@@ -1128,7 +1128,7 @@
     "MARKET.For": "for",
     "MARKET.ReceivedBy" : "Received by:",
     "MARKET.MoneyTransactionWrongCommand" : "Wrong syntax. Please format your command like in the following examples:",
-    "MARKET.PayCommandExample" : "/pay 3gc2bp<br>/pay 450bp<br>/pay 2ss12bp4gc<br>/pay 1gc John<br>/pay 12ss Kastor Lieberung",
+    "MARKET.PayCommandExample" : "/pay 3gc2bp<br>/pay 450bp<br>/pay 2ss12bp4gc<br>/pay 1gc for=Room and Board<br>/pay 12ss for=Lodging target=Kastor Lieberung",
     "MARKET.CreditCommandExample" : "/credit 3gc2bp<br>/credit 450bp each<br>/credit 2ss12bp4gc split<br>/credit 2ss John<br>/credit 12gc Kastor Lieberung",
     "MARKET.CantFindMoneyItems" : "Error. Can't find the money items (GC/BP/SS) in the character inventory.",
     "MARKET.NotEnoughMoney" : "This character does not have enough money to pay for this.<br>",
