@@ -147,7 +147,7 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
    */
   static async create(item, quantity, mergeData = {}) 
   {
-    if (quantity == undefined && (item.system.isPhysical))
+    if (quantity === undefined && (item.system.isPhysical))
     {
       quantity = await ValueDialog.create({title : game.i18n.localize("DIALOG.PostQuantity"), text : game.i18n.localize("DIALOG.PostQuantityContent")}) || undefined
     }
