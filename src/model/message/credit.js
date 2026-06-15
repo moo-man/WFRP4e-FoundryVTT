@@ -50,7 +50,7 @@ export class CreditMessageModel extends WarhammerMessageModel {
           }
         }
         // Default choice, display chat card
-        this.createCreditMessage(amount, mode, {split : Number(split) ,reason, player: target});
+        this.createCreditMessage(amount, mode, {split : Number(split) ,reason, target});
       }
       return false;
   }
