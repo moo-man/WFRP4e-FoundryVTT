@@ -226,32 +226,32 @@ export default class Advancement
     }
 
 
-    if (["slaanesh", "tzeentch", "nurgle"].includes(spell.lore.value))
+    if (["slaanesh", "tzeentch", "nurgle", "undivided"].includes(spell.lore.value[0]))
       return 0
 
-    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
+    if (spell.lore.value[0] == "petty" || spell.lore.value[0] == game.i18n.localize("WFRP4E.MagicLores.petty"))
       bonus = actor.characteristics.wp.bonus
     else 
       bonus = actor.characteristics.int.bonus
 
-    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
+    if (spell.lore.value[0] != "petty" && spell.lore.value[0] != game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value == spell.lore.value && i.memorized.value).length;
+      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value[0] == spell.lore.value[0] && i.memorized.value).length;
     }
-    else if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty"))
+    else if (spell.lore.value[0] == "petty" || spell.lore.value[0] == game.i18n.localize("WFRP4E.MagicLores.petty"))
     {
-      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value == spell.lore.value).length;
+      currentlyKnown = actor.itemTags["spell"].filter(i => i.lore.value[0] == spell.lore.value[0]).length;
       if (currentlyKnown < bonus)
         return 0 // First WPB petty spells are free
     }
 
     let costKey = currentlyKnown
-    if (spell.lore.value != "petty" && spell.lore.value != game.i18n.localize("WFRP4E.MagicLores.petty"))
+    if (spell.lore.value[0] != "petty" && spell.lore.value[0] != game.i18n.localize("WFRP4E.MagicLores.petty"))
       costKey-- // Not sure if this is right, but arcane and petty seem to scale different per th example given
 
     cost = Math.ceil(Math.max(1, costKey) / bonus) * 100
 
-    if (spell.lore.value == "petty" || spell.lore.value == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
+    if (spell.lore.value[0] == "petty" || spell.lore.value[0] == game.i18n.localize("WFRP4E.MagicLores.petty")) cost *= 0.5 // Petty costs 50 each instead of 100
 
     return cost
   }
