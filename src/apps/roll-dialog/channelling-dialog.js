@@ -54,7 +54,7 @@ export default class ChannellingDialog extends SkillDialog {
         {
             skill = actor.itemTags["skill"].find(i => i.name.toLowerCase() == spell.system.wind.value.toLowerCase());
         }
-        else if (spell.system.lore.value[0] == "witchcraft")
+        else if (game.wfrp4e.config.magicWind[spell.system.lore.value[0]] == "None")
         {
             skill = actor.itemTags["skill"].find(x => x.name.toLowerCase().includes(game.i18n.localize("NAME.Channelling").toLowerCase()))
         }
