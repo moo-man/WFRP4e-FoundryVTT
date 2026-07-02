@@ -10,6 +10,13 @@ export default class AttackDialog extends SkillDialog
     computeFields()
     {
         super.computeFields();
+        if (this.item.attackType == "ranged" && game.combat?.active) {
+            let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
+            if (combatant?.token?.movementHistory?.length > 0) {
+                this.fields.modifier -= 10;
+                this.tooltips.add("modifier", -10, game.i18n.localize("CHAT.TestModifiers.MovedThisRound"));
+            }
+        }
         if (!["roll", "none"].includes(this.fields.hitLocation))
         {
             this.fields.modifier -= 20;
