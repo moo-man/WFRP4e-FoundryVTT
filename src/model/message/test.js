@@ -123,7 +123,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
     if (actor && actor.isOwner && amount)
     {
         await actor.modifyWounds(parseInt(amount));
-        ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: this.test.options.rest ? "Rest & Recover" : "Healing"});
+        ChatMessage.implementation.create({content: `<p>${game.i18n.format("RestRecoverHealed", {actor: actor.name, amount: amount} )}</p>`, flavor: this.test.options.rest ? game.i18n.localize("RestRecover") : game.i18n.localize("Healing")});
     }
   }
 

@@ -289,7 +289,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         {value: "system.characteristics.int.calculationBonusModifier", label: game.i18n.localize("CHAR.Int") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
         {value: "system.characteristics.wp.calculationBonusModifier", label: game.i18n.localize("CHAR.WP") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
         {value: "system.characteristics.fel.calculationBonusModifier", label: game.i18n.localize("CHAR.Fel") + " (" + game.i18n.localize("EFFECT.CalculationBonusModifier") + ")" , group: game.i18n.localize("EFFECT.CalculationBonusModifiers")},
-        {value: "system.details.move.value", label: "Move", group: game.i18n.localize("Other")}], 
+        {value: "system.details.move.value", label: game.i18n.localize("Move"), group: game.i18n.localize("Other")}], 
         groups: ['EFFECT.CharacteristicsModifier',
         'EFFECT.CharacteristicsInitial',
         'EFFECT.CharacteristicsBonus',

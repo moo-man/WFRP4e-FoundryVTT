@@ -24,9 +24,9 @@ export default class SpellSheet extends BaseWFRP4eItemSheet
       return game.wfrp4e.config.magicLores[i] ? game.wfrp4e.config.magicLores[i] : i
     })
     context.overcastTypes = {
-      value : "Value",
-      SL : "SL",
-      characteristic : "Characteristic"
+      value : game.i18n.localize("Value"),
+      SL : game.i18n.localize("SL"),
+      characteristic : game.i18n.localize("Characteristic")
     }
     return context;
   }
