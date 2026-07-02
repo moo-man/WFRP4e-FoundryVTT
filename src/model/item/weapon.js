@@ -217,7 +217,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             let actor = this.parent.actor;
             let maxEquipPoints = actor.system.settings.equipPoints;
             let currentEquipPoints = actor.itemTypes.weapon.filter(i => i.system.isEquipped).reduce((points, weapon) => points + weapon.system.equipPoints, 0);
-            if (currentEquipPoints + this.equipPoints > maxEquipPoints)
+            if (game.settings.get("wfrp4e", "limitEquippedWeapons") && currentEquipPoints + this.equipPoints > maxEquipPoints)
             {
                 ui.notifications.error("ErrorLimitedWeapons", {localize: true});
                 foundry.audio.AudioHelper.play({src: `${game.settings.get("wfrp4e", "soundPath")}no.wav`}, false);
