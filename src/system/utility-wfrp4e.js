@@ -372,7 +372,7 @@ export default class WFRP_Utility {
    */
   static  async postProperty(propertyText) {
     let properties = foundry.utils.mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
-      propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
+      propertyDescr = Object.assign(foundry.utils.duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
       propertyKey;
 
     let property = this.parsePropertyName(propertyText.replace(/,/g, '').trim());
