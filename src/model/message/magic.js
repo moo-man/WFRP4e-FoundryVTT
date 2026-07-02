@@ -221,7 +221,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       let damage = item.system.Damage;
 
       return { // If damage exists, add SL (if any), otherwise, stick with 0
-        damage: test?.result.damage || (damage > 0 ? damage + (testData.SL || 0) : damage),
+        damage: test?.result.damage ? (test.result.damage + (test.result.additionalDamage || 0)) : (damage > 0 ? damage + (testData.SL || 0) : damage),
         range,
         duration,
         target,
