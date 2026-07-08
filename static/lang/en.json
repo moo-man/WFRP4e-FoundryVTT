@@ -952,6 +952,7 @@
     "CHAT.TestModifiers.ShootingSizeModifier" : "Shooting at a {size} target.",
     "CHAT.TestModifiers.AttackerMountLarger" : "Bonus for attacking from a larger mount.",
     "CHAT.TestModifiers.DefenderMountLarger" : "Penalty for attacking the rider of a larger mount.",
+    "CHAT.TestModifiers.MovedThisRound" : "Shooting on a Round where you also use your Move",
     "CHAT.TestModifiers.SlowDefend" : "Attacker has Slow Weapon",
     "CHAT.TestModifiers.WrapDefend" : "Attacker has Wrap Weapon",
     "CHAT.TestModifiers.IgnoreDefenderMountLarger" : "Ignored penalty to attack rider because of weapon's reach (Up in Arms).",
