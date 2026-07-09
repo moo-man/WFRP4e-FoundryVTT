@@ -2733,7 +2733,7 @@ if (test.succeeded) {
 WFRP4E.effectTextStyle = CONFIG.canvasTextStyle.clone();
 WFRP4E.effectTextStyle.fontSize = "30";
 WFRP4E.effectTextStyle.fontFamily="CaslonAntique"
-
+WFRP4E.rollModes = CONFIG.Dice.rollModes;
 WFRP4E.transferDocumentTypes = defaultWarhammerConfig.transferDocumentTypes;
 
 WFRP4E.badgeInfo = defaultWarhammerConfig.badgeInfo;
