@@ -37,7 +37,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
 
       if (foundry.helpers.media.VideoHelper.hasVideoExtension(path))
       {
-        path = await game.video.createThumbnail(path, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
+        path = await game.video.createThumbnail(path, { width: 50, height: 50 });
       }
 
       return path;
