@@ -313,6 +313,55 @@
 
     table {
         background: none;
+
+        thead {
+            background: none;
+        }
+
+        thead {
+            background: none;
+            text-shadow: none;
+            border: none;
+            border-bottom: 1px solid black;
+            td:first-of-type {
+                border-left: none;
+                border-right: 1px solid black;
+            }
+            td:last-of-type {
+                border-right: none;
+            }
+        }
+
+
+        tr {
+            td:first-of-type {
+                border-left: 0px;
+                width: 15%;
+                text-align: center;
+            }
+            td:last-of-type {
+                border-right: 0px;
+            }
+            &:not(:last-of-type)
+            {
+                td {
+                    border-bottom: 1px solid black;
+                }
+            }
+            td {
+                border-right: 1px solid black;
+            }
+        }
+
+        tr:last-of-type {
+
+        }
+    }
+
+
+    table.embedded { 
+        background: none;
+        margin-bottom: 0.5rem;
     }
 
     div {
@@ -371,6 +420,48 @@
         font-family: OnlySkulls;
         content: "0";
         font-style: normal;
+    }
+
+
+    .wfrp4e-embed {
+        &.career {
+            table {
+                margin-bottom: 1rem;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+    
+                thead {
+                    background: none;
+                    text-align: center;
+                    th {
+                        border-right: 1px solid rgba(0, 0, 0, 0.5);
+    
+                    }
+                }
+                td {
+                    padding: 0px 1rem;
+                    height: 1rem;
+                    text-align: center;
+                    font-size: var(--font-size-20);
+                    border-right: 1px solid rgba(0, 0, 0, 0.5);
+    
+                   &.tier1 {
+                    background: none;
+                   } 
+                   &.tier2 {
+                    background: #c38358;
+                   }
+                   &.tier3 {
+                    background: #c7c8ca;
+                   }
+                   &.tier4 {
+                    background: #ffe400;
+                   }
+                   &.tier5 {
+                    background: #00aeef;
+                   }
+                }
+            }
+        }
     }
 }
 
