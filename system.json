@@ -62,8 +62,8 @@
   "relationships": {
     "requires": [{
       "id": "warhammer-lib",
+      "reason" : "Foundational code all Warhammer systems are built upon.",
       "type": "module",
-      "manifest": "https://raw.githubusercontent.com/moo-man/WarhammerLibrary-FVTT/3.2.0/module.json",
       "compatibility": {
         "minimum" : "2.10.0",
         "verified": "3.2.0"

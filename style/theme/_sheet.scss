@@ -153,6 +153,12 @@
                 }
             }
 
+            .list-controls {
+                color: var(--color-grey2);
+                flex: 0 0 2.5rem;
+                justify-content: center;
+            }
+
             .list-content {
                 border: 1px solid var(--color-faded);
                 border-top: none;

@@ -27,7 +27,7 @@
 
 
 <div class="list-controls">
-      <a data-action="toggleProperty" data-path="disabled" data-tooltip="{{localize 'SHEET.ToggleEffect'}}">{{#if effect.disabled}}<i class="far fa-circle"></i>{{else}}<i class="far fa-check-circle"></i>{{/if}}</a>
+      <a data-action="toggleProperty" class="list-control" data-path="disabled" data-tooltip="{{localize 'SHEET.ToggleEffect'}}">{{#if effect.disabled}}<i class="far fa-circle"></i>{{else}}<i class="far fa-check-circle"></i>{{/if}}</a>
       {{#if effect.isCrewApplied}}
         <a class="inactive list-control" data-tooltip="{{localize 'SHEET.CannotDeleteCrewEffect'}}"><i class="fas fa-xmark"></i></a>
       {{else if effect.item}}
