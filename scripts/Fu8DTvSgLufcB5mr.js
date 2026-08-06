@@ -1,6 +1,6 @@
 async function rollTable(characteristics, formula, name) {
   const roll = new Roll(formula);
-  await roll.toMessage({flavor: name});
+  await roll.toMessage({ flavor: name });
 
   const values = roll.dice[0].values;
 
@@ -26,15 +26,14 @@ async function rollTable(characteristics, formula, name) {
 const characteristics = new Set();
 await rollTable(characteristics, "2d10", this.effect.name)
 
-if (characteristics.has("*")) {
+if (characteristics.has("*")) 
+{
   characteristics.delete("*");
   const availableChoices = foundry.utils.duplicate(game.wfrp4e.config.characteristics);
 
   for (const ch of characteristics) delete availableChoices[ch];
 
-  const result = warhammer.apps.ValueDialog.create({
-    text: "Choose a characteristic",
-  }, "", availableChoices);
+  const result = (await game.wfrp4e.utility.characteristicDialog({effect: this.effect, filter: Object.keys(availableChoices)}))[0]?.id
 
   if (!result) return;
 

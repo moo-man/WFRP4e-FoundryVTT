@@ -864,4 +864,17 @@ export default class WFRP_Utility {
       }
     }
   }
+
+  /**
+   * Convenience function primarily for effects to easily prompt for characteristics
+   */
+  static async characteristicDialog({number=1, effect, text, title, filter}={})
+  {
+    let characteristics = ItemDialog.objectToArray(game.wfrp4e.config.characteristics, effect?.img);
+    if (filter)
+    {
+      characteristics = characteristics.filter(c => filter.includes(c.id));
+    }
+    return await ItemDialog.create(characteristics, number, {text: text ?? "Choose Characteristic", title: title ?? effect?.name ?? "Characteristic"});
+  }
 }
