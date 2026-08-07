@@ -373,6 +373,35 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         }
       },
       {
+        name: "Buy More",
+        icon: '<i class="fas fa-shopping-cart"></i>',
+        condition: li => {
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
+          if (uuid && !uuid.includes("Compendium"))
+          {
+            let doc = fromUuidSync(uuid);
+            return doc?.documentName == "Item" && doc.system.isPhysical && !doc.system.isMoney;
+          }
+          else return false;
+        },
+        callback: async li =>
+        {
+          let uuid = li.dataset.uuid || getParent(li, "[data-uuid]").dataset.uuid;
+          const document = await fromUuid(uuid);
+          const sourceId = document._stats?.compendiumSource;
+          if (sourceId)
+          {
+            const sourceItem = await fromUuid(sourceId);
+            if (sourceItem)
+            {
+              sourceItem.postItem(null);
+              return;
+            }
+          }
+          document.postItem(null);
+        }
+      },
+      {
         name: "Duplicate",
         icon: '<i class="fa-solid fa-copy"></i>',
         condition: li => {
