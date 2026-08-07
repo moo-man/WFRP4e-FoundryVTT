@@ -1889,6 +1889,38 @@ WFRP4E.PrepareSystemItems = function() {
             img: "icons/svg/blind.svg",
             statuses: ["blind"],
             system: {}
+        },
+        "warpstone": {
+            name: game.i18n.localize("EFFECT.Warpstone"),
+            img: "icons/commodities/gems/gem-fragments-rough-green.webp",
+            statuses: ["warpstone"],
+            system: {
+                scriptData: [
+                    {
+                        label: "@effect.name",
+                        trigger: "dialog",
+                        script: `args.fields.malignantInfluence = true`,
+                        options: {
+                            hideScript: "return args.skill?.name != `${game.i18n.localize(\"NAME.Language\")} (${game.i18n.localize(\"SPEC.Magick\")})` && !args.skill?.name.includes(game.i18n.localize(\"NAME.Channelling\")) && args.type != \"cast\" && args.type != \"channelling\"",
+                            activateScript: `return args.type == "cast" || args.type == "channelling"`,
+                            submissionScript: "args.context.warpstone = true"
+                        }
+                    },
+                    {
+                        label: "Warpstone Effects",
+                        trigger: "rollTest",
+                        script: "if ( args.test.options.warpstone ) {\n   let dispel = args.test.result.dispel?.SL ?? 0\n   args.test.result.other.push(\"Consuming warpstone is a @Corruption[Major]{Major Exposure to Corruption}.\")\n   if ( !args.test.fortuneUsed.SL ) {\n     args.test.result.SL = args.test.result.SL * 2 - dispel\n     }  \n}"
+                    },
+                    {
+                        label: "Overcasts",
+                        trigger: "rollCastTest",
+                        script: "if ( args.test.options.warpstone ) {\n  if (!game.settings.get(\"wfrp4e\", \"useWoMOvercast\")) {\n     args.test.result.overcast.total = Math.max(0, Math.floor((args.test.result.SL - args.test.spell.cn.value + Math.min(args.test.spell.cn.value, args.test.preData.itemData.system.cn.SL))/2))\n     args.test.result.overcast.available = args.test.result.overcast.total\n     if (args.test.item.Damage) { args.test.result.damage = Number(args.test.result.SL) + Number(args.test.item.Damage) }\n     if (args.test.result.SL - args.test.spell.cn.value >= 0) {\n        args.test.result.castOutcome = \"success\"\n        args.test.result.description = game.i18n.localize(\"ROLL.CastingSuccess\")\n        }\n     } else {\n        args.test.result.overcast.total = Math.max(0, args.test.result.SL - args.test.spell.cn.value + Math.min(args.test.spell.cn.value, args.test.preData.itemData.system.cn.SL))\n        args.test.result.overcast.available = args.test.result.overcast.total\n        args.test.result.overcast.originalSL = args.test.result.SL\n        if (args.test.result.SL - args.test.spell.cn.value >= 0) {\n          args.test.result.castOutcome = \"success\"\n          args.test.result.description = game.i18n.localize(\"ROLL.CastingSuccess\")\n          }\n      }\n}"
+                    }
+                ]
+            },
+			duration: {
+			    expiry: "turnEnd"
+            }
         }
     })
 
