@@ -21,6 +21,7 @@ import Migration from "./system/migrations.js";
 import HomebrewSettings from "./apps/homebrew-settings.js"
 import CareerSelector from "./apps/career-selector.js"
 import TagManager from "./system/tag-manager.js";
+import EngagementTracker from "./system/engagement.js";
 import ItemProperties from "./apps/item-properties.js"
 import TestWFRP from "./system/rolls/test-wfrp4e.js";
 import CharacteristicTest from "./system/rolls/characteristic-test.js";
@@ -238,7 +239,8 @@ Hooks.once("init", function () {
     migration: Migration,
     opposedHandler: OpposedHandler,
     tags : new TagManager(),
-    trade : new TradeManager()
+    trade : new TradeManager(),
+    engagement : EngagementTracker
   }
 
   CombatHelpersWFRP.registerHelpers();

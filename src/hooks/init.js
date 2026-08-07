@@ -366,6 +366,15 @@ export default function() {
       type: Boolean
     });
 
+    game.settings.register("wfrp4e", "autoEngaged", {
+      name: "SETTINGS.AutoEngaged",
+      hint: "SETTINGS.AutoEngagedHint",
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean
+    });
+
     game.settings.register("wfrp4e", "tables", {
       scope: "world",
       config: false,
