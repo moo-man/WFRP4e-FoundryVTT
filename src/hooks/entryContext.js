@@ -64,7 +64,7 @@ export default function () {
       //actor have fortune point
       //Own the roll
       //Once per roll (or at least, not on a reroll card)
-      //Test must be failed 
+      //Test must be failed
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
@@ -78,7 +78,7 @@ export default function () {
       //Once per roll (or at least, not on a reroll card)
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL 
+      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL
     };
     let canApplyDarkDeals = function (li) {
       //Condition to have the darkdeak contextual options:
@@ -142,7 +142,7 @@ export default function () {
         callback: li => {
 
           if (li.querySelector(".dice-roll")) {
-            let amount = li.querySelector('.dice-total').textContent
+            let amount = Number(li.querySelector('.dice-total').textContent) || 0;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount))
           }
           else {
@@ -163,7 +163,7 @@ export default function () {
         condition: canApply,
         callback: li => {
           if (li.querySelector(".dice-roll")) {
-            let amount = li.querySelector('.dice-total').textContent;
+            let amount = Number(li.querySelector('.dice-total').textContent) || 0;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_AP }))
           }
           else {
@@ -184,7 +184,7 @@ export default function () {
         condition: canApply,
         callback: li => {
           if (li.querySelector(".dice-roll")) {
-            let amount = li.querySelector('.dice-total').textContent;
+            let amount = Number(li.querySelector('.dice-total').textContent) || 0;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_TB }))
           }
           else {
@@ -205,7 +205,7 @@ export default function () {
         condition: canApply,
         callback: li => {
           if (li.querySelector(".dice-roll")) {
-            let amount = li.querySelector('.dice-total').textContent;
+            let amount = Number(li.querySelector('.dice-total').textContent) || 0;
             canvas.tokens.controlled.map(i => i.document.actor).concat(Array.from(game.user.targets).map(i => i.document.actor)).forEach(a => a.applyBasicDamage(amount, { damageType: game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL }))
           }
           else {
@@ -272,13 +272,13 @@ export default function () {
 
           if (targets.length)
           {
-            if (canvas.scene) 
-            { 
+            if (canvas.scene)
+            {
               game.canvas.tokens.setTargets([])
             }
 
             test.context.targets = test.context.targets.concat(targets)
-            targets.map(t => WFRP_Utility.getToken(t)).forEach(t => 
+            targets.map(t => WFRP_Utility.getToken(t)).forEach(t =>
             {
               test.createOpposedMessage(t)
             })
