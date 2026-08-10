@@ -82,7 +82,9 @@ export class PostedItemMessageModel extends WarhammerMessageModel {
   static async _onPay(ev, target)
   {
     
-    let paid = await game.wfrp4e.market.handlePlayerPayment({payString : game.wfrp4e.market.amountToString(this.itemData.system.price), itemData : this.itemData});
+    let qty = this.itemData.system.quantity.value;
+    let product = qty > 1 ? `${this.itemData.name} x${qty}` : this.itemData.name;
+    let paid = await game.wfrp4e.market.handlePlayerPayment({payString : `${game.wfrp4e.market.amountToString(this.itemData.system.price)},${product}`, itemData : this.itemData});
     for(let actor of paid)
     {
       await actor.createEmbeddedDocuments("Item", [this.itemData], {fromMessage: this.parent.id})
