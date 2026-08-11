@@ -198,7 +198,7 @@ export default class OpposedHandler {
       }
     }
 
-    return options;
+    return options.reverse();
   }
 
   async updateMessageData() {

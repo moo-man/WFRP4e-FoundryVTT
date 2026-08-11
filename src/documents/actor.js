@@ -786,7 +786,19 @@ export default class ActorWFRP4e extends WarhammerActor
 
       if (wardRoll >= ward) {
         updateMsg = `<span style = "text-decoration: line-through">${updateMsg}</span><br>${game.i18n.format("OPPOSED.Ward", { roll: wardRoll })}`
-        return updateMsg;
+
+        if (typeof createMessage == "object")
+        {
+          return ChatMessage.create(foundry.utils.mergeObject({content: updateMsg}, createMessage));
+        }
+        else if (createMessage)
+        {
+          return ChatMessage.create({content: updateMsg})
+        }
+        else 
+        {
+          return updateMsg;
+        }
       }
       else {
         updateMsg += `<br>${game.i18n.format("OPPOSED.WardRoll", { roll : wardRoll })}`

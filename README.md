@@ -32,7 +32,7 @@ You can install the system from the Foundry system installer, simply search for 
 
 **Version 8.0**, Compatible with V12, implements the Warhammer Library module.
 
-**Version 9.0**, Current version, Compatible with V13/V14, all applications supporting AppV2.
+**Version 9.0**, Current version, Compatible with V13+, all applications supporting AppV2.
 
 Please feel free to message me on Discord - moo.man
 
@@ -171,6 +171,8 @@ npm run pack
 - [Deft Steps Light Fingers](https://foundryvtt.com/packages/wfrp4e-dslf/) - A supplement for playing Characters in the Rogue or Ranger class.
 
 - [Dwarf Bundle](https://foundryvtt.com/packages/wfrp4e-dwarfs/) - Explore the rich history of the Dwarfs' mountain strongholds and their time-honoured traditions in this comprehensive guide for those who want to delve deep into the heart of Karaz Ankor!
+
+- [High Elf Bundle](https://foundryvtt.com/packages/wfrp4e-helf/) - A guide to the lands and culture of Ulthuan, and the High Elves that live there.
 
 **Unofficial**
 
