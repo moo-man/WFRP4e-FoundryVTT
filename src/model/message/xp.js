@@ -17,11 +17,16 @@ export class XPMessageModel extends WarhammerMessageModel {
       return schema;
   }
 
-  static handleXPCommand(amount, reason)
+  static async handleXPCommand(amount, reason)
   {
-     
     if (isNaN(amount))
-      return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
+    {
+      amount = await ValueDialog.create({text: `Non-numeric value provided (${amount}). Enter actual XP value to award.`, title: "Experience"})
+      if (isNaN(amount))
+      {
+        return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
+      }
+    }
 
 
     this.createXPMessage(amount, reason);

@@ -41,6 +41,7 @@ export class CharacteristicModel extends foundry.abstract.DataModel
         schema.modifier = new fields.NumberField({initial : 0});
         schema.advances = new fields.NumberField({initial : 0});
         schema.bonusMod = new fields.NumberField({initial : 0});
+        schema.costModifier = new fields.NumberField({initial: 0}),
         schema.calculationBonusModifier = new fields.NumberField({initial : 0});
         return schema;
     }
@@ -58,6 +59,6 @@ export class CharacteristicModel extends foundry.abstract.DataModel
 
     computeCost()
     {
-        this.cost = Advancement.calculateAdvCost(this.advances, "characteristic")
+        this.cost = Advancement.calculateAdvCost(this.advances, "characteristic", this.costModifier);
     }
 }

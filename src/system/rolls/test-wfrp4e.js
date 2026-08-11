@@ -927,7 +927,7 @@ export default class TestWFRP extends WarhammerTestBase {
       messageData.type = "test";
       messageData._id = this.context.messageId;
 
-      let message = await ChatMessage.create(messageData, {keepId : true})
+      let message = await ChatMessage.create(messageData, {keepId : true, chatBubble: false})
     }
     else // Update message 
     {

@@ -32,7 +32,7 @@
                 </select>
 
                 {{localize "Bonus"}}
-                <input type="checkbox" value="system.overcast.initial.bonus" checked={{system.overcast.initial.bonus}}>
+                <input type="checkbox" name="system.overcast.initial.bonus" {{checked system.overcast.initial.bonus}}>
             {{/if}}
         </div>
     </div>
@@ -42,7 +42,7 @@
         <label>{{localize "ITEM.ValuePerOvercast"}}</label>
         <div class="form-fields">
             <select name="system.overcast.valuePerOvercast.type">
-                {{selectOptions overcastTypes selected=system.overcast.initial.type}}
+                {{selectOptions overcastTypes selected=system.overcast.valuePerOvercast.type}}
             </select>
 
 
@@ -65,8 +65,8 @@
                 </select>
 
                 {{localize "Bonus"}}
-                <input type="checkbox" value="system.overcast.valuePerOvercast.bonus"
-                    checked="{{system.overcast.valuePerOvercast.bonus}}">
+                <input type="checkbox" name="system.overcast.valuePerOvercast.bonus"
+                    {{checked system.overcast.valuePerOvercast.bonus}}>
             {{/if}}
         </div>
     </div>

@@ -25,6 +25,7 @@
     <div class="sheet-list">
         <div class="list-header row-content">
             <div class="list-name">{{localize "SHEET.TemporaryEffects"}}</div>
+            <div class="flex">{{localize "Type"}}</div>
         </div>
         <div class="list-content">
             {{#each effects.temporary}}
@@ -34,7 +35,7 @@
                             <img src="{{this.img}}">
                             <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
                         </div>
-
+                        <div class="flex">{{this.system.typeDisplay}}</div>
                         <div class="list-controls">
                             <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-check-circle"></i></a>
                             <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
@@ -49,6 +50,7 @@
     <div class="sheet-list">
         <div class="list-header row-content">
             <div class="list-name">{{localize "Effects"}}</div>
+            <div class="flex">{{localize "Type"}}</div>
             <div class="list-controls">
                 <a class="list-control" data-action="createEffect">
                     <i class="fas fa-plus"></i>
@@ -63,7 +65,7 @@
                             <img src="{{this.img}}">
                             <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
                         </div>
-
+                        <div class="flex">{{this.system.typeDisplay}}</div>
                         <div class="list-controls">
                             <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-check-circle"></i></a>
                             <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
@@ -78,6 +80,7 @@
     <div class="sheet-list">
         <div class="list-header row-content">
             <div class="list-name">{{localize "SHEET.DisabledEffects"}}</div>
+            <div class="flex">{{localize "Type"}}</div>
         </div>
         <div class="list-content inactive">
             {{#each effects.disabled}}
@@ -87,7 +90,7 @@
                             <img src="{{this.img}}">
                             <a class="label" data-action="editEmbedded" data-uuid="{{this.uuid}}">{{this.name}}</a>
                         </div>
-
+                        <div class="flex">{{this.system.typeDisplay}}</div>
                         <div class="list-controls">
                             <a class="list-control" data-action="toggleProperty" data-tooltip="{{localize 'SHEET.ToggleEffect'}}" data-path="disabled"><i class="far fa-circle"></i></a>
                             <a class="list-control" data-action="deleteEmbedded" data-tooltip="{{localize 'SHEET.DeleteItem'}}"><i class="fas fa-xmark"></i></a>
