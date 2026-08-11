@@ -36,8 +36,7 @@ export default class WFRP_Tables {
         }
         else
         {
-          msg.content = result.object?.name.length ? `<strong>${result.object.name}</strong>` : '';
-          msg.content += `<p>${result.result}</p>`;
+          msg.content = result.result;
         }
         ChatMessage.create(msg);
       })
@@ -101,15 +100,13 @@ export default class WFRP_Tables {
       let rollResult = table.getResultsForRoll(rollValue)[0]
       let flags = rollResult?.flags?.wfrp4e || {}
       let result = {
-        result : rollResult?.getChatText(),
+        result : await rollResult?.getHTML(),
         roll : displayTotal,
         total : rollValue,
         name : rollResult?.name,
         object : rollResult?.toObject(),
         title : table.name,
       }
-
-
 
       // If table result text is a UUID link, add a text property with just the label
       result.text = WFRP_Utility.extractLinkLabel(result.result)
