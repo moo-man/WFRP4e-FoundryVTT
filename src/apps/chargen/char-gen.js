@@ -115,7 +115,7 @@ export default class CharGenWfrp4e extends FormApplication {
       }
     }
 
-    this.actor = {type: "character", system: new Actor({type: "character", name : "New Character"}).toObject().system, items: [] }
+    this.actor = {type: "character", system: new Actor({type: "character", name : game.i18n.localize("CHARGEN.NewCharacter")}).toObject().system, items: [] }
 
     if (!game.user.isGM)
     {
@@ -316,7 +316,7 @@ export default class CharGenWfrp4e extends FormApplication {
 
       this.actor.system.details.move.value = this.data.move
 
-      this.actor.name = this.data.details.name || "New Character"
+      this.actor.name = this.data.details.name || game.i18n.localize("CHARGEN.NewCharacter")
       this.actor.system.details.gender.value = this.data.details.gender
       this.actor.system.details.age.value = this.data.details.age
       this.actor.system.details.height.value = this.data.details.height
@@ -469,6 +469,5 @@ export default class CharGenWfrp4e extends FormApplication {
     })
   }
 }
-
 
 

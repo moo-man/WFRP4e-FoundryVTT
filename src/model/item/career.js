@@ -446,11 +446,11 @@ export class CareerModel extends BaseItemModel
             let talentText = talentLinks.join(", ")
 
             let html = `<h3>${tierIcons[tier.system.level.value]} @UUID[${tier.uuid}]{${tier.name}}</h3>
-            <p><strong>Status</strong>: ${game.wfrp4e.config.statusTiers[tier.system.status.tier]} ${tier.system.status.standing}</p>
-            <p><strong>Skills</strong>: ${skillText}</p>
-            ${tier.system.level.value == 1 ? `<p><strong>Income</strong>: ${income}</p>` : ""}
-            <p><strong>Talents</strong>: ${talentText}</p>
-            <p><strong>Trappings</strong>: ${tier.system.trappings.join(", ")}</p>
+            <p><strong>${game.i18n.localize("Status")}</strong>: ${game.wfrp4e.config.statusTiers[tier.system.status.tier]} ${tier.system.status.standing}</p>
+            <p><strong>${game.i18n.localize("Skills")}</strong>: ${skillText}</p>
+            ${tier.system.level.value == 1 ? `<p><strong>${game.i18n.localize("Income")}</strong>: ${income}</p>` : ""}
+            <p><strong>${game.i18n.localize("Talents")}</strong>: ${talentText}</p>
+            <p><strong>${game.i18n.localize("Trappings")}</strong>: ${tier.system.trappings.join(", ")}</p>
             `
 
             tierHTML.push(html);

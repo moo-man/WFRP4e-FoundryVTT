@@ -21,7 +21,7 @@ export class XPMessageModel extends WarhammerMessageModel {
   {
     if (isNaN(amount))
     {
-      amount = await ValueDialog.create({text: `Non-numeric value provided (${amount}). Enter actual XP value to award.`, title: "Experience"})
+      amount = await ValueDialog.create({text: game.i18n.format("DIALOG.EnterXP", {amount: amount}), title: game.i18n.localize("DIALOG.EnterXPTitle")})
       if (isNaN(amount))
       {
         return ui.notifications.error(game.i18n.localize("ERROR.Experience"))
@@ -81,7 +81,7 @@ export class XPMessageModel extends WarhammerMessageModel {
         }
         else
         {
-          ui.notifications.notify(`${actor.name} already received this reward.`)
+          ui.notifications.notify(game.i18n.format("DIALOG.XPAlreadyReceived", {actor: actor.name}))
         }
       })
 
@@ -98,7 +98,7 @@ export class XPMessageModel extends WarhammerMessageModel {
       }
       if (this.receivedBy.includes(game.user.character.id))
       {
-        return ui.notifications.notify(`${game.user.character.name} already received this reward.`)
+        return ui.notifications.notify(game.i18n.format("DIALOG.XPAlreadyReceived", {actor: game.user.character.name}))
       }
 
       this.receivedBy.push(game.user.character.id); // Add locally to handle fast clicking or no GM 

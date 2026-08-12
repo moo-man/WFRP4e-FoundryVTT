@@ -438,6 +438,7 @@
     "Status" : "Status",
     "Status Tier" : "Status Tier",
     "Status Standing" : "Status Standing",
+	"AdvanceScheme" : "{careerGroup} Advance Scheme",
     "Class" : "Class",
     "Group" : "Group",
     "Personal Details" : "Personal Details",
@@ -787,6 +788,7 @@
     "CHARGEN.ERROR.CareerItems" : "{num} career Items could not be found (out of {careers})",
     "CHARGEN.ERROR.SpeciesTable" : "Could not find imported Species Table, check <strong>Table Settings</strong> within the system settings to ensure the registered table is correct. If no table is registered, either create one manually or import one. Using <a href='https://moo-man.github.io/WFRP4e-FoundryVTT/pages/premium.html#initializiation'>Initialization</a> will import it for you.",
     "CHARGEN.ERROR.TalentsTableNotFound" : "Could not find Random Talents Table '{key}' for {species} ({subspecies})",
+	"CHARGEN.NewCharacter": "New Character",
 
     "DIALOG.CastOrChannel" : "Cast or Channel",
     "DIALOG.CastChannel" : "Cast or Channel this spell?",
@@ -831,6 +833,9 @@
     "Hide" : "Hide",
     "ExpChange" : "Experience Change",
     "ExpChangeHint": "Enter Reason for XP change",
+	"DIALOG.EnterXPTitle": "Experience",
+	"DIALOG.EnterXP" : "Non-numeric value provided ({amount}). Enter actual XP value to award.",
+	"DIALOG.XPAlreadyReceived" : "{actor} already received this reward.",
     "RevertExperience": "Revert Experience",
     "DIALOG.RevertExperience" : "Revert Experience Points?",
     "DIALOG.UseIngredient": "Choose how to use ingredient (if available)",
@@ -852,6 +857,7 @@
     "DIALOG.ItemDialog" : "Item Dialog",
     "DIALOG.ChoosePassenger" : "Choose Passenger",
     "DIALOG.ChooseArmour" : "Choose Armour to damage",
+	"DIALOG.ChooseCharacteristic" : "Choose Characteristic",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
