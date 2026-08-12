@@ -875,6 +875,6 @@ export default class WFRP_Utility {
     {
       characteristics = characteristics.filter(c => filter.includes(c.id));
     }
-    return await ItemDialog.create(characteristics, number, {text: text ?? "Choose Characteristic", title: title ?? effect?.name ?? "Characteristic"});
+    return await ItemDialog.create(characteristics, number, {text: text ?? game.i18n.localize("DIALOG.ChooseCharacteristic"), title: title ?? effect?.name ?? game.i18n.localize("Characteristic")});
   }
 }
