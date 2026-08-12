@@ -98,7 +98,7 @@ export class XPMessageModel extends WarhammerMessageModel {
       }
       if (this.receivedBy.includes(game.user.character.id))
       {
-        return ui.notifications.notify(game.i18n.format("DIALOG.XPAlreadyReceived", {actor: actor.name}))
+        return ui.notifications.notify(game.i18n.format("DIALOG.XPAlreadyReceived", {actor: game.user.character.name}))
       }
 
       this.receivedBy.push(game.user.character.id); // Add locally to handle fast clicking or no GM 
