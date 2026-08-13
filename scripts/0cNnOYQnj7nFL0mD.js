@@ -1,0 +1,1 @@
+this.item.system.encumbrance.value = Math.max(0, this.item.system.encumbrance.value - 1)

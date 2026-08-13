@@ -9,7 +9,7 @@ else
 }
 
 roll.toMessage(this.script.getChatData())
-await this.actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL, suppressMsg : true})
+await this.actor.applyBasicDamage(roll.total, {damageType : game.wfrp4e.config.DAMAGE_TYPE.IGNORE_ALL})
 
 if (this.actor.has("Undead") || args.actor.has("Daemonic"))
 {

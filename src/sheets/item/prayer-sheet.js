@@ -15,4 +15,16 @@ export default class PrayerSheet extends BaseWFRP4eItemSheet
     details: { scrollable: [""], template: `systems/wfrp4e/templates/sheets/item/types/${this.type}.hbs` },
     effects: { scrollable: [""], template: 'systems/wfrp4e/templates/sheets/item/tabs/item-effects.hbs' },
   }
+
+  async _prepareContext(options)
+  {
+    let context = await super._prepareContext(options);
+    context.overcastTypes = {
+      value : game.i18n.localize("Value"),
+      SL : game.i18n.localize("SL"),
+      characteristic : game.i18n.localize("Characteristic")
+    }
+    return context;
+  }
+
 }

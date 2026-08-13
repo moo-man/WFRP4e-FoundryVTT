@@ -72,7 +72,7 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
         damage: this.testData.damage,
         slOver: 0,
         overcast: {
-          usage: this.item.system.computeOvercastingData({actor: this.actor})
+          usage: this.item.system.computeOvercastingData(this.actor)
         }
       },
       context: {
@@ -371,6 +371,10 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       testData = await this._formatResult({test, testData, item})
 
       await Promise.all(item.runScripts("castSpellPrayer", {test, source, testData, targetSpeakers : targets}));
+
+      // Since this isn't a conventional opposed test, run the targeted scripts manually
+      await Promise.all(targets.map(i => WFRP_Utility.getSpeaker(i)).filter(i => i).map(target => target.runScripts("targeted", {attacker: {}, test})))
+
       let content = await this._renderHTMLContent({item, testData, actor, targetSpeakers: targets});
       return await ChatMessage.create(ChatMessage.applyRollMode({
         type : "magic",

@@ -1,0 +1,1 @@
+args.context.doubleDamage = true;

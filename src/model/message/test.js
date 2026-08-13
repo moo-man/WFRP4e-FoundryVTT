@@ -37,7 +37,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
 
       if (foundry.helpers.media.VideoHelper.hasVideoExtension(path))
       {
-        path = await game.video.createThumbnail(path, { width: 50, height: 50 }).then(img => chatOptions.flags.img = img)
+        path = await game.video.createThumbnail(path, { width: 50, height: 50 });
       }
 
       return path;
@@ -111,13 +111,19 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
 
   static async onApplyHealing(ev, target) 
   {
-    let actor = this.test?.actor;
+    let actor = Array.from(game.user.targets)[0]?.actor || this.test?.actor;
+
+    if (this.test.options.rest)
+    {
+      actor = this.test?.actor;
+    }
+
     let amount = target.dataset.amount;
 
-    if (actor && amount)
+    if (actor && actor.isOwner && amount)
     {
         await actor.modifyWounds(parseInt(amount));
-        ChatMessage.implementation.create({content: `<strong>${actor.name}</strong> healed ${amount} Wounds.`, flavor: "Rest & Recover"});
+        ChatMessage.implementation.create({content: `<p>${game.i18n.format("RestRecoverHealed", {actor: actor.name, amount: amount} )}</p>`, flavor: this.test.options.rest ? game.i18n.localize("RestRecover") : game.i18n.localize("Healing")});
     }
   }
 

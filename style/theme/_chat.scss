@@ -28,7 +28,26 @@ body:not(.no-theme):not(.theme-light) #chat-popout,
             padding: 15px;
             box-shadow: inset 0 0 40px #000000;
             color: black;
+    }
 
+    #chat-message:has(.editor-container)
+    {
+        padding: 8px;
+        gap: 0px;
+        .editor-menu {
+                background: var(--color-warm-half);
+                border-radius: 0px;
+        }
+        > .editor-container 
+        {
+            .editor-content {
+                color: black;
+                @include editor-text;
+            }
+            padding: 8px;
+            background: none;
+            border: none;
+        }
     }
 
     .ui-control {

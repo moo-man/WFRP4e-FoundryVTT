@@ -372,7 +372,7 @@ export default class WFRP_Utility {
    */
   static  async postProperty(propertyText) {
     let properties = foundry.utils.mergeObject(WFRP_Utility.qualityList(), WFRP_Utility.flawList()),
-      propertyDescr = Object.assign(duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
+      propertyDescr = Object.assign(foundry.utils.duplicate(game.wfrp4e.config.qualityDescriptions), game.wfrp4e.config.flawDescriptions),
       propertyKey;
 
     let property = this.parsePropertyName(propertyText.replace(/,/g, '').trim());
@@ -563,7 +563,7 @@ export default class WFRP_Utility {
    */
   static async handleTableClick(event, target) {
     let modifier = parseInt(target.dataset.modifier) || 0;
-    let messageId= this.id;
+    let messageId = target.closest("[data-message-id]")?.dataset.messageId;
     let html;
     let chatOptions = this.chatDataSetup("", game.settings.get("core", "rollMode"), true)
 
@@ -583,16 +583,18 @@ export default class WFRP_Utility {
       }
       else if (target.dataset.table) 
       {
+        let criticalLocation = game.messages.get(messageId)?.system?.test?.result.hitloc?.result;
         html = (await game.wfrp4e.tables.formatChatRoll(target.dataset.table,
           {
             modifier: modifier,
             showRoll: true,
-            messageId
+            messageId,
+            criticalLocation
           }, target.dataset.column));
       }
 
-      chatOptions["content"] = html;
-      chatOptions["type"] = 0;
+      chatOptions.content = html;
+      
       if (!foundry.utils.isEmpty(html))
       {
         ChatMessage.create(chatOptions);
@@ -861,5 +863,18 @@ export default class WFRP_Utility {
         game.wfrp4e.config.speciesCareerReplacements[species] = replacements[species];
       }
     }
+  }
+
+  /**
+   * Convenience function primarily for effects to easily prompt for characteristics
+   */
+  static async characteristicDialog({number=1, effect, text, title, filter}={})
+  {
+    let characteristics = ItemDialog.objectToArray(game.wfrp4e.config.characteristics, effect?.img);
+    if (filter)
+    {
+      characteristics = characteristics.filter(c => filter.includes(c.id));
+    }
+    return await ItemDialog.create(characteristics, number, {text: text ?? "Choose Characteristic", title: title ?? effect?.name ?? "Characteristic"});
   }
 }

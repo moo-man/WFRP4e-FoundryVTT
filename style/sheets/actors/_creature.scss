@@ -40,6 +40,10 @@
     .tab[data-tab='main'] .armour-section {
         display: flex;
         gap: 5px;
+        justify-content: space-around;
+        .attribute-box {
+            flex: 0 1 7rem;
+        }
         .field {
             height: 1.5rem;
             display: flex;

@@ -1,0 +1,2 @@
+if (this.item.system.armourType.value == 'mail' && !this.item.system.properties.qualities.impenetrable) this.item.system.qualities.value.push({name : 'impenetrable'});
+                                      if (this.item.system.armourType.value == 'plate') this.item.system.qualities.value = this.item.system.qualities.value.filter(i => i.name != 'weakpoints')

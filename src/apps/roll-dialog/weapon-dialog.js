@@ -80,7 +80,7 @@ export default class WeaponDialog extends AttackDialog {
             data.ammo = actor.items.get(weapon.currentAmmo.value)
 
           if (!data.ammo || !weapon.currentAmmo.value || data.ammo.quantity.value == 0) {
-            AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
+            foundry.audio.AudioHelper.play({ src: `${game.settings.get("wfrp4e", "soundPath")}no.wav` }, false)
             ui.notifications.error(game.i18n.localize("ErrorNoAmmo"))
             return
           }

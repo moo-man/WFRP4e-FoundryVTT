@@ -7,7 +7,7 @@ export default class WFRP_Audio {
         return
       }
       warhammer.utility.log(`wfrp4e | Playing Sound: ${sound.file}`)
-      AudioHelper.play({ src: sound.file }, sound.global)
+      foundry.audio.AudioHelper.play({ src: sound.file }, sound.global)
     })
     
   }

@@ -1,0 +1,3 @@
+if (!this.item.system.properties.qualities.pummel) this.item.system.qualities.value.push({name : 'pummel'});
+                                      if (!this.item.system.properties.qualities.impale) this.item.system.qualities.value.push({name : 'impale'})
+                                      if (!this.item.system.properties.qualities.penetrating) this.item.system.qualities.value.push({name : 'penetrating'})

@@ -1,0 +1,1 @@
+args.test.result.other.push(`<strong>${this.effect.name}</strong>: @Fear[1,${this.actor.prototypeToken.name}]`)

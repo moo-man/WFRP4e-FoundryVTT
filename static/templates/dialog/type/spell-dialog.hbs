@@ -20,11 +20,7 @@
     <label data-tooltip="DIALOG.UseIngredientTooltip">{{localize "DIALOG.UseIngredient"}}</label>
     <div class="form-fields">
       <select name="ingredientMode">
-        {{#select fields.ingredientMode}}
-          <option value="none">{{localize "IngredientNone"}}</option>
-          <option value="power">{{localize "IngredientPower"}}</option>
-          <option value="control">{{localize "IngredientControl"}}</option>
-        {{/select}}
+        {{selectOptions ingredientModes selected=fields.ingredientMode localize=true}}
       </select>
     </div>
   </div>

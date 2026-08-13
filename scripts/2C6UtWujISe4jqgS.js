@@ -1,0 +1,1 @@
+return game.messages.get(args.context.dispel)?.system.test.spell.system.magicMissile.value;

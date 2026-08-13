@@ -259,7 +259,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       if (ev.button == 0) 
       {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = Advancement.calculateAdvCost(current.advances, "characteristic");
+        let cost = Advancement.calculateAdvCost(current.advances, "characteristic", current.costModifier);
         try 
         {
           Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
@@ -281,7 +281,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         // Calculate the advancement cost based on advances -1, add that amount back into exp
         if (current.advances == 0)
           return this.render(true); // Rerender to allow clicking again
-        let cost = Advancement.calculateAdvCost(current.advances - 1, "characteristic");
+        let cost = Advancement.calculateAdvCost(current.advances - 1, "characteristic", current.costModifier);
 
         system.characteristics[characteristic].advances--;
         system.details.experience.spent = Number(system.details.experience.spent) - cost;

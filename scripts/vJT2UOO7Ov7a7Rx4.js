@@ -1,0 +1,1 @@
+if (args.totalWoundLoss > 0) this.actor.addCondition("surprised")

@@ -1,0 +1,1 @@
+if (!this.item.system.properties.qualities.damaging) this.item.system.qualities.value.push({name : 'damaging'})
