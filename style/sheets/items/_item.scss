@@ -185,16 +185,44 @@
             }
         }
 
-            .sheet-list {
-                margin: 1rem 0px;
+        .sheet-list {
+            margin: 1rem 0px;
 
-                .row-content {
-                    gap: 1rem;
-                }
-                .label {
-                    padding-left: 5px;
-                    margin: 0px;
+            .row-content {
+                gap: 1rem;
+            }
+
+            .label {
+                padding-left: 5px;
+                margin: 0px;
+            }
+        }
+    }
+
+
+    &.species {
+
+
+        .choice-group {
+            margin-bottom: 0px;
+        }
+
+        section.tab {
+            h3 {
+                margin: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        .meta {
+            gap: 0.5rem;
+
+            .form-fields {
+                flex: 0 0 1.5rem;
+                input {
+                    padding: 0px;
                 }
             }
         }
+    }
 }

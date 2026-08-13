@@ -1,5 +1,6 @@
 @use "./sheet" as *;
 @use "./mixins" as *;
+@use "../mixins/border" as *;
 
 .wfrp4e.item.sheet.application:not(.no-theme) 
 {
@@ -184,12 +185,11 @@
             }
         }
 
-        .choice-group {
-            margin-bottom: 0px;
-        }
-        .talent .talent-number {
-            flex: 0.5;
-            .form-fields { flex: 0 0 2rem }
+        section.tab {
+            h3 {
+                @include gradient-border;
+                font-family: var(--header-font);
+            }
         }
     }
 

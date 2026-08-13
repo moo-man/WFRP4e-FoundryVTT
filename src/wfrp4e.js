@@ -106,6 +106,7 @@ import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
+import { WFRP4eCharacterCreation } from "./apps/chargen/v2/character-creation.js";
 import { SpeciesModel } from "./model/item/species.js";
 import SpeciesSheet from "./sheets/item/species-sheet.js";
 
@@ -215,7 +216,8 @@ Hooks.once("init", function () {
       HomebrewSettings,
       CareerSelector,
       ItemProperties,
-      ChargenStage
+      ChargenStage,
+      WFRP4eCharacterCreation
     },
     documents: {
       ActorWFRP4e,

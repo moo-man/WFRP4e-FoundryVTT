@@ -1,4 +1,9 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{#if subspeciesOf}}
+        {{> documentReference label="Subspecies Of" document=subspeciesOf classes="parent-species stacked" path="system.subspeciesOf" imgPath=subspeciesOf.img}}
+    {{/if}}
+
+
     <table>
         <tbody>
             <tr class="header">
@@ -10,7 +15,7 @@
                 {{#each system.characteristics}}
                     <td>
                         <div class="species-characteristic-inputs">
-                            <input type="number" name="system.characteristics.{{@key}}.base" value="{{this.base}}">
+                            <input type="number" name="system.characteristics.{{@key}}.base" value="{{this.base}}" placeholder="{{lookup (lookup ../subspeciesOf.system.characteristics @key) "base"}}">
                         </div>
                     </td>
                 {{/each}}
@@ -25,14 +30,12 @@
                 <td>
 
                     <div class="species-characteristic-inputs dice">
-                        <input type="number" name="system.characteristics.{{@key}}.dice" value="{{this.dice}}">
+                        <input type="number" name="system.characteristics.{{@key}}.dice" value="{{this.dice}}" placeholder="{{lookup (lookup ../subspeciesOf.system.characteristics @key) "dice"}}">
                         d10
                     </div>
                 </td>
                 {{/each}}
             </tr>
-
-
         </tbody>
     </table>
 
@@ -40,19 +43,24 @@
     {{> nameListInput label="Skills" list=system.skills.list path="system.skills"}}
 
     {{> choiceDisplay label="Talents" path="talents.choices" display=system.talents.choices.textDisplay}}
-    <div class="flexrow talent" style="gap: 0.5rem">
-        {{formGroup fields.talents.fields.random value=source.system.talents.random classes="talent-number"}}
-        {{> documentReference label="Table" document=system.talents.table}}
+
+    {{formGroup fields.talents.fields.random value=source.system.talents.random placeholder=subspeciesOf.system.talents.random}}
+
+
+
+
+    {{formGroup fields.movement value=source.system.movement placeholder=subspeciesOf.system.movement}}
+    <div class="flexrow meta">
+        {{formGroup fields.fate value=source.system.fate placeholder=subspeciesOf.system.fate}}
+        {{formGroup fields.resilience value=source.system.resilience placeholder=subspeciesOf.system.resilience}}
+        {{formGroup fields.extra value=source.system.extra placeholder=subspeciesOf.system.extra}}
     </div>
 
-
-
-
-    {{formGroup fields.movement value=source.system.movement}}
-    {{formGroup fields.fate value=source.system.fate}}
-    {{formGroup fields.resilience value=source.system.resilience}}
-    {{formGroup fields.extra value=source.system.extra}}
-
     {{formGroup fields.size value=source.system.size}}
-    {{> documentReference label="Career Table" document=system.careers}}
+
+    <h3>Tables</h3>
+    {{> documentReference label="Careers" document=system.tables.career path="system.tables.career"}}
+    {{> documentReference label="Talents" document=system.tables.talents path="system.tables.talents"}}
+    {{> documentReference label="Eye Colour" document=system.tables.eye path="system.tables.eye"}}
+    {{> documentReference label="Hair Colour" document=system.tables.hair path="system.tables.hair"}}
 </section>

@@ -1,0 +1,165 @@
+.warhammer.character-creation.staged {
+    color: black;
+    font-family: var(--primary-font);
+    box-shadow: 0 0 30px  inset black;
+    font-size: var(--font-size-18);
+    .inactive {
+        opacity: 0.5;
+    }
+    .stages {
+        padding: 2rem 1rem;
+        padding-bottom: 0rem;
+    }
+    .active-stage {
+        width: 100%;
+        height: calc(100% - 6rem);
+        padding: 2rem;
+    }
+
+    .character-creation-stage {
+        height: 100%;
+        width: 100%;
+        border: 1px dashed black;
+        padding: 1rem;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+
+        footer {
+            flex: 0 0 2rem;
+        }
+
+        h3 {
+            font-family: var(--primary-font);
+            color: black;
+            font-weight: normal;
+        }
+        
+        > * {
+            flex: 1;
+        }
+        
+        &#species {
+            justify-content: center;
+            align-items: center;
+            [data-application-part=species]
+            {
+                display: flex;
+                width: 100%;
+                height: 100%;
+                > * {
+                    h3 {
+                        text-align: center;
+                    }
+                    display: flex; 
+                    flex-direction: column;
+                    flex: 1;
+                }
+
+                .species-roll
+                {
+                    gap: 1rem;
+                    h3 {
+                        margin: 0px;
+                    }
+                }
+
+                .species-list {
+                    flex: 1;
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-direction: column;
+                    padding: 0px 30% 0px 35%;
+                    .result {
+                        display: flex;
+                        justify-content:center;
+                        gap: 2rem;
+                        > * {
+                            flex: 1;
+                        }
+                        .range {
+                            font-weight: bold;
+                            flex: 0 0 5rem;
+                            text-align: center;
+                        }
+                        &.active {
+                            text-shadow: 0 0 8px var(--color-shadow-primary);
+                        }
+                    }
+                }
+
+                .species-result {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+                    flex: 1;
+                }
+
+                .subspecies {
+                    text-align: center;
+
+                    .species-list
+                    {
+                        padding: 0 0;
+                    }
+                }
+            }
+
+            .statistics {
+                font-size: var(--font-size-14);
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                .tables {
+                    height: 50%;
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                }
+
+                .skills,
+                .talents {
+                    display: flex;
+                    justify-content: center;
+                    font-size: var(--font-size-18);
+                    width: 100%;
+                    p {
+                        width: 50%;
+                    }
+                }
+                .species-img {
+                    height: 50%;
+                    img {
+
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+                table {
+                    margin: 0px;
+                    background: none;
+                    border: none;
+                    width: 30%;
+                    td {
+                        height: 1.5rem;
+                        padding: 0px;
+                    }
+                    tr {
+                        border-bottom: 1px solid black;
+                        height: 2.5rem;
+                    }
+                    tr:last-of-type {
+                        border-bottom: none;
+                    }
+                    td:first-of-type {
+                            border-right: 1px solid black;
+                    }
+                    td:last-of-type {
+                        text-align: center;
+                    }
+                }
+            }
+        }
+    }
+}

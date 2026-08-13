@@ -2604,7 +2604,7 @@
                     },
                     "talents" : {
                         "random" : {
-                            "label" : "Random"
+                            "label" : "Random Talents"
                         }
                     }
                 }

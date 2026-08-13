@@ -443,7 +443,8 @@
       "vehicleRole",
       "vehicleTest",
       "cargo",
-      "template"
+      "template",
+      "species"
     ],
     "templates": {
       "quantity": {
@@ -1199,6 +1200,9 @@
       }
     },
     "template" : {
+      "templates" : []
+    },
+    "species" : {
       "templates" : []
     }
   },

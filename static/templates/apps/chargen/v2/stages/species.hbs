@@ -1,0 +1,97 @@
+<div>
+    <div class="species-roll">
+        <h3>Species</h3>
+        <div class="species-list">
+            {{#each table.results}}
+                <div class="result {{#if (eq this.documentUuid ../activeSpecies.uuid)}}active{{/if}}" data-uuid="{{this.documentUuid}}">
+                    {{#if (eq (lookup this.range "0") (lookup this.range "1")) }}
+                        <span class="range">{{lookup this.range "0"}}</span> <a data-action="chooseSpecies"> {{this.text}}</a>
+                    {{else}}
+                        <span class="range">{{lookup this.range "0"}}<a data-action="chooseSpecies"> - {{lookup this.range "1"}}</span> {{this.text}}</a>
+                    {{/if}}
+                </div>
+            {{/each}}
+        </div>
+
+
+        <div class="species-result">
+            {{#if (or rolledSpecies chosenSpecies)}}
+                {{#if rolledSpecies}}
+                    <div class="rolled {{#if chosenSpecies}}inactive{{/if}}">
+                        <strong>Rolled: </strong> {{data.roll}} - {{rolledSpecies.name}}
+                    </div>
+                {{/if}}
+
+                {{#if chosenSpecies}}
+                    <div class="chosen">
+                        <strong>Chosen: </strong> {{chosenSpecies.name}}
+                    </div>
+                {{/if}}
+            {{/if}}
+        </div>
+
+        {{#unless rolledSpecies}}
+            <button data-action="rollSpecies" type="button">Roll</button>
+        {{/unless}}
+    </div>
+    <div class="subspecies">
+        <h3>Subspecies</h3>
+        {{#if subspeciesAvailable.length}}
+            <div class="species-list">
+                {{#each subspeciesAvailable}}
+                    <div class="result {{#if (eq this.uuid ../chosenSubspecies.uuid)}}active{{/if}}" data-uuid="{{this.uuid}}">
+                        <a data-action="chooseSubspecies" data-subspecies="true">{{this.name}}</a>
+                    </div>
+                {{/each}}
+            </div>
+        {{else if activeSpecies}}
+            No subspecies available
+        {{else}}
+        {{/if}}
+    </div>
+    <div class="statistics">
+        <h3>{{speciesItem.name}}</h3>
+        {{#if speciesItem}}
+            <div class="tables">
+
+                <table>
+                    {{#each speciesItem.system.characteristics}}
+                        <tr>
+                            <td>{{configLookup "characteristics" @key}}</td>
+                            <td>{{this.base}} + {{this.dice}}d10</td>
+                        </tr>
+                    {{/each}}
+
+                </table>
+                <div class="species-img">
+                    <img src="{{speciesItem.img}}">
+                </div>
+
+                <table>
+                    <td>Movement</td>
+                    <td>{{speciesItem.system.movement}}</td>
+                    </tr>
+                    <tr>
+                        <td>Fate</td>
+                        <td>{{speciesItem.system.fate}}</td>
+                    </tr>
+                    <tr>
+                        <td>Resilience</td>
+                        <td>{{speciesItem.system.resilience}}</td>
+                    </tr>
+                    <tr>
+                        <td>Extra</td>
+                        <td>{{speciesItem.system.extra}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="skills">
+                <p><strong>Skills: </strong> {{speciesSkills}}</p>
+            </div>
+            <div class="talents">
+                <p><strong>Talents</strong>: {{speciesTalents}} {{#if speciesItem.system.talents.random}}, {{speciesItem.system.talents.random}} Random Talents{{/if}}</p>
+            </div>
+        {{/if}}
+
+    </div>
+</div>

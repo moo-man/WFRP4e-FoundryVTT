@@ -1,0 +1,31 @@
+@use "../mixins/border" as *;
+@use "./mixins" as *;
+.warhammer.character-creation.staged {
+  background: url(./ui/backgrounds/parchment-texture.webp) repeat;
+  background-size: cover;
+
+
+  [data-application-part=stages] {
+        display: flex;
+        justify-content: space-around;
+        button {
+                border-bottom: 2px solid transparent;
+                border-image: linear-gradient(36deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.4738270308123249) 50%, rgba(255,255,255,0) 100%);
+                border-image-slice: 1;
+
+            --button-background-color: none;
+            --button-border-color: none;
+            --button-text-color: black;
+            --button-focus-outline-color: none;
+            --button-hover-background-color: none;
+            --button-hover-border-color: none;
+            --button-hover-text-color: black;
+
+
+            font-family: var(--header-font);
+            font-size: var(--font-size-28);
+
+        }
+    }
+}
+
