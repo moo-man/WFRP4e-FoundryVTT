@@ -74,9 +74,14 @@ export default class ChannellingDialog extends SkillDialog {
                     ui.notifications.notify(`Multi-Lore Spell: Using lowest Channelling Skill (${skill.specifier})`)
                 }
             }
-            else 
+            else
             {
                 skill = actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicWind[spell.system.lore.value[0]]));
+                // Some lores (e.g. Necromancy, Daemonology) share a wind name but have their own named channelling skill
+                if (!skill)
+                {
+                    skill = actor.itemTags["skill"].find(x => x.name.includes(game.wfrp4e.config.magicLores[spell.system.lore.value[0]]));
+                }
             }
         }
 
