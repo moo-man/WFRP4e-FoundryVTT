@@ -1,5 +1,6 @@
 import CharacteristicDialog from "./characteristic-dialog";
 import SkillDialog from "./skill-dialog";
+import { applySpellcasterArmourPenalty } from "./spellcaster-armour-penalty.js";
 
 export default class CastDialog extends SkillDialog {
 
@@ -81,6 +82,11 @@ export default class CastDialog extends SkillDialog {
         data.itemData = spell.toObject();
 
         return dialogData;
+    }
+
+    computeFields() {
+        super.computeFields();
+        applySpellcasterArmourPenalty(this.actor, this.fields, this.tooltips);
     }
 
     _getSubmissionData()
