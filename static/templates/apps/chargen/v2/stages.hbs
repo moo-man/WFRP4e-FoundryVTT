@@ -1,4 +1,5 @@
 <div class="stages">
+    <a class="close" data-action="close"><i class="fa-solid fa-xmark"></i></a>
     {{#each stages}}
     <button type="button" data-action="startStage" data-stage="{{@key}}">{{this.title}}</button>
     {{/each}}

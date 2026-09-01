@@ -1,18 +1,24 @@
 <div>
     <div class="species-roll">
         <h3>Species</h3>
+
         <div class="species-list">
             {{#each table.results}}
-                <div class="result {{#if (eq this.documentUuid ../activeSpecies.uuid)}}active{{/if}}" data-uuid="{{this.documentUuid}}">
+                <div data-action="chooseSpecies" class="chargen-option result {{#if (eq this.documentUuid ../activeSpecies.uuid)}}selected{{/if}}" data-uuid="{{this.documentUuid}}">
+                    <div class="icon">
+                        <img src="{{this.img}}">
+                    </div>
+                    <div class="details">
+                        <p><strong>{{this.name}}</strong></p>
                     {{#if (eq (lookup this.range "0") (lookup this.range "1")) }}
-                        <span class="range">{{lookup this.range "0"}}</span> <a data-action="chooseSpecies"> {{this.text}}</a>
+                        <p class="range">{{lookup this.range "0"}}</p>
                     {{else}}
-                        <span class="range">{{lookup this.range "0"}}<a data-action="chooseSpecies"> - {{lookup this.range "1"}}</span> {{this.text}}</a>
+                        <p class="range">{{lookup this.range "0"}} - {{lookup this.range "1"}} </p>
                     {{/if}}
+                    </div>
                 </div>
             {{/each}}
         </div>
-
 
         <div class="species-result">
             {{#if (or rolledSpecies chosenSpecies)}}

@@ -1,0 +1,41 @@
+<div>
+    <div class="career-table">
+        <button type="button" data-action="rollCareer">Roll Career</button>
+        <div class="table-content">
+
+            {{#each table.results}}
+                <div data-action="chooseCareer" class="chargen-option result {{#if (eq this.id ../manuallyChosen)}}selected{{/if}}" data-id="{{this.id}}">
+                    <div class="icon">
+                        <img src="{{this.img}}">
+                    </div>
+                    <div class="details">
+                        <p><strong>{{this.name}}</strong></p>
+                    {{#if (eq (lookup this.range "0") (lookup this.range "1")) }}
+                        <p class="range">{{lookup this.range "0"}}</p>
+                    {{else}}
+                        <p class="range">{{lookup this.range "0"}} - {{lookup this.range "1"}} </p>
+                    {{/if}}
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="careers-rolled">
+        <h3>Career</h3>
+        <div class="career-list">
+            {{#each careerChoices}}
+                <div class="chargen-option {{#if (eq ../selectedCareer.id this._id)}}selected{{/if}}" data-action="selectCareer" data-id="{{this._id}}">
+                    <div class="icon">
+                        <img src="{{this.img}}">
+                    </div>
+                    <div class="details">
+                        <p><strong>{{this.system.careergroup.value}}</strong></p>
+                        <p>{{this.name}}</p>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+    <div class="career-details">
+    </div>
+</div>

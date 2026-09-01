@@ -1,6 +1,7 @@
 @use "../mixins/border" as *;
 @use "./mixins" as *;
 .warhammer.character-creation.staged {
+    @include editor-text();
   background: url(./ui/backgrounds/parchment-texture.webp) repeat;
   background-size: cover;
 
@@ -26,6 +27,10 @@
             font-size: var(--font-size-28);
 
         }
+    }
+
+    .close {
+        color: var(--color-form-input);
     }
 }
 

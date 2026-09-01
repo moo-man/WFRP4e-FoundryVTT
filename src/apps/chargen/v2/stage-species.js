@@ -21,9 +21,9 @@ export class SpeciesStage extends BaseCharacterCreationStage
 
     static PARTS = {
         species : {template : "systems/wfrp4e/templates/apps/chargen/v2/stages/species.hbs"},
-        footer : {
-            template : "templates/generic/form-footer.hbs"
-        }
+        result : {
+            template : "systems/wfrp4e/templates/apps/chargen/v2/stage-result.hbs"
+          }
     };
 
     constructor(...args)
@@ -36,7 +36,6 @@ export class SpeciesStage extends BaseCharacterCreationStage
             ui.notifications.error("CHARGEN.ERROR.SpeciesTable", {localize: true, permanent: true})
             throw new Error (game.i18n.localize("CHARGEN.ERROR.SpeciesTable"))
         }
-        
     }
 
     async _prepareContext(options)
@@ -58,10 +57,33 @@ export class SpeciesStage extends BaseCharacterCreationStage
         return context;
     }
 
+    async _preparePartContext(partId, context, options) {
+        await super._preparePartContext(partId, context, options);
+        if (partId == "result")
+        {
+          context.label = "Species";
+          context.result = (await this.activeSpecies)?.name;
+          context.xp = this._computeXP();
+        }
+        return context;
+    }
+
+    _computeXP()
+    {
+        if (!this.data.chosen || this.data.chosen == this.data.rolled)
+        {
+            return 20
+        }
+        else if (this.data.chosen)
+        {
+            return 0
+        }
+
+    }
+
     // Chosen or rolled species, chosen preempts rolled
     get activeSpecies()
     {
-
         return this.data.chosen ? fromUuid(this.data.chosen) : fromUuid(this.data.rolled);
     }
 
@@ -78,9 +100,11 @@ export class SpeciesStage extends BaseCharacterCreationStage
         }
     }
     
-    async _getStageResults() 
+    async getStageResults() 
     {
         return {
+            items: [(await (await this.activeSpecies).system.compileSpecies()).toObject()],
+            "system.details.experience.current" : this._computeXP()
 
         }
     }

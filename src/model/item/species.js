@@ -71,7 +71,7 @@ export class SpeciesModel extends BaseItemModel
 
         return new Item.implementation(foundry.utils.expandObject(species))
       }
-      else return this
+      else return this.parent;
     }
 }
 

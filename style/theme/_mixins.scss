@@ -364,10 +364,12 @@
         margin-bottom: 0.5rem;
     }
 
-    div {
-        margin: 0.5em 0;
-        background: none;
-        border: none;
+    .editor-content {
+        div {
+            margin: 0.5em 0;
+            background: none;
+            border: none;
+        }
     }
 
     section.hook 

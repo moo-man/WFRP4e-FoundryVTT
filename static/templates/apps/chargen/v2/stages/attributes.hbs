@@ -1,0 +1,75 @@
+<div>
+    <div class="characteristics">
+        
+        <div class="char-table">
+            {{#each data.characteristics}}
+            <div class="char-name" data-tooltip="{{configLookup "characteristics" @key}}" data-tooltip-direction="UP">{{configLookup "characteristicsAbbrev" @key}}</div>
+            {{/each}}
+            {{#each data.characteristics}}
+            <div class="char-formula">{{this.formula}} + {{this.base}}</div>
+            {{/each}}
+            {{#each data.characteristics}}
+                {{#if ../data.swapping}}
+                    <div class="char-value" data-key="{{@key}}">
+                        <div class="char-drag" data-key="{{@key}}">
+                        {{this.roll}}
+                        </div>
+                    </div>
+                {{else if ../data.allocating}}
+                    <div class="char-value {{#if this.invalid}}invalid{{/if}}" data-key="{{@key}}">
+                        <input data-allocate="{{@key}}" type="number" value="{{this.allocated}}">
+                    </div>
+                {{/if}}
+            {{/each}}
+            {{#each data.characteristics}}
+            <div class="char-result">{{this.total}}</div>
+            {{/each}}
+        </div>
+
+        {{#if data.allocating}}
+        <div {{#if data.overallocated}}class="overallocated"{{/if}}>{{data.allocated}}/100 Points Allocated</div>
+        {{/if}}
+
+        {{#if data.rolled}}
+            <div><p class="centered">Alternative Options</p>
+        <div class="char-options">
+            <button data-action="swapCharacteristics">Rearrange</button>
+            <button data-action="rollCharacteristics">Reroll</button>
+            <button data-action="allocateCharacteristics">Allocate</button>
+        </div>
+        {{else}}
+        <div class="char-options">
+            <button data-action="rollCharacteristics">Roll Characteristics</button>
+        </div>
+        {{/if}}
+    </div>
+    <hr>
+    <div class="meta">
+        <div>Allocate Extra Points ({{data.meta.available}} left)</div>
+
+        <div class="meta-inputs">
+            <div>
+                Fate ({{data.meta.fate.total}})
+                <input data-meta="fate" type="number" value="{{data.meta.fate.allocated}}">
+            </div>
+            <div>
+                Resilience ({{data.meta.resilience.total}})
+                <input data-meta="resilience" type="number" value="{{data.meta.resilience.allocated}}">
+            </div>
+        </div>
+
+    </div>
+    <hr>
+    <div class="advances">
+        <div>Allocate 5 Advances to your Career's Characteristics</div>
+        <div class="advance-inputs">
+            {{#each data.advances}}
+            <div>
+                {{configLookup "characteristics" @key}}
+                <input type="number" data-advance="{{@key}}" value="{{this}}">
+            </div>
+            {{/each}}
+        </div>
+    </div>
+
+</div>

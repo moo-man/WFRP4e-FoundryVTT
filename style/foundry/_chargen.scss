@@ -3,27 +3,33 @@
     font-family: var(--primary-font);
     box-shadow: 0 0 30px  inset black;
     font-size: var(--font-size-18);
+    display: flex;
+    flex-direction: column;
+
+    padding: 0px 2rem;
+
     .inactive {
         opacity: 0.5;
     }
     .stages {
-        padding: 2rem 1rem;
-        padding-bottom: 0rem;
+        flex: 0 0 4rem;
     }
     .active-stage {
-        width: 100%;
-        height: calc(100% - 6rem);
-        padding: 2rem;
+        flex: 1;
+        overflow:hidden;
+    }
+
+    .form-footer {
+        flex: 0 0 4rem;
     }
 
     .character-creation-stage {
-        height: 100%;
-        width: 100%;
         border: 1px dashed black;
-        padding: 1rem;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
+        padding: 0px 2rem;
+        height:100%;
 
         footer {
             flex: 0 0 2rem;
@@ -38,10 +44,48 @@
         > * {
             flex: 1;
         }
+        > [data-application-part=result] {
+            flex: 0 0 4rem;
+        }
+        justify-content: center;
+        align-items: center;
+
+        [data-application-part=result] {
+            display: flex;
+            font-size: 2rem;
+            width: 25%;
+            justify-content: space-between;
+
+            > * {
+            }
+        }
+
+        .chargen-option {
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0px 1rem;
+            border-radius: 10px;
+            img {
+                height: 4rem;
+                width: 4rem;
+            }
+            .details {
+                text-align: center;
+            }
+            &.selected {
+                box-shadow: 0 0 10px black inset;
+                background: red;
+            }
+            &:hover {
+                box-shadow: 0 0 10px black inset;
+                cursor: pointer;
+            }
+        }   
         
         &#species {
-            justify-content: center;
-            align-items: center;
+
             [data-application-part=species]
             {
                 display: flex;
@@ -70,22 +114,10 @@
                     gap: 0.5rem;
                     flex-direction: column;
                     padding: 0px 30% 0px 35%;
-                    .result {
-                        display: flex;
-                        justify-content:center;
-                        gap: 2rem;
-                        > * {
-                            flex: 1;
-                        }
-                        .range {
-                            font-weight: bold;
-                            flex: 0 0 5rem;
-                            text-align: center;
-                        }
-                        &.active {
-                            text-shadow: 0 0 8px var(--color-shadow-primary);
-                        }
+                    .details {
+                        text-align: right;
                     }
+
                 }
 
                 .species-result {
@@ -158,6 +190,160 @@
                     td:last-of-type {
                         text-align: center;
                     }
+                }
+            }
+        }
+
+        &#career {
+
+            [data-application-part=career]
+            {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                > * {
+                    flex: 1;
+                }
+                .table-content {
+                    padding: 0.5rem 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    overflow: auto;
+                    flex: 1;
+                    width: 50%;
+                    gap: 0.5rem;
+
+                    .chargen-option {
+                        margin: 0px 10%;
+                        .details {
+                            text-align: right;
+                        }
+                    }
+                }
+
+
+                .career-table {
+                    padding-top: 2rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .careers-rolled {
+                    text-align: center;
+                    .career-list {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;    
+                    }
+                        .chargen-option {
+                            margin: 0px 30%;
+                    }
+                }
+
+                .career-details {
+                    overflow: auto;
+                }
+            }
+        }
+
+        &#attributes {
+
+            .overallocated {
+                color: red;
+            }
+
+            input {
+                background: none;
+                border: none;
+                outline: none;
+                color: black;
+                text-align: center;
+                border: 1px dotted black;
+                border-radius: 0px;
+                margin: 1rem;
+                height: 2rem;
+                width: 2rem;
+                padding: 0px;
+                border-radius: 5px;
+            }
+
+            .char-table {
+                display: grid;
+                grid-template-columns: repeat(10, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+                text-align: center;
+                border: 1px solid black;
+                > div {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    height: 4rem;
+                    width: 6rem;
+                    &:not(:nth-of-type(10n)){
+                        border-right: 1px solid black;
+                    }
+                }
+            }
+
+            .char-name {
+                border-bottom: 1px solid black;
+                font-weight: bold;
+            }
+
+            .char-formula {
+                border-bottom: 1px solid black;
+            }
+            
+            .char-value {
+                border-bottom: 1px solid black;
+
+
+                &.invalid
+                {
+                    input {
+                        border-color: red;
+                        background-color: rgba(200, 0, 0, 0.1)
+                    }
+                }
+
+                .char-drag {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: 1px dotted black;
+                    height: 2rem;
+                    width: 2rem;
+                    border-radius: 5px;
+                    padding: 0px;
+                    line-height: 1rem;
+                    cursor: grab;
+                    box-shadow: 0 0 3px black inset;
+                }
+                
+                &[draggable=true]
+                {
+                    &:hover {
+                        box-shadow: 0px 0px 5px black inset;
+                        cursor: grab;
+                    }
+                }
+            }
+
+            .advance-inputs,
+            .meta-inputs {
+                display: flex;
+                justify-content: space-around;
+                > * {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    width: 4rem;
+                }
+                input {
+                    width: 100%;
+                    background: rgba(0, 0, 0, 0.05);
                 }
             }
         }

@@ -1,3 +1,5 @@
+import { AttributesStage } from "./stage-attributes";
+import { CareerStage } from "./stage-career";
 import { SpeciesStage } from "./stage-species";
 
 export class WFRP4eCharacterCreation extends StagedCharacterCreation
@@ -23,8 +25,8 @@ export class WFRP4eCharacterCreation extends StagedCharacterCreation
     _setupStages()
     {
         this.addStage("species", SpeciesStage, {dependsOn: [], title: "Species"});
-        this.addStage("career", "a", {dependsOn: ["species"], title: "Career"});
-        this.addStage("attributes", "a", {dependsOn: ["career"], title: "Attributes"});
+        this.addStage("career", CareerStage, {dependsOn: ["species"], title: "Career"});
+        this.addStage("attributes", AttributesStage, {dependsOn: ["career"], title: "Attributes"});
         this.addStage("skills-talents", "a", {dependsOn: ["career"], title: "Skills & Talents"});
         this.addStage("trappings", "a", {dependsOn: ["career"], title: "Trappings"});
         this.addStage("details", "a", {dependsOn: ["species"], title: "Details"});
@@ -36,9 +38,23 @@ export class WFRP4eCharacterCreation extends StagedCharacterCreation
         return context;
     }
 
+    getArgsForStage(stageId)
+    {
+        if (stageId == "career")
+        {
+            return this.stageResults.species.items[0];
+        }
+        if (stageId == "attributes")
+        {
+            return {species: this.stageResults.species.items[0], career: this.stageResults.career.items[0]}
+        }
+    }
+
     async _prepareContext(options)
     {
         let context = await super._prepareContext(options);
+        context.buttons = [{ type: "submit", label: "Submit Stage" }];
+
         return context;
     }
 
