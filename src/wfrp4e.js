@@ -12,7 +12,6 @@ import NameGenWfrp from "./apps/name-gen.js";
 import StatBlockParser from "./apps/stat-parser.js";
 import BrowserWfrp4e from "./apps/wfrp-browser.js";
 import WFRP_Audio from "./system/audio-wfrp4e.js";
-import WFRP4E from "./system/config-wfrp4e.js"
 import WFRP_Tables from "./system/tables-wfrp4e.js";
 import WFRP_Utility from "./system/utility-wfrp4e.js";
 import ActorSettings from "./apps/actor-settings.js";
@@ -106,6 +105,7 @@ import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
+import EditionManager from "./apps/edition-manager.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -231,7 +231,7 @@ Hooks.once("init", function () {
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
-    config: WFRP4E,
+    config: EditionManager.getConfig(),
     market: MarketWFRP4e,
     audio: WFRP_Audio,
     names: NameGenWfrp,

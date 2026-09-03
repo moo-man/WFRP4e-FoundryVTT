@@ -3,8 +3,8 @@ import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
-import { PayMessageModel } from "../model/message/pay.js";
 import TokenRulerWFRP from "../canvas/token-ruler.js";
+import EditionManager from "../apps/edition-manager.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -27,6 +27,15 @@ export default function() {
       default: 0
     });
 
+    game.settings.registerMenu("wfrp4e", "editionManager", {
+      name: "SETTINGS.Menu.EditionManager",
+      label: "SETTINGS.Menu.EditionManagerLabel",
+      hint: "SETTINGS.Menu.EditionManagerHint",
+      icon: "fa-solid fa-book-spine",
+      type: TableSettings,
+      restricted: true
+  })
+  
     
     game.settings.registerMenu("wfrp4e", "themeConfig", {
       name: "WH.Theme.Config",
@@ -455,7 +464,14 @@ export default function() {
       scope: "world",
       config: false,
       type: TableSettings.schema
+    });
 
+    game.settings.register("wfrp4e", "editionSettings", {
+      name: "SETTINGS.EditionSettings",
+      hint: "SETTINGS.EditionSettings",
+      scope: "world",
+      config: false,
+      type: EditionManager.schema
     });
 
     // Pre-load templates
