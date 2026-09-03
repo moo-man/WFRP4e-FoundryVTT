@@ -347,5 +347,107 @@
                 }
             }
         }
+
+        &#skills-talents {
+
+            [data-application-part=skillsTalents]
+            {
+                width: 100%;
+                display: flex;
+                > * {
+                    flex: 1;
+                }
+            }
+
+            .skills {
+                display: flex;
+                flex-direction: column;
+                > * {
+                    flex: 1;
+                }
+            }
+
+            .skills .species {
+                display: flex;
+                gap: 1rem;
+                margin: 1rem 0px;
+                > * {
+                    flex: 1;
+                }
+                .drop-container {
+                    border: 1px dashed black;
+                    border-radius: 5px;
+                    .title {
+                        text-align: center;
+                    }
+                }
+
+                .drag-list {
+                    padding: 0.5rem;
+                    margin: 0.5rem;
+
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                }
+
+                .skill-drag {
+                    border: 1px solid black;
+                    border-radius: 3px;
+                    background: rgba(0, 0, 0, 0.05);
+                    text-align: center;
+                    padding: 0.2rem 0.3rem;
+                    cursor: grab;
+                }
+
+                .advances {
+                    display: flex;
+                    gap: 0.5rem;
+
+                    flex-direction: column;
+                    height: 100%;
+                    width: 100%;
+                    .drop-container {
+                        flex: 1;
+                    }
+                }
+            }
+
+            .skills .career {
+                .career-inputs {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+
+                    > div {
+                        
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+
+                        border: 1px solid black;
+                        border-radius: 3px;
+                        padding: 0.2rem 0.3rem;
+                        
+                        input {
+                            color: black;
+                            background: none;
+                            outline: none;
+                            background: rgba(0, 0, 0, 0.1);
+                            width: 2rem;
+                            border: none;
+                            padding: 0px;
+                            text-align: center;
+                        }
+                    }
+                }
+            }
+
+            .talent-list {
+                gap: 0.5rem;
+                display: flex;
+                flex-direction: column;
+            }
+        }
     }
 }

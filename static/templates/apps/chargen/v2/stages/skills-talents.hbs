@@ -1,0 +1,99 @@
+<div>
+    <div class="skills">
+
+        <div class="species">
+            <div class="drop-container" data-drop="none">
+                <div class="drag-list">
+                    {{#each data.speciesSkills.none}}
+                        <div class="skill-drag" data-skill="{{this}}">
+                            {{this}}
+                        </div>
+                    {{/each}}
+                </div>
+
+            </div>
+            <div class="advances">
+                <div class="advance-3 drop-container" data-drop="three">
+                    <div class="title">
+                        <p>3 Advances</p>
+                    </div>
+                    <div class="drag-list">
+                        {{#each data.speciesSkills.three}}
+                            <div class="skill-drag" data-skill="{{this}}">
+                                {{this}}
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="advance-5 drop-container" data-drop="five">
+                    <div class="title">
+                        <p>5 Advances</p>
+                    </div>
+                    <div class="drag-list">
+                        {{#each data.speciesSkills.five}}
+                            <div class="skill-drag" data-skill="{{this}}">
+                                {{this}}
+                            </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="career">
+            {{data.careerAdvances.left}}/{{data.careerAdvances.total}}
+            <div class="career-inputs">
+                {{#each data.careerSkills}}
+                    <div>{{@key}}<input type="number" data-skill="{{@key}}" value="{{this}}"></div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="talents">
+        <h3>Talents</h3>
+        <div class="species">
+            {{data.species.talents.choices.textDisplay}}
+            <button type="button" data-action="chooseTalents">Choose Talents</button>
+            {{#if data.species.talents.random}}
+            <button type="button" data-action="rollTalents">Roll {{data.species.talents.random}} Random Talents</button>
+            {{/if}}
+
+            <div class="talent-list">
+            {{#each data.speciesTalents.choices}}
+            <div class="chargen-option" data-type="choice">
+                <div class="icon">
+                    <img src="{{this.img}}">
+                </div>
+                <div class="details">
+                    <p><strong>{{this.name}}</strong></p>
+                </div>
+            </div>
+            {{/each}}
+            {{log this}}
+            {{#each data.speciesTalents.random}}
+
+                <div class="chargen-option" data-type="random" data-uuid="{{this.uuid}}">
+                    <div class="icon">
+                        <img src="{{this.img}}">
+                    </div>
+                    <div class="details">
+                        <p><strong>{{this.name}}</strong> {{#if (includes ../duplicateTalents this.name)}}<a data-action="rerollTalent"><i class="fa-solid fa-arrow-rotate-left"></i></a>{{/if}}</p>
+                    </div>
+                </div>
+            {{/each}}
+            </div>
+        </div>
+        <div class="career">
+            <h3>Career</h3>
+            {{#each data.careerTalents}}
+                <div class="chargen-option {{#if (eq this.uuid ../data.selectedCareerTalent)}}selected{{/if}}" data-uuid="{{this.uuid}}" data-action="selectTalent" >
+                    <div class="icon">
+                        <img src="{{this.img}}">
+                    </div>
+                    <div class="details">
+                        <p><strong>{{this.name}}</strong></p>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
