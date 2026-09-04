@@ -5,13 +5,11 @@
         }
 
         .dialog-base {
-            .form-group {
+            .form-group:not(.stacked) {
                 .form-fields {
                     width: 3rem;
                     flex: 0 0 3rem
                 }
-
-                ;
             }
 
             .dialog-fields {
@@ -30,6 +28,38 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+        }
+
+        .state-fields {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            >* {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .state-field {
+                &:hover {
+                    cursor: pointer;
+                }
+
+                &.active {
+
+                }
+
+                margin: 10px;
+                display: flex;
+                align-items: center;
+
+                // padding: 3px;
+                label {
+                    margin: 5px 5px;
+                }
+            }
         }
     }
 

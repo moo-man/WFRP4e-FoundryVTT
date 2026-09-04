@@ -852,6 +852,12 @@
     "DIALOG.ItemDialog" : "Item Dialog",
     "DIALOG.ChoosePassenger" : "Choose Passenger",
     "DIALOG.ChooseArmour" : "Choose Armour to damage",
+    "DIALOG.Advantage" : "Advantage",
+    "DIALOG.Disadvantage" : "Disadvantage",
+    "DIALOG.Normal" : "Normal",
+    "DIALOG.SurplusAdvantageTT" : "Surplus Advantage",
+    "DIALOG.SurplusDisadvantageTT" : "Surplus Disadvantage",
+    "DIALOG.SL" : "SL",
 
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
@@ -2010,6 +2016,19 @@
     "WFRP4e Content Initialization": "WFRP4e Content Initialization",
     "Initialization": "Inicialization",
     "Import or update the content from the WFRP4e Core Module": "Import or update the content from the WFRP4e Core Module",
+
+
+    "5e": {
+        "DIFFICULTY.VEasy": "Very Easy (+6 SL)",
+        "DIFFICULTY.Easy": "Easy (+4 SL)",
+        "DIFFICULTY.Average": "Average (+2 SL)",
+        "DIFFICULTY.Challenging": "Challenging (+0 SL)",
+        "DIFFICULTY.Difficult": "Difficult (-1 SL)",
+        "DIFFICULTY.Hard": "Hard (-2 SL)",
+        "DIFFICULTY.VHard": "Very Hard (-3 SL)",
+        "DIFFICULTY.Futile": "Futile (-4 SL)",
+        "DIFFICULTY.Impossible": "Impossible (-50)"
+    },
 
 
     "WH" : {

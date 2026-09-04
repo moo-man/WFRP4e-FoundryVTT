@@ -489,6 +489,20 @@
                     border-left: none;
                 }
             }
+
+            &.stacked {
+                label {
+                    border-bottom: 0px;
+                }
+                .form-fields {
+
+                    select, 
+                    input
+                    {   
+                        border-left: 1px solid var(--color-faded);
+                    }
+                }
+            }
         }
 }
 

@@ -47,6 +47,25 @@ body:not(.no-theme):not(.theme-light) {
                     }
                 }
             }
+
+            .state-field {
+                color: #d6d6d6;
+                border: 1px solid var(--color-form-border);
+                background: #080808;
+                height: 2rem;
+                line-height: 2rem;
+                padding: 0px 0.5rem;
+
+                .state-value {
+                    border-right: 1px solid var(--color-form-border);
+                    width:1rem;
+                }
+
+                &.active {
+                    border-color: var(--color-warm);
+                    background: var(--color-warm-half);
+                }
+            }
         }
 
         &.career-selector {
