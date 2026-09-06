@@ -86,6 +86,7 @@
     },
     "ChatMessage": {
       "test" : {},
+      "test5e" : {},
       "handler" : {},
       "opposed" : {},
       "item" : {},

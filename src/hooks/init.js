@@ -485,6 +485,7 @@ export default function() {
       "systems/wfrp4e/templates/partials/manual-scripts.hbs",
       "systems/wfrp4e/templates/partials/list-effect.hbs",
       "systems/wfrp4e/templates/chat/roll/test-card.hbs",
+      "systems/wfrp4e/templates/chat/roll/5e/test5e.hbs",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
     ]);
 

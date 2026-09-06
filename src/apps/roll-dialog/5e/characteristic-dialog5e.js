@@ -1,7 +1,6 @@
 import RollDialog5e from "./roll-dialog5e";
 
 export default class CharacteristicDialog5e extends RollDialog5e {
-    chatTemplate = "systems/wfrp4e/templates/chat/roll/characteristic-card.hbs"
     get item()
     {
       return this.characteristic
@@ -19,6 +18,8 @@ export default class CharacteristicDialog5e extends RollDialog5e {
 
         context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
         context.title += context.appendTitle || "";
+        context.messageTemplate = "systems/wfrp4e/templates/chat/roll/5e/characteristic-test.hbs";
+        
         delete context.appendTitle;
 
         foundry.utils.mergeObject(dialogData, {data : {characteristic}, fields : context.fields || {}});
@@ -57,8 +58,13 @@ export default class CharacteristicDialog5e extends RollDialog5e {
     _getSubmissionData()
     {
         let data = super._getSubmissionData();
-        data.item = this.data.characteristic;
+        data.characteristic = this.data.characteristic;
         return data;
+    }
+
+    computeTarget()
+    {
+        return this.actor.system.characteristics[this.data.characteristic].value;
     }
 
     

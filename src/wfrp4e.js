@@ -106,6 +106,9 @@ import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
 import EditionManager from "./apps/edition-manager.js";
+import { WFRP5eTestMessageModel } from "./model/message/test5e.js";
+import CharacteristicTest5e from "./system/rolls/5e/characteristic-test5e.js";
+import TestWFRP5e from "./system/rolls/5e/test-wfrp5e.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -187,6 +190,7 @@ Hooks.once("init", function () {
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
+  CONFIG.ChatMessage.dataModels["test5e"] = WFRP5eTestMessageModel;
   CONFIG.ChatMessage.dataModels["handler"] = OpposedHandlerMessage;
   CONFIG.ChatMessage.dataModels["opposed"] = OpposedTestMessage;
   CONFIG.ChatMessage.dataModels["item"] = PostedItemMessageModel;
@@ -228,6 +232,10 @@ Hooks.once("init", function () {
       ChannelTest,
       PrayerTest,
       TraitTest
+    },
+    rolls5e : {
+      TestWFRP5e,
+      CharacteristicTest5e,
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,

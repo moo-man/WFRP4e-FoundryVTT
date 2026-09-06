@@ -81,13 +81,14 @@
     _getSubmissionData()
     {
         let data = super._getSubmissionData();
-
-        data.chatOptions = this._setupChatOptions()
-        data.chatOptions.rollMode = data.rollMode;
-
+        data.target = this.computeTarget();
         return data
     }
 
+    computeTarget()
+    {
+        return context.target || 0;
+    }
 
     async computeFields() 
     {
@@ -195,62 +196,53 @@
         return breakdown;
     }
     
- /**
-   * Chat card options.
-   *
-   * All tests use the same chatOptions, but use the template member defined in each dialog class
-   */
-    _setupChatOptions() {
-        let token = this.actor.token || this.actor.getActiveTokens()[0] || this.actor.prototypeToken;
-        let chatOptions = {
-            speaker: {
-                alias: token.name,
-                token: token.id,
-                scene: token.parent?.id,
-                actor: this.actor.id,
-            },
-            title: this.options.title,
-            template: this.chatTemplate,
+
+
+    // TODO move to library?
+    static getSpeakerData(actor) {
+
+        let token = actor.token || actor.getActiveTokens()[0] || actor.prototypeToken;
+        let speaker = {
+            alias: token.name,
+            token: token.id,
+            scene: token.parent?.id,
+            actor: actor.id,
         }
 
         // If the test is coming from a token sheet
-        if (this.actor.token) 
+        if (actor.token) 
         {
-            chatOptions.speaker.alias = this.actor.token.name; // Use the token name instead of the actor name
-            chatOptions.speaker.token = this.actor.token.id;
-            chatOptions.speaker.scene = canvas.scene.id
+            speaker.alias = actor.token.name; // Use the token name instead of the actor name
+            speaker.token = actor.token.id;
+            speaker.scene = canvas.scene.id
 
-            if (this.actor.token.hidden) 
+            if (actor.token.hidden) 
             {
-                chatOptions.speaker.alias = "???"
+                speaker.alias = "???"
             }
         }
         else // If a linked actor - use the currently selected token's data if the actor id matches
         {
-            let speaker = ChatMessage.getSpeaker()
-            if (speaker.actor == this.actor.id) 
+            let speaker = ChatMessage.getSpeaker();
+            if (speaker.actor == actor.id) 
             {
                 let token = speaker.token ? canvas.tokens.get(speaker.token) : null;
-                chatOptions.speaker.alias = speaker.alias
-                chatOptions.speaker.token = speaker.token
-                chatOptions.speaker.scene = speaker.scene
+                speaker.alias = speaker.alias
+                speaker.token = speaker.token
+                speaker.scene = speaker.scene
                 if (token?.document.hidden) 
                 {
-                    chatOptions.speaker.alias = "???"
+                    speaker.alias = "???"
                 }
             }
         }
 
+        if (actor && !actor?.token) {
+            // getSpeaker retrieves tokens even if this sheet isn't a token's sheet
+            delete speaker.scene;
+        }
 
-
-        //Suppresses roll sound if the test has it's own sound associated
-        foundry.utils.mergeObject(chatOptions,
-        {
-            user: game.user.id,
-            sound: CONFIG.sounds.dice
-        }, {overwrite : false})
-
-        return chatOptions
+        return speaker;
     }
 
     /**
@@ -263,22 +255,8 @@
     {
         let dialogData = super._baseDialogData(actor, context, options)
 
-        dialogData.data.other = []; // Container for miscellaneous data that can be freely added onto
-        dialogData.data.speaker = CONFIG.ChatMessage.documentClass.getSpeaker({ actor });
-        if (actor && !actor?.token) {
-            // getSpeaker retrieves tokens even if this sheet isn't a token's sheet
-            delete dialogData.data.speaker.scene;
-        }
+        dialogData.data.speaker = this.getSpeakerData(actor);
 
-        if (dialogData.context.result) {
-            if (typeof dialogData.context.result.general === "string")
-                dialogData.context.result.general = [dialogData.context.result.general]
-            if (typeof dialogData.context.result.success === "string")
-                dialogData.context.result.success = [dialogData.context.result.success]
-            if (typeof dialogData.context.result.failure === "string")
-                dialogData.context.result.failure = [dialogData.context.result.failure]
-        }
-        
         return dialogData;
     }
 
