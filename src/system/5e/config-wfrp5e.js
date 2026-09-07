@@ -27,6 +27,47 @@ WFRP5E.difficultyLabels = {
     "vhard": "5e.DIFFICULTY.VHard"
 }
 
+WFRP5E.systemEffects = {
+    momentum: {
+        name: "NAME.Momentum",
+        img: "systems/wfrp4e/icons/conditions/momentum.png",
+        statuses: ["momentum"],
+        system: {
+            transferData: {},
+            scriptData: [
+                {
+                    label: "Advantage on Melee Tests",
+                    trigger: "dialog",
+                    script: `args.fields.advantage++`,
+                    options: {
+                            hideScript: `return args.data.characteristic != "ws"`,
+                            activateScript: `return args.data.characteristic == "ws"`
+                    }
+                },
+                {
+                    label: "Remove",
+                    trigger: "endCombat",
+                    script: `this.actor.update({"system.status.momentum" : false})`,
+                },
+                {
+                    label: "Take Damage",
+                    trigger: "takeDamage",
+                    script: `if (args.totalWoundLoss) this.actor.update({"system.status.momentum" : false})`
+                },
+                {
+                    label: "Gain Condition",
+                    trigger: "updateDocument",
+                    script: `if (args.type == "effect" && args.options.action == "create" && args.document.isCondition)
+                        {
+                            this.actor.update({"system.status.momentum" : false})
+                        }
+                        `
+                }
+            ]
+        }
+    }
+}
+
 
    
 export default WFRP5E

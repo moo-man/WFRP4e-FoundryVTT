@@ -1478,6 +1478,7 @@
     "NAME.Lingering" : "Lingering",
     "NAME.Amphibious" : "Amphibious",
     "NAME.Flight" : "Flight",
+    "NAME.Momentum" : "Momentum",
 
     "SPEC.Any": "Any",
     "SPEC.Basic" : "Basic",

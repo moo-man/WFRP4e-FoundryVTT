@@ -64,6 +64,7 @@ export class StandardActorModel extends BaseActorModel {
         await this._handleGroupAdvantage(data, options)
         this._handleWoundsUpdate(data, options)
         this._handleAdvantageUpdate(data, options)
+        this._handleMomentumUpdate(data, options)
 
     }
 
@@ -431,6 +432,13 @@ export class StandardActorModel extends BaseActorModel {
             }
 
             options.deltaAdv = data.system.status.advantage.value - this.status.advantage.value;
+        }
+    }
+
+    _handleMomentumUpdate(data, options) {
+        if (foundry.utils.hasProperty(data, "system.status.momentum")) 
+        {
+            options.momentum = data.system.status.momentum;
         }
     }
 

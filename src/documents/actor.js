@@ -90,7 +90,16 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     else if (options.deltaAdv < 0)
     {
-      TokenHelpers.displayScrollingText(options.deltaAdv, this, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+      TokenHelpers.displayScrollingText(options.deltaAdv, this, {direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+    }
+
+    if (options.momentum)
+    {
+      TokenHelpers.displayScrollingText("Momentum Gained", this, {direction : CONST.TEXT_ANCHOR_POINTS.TOP});
+    }
+    else if (options.momentum == false) // Check for false because undefined means it wasn't updated
+    {
+      TokenHelpers.displayScrollingText("Momentum Lost", this, {direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
     }
   }
 
@@ -326,6 +335,24 @@ export default class ActorWFRP4e extends WarhammerActor
   }
 
   //#endregion
+
+
+    /**
+   * @override`
+   */
+    *allApplicableEffects(includeItemEffects = false) 
+    {
+      let effects = super.allApplicableEffects(includeItemEffects);
+      for(let effect of effects)
+      {
+        yield effect;
+      }
+      
+      if (this.system.status?.momentum)
+      {
+        yield new ActiveEffect.implementation(game.wfrp4e.config.systemEffects.momentum, {parent: this})
+      }
+    }
 
 
 

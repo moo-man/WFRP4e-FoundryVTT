@@ -1408,33 +1408,31 @@ WFRP4E.PrepareSystemItems = function() {
             name: game.i18n.localize("NAME.Fear"),
             img: "systems/wfrp4e/icons/conditions/fear.png",
             statuses: ["fear"],
-            flags: {
-                wfrp4e: {
-                    transferData: {},
-                    scriptData: [
-                        {
-                            label: "@effect.flags.wfrp4e.dialogTitle",
-                            trigger: "dialog",
-                            script: `args.fields.slBonus -= 1`,
-                            options: {
-                                    hideScript: "",
-                                    activateScript: `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
-                            }
-                        },
-                        {
-                            label: "@effect.name",
-                            trigger: "immediate",
-                            script: `
-                            let name = this.item?.flags?.wfrp4e?.fearName
-                            this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
-                            if (name)
-                            {
-                                this.item.updateSource({name : this.item.name + " (" + name + ")" })
-                            }
-                            `
+            system : {
+                transferData: {},
+                scriptData: [
+                    {
+                        label: "@effect.flags.wfrp4e.dialogTitle",
+                        trigger: "dialog",
+                        script: `args.fields.slBonus -= 1`,
+                        options: {
+                                hideScript: "",
+                                activateScript: `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
                         }
-                    ]
-                }
+                    },
+                    {
+                        label: "@effect.name",
+                        trigger: "immediate",
+                        script: `
+                        let name = this.item?.flags?.wfrp4e?.fearName
+                        this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
+                        if (name)
+                        {
+                            this.item.updateSource({name : this.item.name + " (" + name + ")" })
+                        }
+                            `
+                    }
+                ]
             }
         },
         "enc1": {

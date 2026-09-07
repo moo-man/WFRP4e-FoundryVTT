@@ -197,6 +197,22 @@
         .armour-section,
         section.tab[data-tab=combat] {
 
+            .form-group.momentum {
+                input[type=checkbox]
+                {
+                    // Not sure how to remove the rounded corners from the checkbox but filling in with background color works
+                    &:checked
+                    {
+                        background: var(--color-warm);
+                    }
+                    --checkbox-checkmark-color: var(--color-cream);
+                    --checkbox-background-color: transparent;
+                    &:before {
+                        background: none;
+                    }
+                }
+            }
+
             .ap-source {
                 color: var(--color-grey1);
                 @include shadowed(#964803d6);
