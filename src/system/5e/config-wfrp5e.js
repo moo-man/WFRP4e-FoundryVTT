@@ -40,8 +40,8 @@ WFRP5E.systemEffects = {
                     trigger: "dialog",
                     script: `args.fields.advantage++`,
                     options: {
-                            hideScript: `return args.data.characteristic != "ws"`,
-                            activateScript: `return args.data.characteristic == "ws"`
+                            hideScript: `return args.fields.characteristic != "ws"`,
+                            activateScript: `return args.fields.characteristic == "ws"`
                     }
                 },
                 {

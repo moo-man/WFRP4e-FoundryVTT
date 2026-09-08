@@ -128,9 +128,14 @@ export class SkillModel extends BaseItemModel {
         await super._onUpdate(data, options, user);
     }
 
+    getTotalForCharacteristic(characteristic=this.characteristic.value, actor=this.parent?.actor)
+    {
+        return this.modifier.value + this.advances.value + actor.system.characteristics[characteristic].value;
+    }
+
     computeOwned()
     {
-        this.total.value = this.modifier.value + this.advances.value + this.parent.actor.system.characteristics[this.characteristic.value].value;
+        this.total.value = this.getTotalForCharacteristic();
         this.advances.indicator = this.advances.force;
     }
 

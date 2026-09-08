@@ -65,7 +65,7 @@
             template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
             modifiers: true
         },
-        specific : {
+        default : {
             template : "systems/wfrp4e/templates/dialog/type/5e/default-dialog.hbs",
         },
         footer : {
@@ -81,11 +81,11 @@
     _getSubmissionData()
     {
         let data = super._getSubmissionData();
-        data.target = this.computeTarget();
+        data.target = this.computeTargetNumber();
         return data
     }
 
-    computeTarget()
+    computeTargetNumber()
     {
         return context.target || 0;
     }

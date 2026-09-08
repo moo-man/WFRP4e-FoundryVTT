@@ -1,16 +1,28 @@
 import RollDialog5e from "./roll-dialog5e";
 
 export default class CharacteristicDialog5e extends RollDialog5e {
-    get item()
-    {
-      return this.characteristic
-    }
-
     get characteristic() 
     {
-      return this.data.characteristic;
+      return this.fields.characteristic;
     }
 
+        
+    static PARTS = {
+        fields : {
+            template : "systems/wfrp4e/templates/dialog/type/5e/default-fields.hbs",
+            fields: true
+        },
+        modifiers : {
+            template : "modules/warhammer-lib/templates/partials/dialog-modifiers.hbs",
+            modifiers: true
+        },
+        specific : {
+            template : "systems/wfrp4e/templates/dialog/type/5e/characteristic-dialog.hbs",
+        },
+        footer : {
+            template : "templates/generic/form-footer.hbs"
+        }
+    };
 
     static async setupData(characteristic, actor, context={}, options={})
     {
@@ -18,11 +30,10 @@ export default class CharacteristicDialog5e extends RollDialog5e {
 
         context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
         context.title += context.appendTitle || "";
-        context.messageTemplate = "systems/wfrp4e/templates/chat/roll/5e/characteristic-test.hbs";
         
-        delete context.appendTitle;
-
-        foundry.utils.mergeObject(dialogData, {data : {characteristic}, fields : context.fields || {}});
+        context.messageTemplate = "systems/wfrp4e/templates/chat/roll/5e/characteristic-test.hbs";
+        foundry.utils.mergeObject(dialogData, {fields : context.fields || {}});
+        dialogData.fields.characteristic = characteristic;
 
         let data = dialogData.data;
         
@@ -52,19 +63,20 @@ export default class CharacteristicDialog5e extends RollDialog5e {
     async _prepareContext(options)
     {
         let context = await super._prepareContext(options);
+        context.target = this.computeTargetNumber();
         return context;
     }
     
     _getSubmissionData()
     {
         let data = super._getSubmissionData();
-        data.characteristic = this.data.characteristic;
         return data;
+
     }
 
-    computeTarget()
+    computeTargetNumber()
     {
-        return this.actor.system.characteristics[this.data.characteristic].value;
+        return this.actor.system.characteristics[this.fields.characteristic].value;
     }
 
     
@@ -113,6 +125,13 @@ export default class CharacteristicDialog5e extends RollDialog5e {
             breakdown.characteristic = `${this.actor.system.characteristics[this.characteristic].value} (${game.wfrp4e.config.characteristics[this.characteristic]})`
         }
         return breakdown;
+    }
+
+    _defaultFields() 
+    {
+        return foundry.utils.mergeObject({
+            characteristic: "ws",
+        }, super._defaultFields());
     }
 
     // Backwards compatibility for effects

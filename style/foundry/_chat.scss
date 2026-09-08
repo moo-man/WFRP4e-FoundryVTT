@@ -105,6 +105,11 @@
             
         }
 
+        button[data-action=reverse]
+        {
+            width: 100%;
+        }
+
         .sl {
             margin-top: 0.5rem;
             // &:before {

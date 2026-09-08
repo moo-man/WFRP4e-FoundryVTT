@@ -500,7 +500,10 @@ export default function() {
       vehicleArmour: "systems/wfrp4e/templates/sheets/partials/vehicle-armour.hbs",
       itemProperties: "systems/wfrp4e/templates/sheets/partials/item-properties.hbs",
       extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
-      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
+      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs',
+      baseDialog: 'systems/wfrp4e/templates/dialog/type/5e/partials/base-dialog.hbs',
+      defaultFields: 'systems/wfrp4e/templates/dialog/type/5e/default-fields.hbs',
+      dialogState: 'systems/wfrp4e/templates/dialog/type/5e/partials/dialog-state.hbs'
     });
 
     // Load name construction from files

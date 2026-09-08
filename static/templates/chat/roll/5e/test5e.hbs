@@ -18,7 +18,6 @@
 
 <div class="sl">
     <div class="sl-container">
-        {{log test.result.displaySL}}
         {{test.result.displaySL}}
     </div>
 </div>
@@ -37,5 +36,9 @@
         {{/if}}
     </span>
 </div>
+
+{{#if test.result.canReverse}}
+    <button data-action="reverse" type="button"><i class="fa-solid fa-shuffle"></i> Reverse</button>
+{{/if}}
 
 {{> effectButtons test}}

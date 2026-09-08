@@ -12,8 +12,8 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     static get actions() 
     { 
         return foundry.utils.mergeObject(super.actions, {
-      
-        });
+          reverse: this.onReverse,
+        }); 
     }
 
     get canEdit()
@@ -64,6 +64,11 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     static onUseMagic(ev, target)
     {
       MagicUseMessageModel.create({test: this.test});
+    }
+
+    static onReverse(ev, target)
+    {
+      this.test.reverse();
     }
 
 }

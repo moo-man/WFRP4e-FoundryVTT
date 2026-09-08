@@ -91,7 +91,13 @@ export default class TestWFRP5e extends WarhammerTestBase {
     return this
   }
 
-  reverse(roll)
+  reverse()
+  {
+    this.testData.reverse = true;
+    this.roll();
+  }
+
+  _reverseDice(roll)
   {
     let reverseRoll = roll.toString();
     if (reverseRoll.length == 1)
@@ -113,11 +119,6 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   /**
      * Provides the basic evaluation of a test.
-     * 
-     * This function, when given the necessary data (target number, SL bonus, etc.) provides the
-     * basic test evaluation - rolling the test (if not already given), determining SL, success, description, critical/fumble if needed.
-     * 
-     * @param {Object} this.data  Test info: target number, SL bonus, success bonus, (opt) roll, etc
      */
   async computeResult() {
     this.data.result = {};
@@ -129,7 +130,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     this.result.roll = this.testData.roll;
     this.result.originalRoll = this.result.roll;
-    this.result.reversedRoll = this.reverse(this.result.roll);
+    this.result.reversedRoll = this._reverseDice(this.result.roll);
 
     if (this.testData.state == "adv")
     {
@@ -148,6 +149,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
     
     if (this.result.reversed)
     {
+      this.result.canReverse = false; // Remove reverse option if already reversed
       this.result.roll = this.result.reversedRoll;
     }
 
