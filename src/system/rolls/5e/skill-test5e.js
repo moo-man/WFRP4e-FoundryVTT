@@ -5,7 +5,8 @@ export default class SkillTest5e extends CharacteristicTest5e {
   constructor(data)
   {
     super(data);
-    this.context.skill = data?.skill.toObject();
+    if (!data) return
+    this.context.skill = data?.skill?.toObject();
   }
   
   static fromData(...args)

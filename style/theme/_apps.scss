@@ -63,6 +63,9 @@ body:not(.no-theme):not(.theme-light) {
 
                 &.active {
                     border-color: var(--color-warm);
+                    .state-value {
+                        border-color: var(--color-warm);
+                    }
                     background: var(--color-warm-half);
                 }
             }

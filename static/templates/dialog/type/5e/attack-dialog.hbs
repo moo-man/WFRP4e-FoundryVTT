@@ -1,0 +1,30 @@
+<div>
+  {{> dialogState}}
+  <div class="flexrow gap">
+
+    <div class="form-group" {{#if tooltips.damage}}data-tooltip-direction="LEFT" data-tooltip="{{tooltips.damage}}" {{/if}}>
+      <label>{{localize "DIALOG.Damage"}}</label>
+      <div class="form-fields">
+        <input type="number" name="damage" value="{{fields.damage}}">
+      </div>
+    </div>
+    {{#if data.item.system.isMelee}}
+    <div class="form-group">
+      <label>{{localize "DIALOG.Charging"}}
+        <input type="checkbox" name="charging" {{checked fields.charging}}>
+      </label>
+    </div>
+    {{else}}
+      <div class="form-group">
+    <label>{{localize "Range"}}</label>
+    <div class="form-fields">
+      <select name="range">
+        {{selectOptions (config "rangeBands") selected=fields.range}}
+      </select>
+    </div>
+</div>
+    {{/if}}
+  </div>
+
+  {{> baseDialog}}
+</div>

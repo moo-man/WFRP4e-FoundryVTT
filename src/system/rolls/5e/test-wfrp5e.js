@@ -171,12 +171,12 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     if (this.result.roll >= automaticFailure) 
     {
-      SL = Math.max(SL, 0);
+      SL = Math.min(SL, 0);
       this.result.automaticFailure = true;
     }
     else if (this.result.roll <= automaticSuccess)
     {
-      SL = Math.min(SL, 0);
+      SL = Math.max(SL, 0);
       this.result.automaticSuccess = true;
     }
 
@@ -185,13 +185,20 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
      if (this.result.roll % 11 == 0 && this.result.success)
      {
-        this.result.SL = 5;
-        this.result.critical = true;
+       
+       if (!this.testData.combatCriticals)
+       {
+        this.result.SL = Math.max(5, this.result.SL);
+       }
+       this.result.critical = true;
      }
-     else if (this.result.roll % 11 == 0 && this.result.failure)
-      {
-         this.result.SL = -5;
-         this.result.fumble = true;
+     else if (this.result.roll % 11 == 0 && this.result.failure && !this.testData.combatCriticals)
+     {
+        if (!this.testData.combatCriticals)
+        {
+          this.result.SL = Math.min(-5, this.result.SL);
+        }
+        this.result.fumble = true;
       }
       this.computeDescription()
 

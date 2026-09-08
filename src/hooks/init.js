@@ -485,7 +485,6 @@ export default function() {
       "systems/wfrp4e/templates/partials/manual-scripts.hbs",
       "systems/wfrp4e/templates/partials/list-effect.hbs",
       "systems/wfrp4e/templates/chat/roll/test-card.hbs",
-      "systems/wfrp4e/templates/chat/roll/5e/test5e.hbs",
       "systems/wfrp4e/templates/chat/help/chat-command-display-info.hbs",
     ]);
 
@@ -503,7 +502,9 @@ export default function() {
       "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs',
       baseDialog: 'systems/wfrp4e/templates/dialog/type/5e/partials/base-dialog.hbs',
       defaultFields: 'systems/wfrp4e/templates/dialog/type/5e/default-fields.hbs',
-      dialogState: 'systems/wfrp4e/templates/dialog/type/5e/partials/dialog-state.hbs'
+      dialogState: 'systems/wfrp4e/templates/dialog/type/5e/partials/dialog-state.hbs',
+      testButtons: 'systems/wfrp4e/templates/chat/roll/5e/test-buttons.hbs',
+      testResults: "systems/wfrp4e/templates/chat/roll/5e/test5e.hbs"
     });
 
     // Load name construction from files

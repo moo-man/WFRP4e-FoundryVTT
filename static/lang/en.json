@@ -806,6 +806,7 @@
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",
     "DIALOG.BonusTT" : "List of potential bonuses",
     "DIALOG.RollMode" : "Roll Mode",
+    "DIALOG.Damage" : "Damage",
     "DIALOG.Extensions" : "Extensions",
     "DIALOG.CastSkill" : "Cast Skill",
     "DIALOG.HitLocation" : "Include a roll on the hit location table",
