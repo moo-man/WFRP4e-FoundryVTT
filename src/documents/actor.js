@@ -199,6 +199,17 @@ export default class ActorWFRP4e extends WarhammerActor
     return this._setupTest(ChannellingDialog, ChannelTest, spell, context, options, false)
   }
 
+  
+  /**
+   * Setup a Channelling Test.
+   *
+   *
+   */
+  async setupChannelling(wind, context = {}, options) 
+  {
+    return this._setupTest(ChannellingDialog5e, ChannellingTest5e, wind, context, options, false)
+  }
+
   /**
    * Setup a Prayer Test.
    *
@@ -351,6 +362,12 @@ export default class ActorWFRP4e extends WarhammerActor
       if (this.system.status?.momentum)
       {
         yield new ActiveEffect.implementation(game.wfrp4e.config.systemEffects.momentum, {parent: this})
+      }
+
+      let channelling = this.system.status?.channelling?.getEffect(this);
+      if (channelling)
+      {
+        yield channelling;
       }
     }
 

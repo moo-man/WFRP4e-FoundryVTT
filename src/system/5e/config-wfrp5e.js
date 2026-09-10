@@ -65,6 +65,26 @@ WFRP5E.systemEffects = {
                 }
             ]
         }
+    },
+    channelling: {
+        name: "NAME.Channelling",
+        img: "modules/wfrp4e-core/art/magic/winds.webp",
+        statuses: ["channelling"],
+        system: {
+            transferData: {},
+            scriptData: [
+                {
+                    label: "Channelled SL",
+                    trigger: "dialog",
+                    script: `args.fields.SL += args.actor.system.status.channelling.value`,
+                    options: {
+                            hideScript: `return !args.spell || !args.spell.system.usesWind(this.effect.getFlag("wfrp4e", "wind"))`,
+                            activateScript: `return true;`,
+                            submissionScript: `args.actor.update(args.actor.system.status.channelling.clear())`
+                    }
+                }
+            ]
+        }
     }
 }
 
@@ -77,6 +97,58 @@ WFRP5E.rangeModifiers = {
     "Extreme": -2,
 }
 
+
+WFRP5E.loreWind = {
+    "petty": "petty",
+    "beasts": "ghur",
+    "death": "shyish",
+    "fire": "aqshy",
+    "heavens": "azyr",
+    "metal": "chamon",
+    "life": "ghyran",
+    "light": "hysh",
+    "shadow": "ulgu",
+    "hedgecraft": "magick",
+    "witchcraft": "magick",
+    "daemonology": "dhar",
+    "necromancy": "dhar",
+    "undivided" : "dhar",
+    "nurgle": "dhar",
+    "slaanesh": "dhar",
+    "tzeentch": "dhar",
+};
+
+WFRP5E.magicWind = {
+    "aqshy" : "5e.MagicWind.Aqshy",
+    "azyr" : "5e.MagicWind.Azyr",
+    "chamon" : "5e.MagicWind.Chamon",
+    "dhar" : "5e.MagicWind.Dhar",
+    "ghur" : "5e.MagicWind.Ghur",
+    "ghyran" : "5e.MagicWind.Ghyran",
+    "hysh" : "5e.MagicWind.Hysh",
+    "magick" : "5e.MagicWind.Magick",
+    "qhaysh" : "5e.MagicWind.Qhaysh",
+    "shyish" : "5e.MagicWind.Shyish",
+    "skaven" : "5e.MagicWind.Skaven",
+    "ulgu" : "5e.MagicWind.Ulgu",
+    "waaagh!" : "5e.MagicWind.Waaagh!"
+};
+
+WFRP5E.windIcons = {
+    "aqshy" : "modules/wfrp4e-core/art/magic/aqshy.webp",
+    "azyr" : "modules/wfrp4e-core/art/magic/azyr.webp",
+    "chamon" : "modules/wfrp4e-core/art/magic/chamon.webp",
+    "dhar" : "modules/wfrp4e-core/art/magic/winds.webp",
+    "ghur" : "modules/wfrp4e-core/art/magic/ghur.webp",
+    "ghyran" : "modules/wfrp4e-core/art/magic/ghyran.webp",
+    "hysh" : "modules/wfrp4e-core/art/magic/hysh.webp",
+    "magick" : "modules/wfrp4e-core/art/magic/winds.webp",
+    "qhaysh" : "modules/wfrp4e-core/art/magic/winds.webp",
+    "shyish" : "modules/wfrp4e-core/art/magic/shyish.webp",
+    "skaven" : "modules/wfrp4e-core/art/magic/winds.webp",
+    "ulgu" : "modules/wfrp4e-core/art/magic/ulgu.webp",
+    "waaagh!" : "modules/wfrp4e-core/art/magic/winds.webp"
+};
 
    
 export default WFRP5E

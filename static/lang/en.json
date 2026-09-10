@@ -2029,7 +2029,23 @@
         "DIFFICULTY.Hard": "Hard (-2 SL)",
         "DIFFICULTY.VHard": "Very Hard (-3 SL)",
         "DIFFICULTY.Futile": "Futile (-4 SL)",
-        "DIFFICULTY.Impossible": "Impossible (-50)"
+        "DIFFICULTY.Impossible": "Impossible (-50)",
+
+        "MagicWind" : {
+            "Aqshy" : "Aqshy",
+            "Azyr" : "Azyr",
+            "Chamon" : "Chamon",
+            "Dhar" : "Dhar",
+            "Ghur" : "Ghur",
+            "Ghyran" : "Ghyran",
+            "Hysh" : "Hysh",
+            "Magick" : "Magick",
+            "Qhaysh" : "Qhaysh",
+            "Shyish" : "Shyish",
+            "Skaven" : "Skaven",
+            "Ulgu" : "Ulgu",
+            "Waaagh!" : "Waaagh!"
+        }
     },
 
 

@@ -251,6 +251,11 @@ export class SpellModel extends OvercastItemModel {
         }
     }
 
+    usesWind(wind)
+    {
+      return this.lore.value.map(i => game.wfrp4e.config.loreWind[i]).includes(wind);
+    }
+
 
     getSkillToUse(actor) 
     {

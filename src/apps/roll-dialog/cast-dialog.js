@@ -69,6 +69,7 @@ export default class CastDialog extends SkillDialog {
 
         let data = dialogData.data;
         data.spell = spell;
+        data.item = spell;
 
         if (!skill)
           data.target = actor.system.characteristics[characteristic].value

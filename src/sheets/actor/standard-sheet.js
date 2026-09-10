@@ -22,6 +22,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
       stepAilment: {buttons: [0, 2], handler: this._onStepAilment},
       chooseLore: this._onChooseLore,
+      stepChannelling: {buttons: [0, 2], handler: this._onStepChannelling},
     },
   }
 
@@ -384,6 +385,16 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       document.system.decrement();
     } else {
       document.system.increment();
+    }
+  }
+
+  static async _onStepChannelling(ev, target)
+  {
+    let wind = target.closest("[data-wind]").dataset.wind;
+    if (ev.button === 0) {
+      this.actor.update(this.actor.system.status.channelling.set({value: 1, wind, add: true }));
+    } else {
+      this.actor.update(this.actor.system.status.channelling.set({value: -1, wind, add: true }));
     }
   }
 

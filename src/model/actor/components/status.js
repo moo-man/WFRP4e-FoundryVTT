@@ -1,6 +1,5 @@
+import { ChannellingModel } from "./channelling";
 import { MountModel } from "./mount";
-import { ManannMoodModel } from "./vehicle/mood";
-import { MoraleModel } from "./vehicle/morale";
 
 let fields = foundry.data.fields;
 
@@ -42,6 +41,8 @@ export class StandardStatusModel extends foundry.abstract.DataModel {
             // sources : new fields.ArrayField(new fields.StringField())
         })
         schema.mount = new fields.EmbeddedDataField(MountModel)
+        schema.channelling = new fields.EmbeddedDataField(ChannellingModel);
+
         return schema;
     }
 

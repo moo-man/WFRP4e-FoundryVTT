@@ -54,7 +54,7 @@ export default class SkillDialog5e extends CharacteristicDialog5e {
 
         dialogData.data.skill = skill;
         dialogData.fields.characteristic = characteristic;
-        dialogData.data.scripts = dialogData.data.scripts.concat(skill.getScripts("dialog"));
+        dialogData.data.scripts = dialogData.data.scripts.concat(skill.getScripts?.("dialog") || []);
 
         return dialogData;
     }
@@ -73,7 +73,14 @@ export default class SkillDialog5e extends CharacteristicDialog5e {
 
     computeTargetNumber()
     {
-        return this.skill.system.getTotalForCharacteristic(this.fields.characteristic, this.actor);
+        if (this.skill.id != "unknown")
+        {
+            return this.skill.system.getTotalForCharacteristic(this.fields.characteristic, this.actor);
+        }
+        else 
+        {
+            return super.computeTargetNumber();
+        }
     }
 
 

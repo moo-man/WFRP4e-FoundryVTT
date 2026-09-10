@@ -12,7 +12,8 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     static get actions() 
     { 
         return foundry.utils.mergeObject(super.actions, {
-          reverse: this.onReverse,
+          reverse: this._onReverse,
+          useMagic: this._onUseMagic
         }); 
     }
 
@@ -61,12 +62,12 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
       warhammer.utility.replacePopoutTokens(html);
     }
 
-    static onUseMagic(ev, target)
+    static _onUseMagic(ev, target)
     {
       MagicUseMessageModel.create({test: this.test});
     }
 
-    static onReverse(ev, target)
+    static _onReverse(ev, target)
     {
       this.test.reverse();
     }

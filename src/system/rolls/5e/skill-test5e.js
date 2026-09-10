@@ -6,7 +6,14 @@ export default class SkillTest5e extends CharacteristicTest5e {
   {
     super(data);
     if (!data) return
-    this.context.skill = data?.skill?.toObject();
+    if (data.skill && data.skill.id != "unknown")
+    {
+      this.context.skill = data?.skill?.toObject();
+    }
+    else 
+    {
+      this.context.skill == data.skill;
+    }
   }
   
   static fromData(...args)

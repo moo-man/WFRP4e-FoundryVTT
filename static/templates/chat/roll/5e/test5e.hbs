@@ -36,3 +36,10 @@
         {{/if}}
     </span>
 </div>
+
+    
+{{#if test.result.hitloc}}
+<div>
+    <strong>{{localize "ROLL.HitLocation"}}</strong>: {{test.result.hitloc.description}}
+</div>
+{{/if}}

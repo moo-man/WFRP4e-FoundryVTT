@@ -710,12 +710,11 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
     }
 
-    static async _onRollTest(ev)
+    static async _onRollTest(ev, target)
     {
       let test;
       let document = await this._getDocumentAsync(ev);
       let options = {fields : {}};
-      let target = this._getParent(ev.target, "[data-action='rollTest']")
       if (target)
       {
         options.fields.modifier = Number(target.dataset.modifier) || 0;
@@ -743,6 +742,14 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
         case "prayer":
           test = await this.actor.setupPrayer(document, options);
           break;
+
+        case "cast":
+            test = await this.actor.setupCast(document, options);
+          break;
+
+        case "channelling":
+          test = await this.actor.setupChannelling(target.closest("[data-wind]").dataset.wind, options);
+        break;
       }
 
       test?.roll();

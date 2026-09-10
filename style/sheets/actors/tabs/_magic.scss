@@ -2,6 +2,25 @@
     section.tab[data-tab="magic"] {
         height: calc(100% - 220px);
 
+        .channelling {
+            justify-content: center;
+
+            .wind {
+                align-items: center;
+                flex: 0 0 6rem;
+                a {
+                    text-align: center;
+                    flex: 1;
+                }
+                .value {
+                    text-align: center;
+                    font-size: var(--font-size-20)
+                }
+                border-radius: 5px;
+            }
+            font-size: var(--font-size-16)
+        }
+
         .progress-bar {
             height: 0.5rem;
             border: none;

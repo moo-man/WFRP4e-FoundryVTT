@@ -16,19 +16,27 @@ export default class TestWFRP5e extends WarhammerTestBase {
         difficulty: data.difficulty,
         state: data.state,
         reverse: false,
+        hitLocation: {
+          selected: data.hitLocation,
+          table: data.hitLocationTable,
+          roll: null,
+          evaluate: data.hitLocation != "none"
+        }
       },
       result: {
         roll: data.roll,
         description: "",
         tooltips: {},
         text: data.text || [],
+        tables: {},
       },
       context: {
+        itemData: data.context?.itemData,
         rollClass: this.constructor.name,
         rollMode: data.rollMode,
         reroll: false,
         edited: false,
-        item: data.item,
+        item: data.item?.id,
         speaker: data.speaker,
         title : data.context?.title,
         targets: data.targets,
@@ -75,8 +83,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
     await this.runPreEffects();
 
     await this.rollDice();
+    this.initializeResult();
     await this.computeResult();
-    // this.computeTables();
+    this.computeTables();
     await this.runPostEffects();
     await this.postTest();
 
@@ -117,14 +126,21 @@ export default class TestWFRP5e extends WarhammerTestBase {
     return reverseRoll;
   }
 
+
+  initializeResult()
+  {
+    this.data.result = {
+      SLModifier: 0, // Allow subclasses to modify before computing result
+    };
+  }
+
   /**
      * Provides the basic evaluation of a test.
      */
   async computeResult() {
-    this.data.result = {};
     let automaticSuccess = game.settings.get("wfrp4e", "automaticSuccess");
     let automaticFailure = game.settings.get("wfrp4e", "automaticFailure");
-    this.result.SLModifier = this.testData.SL + game.wfrp4e.config.difficultyModifiers[this.testData.difficulty];
+    this.result.SLModifier += this.testData.SL + game.wfrp4e.config.difficultyModifiers[this.testData.difficulty];
     this.result.target = this.testData.target;
     this.result.reversed = this.testData.reverse;
 
@@ -219,6 +235,11 @@ export default class TestWFRP5e extends WarhammerTestBase {
     // this.result.breakdown = this.context.breakdown
     // this.result.breakdown.formatted = this.formatBreakdown()
 
+    if (this.testData.hitLocation.evaluate)
+    {
+      await this.computeHitLocation();
+    }
+
     return this.result;
   }
   
@@ -287,10 +308,11 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   computeTables()
   {
+    this.result.tables = {};
     if (this.result.critical && this.result.hitloc)
     {
       this.result.tables.critical = {
-        label : this.result.critical,
+        label : game.i18n.localize("Critical"),
         class : "critical-roll",
         modifier : this.result.critModifier || 0,
         key: `crit${this.result.hitloc.result}`
@@ -299,13 +321,63 @@ export default class TestWFRP5e extends WarhammerTestBase {
     if (this.result.fumble)
     {
       this.result.tables.fumble = {
-        label : this.result.fumble,
+        label : game.i18n.localize("Fumble"),
         class : "fumble-roll",
         key : "oops"
       }
     }
   }
 
+  async computeHitLocation()
+  {
+     // Called Shots
+     if (this.testData.hitLocation.selected != "roll") // hitLocation.selected is possibly "none" but if so, testData.hitLocation would be false (see constructor) so this won't execute
+     {
+       this.result.hitloc = game.wfrp4e.tables.hitLocKeyToResult(this.testData.hitLocation.selected)
+     }
+
+     // Pre-set hitloc (e.g. editing a test)
+     if (this.testData.hitLocation.roll)
+     {
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.testData.hitLocation.roll, hideDSN: true });
+     }
+
+     // No defined hit loc, roll for one
+    if (!this.result.hitloc)
+    {
+      if (false) // TODO: adding setting for reverse
+      {
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { lookup: this.result.reversedRoll, hideDSN: true });
+      }
+      else
+      {
+        this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
+      }
+    }
+
+     this.result.hitloc.roll = (0, eval)(this.result.hitloc.roll) // Cleaner number when editing chat card
+     this.result.hitloc.description = game.i18n.localize(this.result.hitloc.description)
+
+     // "rArm" and "lArm" from the table actually means "primary" and "secondary" arm
+     // So convert the descriptions to match that. Opposed tests handle displaying
+     // which arm was hit, as it is based on the actor's settings
+     if (["lArm", "rArm"].includes(this.result.hitloc.result))
+     {
+       if (this.result.hitloc.result == "rArm")
+       {
+         this.result.hitloc.description = game.i18n.localize("Primary Arm")
+       }
+       if (this.result.hitloc.result == "lArm")
+       {
+         this.result.hitloc.description = game.i18n.localize("Secondary Arm")
+       }
+     }
+
+     if (this.testData.hitLocation.selected && this.testData.hitLocation.selected != "roll")
+     {
+       this.result.hitloc.description = this.testData.hitLocation.table[this.testData.hitLocation.selected] + ` (${game.i18n.localize("ROLL.CalledShot")})`
+     }
+  }
 
   // Function that all tests should go through after the main roll
   async postTest() 
@@ -604,6 +676,14 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   }
 
+  get item() 
+  {
+    if (this.context.itemData)
+      return new CONFIG.Item.documentClass(this.context.itemData, { parent: this.actor });
+    else
+      return this.actor.items.get(this.context.item);
+  }
+
   get message() {
     return game.messages.get(this.context.messageId)
   }
@@ -633,7 +713,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
   
   get target() { return this.data.result.target }
   get size() { return this.useMount ? this.actor.mount.details.size.value : this.actor.details.size.value }
-  get options() { return this.data.preData.options }
+  get options() { return this.data.testData.options }
   get outcome() { return this.data.result.outcome }
   get result() { return this.data.result }
   get testData() { return this.data.testData }
