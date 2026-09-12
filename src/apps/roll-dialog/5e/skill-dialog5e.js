@@ -47,11 +47,16 @@ export default class SkillDialog5e extends CharacteristicDialog5e {
         }
 
         context.title = context.title || game.i18n.format("SkillTest", {skill: skill.name});
+        if (context.item && !context.appendTitle)
+        {
+            context.appendTitle = ` - ${context.item.name}`;
+        }
         let dialogData = await super.setupData(characteristic, actor, context, options);
 
         
         context.messageTemplate = "systems/wfrp4e/templates/chat/roll/5e/characteristic-test.hbs";
 
+        dialogData.data.item = context.item;
         dialogData.data.skill = skill;
         dialogData.fields.characteristic = characteristic;
         dialogData.data.scripts = dialogData.data.scripts.concat(skill.getScripts?.("dialog") || []);

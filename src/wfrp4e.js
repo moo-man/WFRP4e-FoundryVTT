@@ -114,6 +114,7 @@ import WeaponTest5e from "./system/rolls/5e/weapon-test5e.js";
 import CastTest5e from "./system/rolls/5e/cast-test5e.js";
 import ChannellingTest5e from "./system/rolls/5e/channelling-test5e.js";
 import PrayerTest5e from "./system/rolls/5e/prayer-test5e.js";
+import TraitTest5e from "./system/rolls/5e/trait-test5e.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -245,7 +246,8 @@ Hooks.once("init", function () {
       WeaponTest5e,
       CastTest5e,
       ChannellingTest5e,
-      PrayerTest5e
+      PrayerTest5e,
+      TraitTest5e
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
