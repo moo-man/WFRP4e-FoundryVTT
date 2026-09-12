@@ -6,7 +6,6 @@ export default class CastTest5e extends SkillTest5e {
   {
     super(data);
     if (!data) return
-    this.context.itemData = data.context.itemData;
     this.testData.combatCriticals = true;
   }
   

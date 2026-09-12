@@ -175,6 +175,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
       baseSL = Math.floor(Math.abs(this.result.target - this.result.roll) / 10) * ((this.result.target - this.result.roll) < 0 ? -1 : 1);
     }
 
+    // Determine SL, either pre-defined or computed with achieved + modifier
     let SL 
     if (this.testData.definedSL)
     {
@@ -185,6 +186,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
       SL = baseSL + this.result.SLModifier;
     }
 
+    // Automatic success/failure bind SL to +/-0
     if (this.result.roll >= automaticFailure) 
     {
       SL = Math.min(SL, 0);
@@ -196,9 +198,12 @@ export default class TestWFRP5e extends WarhammerTestBase {
       this.result.automaticSuccess = true;
     }
 
+    // Now that we know SL we compute outcome, either "success" or "failure"
     this.result.SL = SL;
     this.result.outcome = this.computeOutcome()
 
+
+    // Now that outcome is set, determine critical/fumble. If not in combat, set SL to +/- 5 
      if (this.result.roll % 11 == 0 && this.result.success)
      {
        
@@ -208,7 +213,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
        }
        this.result.critical = true;
      }
-     else if (this.result.roll % 11 == 0 && this.result.failure && !this.testData.combatCriticals)
+     else if (this.result.roll % 11 == 0 && this.result.failure)
      {
         if (!this.testData.combatCriticals)
         {
@@ -216,6 +221,8 @@ export default class TestWFRP5e extends WarhammerTestBase {
         }
         this.result.fumble = true;
       }
+
+      // Now that the final SL value is found, get the description (astounding, marginal, etc)
       this.computeDescription()
 
 
@@ -291,8 +298,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
   {
     if (this.result.SL == 0)
     {
-      this.result.success = true;
-      this.result.outcome = "success"; // TODO implement
+      this.result.success = this.result.roll <= this.result.target;
+      this.result.outcome = this.result.success ? "success" : "failure";
+      this.result.failure = !this.result.success;
     }
     else if (this.result.SL > 0) 
     {
