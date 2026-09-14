@@ -2045,6 +2045,24 @@
             "Skaven" : "Skaven",
             "Ulgu" : "Ulgu",
             "Waaagh!" : "Waaagh!"
+        },
+
+        "Dialog" : {
+            "Modifier" : {
+                "CalledShot" : "Called Shot",
+                "UsingOffhand" : "Using offhand",
+                "Charging" : "Charging",
+                "Moved" : "Moved before shooting",
+                "Extreme" : "Extreme Range",
+                "Long" : "Long Range",
+                "Short" : "Short Range",
+                "PointBlank" : "Point Blank Range",
+                "Shorter" : "Defending against shorter weapon",
+                "TargetTiny" : "Target is Tiny",
+                "TargetMonstrous" : "Target is Monstrous",
+                "TargetSmaller" : "Target is smaller",
+                "TargetLarger" : "Target is larger"
+            }
         }
     },
 
@@ -2066,6 +2084,11 @@
                         "hitLocationTable.value" : {
                             "label" : "Hit Location Table",
                             "hint" : "Defines a custom hit location table for when this Actor is attacked."
+                        }
+                    },
+                    "status": {
+                        "momentum": {
+                            "label": "Momentum"
                         }
                     },
                     "settings": {

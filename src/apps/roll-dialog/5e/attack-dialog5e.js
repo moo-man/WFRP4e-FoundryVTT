@@ -30,24 +30,6 @@ export default class AttackDialog5e extends SkillDialog5e
               type: 1,
               path: "fields.damage"
             },
-
-            // Keep old fields for backwards compatibility
-            modifier: {
-                label: "Modifier",
-                type: 1,
-                path: "fields.modifier",
-                hideLabel: true
-            },
-            slBonus: {
-                label: "DIALOG.SLBonus",
-                type: 1,
-                path: "fields.slBonus"
-            },
-            successBonus: {
-                label: "DIALOG.SuccessBonus",
-                type: 1,
-                path: "fields.successBonus"
-            },
             difficulty: {
                 label: "Difficulty",
                 type: 0,
@@ -94,17 +76,93 @@ export default class AttackDialog5e extends SkillDialog5e
     }
 
     computeFields()
-    {
+    {        
+        if (!["roll", "none"].includes(this.fields.hitLocation))
+        {
+            this.addModifier({key: "calledShot", value: -2, field: "SL", label: "5e.Dialog.Modifier.CalledShot"});
+        }
+
+        if (this.item.system.offhand?.value)
+        {
+            this.addModifier({key: "offhand", value: -2, field: "SL", label: "5e.Dialog.Modifier.UsingOffhand"});
+        }
+
+        if (this.fields.charging)
+        {
+            this.addModifier({key: "charging", value: 1, field: "advantage", label: "5e.Dialog.Modifier.Charging"});
+        }
+
+        
+        if (this.item.system.isRanged)
+        {
+            if (game.combat?.active)
+            {
+                let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
+                if (combatant?.token?.movementHistory?.length > 0) 
+                {
+                this.addModifier({key: "moved", value: -1, field: "SL", label: "5e.Dialog.Modifier.Moved"});
+                }
+            }
+
+            if (this.fields.range == "extreme")
+            {
+                this.addModifier({key: "range", value: -2, field: "SL", label: "5e.Dialog.Modifier.Extreme"});
+            }
+            else if (this.fields.range == "long")
+            {
+                this.addModifier({key: "range", value: -1, field: "SL", label: "5e.Dialog.Modifier.Long"});
+            }
+            else if (this.fields.range == "short")
+            {
+                this.addModifier({key: "range", value: 1, field: "SL", label: "5e.Dialog.Modifier.Short"});
+            }
+            else if (this.fields.range == "pb")
+            {
+                this.addModifier({key: "range", value: 2, field: "SL", label: "5e.Dialog.Modifier.PointBlank"});
+            }
+        }
         super.computeFields();
     }
 
     _computeDefending(attacker) 
     {
         super._computeDefending(attacker);
+        if (this.item.system.isMelee && attacker.test.item?.system.isMelee && this.item.system.reachNum > attackerTest.item.system.reachNum)
+        {
+          this.addModifier({key: "size", value: 1, field: "SL", label: "5e.Dialog.Modifier.Shorter"});
+        }
     }
 
     _computeTargets(target)
     {
 
+      if (this.item.system.isRanged)
+      {
+        if (target.actor.sizeNum == 0)
+        {
+          this.addModifier({key: "size", value: -2, field: "SL", label: "5e.Dialog.Modifier.TargetTiny"});
+        }
+        else if (target.actor.sizeNum == 6)
+        {
+          this.addModifier({key: "size", value: 2, field: "SL", label: "5e.Dialog.Modifier.TargetMonstrous"});
+        }
+        else if (target.actor.sizeNum < this.actor.sizeNum)
+        {
+          this.addModifier({key: "size", value: -1, field: "SL", label: "5e.Dialog.Modifier.TargetSmaller"});
+        }
+        else if (target.actor.sizeNum > this.actor.sizeNum)
+        {
+          this.addModifier({key: "size", value: 1, field: "SL", label: "5e.Dialog.Modifier.TargetLarger"});
+        }
+      }
     }
+
+    async onSubmit(submitData)
+    {
+        if (submitData.charging)
+        {
+            this.actor.update({"system.status.momentum": true});
+        }
+    }
+    
 }

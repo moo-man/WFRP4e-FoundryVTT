@@ -94,19 +94,6 @@ export default class CharacteristicDialog5e extends RollDialog5e {
             this.tooltips.add("modifier", -20, game.i18n.localize("EFFECT.DodgeMount"));
         }
     }
-
-
-    _computeDefending(attacker)
-    {
-        if (attacker.test.item.properties?.flaws.slow) {
-            if (!game.settings.get("wfrp4e", "homebrew").mooQualities || this.context.dodge) 
-            {
-                this.fields.slBonus += 1
-                this.tooltips.add("slBonus", 1, game.i18n.localize('CHAT.TestModifiers.SlowDefend'));
-            }
-        }
-
-    }
     
     _defaultDifficulty() 
     {
@@ -135,9 +122,9 @@ export default class CharacteristicDialog5e extends RollDialog5e {
 
     _defaultFields() 
     {
-        return foundry.utils.mergeObject({
-            characteristic: "ws",
-        }, super._defaultFields());
+        let fields = super._defaultFields();
+        fields.characteristic = "ws";
+        return fields;
     }
 
     // Backwards compatibility for effects

@@ -29,24 +29,6 @@
                 type: 1, 
                 path: "fields.disadvantage"
             },
-
-            // Keep old fields for backwards compatibility
-            modifier: {
-                label: "Modifier",
-                type: 1,
-                path: "fields.modifier",
-                hideLabel: true
-            },
-            slBonus: {
-                label: "DIALOG.SLBonus",
-                type: 1,
-                path: "fields.slBonus"
-            },
-            successBonus: {
-                label: "DIALOG.SuccessBonus",
-                type: 1,
-                path: "fields.successBonus"
-            },
             difficulty: {
                 label: "Difficulty",
                 type: 0,
@@ -92,7 +74,6 @@
 
     async computeFields() 
     {
-        this.computeState()
         if (this.actor.attacker)
         {
             this._computeDefending(this.actor.attacker);
@@ -102,6 +83,8 @@
         {
             this._computeTargets(this.data.targets[0]);
         }
+        this.computeModifiers();
+        this.computeState()
     }
 
     async computeState()
@@ -169,7 +152,7 @@
 
     _defaultFields() 
     {
-        return foundry.utils.mergeObject({
+        let fields = foundry.utils.mergeObject({
             SL: 0,
             state : "normal",
             advantage : 0,
@@ -177,10 +160,42 @@
             difficulty : this._defaultDifficulty(),
 
             // 4e
-            modifier : 0,
+            _modifier : 0,
             successBonus : 0,
-            slBonus : 0,
+            _slBonus : 0,
         }, super._defaultFields());
+
+
+        // 4e Backwards compatible, convert all modifiers/sl bonus into 5e SL bonus, ignore successBonus
+        Object.defineProperty(fields, "modifier", {
+            set(value)
+            {
+                if (value)
+                {
+                    this.SL += Math.trunc(value / 10); // If a modifier is supplied, modify SL instead
+                }
+            },
+            get()
+            {
+                return 0;
+            }
+        })
+
+        Object.defineProperty(fields, "slBonus", {
+            set(value)
+            {
+                if (value)
+                {
+                    this.SL += value;
+                }
+            },
+            get()
+            {
+                return 0;
+            }
+        })
+
+        return fields;
     }
 
     createBreakdown()

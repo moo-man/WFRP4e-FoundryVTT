@@ -130,8 +130,4 @@ export default class WeaponDialog5e extends AttackDialog5e
         super._computeDefending(attacker);
     }
 
-    _computeTargets(target)
-    {
-
-    }
 }

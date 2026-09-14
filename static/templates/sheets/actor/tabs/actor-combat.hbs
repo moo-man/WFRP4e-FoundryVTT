@@ -1,13 +1,7 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
 
     {{#if "true"}}
-        <div class="form-group momentum {{#if system.status.momentum}}checked{{/if}}">
-            <label>Momentum</label>
-            <div class="form-fields">
-                <input type="checkbox" name="system.status.momentum" {{checked system.status.momentum}}>
-            </div>
-        </div>
-
+        {{formGroup fields.status.fields.momentum value=system.status.momentum rootId=rootId classes="momentum"}}
     {{else}}
         <div class="form-group">
             {{#if (settings "useGroupAdvantage")}}
