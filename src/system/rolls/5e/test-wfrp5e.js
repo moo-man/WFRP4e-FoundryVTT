@@ -578,6 +578,11 @@ export default class TestWFRP5e extends WarhammerTestBase {
     }
   }
 
+  // Backwards compatibility
+  async updateMessageData(updateData = {})
+  {
+    return this.updateMessageModel(updateData);
+  }
 
   async createOpposedMessage(token) {
     let oppose = new game.wfrp4e.opposedHandler();

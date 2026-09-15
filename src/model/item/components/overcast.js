@@ -8,11 +8,19 @@ export class OvercastItemModel extends BaseItemModel {
   static defineSchema() 
   {
       let schema = super.defineSchema();
-      // Embedded Data Models?
+      
+      schema.overcastOptions = new fields.TypedObjectField(new fields.SchemaField({
+        label : new fields.StringField(),
+        property: new fields.StringField(),
+        cost: new fields.NumberField({initial: 2, min: 0}),
+        value: new fields.StringField(),
+        initial: new fields.StringField()
+      }))
+
+      // 4e / Legacy     
       schema.overcast = new fields.SchemaField({
           enabled : new fields.BooleanField(),
           label : new fields.StringField(),
-          cost: new fields.NumberField({initial: 2, min: 0}),
           valuePerOvercast : new fields.SchemaField({
                type : new fields.StringField(),
                value : new fields.NumberField({initial : 1}),
@@ -31,15 +39,6 @@ export class OvercastItemModel extends BaseItemModel {
               bonus : new fields.BooleanField(),
           })
       });
-
-      schema.overcastOptions = new fields.TypedObjectField(new fields.SchemaField({
-        label : new fields.StringField(),
-        property: new fields.StringField(),
-        cost: new fields.NumberField({initial: 2, min: 0}),
-        value: new fields.StringField(),
-        initial: new fields.StringField()
-      }))
-
       return schema;
   }
 
@@ -99,6 +98,48 @@ export class OvercastItemModel extends BaseItemModel {
           throw ui.notifications.error(game.i18n.format("ERROR.ParseSpell"))
         }
       }
+  }
+
+
+  static migrateData(data)
+  {
+
+      const _convertOvercast = (data) => {
+        if (data.type == "value")
+        {
+          return data.value
+        }
+        else if (data.type == "characteristic")
+        {
+          let path = `@actor.system.characteristics.${data.characteristic}`;
+          if (data.bonus)
+          {
+            path += ".bonus";
+          }
+          else 
+          {
+            path += ".value";
+          }
+          return path;
+        }
+        else if (data.type == "SL")
+        {
+          let path = `@test.result.SL`;
+          return path;
+        }
+      }
+
+      if (foundry.utils.isEmpty(data.overcastOptions) && data.overcast.enabled)
+      {
+        data.overcastOptions[foundry.utils.randomID()] = {
+          label: data.overcast.label,
+          property: data.overcast.label.slugify(),
+          cost: 2,
+          value: _convertOvercast(data.overcast.valuePerOvercast),
+          initial: _convertOvercast(data.overcast.initial),
+        }
+      }
+      return data;
   }
 
 

@@ -1,6 +1,6 @@
-import { MagicUseMessageModel } from "./magic.js";
 import WFRPEffectMessageMixin from "./effect-message.js";
 import TestWFRP5e from "../../system/rolls/5e/test-wfrp5e.js";
+import { MagicUseMessageModel5e } from "./magic5e.js";
 
 export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMessageModel)
 {
@@ -67,7 +67,7 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
 
     static _onUseMagic(ev, target)
     {
-      MagicUseMessageModel.create({test: this.test});
+      MagicUseMessageModel5e.create({test: this.test});
     }
 
     static _onReverse(ev, target)

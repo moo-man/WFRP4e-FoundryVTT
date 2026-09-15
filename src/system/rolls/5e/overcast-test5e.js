@@ -29,7 +29,7 @@ export default class OvercastableTest5e extends SkillTest5e {
         targets: {
           label: this.item.system.target.aoe ? game.i18n.localize("AoE") : game.i18n.localize("Target"),
           allowed: (this.item.system.target.aoe || !isNaN(targets)) && !this.item.system.target.maximum,
-          initial: this.item.system.target.aoe ? (parseInt(aoeValue) || aoeValue) : parseInt(this.item.system.target.value),
+          initial: this.item.system.target.aoe ? (parseInt(aoeValue) || aoeValue) : parseInt(this.item.system.target.value) || this.item.system.target.value,
           aoe: this.item.system.target.aoe,
           unit: aoeValue.split(" ")[1]
         },
@@ -59,8 +59,8 @@ export default class OvercastableTest5e extends SkillTest5e {
           allowed: true,
           cost: option.cost,
           property: option.property,
-          initial: Roll.safeEval(Roll.getFormula(Roll.parse(option.initial, {test: this, actor: this.actor}))),
-          value: Roll.safeEval(Roll.getFormula(Roll.parse(option.value, {test: this, actor: this.actor}))),
+          initial: option.initial, // Leave as formula for now because @test.result would fail as it's not been computed yet
+          value: option.value
         }
       }
     }
@@ -69,6 +69,7 @@ export default class OvercastableTest5e extends SkillTest5e {
   computeOvercasts()
   {
     this._computeOvercastAmount()
+    this._computeOtherOvercastFormula()
 
     for(let key of ["damage", "targets", "range", "duration"].concat(Object.keys(this.result.overcasts.options.other)))
     {
@@ -91,8 +92,12 @@ export default class OvercastableTest5e extends SkillTest5e {
         let initial = this.result.overcasts.options[key].initial;
 
 
+        if (!this.result.overcasts.options[key].allowed)
+        {
+          this.result.overcasts.options[key].value = initial;
+        }
         // Some overcasts multiply, others add
-        if (["aoe", "range", "duration"].includes(costKey))
+        else if (["aoe", "range", "duration"].includes(costKey))
         {
           this.result.overcasts.options[key].value = initial + (initial * value);
         }
@@ -102,17 +107,16 @@ export default class OvercastableTest5e extends SkillTest5e {
         }
 
         // Put data into result for easy access
+        this.result[key] = {
+          value: this.result.overcasts.options[key].value,
+        }
         if (this.result.overcasts.options[key].unit)
         {
-          this.result[key] = {
-            value: this.result.overcasts.options[key].value,
-            unit:  this.result.overcasts.options[key].unit,
-            aoe: this.result.overcasts.options[key].aoe
-          }
+          this.result[key].unit = this.result.overcasts.options[key].unit;
         }
-        else
+        if (this.result.overcasts.options[key].aoe)
         {
-          this.result[key] = this.result.overcasts.options[key].value;
+          this.result[key].aoe = this.result.overcasts.options[key].aoe;
         }
       }
       else // Other overcast options, divide spent by how much each overcast costs for the value, add to the initial value, set property in test result
@@ -127,6 +131,18 @@ export default class OvercastableTest5e extends SkillTest5e {
         }
       }
     }
+
+    this._formatLegacyOvercasting();
+  }
+
+  _computeOtherOvercastFormula()
+  {
+    for(let key in this.result.overcasts.options.other)
+    {
+      let option = this.result.overcasts.options.other[key];
+      this.result.overcasts.options.other[key].initial = Roll.safeEval(Roll.getFormula(Roll.parse(option.initial, {test: this, actor: this.actor})));
+      this.result.overcasts.options.other[key].value = Roll.safeEval(Roll.getFormula(Roll.parse(option.value, {test: this, actor: this.actor})));
+    }
   }
 
   // Compute overcast values available to spend
@@ -136,6 +152,29 @@ export default class OvercastableTest5e extends SkillTest5e {
     this.result.overcasts.total = this.result.SL;
     let totalSpent = Object.values(this.testData.overcastSpending).reduce((a, b) => a + b, 0);
     this.result.overcasts.available = this.result.overcasts.total - totalSpent;
+  }
+
+  _formatLegacyOvercasting()
+  {
+    this.result.overcast = {
+      usage: {
+        damage : {
+          current: this.result.overcasts.options.damage.value
+        },
+        targets : {
+          current: this.result.overcasts.options.targets.value
+        },
+        duration : {
+          current: this.result.overcasts.options.duration.value
+        },
+        range : {
+          current: this.result.overcasts.options.range.value
+        },
+        other: {
+          current: Object.values(this.result.overcasts.options.other)[0].value
+        }
+      }
+    }
   }
 
 
