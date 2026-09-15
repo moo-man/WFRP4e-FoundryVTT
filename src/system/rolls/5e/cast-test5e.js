@@ -1,6 +1,6 @@
-import SkillTest5e from "./skill-test5e";
+import OvercastableTest5e from "./overcast-test5e";
 
-export default class CastTest5e extends SkillTest5e {
+export default class CastTest5e extends OvercastableTest5e {
   
   constructor(data)
   {
@@ -23,9 +23,11 @@ export default class CastTest5e extends SkillTest5e {
 
   async computeResult()
   {
+    this.initializeOvercasts()
     this.computeDispel();
     await super.computeResult();
     await this.computeSpellResult()
+    this.computeOvercasts();
   }
 
   async computeSpellResult()
@@ -43,6 +45,11 @@ export default class CastTest5e extends SkillTest5e {
     {
       this._handleCastFailure();
     }
+  }
+
+  async computeDamage()
+  {
+    this.result.damage = this.result.overcasts.options.damage.initial;
   }
 
   async computeDispel()
@@ -63,6 +70,7 @@ export default class CastTest5e extends SkillTest5e {
       this.result.miscast = "minor";
       this.result.criticalCast = this.testData.criticalCastChoice;
     }
+    this.computeDamage();
   }
 
   _handleCastFailure()
@@ -94,7 +102,7 @@ export default class CastTest5e extends SkillTest5e {
     if (this.result.miscast == "minor")
     {
       this.result.tables.miscast = {
-        label : this.result.minormis,
+        label : game.i18n.localize("ROLL.MinorMis"),
         class : "fumble-roll",
         key : "minormis"
       }

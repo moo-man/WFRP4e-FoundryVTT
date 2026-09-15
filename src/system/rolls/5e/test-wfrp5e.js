@@ -360,6 +360,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
       else
       {
         this.result.hitloc = await game.wfrp4e.tables.rollTable("hitloc", { hideDSN: true });
+        this.testData.hitLocation.roll = this.result.hitloc.roll; // Prevent editing the test from changing the hit location every time
       }
     }
 

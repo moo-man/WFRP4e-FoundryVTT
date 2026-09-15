@@ -72,6 +72,7 @@ export class ChannellingModel extends foundry.abstract.DataModel
             let effectData = foundry.utils.deepClone(game.wfrp4e.config.systemEffects.channelling);
             effectData.name += ` (${game.wfrp4e.config.magicWind[this.wind]})`;
             effectData.img = game.wfrp4e.config.windIcons[this.wind];
+            effectData.flags = {wfrp4e: {wind: this.wind}};
             return new ActiveEffect.implementation(effectData, {parent: actor});
         }
     }

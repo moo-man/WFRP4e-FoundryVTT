@@ -13,7 +13,10 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     { 
         return foundry.utils.mergeObject(super.actions, {
           reverse: this._onReverse,
-          useMagic: this._onUseMagic
+          useMagic: this._onUseMagic,
+          overcastClick : this.onOvercastClick,
+          overcastReset : this.onOvercastReset,
+          dispel: this.onDispel
         }); 
     }
 
@@ -71,5 +74,49 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     {
       this.test.reverse();
     }
+
+          // Respond to overcast button clicks
+  static onOvercastClick(event, target) {
+    event.preventDefault();
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError", {localize: true})
+
+    let test = this.test
+    let overcastChoice = target.dataset.overcast;
+    // Set overcast and rerender card
+    test.overcast(overcastChoice)
+  }
+
+  // Button to reset the overcasts
+  static onOvercastReset(event) {
+    event.preventDefault();
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError", {localize: true})
+
+    let test = this.test
+    test.resetOvercasts()
+  }
+
+  static async onDispel(ev, target)
+  {
+    let actor = selectedWithFallback()[0];
+
+    if (!actor)
+    {
+      return ui.notifications.warn("No character assigned or Token selected")
+    }
+
+
+    try {
+      let test = await actor.setupDispel(this.test)
+      test.roll();
+
+    }
+    catch(e)
+    {
+      ui.notifications.error(e.message);
+    }
+  }
+
 
 }

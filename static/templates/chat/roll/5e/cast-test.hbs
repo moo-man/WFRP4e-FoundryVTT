@@ -6,13 +6,17 @@
     {{/if}}
 
     {{#if test.result.castSuccess}}
+    {{> systems/wfrp4e/templates/partials/overcasts5e.hbs}}
+    {{/if}}
+
+
+    {{#if test.result.castSuccess}}
         <a class='chat-button' data-action="useMagic">{{localize "CHAT.CastSpell" spell=test.spell.name}}</a>
         {{#unless test.result.dispel}}
-            <a class='chat-button' style="margin-top: 0.5rem;" data-action="dispel">{{localize "CHAT.Dispel"}}</a>
+            <a class='chat-button' data-action="dispel">{{localize "CHAT.Dispel"}}</a>
         {{/unless}}
     {{/if}}
 
-</div>
-
+    {{> testButtons}}
 
 </div>

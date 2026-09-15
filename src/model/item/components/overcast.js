@@ -12,6 +12,7 @@ export class OvercastItemModel extends BaseItemModel {
       schema.overcast = new fields.SchemaField({
           enabled : new fields.BooleanField(),
           label : new fields.StringField(),
+          cost: new fields.NumberField({initial: 2, min: 0}),
           valuePerOvercast : new fields.SchemaField({
                type : new fields.StringField(),
                value : new fields.NumberField({initial : 1}),
@@ -30,6 +31,15 @@ export class OvercastItemModel extends BaseItemModel {
               bonus : new fields.BooleanField(),
           })
       });
+
+      schema.overcastOptions = new fields.TypedObjectField(new fields.SchemaField({
+        label : new fields.StringField(),
+        property: new fields.StringField(),
+        cost: new fields.NumberField({initial: 2, min: 0}),
+        value: new fields.StringField(),
+        initial: new fields.StringField()
+      }))
+
       return schema;
   }
 
@@ -154,8 +164,8 @@ export class OvercastItemModel extends BaseItemModel {
       usage.range = {
         label: game.i18n.localize("Range"),
         count: 0,
-        initial: parseInt(range) || aoeValue,
-        current: parseInt(range) || aoeValue,
+        initial: parseInt(range) || range,
+        current: parseInt(range) || range,
         unit: range.split(" ")[1],
         available: false
       }

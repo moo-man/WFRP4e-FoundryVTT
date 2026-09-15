@@ -179,6 +179,7 @@
         .overcast-options {
             display: flex;
             justify-content: space-around;
+            flex-wrap: wrap;
             .overcast-section {
                 display: flex;
                 flex-direction: column;

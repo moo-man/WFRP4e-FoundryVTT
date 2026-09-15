@@ -2063,7 +2063,12 @@
                 "TargetSmaller" : "Target is smaller",
                 "TargetLarger" : "Target is larger"
             }
-        }
+        },
+
+        "OvercastValue" : "Overcast Value",
+        "InitialValue" : "Initial Value",
+        "OvercastProperty" : "Property"
+
     },
 
 

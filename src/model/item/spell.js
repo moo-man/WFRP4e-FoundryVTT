@@ -19,14 +19,17 @@ export class SpellModel extends OvercastItemModel {
         schema.range = new fields.SchemaField({
             value: new fields.StringField(),
             vortex: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.target = new fields.SchemaField({
             value: new fields.StringField(),
             aoe: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.duration = new fields.SchemaField({
             value: new fields.StringField(),
             extendable: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.damage = new fields.SchemaField({
             dice: new fields.StringField(),
