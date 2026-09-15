@@ -17,8 +17,6 @@ export default class OvercastableTest5e extends SkillTest5e {
     let range = this.item.system.computeSpellPrayerFormula("range", {actor: this.actor})
     let aoeValue = targets.substring(targets.indexOf("(") + 1, targets.length - 1)
 
-    let isPetty = this.item.system.lore.value.includes("petty");
-
     this.result.overcasts = {
       total: 0,
       available: 0,
@@ -26,24 +24,24 @@ export default class OvercastableTest5e extends SkillTest5e {
         damage: {
           label: game.i18n.localize("Damage"),
           initial: parseInt(damage) || damage,
-          allowed: !isNaN(damage) && !isPetty
+          allowed: !isNaN(damage) && damage > 0
         },
         targets: {
           label: this.item.system.target.aoe ? game.i18n.localize("AoE") : game.i18n.localize("Target"),
-          allowed: (this.item.system.target.aoe || !isNaN(targets)) && !this.item.system.target.maximum && !isPetty,
+          allowed: (this.item.system.target.aoe || !isNaN(targets)) && !this.item.system.target.maximum,
           initial: this.item.system.target.aoe ? (parseInt(aoeValue) || aoeValue) : parseInt(this.item.system.target.value),
           aoe: this.item.system.target.aoe,
           unit: aoeValue.split(" ")[1]
         },
         duration: {
           label: game.i18n.localize("Duration"),
-          allowed: !isNaN(duration.split(" ")[0]) && !this.item.system.duration.maximum && !isPetty,
+          allowed: !isNaN(duration.split(" ")[0]) && !this.item.system.duration.maximum,
           initial: parseInt(duration) || duration,
           unit: duration.split(" ")[1],
         },
         range: {
           label: game.i18n.localize("Range"),
-          allowed: !isNaN(range.split(" ")[0]) && !this.item.system.range.maximum && !isPetty,
+          allowed: !isNaN(range.split(" ")[0]) && !this.item.system.range.maximum,
           initial: parseInt(range) || range,
           unit: range.split(" ")[1],
         },
@@ -70,14 +68,7 @@ export default class OvercastableTest5e extends SkillTest5e {
 
   computeOvercasts()
   {
-    this.result.overcasts.total = this.result.excessSL;
-    if (this.result.criticalCastChoice == "totalPower") // Add tens digit to overcasting available
-    {
-      this.result.overcasts.total += Math.trunc(this.result.roll / 10);
-    }
-    this.result.overcasts.total = Math.min(this.result.overcasts.total, this.actor.system.characteristics.wp.bonus + this.actor.system.characteristics.int.bonus) // Can't spent more than IntB + WPB
-    let totalSpent = Object.values(this.testData.overcastSpending).reduce((a, b) => a + b, 0);
-    this.result.overcasts.available = this.result.overcasts.total - totalSpent
+    this._computeOvercastAmount()
 
     for(let key of ["damage", "targets", "range", "duration"].concat(Object.keys(this.result.overcasts.options.other)))
     {
@@ -103,7 +94,7 @@ export default class OvercastableTest5e extends SkillTest5e {
         // Some overcasts multiply, others add
         if (["aoe", "range", "duration"].includes(costKey))
         {
-          this.result.overcasts.options[key].value = initial * (value || 1);
+          this.result.overcasts.options[key].value = initial + (initial * value);
         }
         else 
         {
@@ -127,47 +118,37 @@ export default class OvercastableTest5e extends SkillTest5e {
       else // Other overcast options, divide spent by how much each overcast costs for the value, add to the initial value, set property in test result
       {
         let otherOption = this.result.overcasts.options.other[key];
-        let value = ((this.testData.overcastSpending[key] || 0) / otherOption.cost) * otherOption.value;
-        otherOption.value = otherOption.initial + value;
-        this.result[otherOption.property] = otherOption.value;
-        otherOption.available = this.result.overcasts.available >= otherOption.cost;
+        if (otherOption)
+        {
+          let value = ((this.testData.overcastSpending[key] || 0) / otherOption.cost) * otherOption.value;
+          otherOption.value = otherOption.initial + value;
+          this.result[otherOption.property] = otherOption.value;
+          otherOption.available = this.result.overcasts.available >= otherOption.cost;
+        }
       }
     }
   }
 
+  // Compute overcast values available to spend
+  _computeOvercastAmount()
+  {
+    this.result.overcasts.allowed = true;
+    this.result.overcasts.total = this.result.SL;
+    let totalSpent = Object.values(this.testData.overcastSpending).reduce((a, b) => a + b, 0);
+    this.result.overcasts.available = this.result.overcasts.total - totalSpent;
+  }
+
+
   _getOvercastValue(type, spent)
   {
-    let table = game.wfrp4e.config.overcastTable[type];
-    
-    let value = 0;
-    // Find the highest cost spent and return the associated value
-    for(let i = 0; i < table.length; i++)
-    {
-      if (spent >= table[i].cost)
-      {
-        value = table[i].value;
-      }
-    }
-    return value;    
+    // 2 SL per overcast
+    return Math.ceil(spent / 2);
   }
 
   _getNextOvercastSpend(type, spent = 0)
   {
-    let table = game.wfrp4e.config.overcastTable[type];
-
-    if (!table)
-    {
-      return this.result.overcasts.options.other[type].cost + spent;
-    }
-    
-    // Find the first cost that's higher than the current spent and return that
-    for(let i = 0; i < table.length; i++)
-    {
-      if (spent < table[i].cost)
-      {
-        return table[i].cost;
-      }
-    }
+    // Next overcast costs current + 2
+    return spent + 2;
   }
 
   overcast(key) 

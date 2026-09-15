@@ -1,6 +1,6 @@
-import SkillTest5e from "./skill-test5e";
+import OvercastableTest5e from "./overcast-test5e";
 
-export default class PrayerTest5e extends SkillTest5e {
+export default class PrayerTest5e extends OvercastableTest5e {
   
   constructor(data)
   {
@@ -24,8 +24,10 @@ export default class PrayerTest5e extends SkillTest5e {
 
   async computeResult()
   {
+    this.initializeOvercasts()
     await super.computeResult();
     await this.computePrayerResult()
+    this.computeOvercasts();
   }
 
   async computePrayerResult()
@@ -39,6 +41,7 @@ export default class PrayerTest5e extends SkillTest5e {
       this.result.description = game.i18n.localize("ROLL.PrayRefused")
     }
   }
+
 
 
   computeTables()

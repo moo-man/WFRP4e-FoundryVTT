@@ -53,7 +53,7 @@ export class ChannellingModel extends foundry.abstract.DataModel
         {
             for (let wind of spell.system.lore.value.map(i => game.wfrp4e.config.loreWind[i]))
             {
-                if (!winds[wind])
+                if (!winds[wind] && wind != "petty")
                 {
                     winds[wind] = {
                         label : game.wfrp4e.config.magicWind[wind],

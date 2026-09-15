@@ -62,6 +62,20 @@ export default class CastTest5e extends OvercastableTest5e {
     }
   }
 
+  _computeOvercastAmount()
+  {
+    let isPetty = this.item.system.lore.value.includes("petty");
+    this.result.overcasts.allowed = !isPetty;
+    this.result.overcasts.total = this.result.excessSL;
+    if (this.result.criticalCastChoice == "totalPower") // Add tens digit to overcasting available
+    {
+      this.result.overcasts.total += Math.trunc(this.result.roll / 10);
+    }
+    this.result.overcasts.total = Math.min(this.result.overcasts.total, this.actor.system.characteristics.wp.bonus + this.actor.system.characteristics.int.bonus) // Can't spent more than IntB + WPB
+    let totalSpent = Object.values(this.testData.overcastSpending).reduce((a, b) => a + b, 0);
+    this.result.overcasts.available = this.result.overcasts.total - totalSpent;
+  }
+
   _handleCastSuccess()
   {
     this.result.description = game.i18n.localize("ROLL.CastingSuccess");
@@ -105,6 +119,41 @@ export default class CastTest5e extends OvercastableTest5e {
         label : game.i18n.localize("ROLL.MinorMis"),
         class : "fumble-roll",
         key : "minormis"
+      }
+    }
+  }
+
+  _getOvercastValue(type, spent)
+  {
+    let table = game.wfrp4e.config.overcastTable[type];
+    
+    let value = 0;
+    // Find the highest cost spent and return the associated value
+    for(let i = 0; i < table.length; i++)
+    {
+      if (spent >= table[i].cost)
+      {
+        value = table[i].value;
+      }
+    }
+    return value;    
+  }
+
+  _getNextOvercastSpend(type, spent = 0)
+  {
+    let table = game.wfrp4e.config.overcastTable[type];
+
+    if (!table)
+    {
+      return this.result.overcasts.options.other[type].cost + spent;
+    }
+    
+    // Find the first cost that's higher than the current spent and return that
+    for(let i = 0; i < table.length; i++)
+    {
+      if (spent < table[i].cost)
+      {
+        return table[i].cost;
       }
     }
   }

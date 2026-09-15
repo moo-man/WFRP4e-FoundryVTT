@@ -151,20 +151,20 @@ WFRP5E.windIcons = {
 };
 
 WFRP5E.overcastTable = {
-        range: [
-            {cost: 1, value: 2},
-            {cost: 5, value: 3},
-            {cost: 18, value: 4}],
+        range: [ // For multiplicative overcasts, value of 1 means x2 (initial + 1 * initial), and so on
+            {cost: 1, value: 1},
+            {cost: 5, value: 2},
+            {cost: 18, value: 3}],
         targets: [
             {cost: 1, value: 1},
             {cost: 5, value: 2},
             {cost: 18, value: 3}],
         aoe: [
-            {cost: 3, value: 2},
-            {cost: 18, value: 3}],
+            {cost: 3, value: 1},
+            {cost: 18, value: 2}],
         duration: [
-            {cost: 2, value: 2},
-            {cost: 8, value: 3}],
+            {cost: 2, value: 1},
+            {cost: 8, value: 2}],
         damage: [
             {cost: 1, value: 1},
             {cost: 2, value: 2},
