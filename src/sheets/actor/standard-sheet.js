@@ -276,30 +276,30 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
 
   static _onUnarmedClick(ev) {
     ev.preventDefault();
-    let unarmed = game.wfrp4e.config.systemItems.unarmed
-    this.actor.setupWeapon(unarmed).then(setupData => {
-      this.actor.weaponTest(setupData)
-    })
+    let unarmed = game.wfrp4e.config.systemItems.unarmed;
+    this.actor.setupWeapon(unarmed).then(test => {
+      test.roll();
+    });
   }
   static _onDodgeClick(ev) {
-      this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true}).then(test => {
-        test.roll();
-      });
+    this.actor.setupSkill(game.i18n.localize("NAME.Dodge"), {skipTargets: true}).then(test => {
+      test.roll();
+    });
   }
   static _onImprovisedClick(ev) {
     ev.preventDefault();
     let improv = game.wfrp4e.config.systemItems.improv;
-    this.actor.setupWeapon(improv).then(setupData => {
-      this.actor.weaponTest(setupData)
-    })
+    this.actor.setupWeapon(improv).then(test => {
+      test.roll();
+    });
   }
 
   static _onStompClick(ev) {
     ev.preventDefault();
     let stomp = game.wfrp4e.config.systemItems.stomp;
-    this.actor.setupTrait(stomp).then(setupData => {
-      this.actor.traitTest(setupData)
-    })
+    this.actor.setupTrait(stomp).then(test => {
+      test.roll();
+    });
   }
 
   static _dismount(ev) {

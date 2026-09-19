@@ -3,14 +3,14 @@ import WFRP_Audio from "../../audio-wfrp4e.js";
 import WFRP_Utility from "../../utility-wfrp4e.js";
 
 export default class TestWFRP5e extends WarhammerTestBase {
-  constructor(data) {
+  constructor(data, actor) {
     super();
     if (!data)
       data = {}
     this.data = {
       testData: {
-        definedSL: data.definedSL,
-        SL: data.SL,
+        definedSL: data.definedSL ?? null,
+        SL: data.SL ?? 0,
         roll: data.roll,
         target: data.target,
         difficulty: data.difficulty,
@@ -54,6 +54,10 @@ export default class TestWFRP5e extends WarhammerTestBase {
       ui.notifications.notify("TargetingCancelled", {localize: true});
       this.context.targets = [];
     }
+
+    // Used for unopposed tests, dummy tests need to have speaker data
+    if (!this.context.speaker && actor)
+      this.context.speaker = actor.speakerData()
   }
 
   async runPreEffects() {
@@ -140,7 +144,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
   async computeResult() {
     let automaticSuccess = game.settings.get("wfrp4e", "automaticSuccess");
     let automaticFailure = game.settings.get("wfrp4e", "automaticFailure");
-    this.result.SLModifier += this.testData.SL + game.wfrp4e.config.difficultyModifiers[this.testData.difficulty];
+    this.result.SLModifier += this.testData.SL + (game.wfrp4e.config.difficultyModifiers[this.testData.difficulty] || 0);
     this.result.target = this.testData.target;
     this.result.reversed = this.testData.reverse;
 
@@ -176,15 +180,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
     }
 
     // Determine SL, either pre-defined or computed with achieved + modifier
-    let SL 
-    if (this.testData.definedSL)
-    {
-      SL = this.testData.definedSL
-    }
-    else
-    {
-      SL = baseSL + this.result.SLModifier;
-    }
+    let SL = baseSL + this.result.SLModifier;
 
     // Automatic success/failure bind SL to +/-0
     if (this.result.roll >= automaticFailure) 
@@ -221,10 +217,14 @@ export default class TestWFRP5e extends WarhammerTestBase {
         }
         this.result.fumble = true;
       }
+      
+      if (this.testData.definedSL != null)
+      {
+        this.result.SL = this.testData.definedSL;
+      }
 
       // Now that the final SL value is found, get the description (astounding, marginal, etc)
       this.computeDescription()
-
 
       if (this.result.SL == 0)
       {
@@ -457,46 +457,46 @@ export default class TestWFRP5e extends WarhammerTestBase {
    */
   async handleOpposed() {
 
-    // // If the actor has been targeted - roll defense
-    // if (this.actor.isOpposing || this.context.defending)
-    // {
-    //   let opposeMessage;
-    //   if (this.context.defending) // Rehandling a previous defense roll
-    //   {
-    //     opposeMessage = this.opposedMessages[0]
-    //   }
-    //   else
-    //   {
-    //     this.context.defending = true; // If the test is handled again after the initial roll, the actor flag doesn't exist anymore, need a way to know we're still defending
-    //     opposeMessage = game.messages.get(this.actor.flags.oppose.opposeMessageId);
-    //     this.context.opposedMessageIds.push(opposeMessage.id); // Maintain a link to the opposed message
-    //   }
+    // If the actor has been targeted - roll defense
+    if (this.actor.isOpposing || this.context.defending)
+    {
+      let opposeMessage;
+      if (this.context.defending) // Rehandling a previous defense roll
+      {
+        opposeMessage = this.opposedMessages[0]
+      }
+      else
+      {
+        this.context.defending = true; // If the test is handled again after the initial roll, the actor flag doesn't exist anymore, need a way to know we're still defending
+        opposeMessage = game.messages.get(this.actor.flags.oppose.opposeMessageId);
+        this.context.opposedMessageIds.push(opposeMessage.id); // Maintain a link to the opposed message
+      }
       
-    //   // Get oppose message, set this test's message as defender, compute result
-    //   let handler = opposeMessage.system.opposedHandler;
-    //   await handler.setDefender(this.message);
-    //   await handler.computeOpposeResult();
-    //   await this.actor.clearOpposed();
-    //   await this.updateMessageModel();
-    // }
-    // else // if actor is attacking - rerolling old test. 
-    // {
-    //   if (this.opposedMessages.length)
-    //   {
-    //     for (let message of this.opposedMessages) {
-    //       let handler = message.system.opposedHandler;
-    //       await handler.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
-    //       if (handler.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
-    //         await handler.computeOpposeResult()
-    //     }
-    //   }
-    //   else { // actor is attacking - new test
-    //     // For each target, create opposed test messages, save those message IDs in this test.
-    //     for (let token of this.context.targets.map(t => WFRP_Utility.getToken(t))) {
-    //       await this.createOpposedMessage(token)
-    //     }
-    //   }
-    // }
+      // Get oppose message, set this test's message as defender, compute result
+      let handler = opposeMessage.system.opposedHandler;
+      await handler.setDefender(this.message);
+      await handler.computeOpposeResult("5e");
+      await this.actor.clearOpposed();
+      await this.updateMessageModel();
+    }
+    else // if actor is attacking - rerolling old test. 
+    {
+      if (this.opposedMessages.length)
+      {
+        for (let message of this.opposedMessages) {
+          let handler = message.system.opposedHandler;
+          await handler.setAttacker(this.message); // Make sure the opposed test is using the most recent message from this test
+          if (handler.defenderTest) // If defender has rolled (such as if this test was rerolled or edited after the defender rolled) - recompute opposed test
+            await handler.computeOpposeResult("5e")
+        }
+      }
+      else { // actor is attacking - new test
+        // For each target, create opposed test messages, save those message IDs in this test.
+        for (let token of this.context.targets.map(t => WFRP_Utility.getToken(t))) {
+          await this.createOpposedMessage(token)
+        }
+      }
+    }
   }
 
   // Create a test from already formed data

@@ -391,6 +391,12 @@ export default class ActorWFRP4e extends WarhammerActor
     this.createEmbeddedDocuments("Item", skillsToAdd, {skipSpecialisationChoice : true});
   }
 
+
+  async applyDamage5e(...args)
+  {
+    this.system.applyDamage(...args);
+  }
+
   /**
    * Apply damage to an actor, taking into account armor, size, and weapons.
    *

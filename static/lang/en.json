@@ -641,9 +641,11 @@
     "Owner" : "Owner",
 
     "BREAKDOWN.Base" : "Base",
+    "BREAKDOWN.Attack": "Attack",
     "BREAKDOWN.AttackerBase": "Attacker Base",
     "BREAKDOWN.Dice" : "Dice",
     "BREAKDOWN.OpposedSL" : "Opposed SL",
+    "BREAKDOWN.DefenderSL" : "Defender SL",
     "BREAKDOWN.Multiplier" : "Multiplier",
     "BREAKDOWN.Ignored" : "Ignored",
     "BREAKDOWN.Minimum1" : "Minimum 1 Wound",

@@ -102,11 +102,11 @@ export default class OpposedHandler {
       await this.updateMessageData();
   }
 
-  async computeOpposeResult() {
+  async computeOpposeResult(edition="4e") {
     if (!this.attackerTest || !this.defenderTest)
       throw new Error(game.i18n.localize("ERROR.Opposed"))
 
-    this.opposedTest = new OpposedTest(this.attackerTest, this.defenderTest);
+    this.opposedTest = edition == "4e" ? new OpposedTest(this.attackerTest, this.defenderTest) : new OpposedTest5e(this.attackerTest, this.defenderTest);
 
     await this.opposedTest.evaluate();
     this.formatOpposedResult();
@@ -115,7 +115,7 @@ export default class OpposedHandler {
   }
 
   async renderMessage() {
-    let attacker = game.canvas.tokens.get(this.attackerTest.context.chatOptions.speaker.token)?.document ?? this.attacker.prototypeToken;
+    let attacker = game.canvas.tokens.get(this.attackerTest.context.speaker.token)?.document ?? this.attacker.prototypeToken;
     let defender
 
     // Support opposed start messages when defender is not set yet - allows for manual opposed to use this message
