@@ -63,10 +63,10 @@ export default class TestWFRP5e extends WarhammerTestBase {
   async runPreEffects() {
     if (!this.context.unopposed)
     {
-      await Promise.all(this.actor.runScripts("preRollTest", { test: this }))
+      await Promise.all(this.actor.runScripts("preRollTest", { test: this }));
       if (this.item instanceof Item)
       {
-        await Promise.all(this.item.runScripts("preRollTest", { test: this }))
+        await Promise.all(this.item.runScripts("preRollTest", { test: this }));
       }
     }
   }
@@ -74,12 +74,23 @@ export default class TestWFRP5e extends WarhammerTestBase {
   async runPostEffects() {
     if (!this.context.unopposed)
     {
-      await Promise.all(this.actor.runScripts("rollTest", { test: this }))
+      await Promise.all(this.actor.runScripts("rollTest", { test: this }));
       if (this.item instanceof Item)
       {
-        await Promise.all(this.item.runScripts("rollTest", { test: this }))
+        await Promise.all(this.item.runScripts("rollTest", { test: this }));
       }
-      Hooks.call("wfrp4e:rollTest", this)
+      Hooks.call("wfrp4e:rollTest", this);
+    }
+  }
+
+  async runScripts(trigger, args={})
+  {
+    // Important to preserve object reference for args so any changes done in the script is maintained (for anything besides the test arg)
+    args.test = this;
+    await Promise.all(this.actor.runScripts(trigger, args));
+    if (this.item instanceof Item)
+    {
+      await Promise.all(this.item.runScripts(trigger, args));
     }
   }
 
@@ -196,26 +207,26 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     // Now that we know SL we compute outcome, either "success" or "failure"
     this.result.SL = SL;
-    this.result.outcome = this.computeOutcome()
+    await this.runScripts("computeSL");
+    this.computeOutcome();
 
 
     // Now that outcome is set, determine critical/fumble. If not in combat, set SL to +/- 5 
      if (this.result.roll % 11 == 0 && this.result.success)
      {
-       
-       if (!this.testData.combatCriticals)
-       {
-        this.result.SL = Math.max(5, this.result.SL);
-       }
        this.result.critical = true;
      }
      else if (this.result.roll % 11 == 0 && this.result.failure)
      {
-        if (!this.testData.combatCriticals)
-        {
-          this.result.SL = Math.min(-5, this.result.SL);
-        }
         this.result.fumble = true;
+      }
+
+      await this.runScripts("computeCriticalFumble")
+
+      if (!this.testData.combatCriticals)
+      {
+        if (this.result.fumble) this.result.SL = Math.min(-5, this.result.SL);
+        else if (this.result.criical) this.result.SL = Math.max(5, this.result.SL);
       }
       
       if (this.testData.definedSL != null)
@@ -245,7 +256,8 @@ export default class TestWFRP5e extends WarhammerTestBase {
     if (this.testData.hitLocation.evaluate)
     {
       await this.computeHitLocation();
-    }
+      await this.runScripts("computeHitLocation");
+  }
 
     return this.result;
   }

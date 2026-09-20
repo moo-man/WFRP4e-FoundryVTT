@@ -18,7 +18,9 @@ export default class AttackTest5e extends SkillTest5e {
 
   async computeDamage()
   {
-    this.result.damage = this.testData.damage + this.result.SL;
+    let damage = {base: {label: "Base", value: this.testData.damage}, SL: {label: "SL", value: this.result.SL}};
+    await this.runScripts("computeDamage", {damage})
+    this.result.damage = Object.values(damage).reduce((total, damage ) => total + damage.value, 0);
   }
   
   static fromData(...args)
