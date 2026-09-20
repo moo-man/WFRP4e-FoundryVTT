@@ -14,11 +14,25 @@ export default class SkillTest5e extends CharacteristicTest5e {
     {
       this.context.skill == data.skill;
     }
+
+    this.context.dispel = data.context.dispel;
   }
   
   static fromData(...args)
   {
     return new this(...args);
+  }
+
+  handleDispel()
+  {
+    let dispelTarget = game.messages.get(this.context.dispel)
+    if (dispelTarget)
+    {
+      if (game.user.id == getActiveDocumentOwner(dispelTarget)?.id)
+      {
+        dispelTarget.system.test.dispel(this);
+      }
+    }
   }
 
   get skill()

@@ -50,6 +50,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
       }
     }
 
+    // store flags from dialog scripts in context
+    foundry.utils.mergeObject(this.context, data.context?.flags || {});
+
     if (this.context.speaker && this.actor.isOpposing && this.context.targets.length)
     {
       ui.notifications.notify("TargetingCancelled", {localize: true});

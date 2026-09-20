@@ -171,7 +171,7 @@ export default class OvercastableTest5e extends SkillTest5e {
           current: this.result.overcasts.options.range.value
         },
         other: {
-          current: Object.values(this.result.overcasts.options.other)[0].value
+          current: Object.values(this.result.overcasts.options.other)[0]?.value
         }
       }
     }

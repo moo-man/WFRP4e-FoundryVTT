@@ -80,7 +80,7 @@ WFRP5E.systemEffects = {
                     options: {
                             hideScript: `return !args.spell || !args.spell.system.usesWind(this.effect.getFlag("wfrp4e", "wind"))`,
                             activateScript: `return true;`,
-                            submissionScript: `args.actor.update(args.actor.system.status.channelling.clear())`
+                            submissionScript: `args.context.flags.channelled = args.actor.system.status.channelling.value; args.actor.update(args.actor.system.status.channelling.clear());`
                     }
                 }
             ]
