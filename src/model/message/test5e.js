@@ -16,7 +16,8 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
           useMagic: this._onUseMagic,
           overcastClick : this.onOvercastClick,
           overcastReset : this.onOvercastReset,
-          dispel: this.onDispel
+          dispel: this.onDispel,
+          executeAction: this.onExecuteAction
         }); 
     }
 
@@ -116,6 +117,11 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     {
       ui.notifications.error(e.message);
     }
+  }
+
+  static async onExecuteAction(ev, target)
+  {
+    this.test.executeAction(target.dataset)
   }
 
 

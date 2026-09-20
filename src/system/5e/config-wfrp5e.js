@@ -519,6 +519,21 @@ WFRP5E.PrepareSystemItems = function() {
                 transferData : {
                     documentType : "Item",
                 },
+                scriptData : [{
+                    label : "Hack",
+                    trigger : "opposedAttacker",
+                    script : `
+                        if (args.opposedTest.result.winner == "attacker")
+                            args.opposedTest.addAction({label: "Apply Hack", scriptIndex: 1, effectPath: "system.properties.qualities.hack.effect", itemUuid: this.item.uuid });
+                        `,
+                },
+                {
+                    label : "Apply Hack",
+                    trigger : "",
+                    async: true,
+                    script : "if (!args.opposedTest.defenderTest.actor.isOwner)\n  return ui.notifications.error(\"ErrorArmourDamagePermission\", { localize: true })\n\nlet loc = args.opposedTest.result.hitloc.value\nlet armour = args.opposedTest.defenderTest.actor.physicalNonDamagedArmourAtLocation(loc);\nif (armour.length) {\n  let chosen = await ItemDialog.create(armour, 1, { text: game.i18n.localize(\"DIALOG.ChooseArmour\"), title: this.effect.name });\n  if (chosen[0]) {\n    chosen[0].system.damageItem(1, [loc])\n    ChatMessage.create({ content: `<p>${game.i18n.format(\"CHAT.DamageToArmour\", { item: `@UUID[${chosen[0].uuid}]{${chosen[0].name}}`, type: this.effect.name })}</p>`, speaker: ChatMessage.getSpeaker({ actor: args.opposedTest.attackerTest.actor }) })\n  }\n}\nelse {\n  return ui.notifications.error(\"ErrorNoArmourToDamage\", { localize: true })\n}",
+                }
+            ]
             }
         },
         impale: {

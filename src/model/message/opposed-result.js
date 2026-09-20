@@ -1,4 +1,5 @@
 import OpposedTest from "../../system/opposed-test";
+import OpposedTest5e from "../../system/5e/opposed-test5e";
 
 let fields = foundry.data.fields;
 export class OpposedTestMessage extends WarhammerMessageModel 
@@ -13,7 +14,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
 
     get opposedTest() 
     {
-        return OpposedTest.recreate(this.opposedTestData);
+        return OpposedTest5e.recreate(this.opposedTestData);
     }
 
     static async create(opposedTest, options, handler)
@@ -63,7 +64,8 @@ export class OpposedTestMessage extends WarhammerMessageModel
         return foundry.utils.mergeObject(super.actions, {
             applyDamage : this.onApplyDamage,
             applyHack : this.onApplyHack,
-            rollDualWielder : this.onRollDualWielder
+            rollDualWielder : this.onRollDualWielder,
+            executeAction: this.onExecuteAction
         });
     }
 
@@ -74,7 +76,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
       if (!opposedTest.defenderTest.actor.isOwner)
         return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
   
-      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageeType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
+      let damageMsg = await opposedTest.defenderTest.actor.system.applyDamage(opposedTest.result.damage.value, {opposedTest})
       this.updateResultMessage(damageMsg);
     }
   
@@ -144,6 +146,12 @@ export class OpposedTestMessage extends WarhammerMessageModel
       }
   
       attackerTest.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll, targets}).then(test => test.roll());
+    }
+
+    
+    static async onExecuteAction(ev, target)
+    {
+      this.opposedTest.executeAction(target.dataset)
     }
 
     // Update starting message with result

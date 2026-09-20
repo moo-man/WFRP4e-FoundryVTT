@@ -29,6 +29,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         tooltips: {},
         text: data.text || [],
         tables: {},
+        actions: []
       },
       context: {
         itemData: data.context?.itemData,
@@ -146,6 +147,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
   {
     this.data.result = {
       SLModifier: 0, // Allow subclasses to modify before computing result
+      actions: []
     };
   }
 
@@ -700,6 +702,38 @@ export default class TestWFRP5e extends WarhammerTestBase {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
 
+  }
+
+  // Registers an action within the test, creating a button in the chat message
+  // When pressed, find effect and script index, execute that script
+  addAction({label, scriptIndex, effectId=null, effectPath=null, itemUuid=null})
+  {
+    this.result.actions.push({label, effectId, effectPath, scriptIndex, itemUuid});
+  }
+
+  async executeAction({actionIndex, scriptIndex,  effectId=null, effectPath=null, itemUuid=null})
+  {
+    if (this.result.actions[actionIndex])
+    {
+      let item = itemUuid ? await fromUuid(itemUuid) : this.item;
+      let effect;
+      if (effectId)
+      {
+        effect = item.effects.get(effectId);
+      }
+      else if (effectPath)
+      {
+        effect = foundry.utils.getProperty(item, effectPath);
+      }
+      if (effect)
+      {
+        let script = effect.scripts[scriptIndex];
+        if (script)
+        {
+          await script.execute({test: this});
+        }
+      }
+    }
   }
 
   get item() 

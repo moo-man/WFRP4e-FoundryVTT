@@ -73,6 +73,7 @@ export default class OpposedTest5e {
 
       let soundContext = {};
       opposeResult.other = [];
+      opposeResult.actions = [];
 
 
       if (defenderTest.context.unopposed)
@@ -277,6 +278,38 @@ export default class OpposedTest5e {
     }
 
     return string;
+  }
+
+    // Registers an action within the test, creating a button in the chat message
+  // When pressed, find effect and script index, execute that script
+  addAction({label, scriptIndex, effectId=null, effectPath=null, itemUuid})
+  {
+    this.result.actions.push({label, effectId, effectPath, scriptIndex, itemUuid});
+  }
+
+  async executeAction({actionIndex, scriptIndex,  effectId=null, effectPath=null, itemUuid})
+  {
+    if (this.result.actions[actionIndex])
+    {
+      let item = await fromUuid(itemUuid);
+      let effect;
+      if (effectId)
+      {
+        effect = item.effects.get(effectId);
+      }
+      else if (effectPath)
+      {
+        effect = foundry.utils.getProperty(item, effectPath);
+      }
+      if (effect)
+      {
+        let script = effect.scripts[scriptIndex];
+        if (script)
+        {
+          await script.execute({opposedTest: this});
+        }
+      }
+    }
   }
 
 }

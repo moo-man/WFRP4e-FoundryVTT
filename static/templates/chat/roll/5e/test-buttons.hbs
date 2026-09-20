@@ -1,3 +1,15 @@
+{{#each test.result.actions}}
+        <button class="chat-button" type="button"
+        data-action="executeAction"
+        data-effect-path="{{this.effectPath}}" 
+        data-effect-id="{{this.effectId}}" 
+        data-script-index="{{this.scriptIndex}}" 
+        data-action-index="{{@key}}" 
+        data-item-uuid="{{this.itemUuid}}">
+        {{this.label}}
+        </button>
+{{/each}}
+
 {{#if test.result.canReverse}}
     <button class="chat-button" data-action="reverse" type="button"><i class="fa-solid fa-shuffle"></i> Reverse</button>
 {{/if}}
