@@ -116,6 +116,18 @@ export default function () {
       return game.user.isGM && test && test.opposedMessages.length >= 2
     };
 
+    let canUnreverse = function (li) {
+      let message = game.messages.get(li.dataset.messageId);
+      let test = message.system?.test;
+      return test && test.actor.isOwner && test.result.canUnreverse && !test.testData.unreverse;
+    };
+
+    let canReverse = function (li) {
+      let message = game.messages.get(li.dataset.messageId);
+      let test = message.system?.test;
+      return test && test.actor.isOwner && test.testData.unreverse;
+    };
+
     let canApplyAllDamage = function (li) {
       //Condition to be able to target someone with the card
       //Be owner of character
@@ -325,6 +337,27 @@ export default function () {
           new EditTest(test).render(true);
         }
       },
+      {
+        name: game.i18n.localize("CHATOPT.Reverse"),
+        icon: '<i class="fa-solid fa-shuffle"></i>',
+        condition: canReverse,
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          let test = message.system.test;
+          test.reverse();
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.Unreverse"),
+        icon: '<i class="fa-solid fa-shuffle"></i>',
+        condition: canUnreverse,
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          let test = message.system.test;
+          test.unreverse();
+        }
+      },
+      
       {
         name: game.i18n.localize("CHATOPT.ApplyAllDamage"),
         icon: '<i class="fas fa-user-minus"></i>',

@@ -15,7 +15,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         target: data.target,
         difficulty: data.difficulty,
         state: data.state,
-        reverse: false,
+        unreverse: false,
         hitLocation: {
           selected: data.hitLocation,
           table: data.hitLocationTable,
@@ -122,9 +122,16 @@ export default class TestWFRP5e extends WarhammerTestBase {
     return this
   }
 
+  unreverse()
+  {
+    this.testData.unreverse = true;
+    this.roll();
+  }
+
   reverse()
   {
-    this.testData.reverse = true;
+    // Reversing happens automatically, so this just unsets the unreverse flag
+    this.testData.unreverse = false;
     this.roll();
   }
 
@@ -166,17 +173,22 @@ export default class TestWFRP5e extends WarhammerTestBase {
     let automaticFailure = game.settings.get("wfrp4e", "automaticFailure");
     this.result.SLModifier += this.testData.SL + (game.wfrp4e.config.difficultyModifiers[this.testData.difficulty] || 0);
     this.result.target = this.testData.target;
-    this.result.reversed = this.testData.reverse;
 
     this.result.roll = this.testData.roll;
     this.result.originalRoll = this.result.roll;
     this.result.reversedRoll = this._reverseDice(this.result.roll);
 
+    // Prompt for unreversal instead of reversal
+    // Reasoning: Reversing is optional if you have advantage, and there may be good reason to do so
+    // However, if some scripts perform actions due to a failed test that could've been reversed, this is annoying
+    // because those scripts' actions aren't undone. Prompting for unreversal solves that somewhat.
+
     if (this.testData.state == "adv")
     {
-      if (this.result.reversedRoll < this.result.originalRoll)
+      if (this.result.reversedRoll < this.result.originalRoll && !this.testData.unreverse)
       {
-        this.result.canReverse = true;
+        this.result.reversed = true;
+        this.result.canUnreverse = true;
       }
     }
     else if (this.testData.state == "dis")
@@ -189,7 +201,6 @@ export default class TestWFRP5e extends WarhammerTestBase {
     
     if (this.result.reversed)
     {
-      this.result.canReverse = false; // Remove reverse option if already reversed
       this.result.roll = this.result.reversedRoll;
     }
 
@@ -531,7 +542,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     this.testData.definedSL = data.SL;
     this.testData.roll = data.roll;
-    this.testData.reverse = false;
+    this.testData.unreverse = true;
     this.testData.target = data.target;
     this.testData.hitLocation.roll = data.hitloc;
     this.context.edited = true;
@@ -545,7 +556,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
     this.context.previousMessage = this.message.id;
     this.context.messageId = "";
     delete this.testData.roll;
-    delete this.testData.reverse;
+    delete this.testData.unreverse;
 
     return this.roll()
   }
