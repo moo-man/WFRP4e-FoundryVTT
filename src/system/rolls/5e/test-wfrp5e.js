@@ -524,6 +524,29 @@ export default class TestWFRP5e extends WarhammerTestBase {
     return test
   }
 
+
+  edit(data)
+  {
+
+    this.testData.definedSL = data.SL;
+    this.testData.roll = data.roll;
+    this.testData.target = data.target;
+    this.testData.hitLocation.roll = data.hitloc;
+    this.context.edited = true;
+
+    return this.roll();
+  }
+
+  async reroll() {
+    this.context.previousResult = this.result
+    this.context.reroll = true;
+    this.context.previousMessage = this.message.id;
+    this.context.messageId = "";
+    delete this.testData.roll;
+    delete this.testData.reverse;
+
+    return this.roll()
+  }
   /**
    * Start a dice roll
    * Used by the rollTest method and its overrides
@@ -534,6 +557,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
     {
       let roll = await new Roll("1d100").roll();
       this.testData.roll = roll.total;
+      this._roll = roll; // used for the message
     }
   }
 
@@ -566,6 +590,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
       messageData.system = this.data;
       messageData.type = "test5e";
       messageData._id = this.context.messageId;
+      messageData.rolls = [this._roll];
 
       let message = await ChatMessage.create(messageData, {keepId : true, chatBubble: false})
     }
@@ -772,6 +797,10 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   get isFumble() {
     return this.result.fumble
+  }
+
+  get e5() {
+    return true;
   }
   
   get target() { return this.data.result.target }
