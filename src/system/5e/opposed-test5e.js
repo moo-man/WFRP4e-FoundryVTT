@@ -165,6 +165,15 @@ export default class OpposedTest5e {
         opposeResult.differenceSL = defenderSL - attackerSL;
       }
 
+      if (opposeResult.winner == "attacker" && attackerTest.actor.inCombat && attackerTest.item?.system.isMelee)
+      {
+        attackerTest.actor.update({"system.status.momentum" : true});
+      }
+      else if (opposeResult.winner == "defender" && defenderTest.actor.inCombat && defenderTest.item?.system.isMelee)
+      {   
+        defenderTest.actor.update({"system.status.momentum" : true});
+      }
+
       await Promise.all(attacker.runScripts("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }))
       await Promise.all(attackerTest.item?.runScripts?.("opposedAttacker", { opposedTest: this, attackerTest, defenderTest }) ?? [])
       if (defender) {

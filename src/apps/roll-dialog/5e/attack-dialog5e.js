@@ -127,7 +127,7 @@ export default class AttackDialog5e extends SkillDialog5e
     _computeDefending(attacker) 
     {
         super._computeDefending(attacker);
-        if (this.item.system.isMelee && attacker.test.item?.system.isMelee && this.item.system.reachNum > attackerTest.item.system.reachNum)
+        if (this.item.system.isMelee && attacker.test.item?.system.isMelee && this.item.system.reachNum > attacker.test.item.system.reachNum)
         {
           this.addModifier({key: "size", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Shorter")});
         }

@@ -53,19 +53,29 @@ WFRP5E.systemEffects = {
                 {
                     label: "Remove",
                     trigger: "endCombat",
-                    script: `this.actor.update({"system.status.momentum" : false})`,
+                    script: `this.actor.update({"system.status.momentum" : false});`,
                 },
                 {
                     label: "Take Damage",
                     trigger: "takeDamage",
-                    script: `if (args.totalWoundLoss) this.actor.update({"system.status.momentum" : false})`
+                    script: `if (args.totalWoundLoss) this.actor.update({"system.status.momentum" : false});`
+                },
+                {
+                    label: "Failed Test Attacking",
+                    trigger: "opposedAttacker",
+                    script: `if (args.opposedTest.result.winner == "defender" && args.attackerTest.item?.system.isMelee) this.actor.update({"system.status.momentum" : false});`
+                },
+                {
+                    label: "Failed Test Defending",
+                    trigger: "opposedAttacker",
+                    script: `if (args.opposedTest.result.winner == "attacker" && args.defenderTest.item?.system.isMelee) this.actor.update({"system.status.momentum" : false});`
                 },
                 {
                     label: "Gain Condition",
                     trigger: "updateDocument",
                     script: `if (args.type == "effect" && args.options.action == "create" && args.document.isCondition)
                         {
-                            this.actor.update({"system.status.momentum" : false})
+                            this.actor.update({"system.status.momentum" : false});
                         }
                         `
                 }
@@ -291,12 +301,13 @@ WFRP5E.PrepareSystemItems = function() {
                             transferData : {},
                             scriptData : [
                                 {
-                                    label : "@effect.flags.wfrp4e.dialogTitle",
+                                    label : "Attacking target with Fear",
                                     trigger : "dialog",
-                                    script : `args.fields.slBonus -= 1`,
+                                    script : `args.fields.advantage++;`,
                                     options : {
+                                        targeter: true,
                                         hideScript : "",
-                                        activateScript : `return args.data.targets[0]?.name == this.item.flags.wfrp4e?.fearName`
+                                        activateScript : `return [args.actor.name, args.actor.prototypeToken.namae].includes(this.item.flags.wfrp4e?.fearName);`
                                     }
                                 },
                                 {
@@ -304,24 +315,37 @@ WFRP5E.PrepareSystemItems = function() {
                                     trigger : "immediate",
                                     script : `
                                     let name = this.item?.flags?.wfrp4e?.fearName
-                                    this.effect.updateSource({"flags.wfrp4e.dialogTitle" : (name ? game.i18n.format("EFFECT.AffectTheSourceOfFearName", {name}) : game.i18n.format("EFFECT.AffectTheSourceOfFear"))})
                                     if (name)
                                     {
-                                        this.item.updateSource({name : this.item.name + " (" + name + ")" })
+                                        this.item.updateSource({name : this.item.setSpecifier(name)});
                                     }
                                     `
                                 },
                                 {
-                                    trigger: "endRound",
+                                    trigger: "endTurn",
                                     label: "Roll to remove Fear",
                                     script: `
-                                        const test = await this.actor.setupExtendedTest(this.effect.item, {
+                                        await this.actor.setupExtendedTest(this.effect.item, {
                                             fields: {difficulty: "challenging"}, 
                                             skipTargets: true, 
                                             appendTitle :  \` - \${this.effect.name}\`, 
                                         });
-                                        await test.roll();
                                     `,
+                                },
+                                {
+                                    trigger: "preUpdateDocument",
+                                    label: "Prevent Momentum Gain",
+                                    script: `
+                                    if (args.type != "data")
+                                        return
+                                    let momentum = foundry.utils.getProperty(args.data, "system.status.momentum")
+                                    if (momentum)
+                                    {
+                                        args.data.system.status.momentum = false;
+                                        this.script.notification("Cannot Gain Momentum");
+                                    }
+
+                                    `
                                 }
                             ]
                         }
@@ -367,15 +391,14 @@ WFRP5E.PrepareSystemItems = function() {
                     documentType : "Item"
                 },
                 scriptData : [{
-                    label : "Parry",
+                    label : "Ignore Offhand Penalty",
                     trigger : "dialog",
                     script : "",
                     options : {
-                        hideScript : "",
-                        activateScript : "return true"
+                        activateScript : "",
+                        hideScript : "if (args.actor.attacker) args.ignoreModifiers.add('offhand'); return true;"
                     }
-                }
-            ],
+                }]
             }
         },
         blackpowder: {
@@ -518,7 +541,7 @@ WFRP5E.PrepareSystemItems = function() {
                 },
             }
         },
-        hack: { // todo
+        hack: {
             name : game.i18n.localize("PROPERTY.Hack"),
             img : "systems/wfrp4e/icons/blank.png",
             system : {
@@ -605,12 +628,12 @@ WFRP5E.PrepareSystemItems = function() {
                     documentType : "Item"
                 },
                 scriptData : [{
-                    label : "Precise",
+                    label : "Precise", // TODO
                     trigger : "dialog",
-                    script : "args.fields.successBonus += 1;",
+                    script : "",
                     options : {
-                        hideScript : "",
-                        activateScript : "return true"
+                        hideScript : "return true;",
+                        activateScript : ""
                     }
                 }]
             }
@@ -1011,30 +1034,6 @@ WFRP5E.PrepareSystemItems = function() {
             }
         },
         {
-            img: "systems/wfrp4e/icons/conditions/besmirched.png",
-            id: "besmirched",
-            statuses: ["besmirched"],
-            name: "WFRP4E.ConditionName.Besmirched",
-            description : "WFRP4E.Conditions.besmirched",
-            system: {
-                condition : {
-                    value : null,
-                    numbered: false
-                },
-                scriptData: [
-                    {
-                        trigger: "dialog",
-                        label: "Disadvantage on Fellowship Tests",
-                        script: `args.fields.disadvantage++;`,
-                        options: {
-                            hideScript: `args.fields.characteristic != "fel"`,
-                            activateScript: `args.fields.characteristic == "fel"`,
-                        }
-                    }
-                ]
-            }
-        },
-        {
             img: "systems/wfrp4e/icons/conditions/deafened.png",
             id: "deafened",
             statuses: ["deafened"],
@@ -1243,6 +1242,30 @@ WFRP5E.PrepareSystemItems = function() {
                             targeter: true,
                             hideScript: "return !args.item?.system.isMelee",
                             activateScript: "return args.item?.system.isMelee"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            img: "systems/wfrp4e/icons/conditions/besmirched.png",
+            id: "besmirched",
+            statuses: ["besmirched"],
+            name: "WFRP4E.ConditionName.Besmirched",
+            description : "WFRP4E.Conditions.besmirched",
+            system: {
+                condition : {
+                    value : null,
+                    numbered: false
+                },
+                scriptData: [
+                    {
+                        trigger: "dialog",
+                        label: "Disadvantage on Fellowship Tests",
+                        script: `args.fields.disadvantage++;`,
+                        options: {
+                            hideScript: `args.fields.characteristic != "fel"`,
+                            activateScript: `args.fields.characteristic == "fel"`,
                         }
                     }
                 ]

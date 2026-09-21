@@ -40,6 +40,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         item: data.item?.id,
         speaker: data.speaker,
         title : data.context?.title,
+        extended: data.context?.extended,
         targets: data.targets,
         unopposed : data.unopposed,
         defending : data.defending,
@@ -428,9 +429,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
     //   await this.handleMutationResult()
     // }
 
-    // if (this.options.extended) {
-    //   await this.handleExtendedTest()
-    // }
+    if (this.context.extended) {
+      await this.handleExtendedTest()
+    }
 
     // if (this.options.income) {
     //   await this.handleIncomeTest()
@@ -466,6 +467,71 @@ export default class TestWFRP5e extends WarhammerTestBase {
     //   crewTest.updateRole(this.options.roleId, message)
     // }
   }
+
+  async handleExtendedTest() {
+    let item = fromUuidSync(this.context.extended);
+    let deleteTest = false;
+    if (item)
+    {
+      let itemData = item.toObject();
+      let SL = Number(this.result.SL);
+
+      if (game.settings.get("wfrp4e", "extendedTests") && SL == 0)
+      {
+        this.result.SL = this.result.roll <= this.result.target ? 1 : -1
+      }
+
+      if (itemData.system.failingDecreases.value) 
+      {
+        itemData.system.SL.current += SL
+        if (!itemData.system.negativePossible.value && itemData.system.SL.current < 0)
+        {
+          itemData.system.SL.current = 0;
+        }
+      }
+      else if (SL > 0)
+      {
+        itemData.system.SL.current += SL;
+      }
+
+      let displayString = `${itemData.name} ${itemData.system.SL.current} / ${itemData.system.SL.target} ${game.i18n.localize("SuccessLevels")}`
+
+      if (itemData.system.SL.current >= itemData.system.SL.target) {
+
+        if (foundry.utils.getProperty(itemData, "flags.wfrp4e.reloading")) {
+          let actor
+          if (foundry.utils.getProperty(itemData, "flags.wfrp4e.vehicle"))
+            actor = WFRP_Utility.getSpeaker(foundry.utils.getProperty(itemData, "flags.wfrp4e.vehicle"))
+
+          actor = actor ? actor : this.actor
+          let weapon = actor.items.get(foundry.utils.getProperty(itemData, "flags.wfrp4e.reloading"))
+          await weapon.update({ "flags.wfrp4e.-=reloading": null, "system.loaded.amt": weapon.loaded.max, "system.loaded.value": true })
+        }
+
+        if (itemData.system.completion.value == "reset")
+        {
+          itemData.system.SL.current = 0;
+        }
+        else if (itemData.system.completion.value == "remove") 
+        {
+          deleteTest = true;
+        }
+        displayString = displayString.concat(`<br><b>${game.i18n.localize("Completed")}</b>`)
+      }
+
+      this.result.other.push(displayString)
+
+      if (deleteTest)
+      {
+        await item.delete();
+      }
+      else 
+      { 
+        await item.update(itemData)
+      }
+    }
+  }
+
 
   async handleSoundContext(chatOptions) 
   {
