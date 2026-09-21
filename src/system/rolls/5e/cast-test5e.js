@@ -33,10 +33,10 @@ export default class CastTest5e extends OvercastableTest5e {
   async computeSpellResult()
   {
     this.result.CN = this.spell.system.cn.value;
-
+    this.result.criticalCastChoice = this.testData.criticalCastChoice;
     this.result.excessSL = this.result.SL - this.result.CN;
-    this.result.castSuccess = this.result.SL >= this.spell.system.cn.value;
-    this.result.miscast = null;
+    this.result.castSuccess = (this.result.SL >= this.spell.system.cn.value || this.testData.criticalCastChoice == "totalPower");
+    this.result.miscast = (this.result.critical || this.result.fumble) ? "minor" : null;
     if (this.result.castSuccess)
     {
       this._handleCastSuccess();
@@ -79,21 +79,12 @@ export default class CastTest5e extends OvercastableTest5e {
   _handleCastSuccess()
   {
     this.result.description = game.i18n.localize("ROLL.CastingSuccess");
-    if (this.result.critical)
-    {
-      this.result.miscast = "minor";
-      this.result.criticalCast = this.testData.criticalCastChoice;
-    }
     this.computeDamage();
   }
 
   _handleCastFailure()
   {
     this.result.description = game.i18n.localize("ROLL.CastingFailed")
-    if (this.result.fumble)
-    {
-      this.result.miscast = "minor";
-    }
   }
 
   
@@ -103,7 +94,7 @@ export default class CastTest5e extends OvercastableTest5e {
     delete this.result.tables.critical;
     delete this.result.tables.fumble;
 
-    if (this.result.critical && this.result.criticalCast == "criticalDamage")
+    if (this.result.critical && this.result.criticalCastChoice == "criticalDamage")
     {
       this.result.tables.critical = {
         label : "Critical",

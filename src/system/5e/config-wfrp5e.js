@@ -27,6 +27,12 @@ WFRP5E.difficultyLabels = {
     "vhard": "5e.DIFFICULTY.VHard"
 }
 
+WFRP5E.criticalCastOptions = {
+    "criticalDamage" :  "CHAT.CriticalDamageLabel",
+    "totalPower" :  "CHAT.TotalPowerLabel",
+    "unstoppableForce" :  "CHAT.UnstoppableForceLabel"
+}
+
 WFRP5E.systemEffects = {
     momentum: {
         name: "NAME.Momentum",

@@ -16,7 +16,8 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
           overcastClick : this.onOvercastClick,
           overcastReset : this.onOvercastReset,
           dispel: this.onDispel,
-          executeAction: this.onExecuteAction
+          executeAction: this.onExecuteAction,
+          chooseCriticalCast: this.onChooseCriticalCast
         }); 
     }
 
@@ -116,6 +117,17 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
   static async onExecuteAction(ev, target)
   {
     this.test.executeAction(target.dataset)
+  }
+
+  
+  static async onChooseCriticalCast(ev, target)
+  {
+    if (!this.canEdit)
+      return ui.notifications.error("CHAT.EditError", {localize: true})
+    let test = this.test
+
+    test.testData.criticalCastChoice = target.dataset.choice;
+    test.roll();
   }
 
 

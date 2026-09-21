@@ -1,9 +1,24 @@
 <div class="wfrp4e wfrp5e test-message">
     {{> testResults}}
 
+    {{#unless (eq test.result.criticalCastChoice "unstoppableForce")}}
     {{#if test.result.dispel}}
     <p style="text-align:center"><strong>Dispelled!</strong> ({{numberFormat test.result.dispel.SL sign=true}})</p>
     {{/if}}
+    {{/unless}}
+
+    {{#if test.result.critical}}
+        {{#unless test.result.criticalCastChoice}}
+            <div class="flexrow gap wrap">
+                {{#each (config "criticalCastOptions")}}
+                <button class="chat-button" {{#if (and (not ../test.result.castSuccess) (ne @key "totalPower"))}}disabled{{/if}} data-action="chooseCriticalCast" data-choice="{{@key}}">{{this}}</button>
+                {{/each}}
+            </div>
+        {{else}}
+            <strong>{{localize "CHAT.CriticalCasting"}}</strong>: {{configLookup "criticalCastOptions" test.result.criticalCastChoice}}
+        {{/unless}}
+    {{/if}}
+
 
     {{#if test.result.castSuccess}}
     {{> systems/wfrp4e/templates/partials/overcasts5e.hbs}}
@@ -12,7 +27,7 @@
 
     {{#if test.result.castSuccess}}
         <a class='chat-button' data-action="useMagic">{{localize "CHAT.CastSpell" spell=test.spell.name}}</a>
-        {{#unless test.result.dispel}}
+        {{#unless (or test.result.dispel (eq test.result.criticalCastChoice "unstoppableForce"))}}
             <a class='chat-button' data-action="dispel">{{localize "CHAT.Dispel"}}</a>
         {{/unless}}
     {{/if}}
