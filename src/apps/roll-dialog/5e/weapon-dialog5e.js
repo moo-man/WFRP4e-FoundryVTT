@@ -68,8 +68,6 @@ export default class WeaponDialog5e extends AttackDialog5e
 
       if (weapon.attackType == "ranged") 
       {
-        dialogData.fields.range = "normal"; // TODO
-
         // If Ranged, default to Ballistic Skill, but check to see if the actor has the specific skill for the weapon
         // skillCharList.push({ char: true, key: "bs", name: game.i18n.localize("CHAR.BS") })
         if (weapon.consumesAmmo.value && weapon.ammunitionGroup.value != "none" && weapon.ammunitionGroup.value) 
@@ -130,4 +128,10 @@ export default class WeaponDialog5e extends AttackDialog5e
         super._computeDefending(attacker);
     }
 
+    _defaultFields() 
+    {
+        let fields = super._defaultFields();
+        fields.range = "normal";
+        return fields;
+    }
 }

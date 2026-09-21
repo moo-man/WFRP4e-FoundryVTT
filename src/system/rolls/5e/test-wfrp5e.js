@@ -43,7 +43,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         targets: data.targets,
         unopposed : data.unopposed,
         defending : data.defending,
-        breakdown : data.breakdown,
+        breakdown : data.context?.breakdown,
         messageId: data.messageId,
         messageTemplate: data.context?.messageTemplate,
         opposedMessageIds : data.opposedMessageIds || [],
@@ -108,6 +108,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
     await this.runPostEffects();
     await this.postTest();
 
+    this.result.breakdown = this.context.breakdown
+    this.result.breakdown.formatted = this.formatBreakdown()
+
     // Do not render chat card or compute oppose if this is a dummy unopposed test
     if (!this.context.unopposed)
     {
@@ -150,7 +153,8 @@ export default class TestWFRP5e extends WarhammerTestBase {
   {
     this.data.result = {
       SLModifier: 0, // Allow subclasses to modify before computing result
-      actions: []
+      actions: [],
+      other: []
     };
   }
 
@@ -254,9 +258,6 @@ export default class TestWFRP5e extends WarhammerTestBase {
       {
         this.result.displaySL = `${this.result.SL}`;
       }
-
-    // this.result.breakdown = this.context.breakdown
-    // this.result.breakdown.formatted = this.formatBreakdown()
 
     if (this.testData.hitLocation.evaluate)
     {
@@ -530,6 +531,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     this.testData.definedSL = data.SL;
     this.testData.roll = data.roll;
+    this.testData.reverse = false;
     this.testData.target = data.target;
     this.testData.hitLocation.roll = data.hitloc;
     this.context.edited = true;
@@ -566,7 +568,6 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     let messageData = {
       speaker: this.context.speaker,
-      // rolls : [Roll.fromData({evaluated: true, terms: [{results: [{result: this.result.originalRoll, active: true}]}]})]
     }
     
     await this.handleSoundContext(messageData)
@@ -640,7 +641,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
   formatBreakdown()
   {
     let testBreakdown = "";
-    let breakdown = this.result.breakdown
+    let breakdown = this.result.breakdown;
 
     try {
 
@@ -654,42 +655,10 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
       testBreakdown += `<p><strong>${game.i18n.localize("Difficulty")}</strong>: ${game.wfrp4e.config.difficultyLabels[breakdown.difficulty]}</p>`
 
-      if (breakdown.modifier)
-      {
-        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${foundry.applications.handlebars.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
-      }
-
       // No need to show SL value unless it's boosted by slBonus or successBonus
-      if (breakdown.slBonus || (breakdown.successBonus && this.succeeded))
+      if (breakdown.SL)
       {
-        let SLstring = `<p><strong>${game.i18n.localize("SL")}</strong>: ${this.result.baseSL} (Base)`
-        
-        if (breakdown.slBonus)
-        {
-          if (breakdown.slBonus > 0)
-          {
-            SLstring += ` + ${breakdown.slBonus}`;
-          }
-          else if (breakdown.slBonus < 0)
-          {
-            SLstring += ` - ${Math.abs(breakdown.slBonus)}`;
-          }
-          SLstring += ` (${game.i18n.localize("DIALOG.SLBonus")})`;
-        }
-        
-        if (breakdown.successBonus && this.succeeded)
-        {
-          if (breakdown.successBonus > 0)
-          {
-            SLstring += ` + ${breakdown.successBonus}`;
-          }
-          else if (breakdown.successBonus < 0)
-          {
-            SLstring += `- ${Math.abs(breakdown.successBonus)}`;
-          }
-          SLstring += ` (${game.i18n.localize("DIALOG.SuccessBonus")})`;
-        }
-        testBreakdown += SLstring
+          testBreakdown += `<p><strong>${game.i18n.localize("SL")}</strong>: ${foundry.applications.handlebars.numberFormat(breakdown.SL, {hash :{sign: true}})}</p>`
       }
 
       if (game.settings.get("wfrp4e", "SLMethod") != "default")
@@ -697,39 +666,18 @@ export default class TestWFRP5e extends WarhammerTestBase {
         testBreakdown += "<p>SL Evaluated with " + (game.settings.get("wfrp4e", "SLMethod") == "fast" ? "Fast SL" : "Degrees of Success") + "</p>"
       }
 
-      if (breakdown.modifier)
-      {
-        testBreakdown += `<p><strong>${game.i18n.localize("Modifier")}</strong>: ${foundry.applications.handlebars.numberFormat(breakdown.modifier, {hash :{sign: true}})}</p>`
-      }
-
-
       if (breakdown.modifiersBreakdown)
       {
         testBreakdown += `<hr><h4>${game.i18n.localize("CHAT.ModifiersBreakdown")}</h4>`
         testBreakdown += breakdown.modifiersBreakdown
       }
 
-      // @@@@@@@@@@@@@@@@@@ Damage @@@@@@@@@@@@@@@@@@@@
-      let damageBreakdown = "";
-
-      damageBreakdown += `<p><strong>${game.i18n.localize("BREAKDOWN.Base")}</strong>: ${breakdown.damage.base}</p>`;
-      if (breakdown.damage.item)
-      {
-        damageBreakdown += `<p><strong>${game.i18n.localize(CONFIG.Item.typeLabels[this.item?.type])}</strong>: ${breakdown.damage.item}</p>`;
-      }
-
-      for(let source of breakdown.damage.other)
-      {
-        damageBreakdown += `<p><strong>${source.label}</strong>: ${foundry.applications.handlebars.numberFormat(source.value, {hash: {sign : true}})}`
-      }
-
-      return {test : testBreakdown, damage : damageBreakdown};
+      return {test : testBreakdown};
     }
     catch(e)
     {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
-
   }
 
   // Registers an action within the test, creating a button in the chat message

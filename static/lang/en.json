@@ -862,6 +862,8 @@
     "DIALOG.SurplusDisadvantageTT" : "Surplus Disadvantage",
     "DIALOG.SL" : "SL",
 
+    "CHAT.Advantage" : "Advantage",
+    "CHAT.Disadvantage" : "Disadvantage",
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",

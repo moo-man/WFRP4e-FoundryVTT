@@ -88,6 +88,17 @@ export default class SkillDialog5e extends CharacteristicDialog5e {
         }
     }
 
+    createBreakdown()
+    {
+        let breakdown = super.createBreakdown();
+        if (this.skill?.system?.advances.value)
+        {
+            breakdown.skill = `${this.skill.name} (+${this.skill.system.advances.value})`
+        }
+        return breakdown;
+    }
+
+
 
     // Backwards compatibility for effects
     get type() 

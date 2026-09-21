@@ -37,9 +37,28 @@
     </span>
 </div>
 
+
+{{#if (eq test.testData.state "adv")}}
+<div><strong>{{localize "CHAT.Advantage"}}</strong></div>
+{{else if (eq test.testData.state "dis")}}
+<div><strong>{{localize "CHAT.Disadvantage"}}</strong></div>
+{{/if}}
     
+
 {{#if test.result.hitloc}}
 <div>
     <strong>{{localize "ROLL.HitLocation"}}</strong>: {{test.result.hitloc.description}}
 </div>
 {{/if}}
+
+{{#each test.result.other}}
+    {{#if this.label}}
+    <strong>{{{this.label}}}</strong>:
+    {{else}}
+        {{{this}}} <!-- Backwards compatible hopefully -->
+    {{/if}}
+
+    {{#if this.description}}
+        {{{this.description}}}
+    {{/if}}
+{{/each}}

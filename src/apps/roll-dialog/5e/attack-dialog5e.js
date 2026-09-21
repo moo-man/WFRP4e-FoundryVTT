@@ -79,17 +79,17 @@ export default class AttackDialog5e extends SkillDialog5e
     {        
         if (!["roll", "none"].includes(this.fields.hitLocation))
         {
-            this.addModifier({key: "calledShot", value: -2, field: "SL", label: "5e.Dialog.Modifier.CalledShot"});
+            this.addModifier({key: "calledShot", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.CalledShot")});
         }
 
         if (this.item.system.offhand?.value)
         {
-            this.addModifier({key: "offhand", value: -2, field: "SL", label: "5e.Dialog.Modifier.UsingOffhand"});
+            this.addModifier({key: "offhand", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.UsingOffhand")});
         }
 
         if (this.fields.charging)
         {
-            this.addModifier({key: "charging", value: 1, field: "advantage", label: "5e.Dialog.Modifier.Charging"});
+            this.addModifier({key: "charging", value: 1, field: "advantage", label: game.i18n.localize("5e.Dialog.Modifier.Charging")});
         }
 
         
@@ -100,25 +100,25 @@ export default class AttackDialog5e extends SkillDialog5e
                 let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
                 if (combatant?.token?.movementHistory?.length > 0) 
                 {
-                this.addModifier({key: "moved", value: -1, field: "SL", label: "5e.Dialog.Modifier.Moved"});
+                this.addModifier({key: "moved", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Moved")});
                 }
             }
 
             if (this.fields.range == "extreme")
             {
-                this.addModifier({key: "range", value: -2, field: "SL", label: "5e.Dialog.Modifier.Extreme"});
+                this.addModifier({key: "range", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Extreme")});
             }
             else if (this.fields.range == "long")
             {
-                this.addModifier({key: "range", value: -1, field: "SL", label: "5e.Dialog.Modifier.Long"});
+                this.addModifier({key: "range", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Long")});
             }
             else if (this.fields.range == "short")
             {
-                this.addModifier({key: "range", value: 1, field: "SL", label: "5e.Dialog.Modifier.Short"});
+                this.addModifier({key: "range", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Short")});
             }
             else if (this.fields.range == "pb")
             {
-                this.addModifier({key: "range", value: 2, field: "SL", label: "5e.Dialog.Modifier.PointBlank"});
+                this.addModifier({key: "range", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.PointBlank")});
             }
         }
         super.computeFields();
@@ -129,7 +129,7 @@ export default class AttackDialog5e extends SkillDialog5e
         super._computeDefending(attacker);
         if (this.item.system.isMelee && attacker.test.item?.system.isMelee && this.item.system.reachNum > attackerTest.item.system.reachNum)
         {
-          this.addModifier({key: "size", value: 1, field: "SL", label: "5e.Dialog.Modifier.Shorter"});
+          this.addModifier({key: "size", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Shorter")});
         }
     }
 
@@ -140,21 +140,28 @@ export default class AttackDialog5e extends SkillDialog5e
       {
         if (target.actor.sizeNum == 0)
         {
-          this.addModifier({key: "size", value: -2, field: "SL", label: "5e.Dialog.Modifier.TargetTiny"});
+          this.addModifier({key: "size", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.TargetTiny")});
         }
         else if (target.actor.sizeNum == 6)
         {
-          this.addModifier({key: "size", value: 2, field: "SL", label: "5e.Dialog.Modifier.TargetMonstrous"});
+          this.addModifier({key: "size", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.TargetMonstrous")});
         }
         else if (target.actor.sizeNum < this.actor.sizeNum)
         {
-          this.addModifier({key: "size", value: -1, field: "SL", label: "5e.Dialog.Modifier.TargetSmaller"});
+          this.addModifier({key: "size", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.TargetSmaller")});
         }
         else if (target.actor.sizeNum > this.actor.sizeNum)
         {
-          this.addModifier({key: "size", value: 1, field: "SL", label: "5e.Dialog.Modifier.TargetLarger"});
+          this.addModifier({key: "size", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.TargetLarger")});
         }
       }
+    }
+
+    createBreakdown()
+    {
+        let breakdown = super.createBreakdown();
+        breakdown.damage = this.fields.damage;
+        return breakdown;
     }
 
     async onSubmit(submitData)

@@ -718,6 +718,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       if (target)
       {
         options.fields.modifier = Number(target.dataset.modifier) || 0;
+        options.fields.range = target.dataset.range;
       }
       switch (target.dataset.type)
       {
@@ -866,20 +867,33 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           description = item.system.properties.specialAmmo;
           break;
         case "range":
-            if (!game.settings.get("wfrp4e", "homebrew").mooRangeBands)
-            {
-
-              description =
-              `<a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
-                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
-                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
-                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
-                <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
-                `
-                
+          if (game.wfrp5e) 
+          {
+            game.wfrp4e.utility.logHomebrew("mooRangeBands")
+            description =
+            `<a data-action="rollTest" data-type="weapon" data-range="pb">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier} SL</a><br>
+              <a data-action="rollTest" data-type="weapon" data-range="short">${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier} SL</a><br>
+              <a data-action="rollTest" data-type="weapon" data-range="normal">${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier} SL</a><br>
+              <a data-action="rollTest" data-type="weapon" data-range="long">${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier} SL</a><br>
+              <a data-action="rollTest" data-type="weapon" data-range="extreme">${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier} SL</a><br>
+              `
+            
             }
             //@HOUSE
-            else {
+            else if (!game.settings.get("wfrp4e", "homebrew").mooRangeBands)
+            {
+  
+                description =
+                `<a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Point Blank"]]}</a><br>
+                  <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Short Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Short Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Short Range"]]}</a><br>
+                  <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Normal")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Normal")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Normal"]]}</a><br>
+                  <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Long Range")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Long Range")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Long Range"]]}</a><br>
+                  <a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Extreme")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Extreme")}`].range[1]} ${game.i18n.localize("yds")}: ${game.wfrp4e.config.difficultyLabels[game.wfrp4e.config.rangeModifiers["Extreme"]]}</a><br>
+                  `
+                  
+            }
+            else 
+            {
               game.wfrp4e.utility.logHomebrew("mooRangeBands")
               description =
               `<a data-action="rollTest" data-type="weapon" data-modifier="${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}">${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[0]} ${game.i18n.localize("yds")} - ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].range[1]} ${game.i18n.localize("yds")}: ${item.system.range.bands[`${game.i18n.localize("Point Blank")}`].modifier}</a><br>

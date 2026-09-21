@@ -460,7 +460,7 @@ WFRP5E.PrepareSystemItems = function() {
                     {
                         ones = 10;
                     }
-                    if (ones > args.damage.SL?.value || 0)
+                    if (ones > (args.damage.SL?.value || 0))
                     {
                         delete args.damage.SL;
                         args.damage.damaging = {label: this.effect.name, value: ones};
@@ -697,12 +697,7 @@ WFRP5E.PrepareSystemItems = function() {
                 scriptData : [{
                     label : "Fumble",
                     trigger : "computeCriticalFumble",
-                    script : `
-                        if (args.test.result.roll.toString().includes("9") && args.test.failed)
-                        {
-                            args.result.fumble = true;
-                        }
-                        `,
+                    script : "if (args.test.result.roll.toString().includes(\"9\") && args.test.failed)\n{\n    args.test.result.fumble = true;\n    args.test.result.other.push({label: this.effect.name, description: 'Fumble!'})\n}",
                 }]
             }
         },

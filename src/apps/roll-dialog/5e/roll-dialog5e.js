@@ -202,10 +202,7 @@
     {
         let breakdown = {
             SL: this.fields.SL,
-            modifier: this.fields.modifier,
             difficulty : this.fields.difficulty,
-            slBonus : this.fields.slBonus,
-            successBonus : this.fields.successBonus,
             modifiersBreakdown : this.tooltips.getCollectedTooltips()
         }
         return breakdown;

@@ -189,16 +189,19 @@ export default class OpposedTest5e {
     let defenderSL = this.defenderTest?.result?.SL || 0;
 
     breakdown.base = damage;
-    breakdown.defenderSL = defenderSL;
 
-    damage += -defenderSL;
+
+    if (this.attackerTest.item.system.isMelee)
+    {
+      breakdown.defenderSL = defenderSL;
+      damage += -defenderSL;
+    }
 
     let effectArgs = { damage, opposedTest: this, breakdown }
     await Promise.all(this.attackerTest.actor.runScripts("calculateOpposedDamage", effectArgs) || []);
     await Promise.all(this.attackerTest.item?.runScripts("calculateOpposedDamage", effectArgs) || []);
     ({ damage } = effectArgs)
 
-    breakdown;
     this.result.breakdown = breakdown;
     return damage;
   }
