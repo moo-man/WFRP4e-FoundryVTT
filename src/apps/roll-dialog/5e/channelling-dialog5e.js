@@ -38,7 +38,7 @@ export default class ChannellingDialog5e extends SkillDialog5e
 
     static async setupData(wind, actor, context={}, options={})
     {
-      let skill = context.skill || actor.itemTags["skill"].find(i => i.name.toLowerCase() == wind.toLowerCase());
+      let skill = context.skill || actor.itemTags["skill"].find(i => i.specifier?.toLowerCase() == wind.toLowerCase());
       
       if (!skill)
       {
