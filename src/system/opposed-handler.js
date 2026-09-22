@@ -1,6 +1,6 @@
 import WFRP_Utility from "./utility-wfrp4e.js";
-import OpposedTest from "./opposed-test.js";
 import { OpposedTestMessage } from "../model/message/opposed-result.js";
+import EditionManager from "../apps/edition-manager.js";
 
 /**
  * Represents an opposed test. This object is stored in the "targeting" messages and is used as a central manager of a single opposed test.
@@ -51,13 +51,24 @@ export default class OpposedHandler {
 
   get defenderTest() {
     if (this.unopposed) {
-      return new game.wfrp4e.rolls.CharacteristicTest({
+
+      let test = !!game.wfrp5e 
+      ? new game.wfrp4e.rolls5e.TestWFRP5e({
+          definedSL: 0,
+          unopposed: true,
+          roll: 0, 
+          target: 0,
+        }, this.target.actor)
+     : new game.wfrp4e.rolls.CharacteristicTest({
         item: "ws",
         SL: 0,
         target: 0,
         roll: 0,
         unopposed: true,
       }, this.target.actor)
+      test.initializeResult?.();
+
+      return test;
     }
     else
       return this.defenderMessage?.system.test;
@@ -106,7 +117,8 @@ export default class OpposedHandler {
     if (!this.attackerTest || !this.defenderTest)
       throw new Error(game.i18n.localize("ERROR.Opposed"))
 
-    this.opposedTest = edition == "4e" ? new OpposedTest(this.attackerTest, this.defenderTest) : new OpposedTest5e(this.attackerTest, this.defenderTest);
+    let opposedClass = EditionManager.getOpposedTest();
+    this.opposedTest = new opposedClass(this.attackerTest, this.defenderTest);
 
     await this.opposedTest.evaluate();
     this.formatOpposedResult();

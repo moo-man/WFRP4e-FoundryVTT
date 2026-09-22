@@ -129,7 +129,7 @@ export class OvercastItemModel extends BaseItemModel {
         }
       }
 
-      if (foundry.utils.isEmpty(data.overcastOptions) && data.overcast.enabled)
+      if (foundry.utils.isEmpty(data.overcastOptions) && data.overcast.enabled && game.wfrp5e)
       {
         data.overcastOptions[foundry.utils.randomID()] = {
           label: data.overcast.label,

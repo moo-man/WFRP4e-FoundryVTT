@@ -40,6 +40,7 @@
             @include foundry-button;
             line-height: 1.5rem;
             height: 1.5rem;
+            white-space: nowrap;
         }
 
         .opposed-options {
@@ -176,17 +177,25 @@
             }
         }
 
-        .overcast-options {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            .overcast-section {
+        .overcasting {
+            text-align: center;
+            .overcast-count {
+                margin-bottom: 0px;
+            }
+
+            .overcast-options {
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                .overcast-section {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
             }
         }
+
 
 
         .pay-amount {

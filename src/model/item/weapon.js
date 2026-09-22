@@ -154,9 +154,22 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             let SBsToAdd = actor.sizeNum - 3
             damage += (actor.characteristics.s.bonus * SBsToAdd)
           }
-    
         }
         //@/HOUSE
+        else if (game.wfrp5e) // TODO: temporary? Remove in favor of a Size item script?
+        {
+          if (this.damage.value.includes("SB"))
+          {
+            if (actor.sizeNum > 3)
+            {
+                damage += (actor.characteristics.s.bonus);
+            }
+            if (actor.sizeNum > 5)
+            {
+                damage += (actor.characteristics.s.bonus);
+            }
+          }
+        }
     
         return parseInt(damage || 0)
       }

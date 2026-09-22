@@ -249,9 +249,10 @@ export default class OpposedTest5e {
 
   async swap(label)
   {
+      let testClass = game.wfrp5e ? game.wfrp4e.rolls5e.TestWFRP5e : game.wfrp4e.rolls.TestWFRP;
       let temp = foundry.utils.duplicate(this.defenderTest.data);
-      this.defenderTest = game.wfrp4e.rolls.TestWFRP.recreate(this.attackerTest.data);
-      this.attackerTest = game.wfrp4e.rolls.TestWFRP.recreate(temp)
+      this.defenderTest = testClass.recreate(this.attackerTest.data);
+      this.attackerTest = testClass.recreate(temp)
       this.data.attackerTestData = this.attackerTest.data
       this.data.defenderTestData = this.defenderTest.data
       let damage = await this.calculateOpposedDamage();

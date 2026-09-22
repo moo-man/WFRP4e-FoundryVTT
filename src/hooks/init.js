@@ -28,11 +28,11 @@ export default function() {
     });
 
     game.settings.registerMenu("wfrp4e", "editionManager", {
-      name: "SETTINGS.Menu.EditionManager",
+      name: "Edition Manager",
       label: "SETTINGS.Menu.EditionManagerLabel",
       hint: "SETTINGS.Menu.EditionManagerHint",
       icon: "fa-solid fa-book-spine",
-      type: TableSettings,
+      type: EditionManager,
       restricted: true
   })
   
@@ -471,8 +471,15 @@ export default function() {
       hint: "SETTINGS.EditionSettings",
       scope: "world",
       config: false,
-      type: EditionManager.schema
+      type: EditionManager.schema,
+      requiresReload: true
     });
+
+    game.wfrp4e.config = EditionManager.getConfig();
+    if (game.settings.get("wfrp4e", "editionSettings").use5e)
+    {
+      game.wfrp5e = game.wfrp4e;
+    }
 
     // Pre-load templates
     foundry.applications.handlebars.loadTemplates([
@@ -558,3 +565,9 @@ export default function() {
     }
   });
 }
+
+
+Hooks.on("renderWarhammerModuleInitializationV2", (app, html) => {
+  // Remove fake wfrp5e panel from the content initializer
+  html.querySelector("[data-module=wfrp5e]")?.remove();
+})

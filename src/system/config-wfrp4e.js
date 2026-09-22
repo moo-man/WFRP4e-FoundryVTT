@@ -1109,6 +1109,7 @@ WFRP4E.transferTypes = {
 
 WFRP4E.premiumModules = {
     "wfrp4e" : "WFRP4e System",
+    "wfrp5e" : "5th Edition Rules",
     "wfrp4e-core" : "Core Rulebook",
     "wfrp4e-starter-set" : "Starter Set",
     "wfrp4e-rnhd" : "Rough Nights & Hard Days",

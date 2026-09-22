@@ -1,5 +1,4 @@
-import OpposedTest from "../../system/opposed-test";
-import OpposedTest5e from "../../system/5e/opposed-test5e";
+import EditionManager from "../../apps/edition-manager";
 
 let fields = foundry.data.fields;
 export class OpposedTestMessage extends WarhammerMessageModel 
@@ -14,7 +13,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
 
     get opposedTest() 
     {
-        return OpposedTest5e.recreate(this.opposedTestData);
+        return EditionManager.getOpposedTest().recreate(this.opposedTestData);
     }
 
     static async create(opposedTest, options, handler)
@@ -74,9 +73,15 @@ export class OpposedTestMessage extends WarhammerMessageModel
       let opposedTest = this.opposedTest;
   
       if (!opposedTest.defenderTest.actor.isOwner)
-        return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+        return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"));
   
-      let damageMsg = await opposedTest.defenderTest.actor.system.applyDamage(opposedTest.result.damage.value, {opposedTest})
+      // system.applyDamage is the 5e version
+      let damageFunction = 
+      !!game.wfrp5e 
+      ? opposedTest.defenderTest.actor.system.applyDamage.bind(opposedTest.defenderTest.actor.system) 
+      : opposedTest.defenderTest.actor.applyDamage.bind(opposedTest.defenderTest.actor);
+
+      let damageMsg = await damageFunction.bind(opposedTest.defenderTest.actor)(opposedTest.result.damage.value, {opposedTest});
       this.updateResultMessage(damageMsg);
     }
   

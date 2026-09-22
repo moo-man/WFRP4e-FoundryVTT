@@ -229,7 +229,10 @@
 
         "HouseRules" : "House Rules",
         "HouseRulesLabel" : "Configure Homebrew",
-        "HouseRulesHint" : "Settings for common homebrew/house rules"
+        "HouseRulesHint" : "Settings for common homebrew/house rules",
+
+        "EditionManagerLabel" : "Edition Manager",
+        "EditionManagerHint" : "Configure Game Rules."
     },
 
     "MOO.Prone": "<br><br><b>Moo's House Rule</b>: You are considered one range band farther away when determining ranged attacks.",
@@ -2080,7 +2083,10 @@
 
         "OvercastValue" : "Overcast Value",
         "InitialValue" : "Initial Value",
-        "OvercastProperty" : "Property"
+        "OvercastProperty" : "Property",
+
+
+        "SETTINGS.Use5e" : "Use 5th Edition Rules"
 
     },
 

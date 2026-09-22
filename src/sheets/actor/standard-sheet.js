@@ -188,6 +188,25 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
       return limited;
   }
 
+  _configureRenderParts(options) 
+  {
+    if (this.document?.limited)
+    {
+        return this._configureLimitedParts(options);
+    }
+    else if (game.wfrp5e)
+    {
+        const parts = foundry.utils.deepClone(this.constructor.PARTS);
+        parts.magic.template = "systems/wfrp4e/templates/sheets/actor/tabs/actor-magic5e.hbs";
+        return parts;
+    }
+    else 
+    {
+        return super._configureRenderParts(options);
+    }
+  }
+
+
 
   _addEventListeners()
   {    

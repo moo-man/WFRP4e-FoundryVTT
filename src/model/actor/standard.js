@@ -159,7 +159,10 @@ export class StandardActorModel extends BaseActorModel {
             }
         }
         this.status.encumbrance.current = this.status.encumbrance.current.toFixed(2);
-        this.status.channelling.winds = this.status.channelling.getWinds(this.parent.itemTypes.spell);
+        if (game.wfrp5e)
+        {
+            this.status.channelling.winds = this.status.channelling.getWinds(this.parent.itemTypes.spell);
+        }
     }
 
     computeBase() {
@@ -587,8 +590,13 @@ export class StandardActorModel extends BaseActorModel {
       {
         modifiers.tb += actor.system.characteristics.t.bonus;
       }
+
+      // TODO Ward Roll - Should be removed in favor of a script?
+
+      let ward = actor.system.status.ward.value;
+      let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
   
-      let args = { damage, actor, attacker, opposedTest, sourceTest, sourceItem, applyAP, applyTB, armour, weaponProperties, loc, AP, modifiers, extraMessages, abort}
+      let args = { damage, actor, attacker, opposedTest, sourceTest, sourceItem, applyAP, applyTB, armour, weaponProperties, loc, AP, modifiers, extraMessages, abort, ward, wardRoll}
       await Promise.all(actor.runScripts("preTakeDamage", args))
       await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
       await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
@@ -656,8 +664,22 @@ export class StandardActorModel extends BaseActorModel {
             totalWoundLoss = 0;
         }
 
+        if (ward && wardRoll)
+        {
+            if (!abort && wardRoll >= ward)
+            {
+                abort = true;
+            }
+
+            extraMessages.push(`<strong>Ward</strong>: ${wardRoll}` + ((wardRoll >= ward) ? " (Warded!)" : ""));
+        }
+
         if (abort)
         {
+            if (typeof abort == "string")
+            {
+                extraMessages.push(abort);
+            }
             totalWoundLoss = 0;
         }
 
@@ -671,7 +693,7 @@ export class StandardActorModel extends BaseActorModel {
         
         let newWounds = this.status.wounds.value - totalWoundLoss;
 
-        let tooltip =  this._createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP});
+        let tooltip =  this._createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort});
         let tooltipHTML = `<a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
         let tableHTML = this._createTableLinks({newWounds, loc})
 
@@ -679,7 +701,7 @@ export class StandardActorModel extends BaseActorModel {
         <strong>${game.i18n.localize("CHAT.DamageApplied")}</strong> ${totalWoundLoss} 
         ${tooltipHTML}
         ${tableHTML}
-        ${extraMessages.length > 0 ?  `<p>${extraMessages.join(`</p><p>`)}</p>` : ""}
+        ${extraMessages.length > 0 ?  `<br>${extraMessages.join(`<br>`)}` : ""}
         `;
 
         if (totalWoundLoss > 0)
@@ -715,7 +737,7 @@ export class StandardActorModel extends BaseActorModel {
         }
     }
 
-    _createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP})
+    _createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort})
     {
         let tooltip = `<p><strong>${game.i18n.localize("Damage")}</strong>: ${damage}</p><hr>`
 
@@ -765,7 +787,7 @@ export class StandardActorModel extends BaseActorModel {
         {
             tooltip += `<p>${game.i18n.localize("BREAKDOWN.Minimum1")}</p>`;
         }
-        tooltip += `<hr><p><strong>${game.i18n.localize("Wounds")}</strong>: ${totalWoundLoss}</p>`
+        tooltip += `<hr><p><strong>${game.i18n.localize("Wounds")}</strong>: ${totalWoundLoss} ${abort ? "(Aborted)" : ""}</p>`
         return tooltip;
     }
 

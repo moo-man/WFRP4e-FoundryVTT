@@ -1,6 +1,6 @@
 {
   "id": "wfrp4e",
-  "title": "Warhammer Fantasy Roleplay 4th Edition",
+  "title": "Warhammer Fantasy Roleplay 4th / 5th Edition",
   "description": "A comprehensive system for running grim and perilous games of Warhammer Fantasy Roleplay in the Foundry VTT environment.",
   "version": "@VERSION",
   "authors" : [
@@ -95,7 +95,8 @@
       "xp" : {},
       "corruption" : {},
       "psych" : {},
-      "magic" : {}
+      "magic" : {},
+      "magic5e" : {}
     }
   },
   "primaryTokenAttribute": "status.wounds",
@@ -111,8 +112,8 @@
       "reason" : "Foundational code all Warhammer systems are built upon.",
       "type": "module",
       "compatibility": {
-        "minimum" : "2.10.0",
-        "verified": "3.3.4"
+        "minimum" : "3.4.1",
+        "verified": "3.4.1"
       }
     }]
   },

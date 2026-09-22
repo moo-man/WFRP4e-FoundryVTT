@@ -105,7 +105,6 @@ import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
-import EditionManager from "./apps/edition-manager.js";
 import { WFRP5eTestMessageModel } from "./model/message/test5e.js";
 import CharacteristicTest5e from "./system/rolls/5e/characteristic-test5e.js";
 import TestWFRP5e from "./system/rolls/5e/test-wfrp5e.js";
@@ -115,6 +114,8 @@ import CastTest5e from "./system/rolls/5e/cast-test5e.js";
 import ChannellingTest5e from "./system/rolls/5e/channelling-test5e.js";
 import PrayerTest5e from "./system/rolls/5e/prayer-test5e.js";
 import TraitTest5e from "./system/rolls/5e/trait-test5e.js";
+import { MagicUseMessageModel5e } from "./model/message/magic5e.js";
+import WFRP4E from "./system/config-wfrp4e.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -206,6 +207,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
   CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
   CONFIG.ChatMessage.dataModels["magic"] = MagicUseMessageModel;
+  CONFIG.ChatMessage.dataModels["magic5e"] = MagicUseMessageModel5e;
 
   game.wfrp4e = {
     apps: {
@@ -251,7 +253,7 @@ Hooks.once("init", function () {
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
-    config: EditionManager.getConfig(),
+    config: WFRP4E,
     market: MarketWFRP4e,
     audio: WFRP_Audio,
     names: NameGenWfrp,
