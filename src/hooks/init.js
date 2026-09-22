@@ -479,6 +479,7 @@ export default function() {
     if (game.settings.get("wfrp4e", "editionSettings").use5e)
     {
       game.wfrp5e = game.wfrp4e;
+      document.querySelector("body")?.classList.add("wfrp5e");
     }
 
     // Pre-load templates

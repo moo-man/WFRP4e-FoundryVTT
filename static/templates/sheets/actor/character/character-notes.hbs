@@ -12,12 +12,14 @@
     </div>
 
 
+    {{#unless (settings "editionSettings.use5e")}}
     <div class="form-group">
         <label>{{localize "Motivation"}}</label>
         <div class="form-fields">
             <input name="system.details.motivation.value" type="text" value="{{system.details.motivation.value}}" />
         </div>
     </div>
+    {{/unless}}
 
     <fieldset>
 
