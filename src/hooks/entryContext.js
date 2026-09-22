@@ -119,13 +119,13 @@ export default function () {
     let canUnreverse = function (li) {
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.result.canUnreverse && !test.testData.unreverse;
+      return test && test.e5 && test.actor.isOwner && test.result.canUnreverse && !test.testData.unreverse;
     };
 
     let canReverse = function (li) {
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.testData.unreverse;
+      return test && test.e5 && test.actor.isOwner && test.testData.unreverse;
     };
 
     let canApplyAllDamage = function (li) {
