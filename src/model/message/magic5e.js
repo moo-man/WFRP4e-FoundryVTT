@@ -2,6 +2,7 @@
  * Decouples the use of spells and miracles from their Test, allowing them to be "cast" without the need of a Test
  */
 import CastTest5e from "../../system/rolls/5e/cast-test5e.js";
+import PrayerTest5e from "../../system/rolls/5e/prayer-test5e.js";
 import WFRP_Utility from "../../system/utility-wfrp4e.js";
 import WFRPEffectMessageMixin from "./effect-message.js";
 let fields = foundry.data.fields;
@@ -374,7 +375,7 @@ export class MagicUseMessageModel5e extends WFRPEffectMessageMixin(WarhammerMess
 
       let content = await this._renderHTMLContent({item, testData, actor, targetSpeakers: targets});
       return await ChatMessage.create(ChatMessage.applyRollMode({
-        type : "magic",
+        type : "magic5e",
         content,
         system : {
           itemData, 

@@ -95,7 +95,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         }
 
         let duration
-        if (test && test.result.overcast && test.result.overcast.usage.duration && !isNaN(test.result.overcast.usage.duration)) {
+        if (test && test.result.overcast && test.result.overcast.usage.duration?.current && !isNaN(test.result.overcast.usage.duration.current)) {
             duration = test.result.overcast.usage.duration.current;
         } else if(item?.Duration) {
             duration = parseInt(item.Duration);
