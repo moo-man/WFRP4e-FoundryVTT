@@ -6,6 +6,28 @@
     section.tab[data-tab="combat"] {
         height: calc(100% - 200px);
 
+
+        .form-group.momentum {
+            .form-fields {
+                height: 2rem;
+                width: 2rem;
+                flex: 0 0 2rem;
+                padding: 0px;
+            }
+            input[type=checkbox]
+            {
+                margin: 0px;
+                &:after,
+                &:before {
+                    --checkbox-size: 2rem;
+                    margin-right: 0.3rem;
+                    text-align: center;
+                }
+                height: 2.2rem;
+                width: 2rem;
+            }
+        }
+
         .armour-section
         {
             .flexrow {

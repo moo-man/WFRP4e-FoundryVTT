@@ -3,8 +3,8 @@ import TravelDistanceWFRP4e from "../apps/travel-distance-wfrp4e.js";
 import TableSettings from "../apps/table-settings.js";
 import WFRP4eThemeConfig from "../apps/theme.js";
 import HomebrewConfig from "../apps/homebrew-settings.js";
-import { PayMessageModel } from "../model/message/pay.js";
 import TokenRulerWFRP from "../canvas/token-ruler.js";
+import EditionManager from "../apps/edition-manager.js";
 
 
 let debounceReload = foundry.utils.debounce(() => {
@@ -27,6 +27,15 @@ export default function() {
       default: 0
     });
 
+    game.settings.registerMenu("wfrp4e", "editionManager", {
+      name: "Edition Manager",
+      label: "SETTINGS.Menu.EditionManagerLabel",
+      hint: "SETTINGS.Menu.EditionManagerHint",
+      icon: "fa-solid fa-book-spine",
+      type: EditionManager,
+      restricted: true
+  })
+  
     
     game.settings.registerMenu("wfrp4e", "themeConfig", {
       name: "WH.Theme.Config",
@@ -455,8 +464,22 @@ export default function() {
       scope: "world",
       config: false,
       type: TableSettings.schema
-
     });
+
+    game.settings.register("wfrp4e", "editionSettings", {
+      name: "SETTINGS.EditionSettings",
+      hint: "SETTINGS.EditionSettings",
+      scope: "world",
+      config: false,
+      type: EditionManager.schema,
+      requiresReload: true
+    });
+
+    game.wfrp4e.config = EditionManager.getConfig();
+    if (game.settings.get("wfrp4e", "editionSettings").use5e)
+    {
+      game.wfrp5e = game.wfrp4e;
+    }
 
     // Pre-load templates
     foundry.applications.handlebars.loadTemplates([
@@ -465,6 +488,7 @@ export default function() {
       "systems/wfrp4e/templates/partials/item-container.hbs",
       "systems/wfrp4e/templates/partials/qualities-flaws.hbs",
       "systems/wfrp4e/templates/partials/overcasts.hbs",
+      "systems/wfrp4e/templates/partials/overcasts5e.hbs",
       "systems/wfrp4e/templates/partials/wom-overcasts.hbs",
       "systems/wfrp4e/templates/partials/manual-scripts.hbs",
       "systems/wfrp4e/templates/partials/list-effect.hbs",
@@ -483,7 +507,13 @@ export default function() {
       vehicleArmour: "systems/wfrp4e/templates/sheets/partials/vehicle-armour.hbs",
       itemProperties: "systems/wfrp4e/templates/sheets/partials/item-properties.hbs",
       extraOvercast: "systems/wfrp4e/templates/sheets/partials/extra-overcast.hbs",
-      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs'
+      extraOvercast5e: "systems/wfrp4e/templates/sheets/partials/extra-overcast5e.hbs",
+      "chargen.species.preview": 'systems/wfrp4e/templates/apps/chargen/partials/species-preview.hbs',
+      baseDialog: 'systems/wfrp4e/templates/dialog/type/5e/partials/base-dialog.hbs',
+      defaultFields: 'systems/wfrp4e/templates/dialog/type/5e/default-fields.hbs',
+      dialogState: 'systems/wfrp4e/templates/dialog/type/5e/partials/dialog-state.hbs',
+      testButtons: 'systems/wfrp4e/templates/chat/roll/5e/test-buttons.hbs',
+      testResults: "systems/wfrp4e/templates/chat/roll/5e/test5e.hbs"
     });
 
     // Load name construction from files
@@ -535,3 +565,9 @@ export default function() {
     }
   });
 }
+
+
+Hooks.on("renderWarhammerModuleInitializationV2", (app, html) => {
+  // Remove fake wfrp5e panel from the content initializer
+  html.querySelector("[data-module=wfrp5e]")?.remove();
+})

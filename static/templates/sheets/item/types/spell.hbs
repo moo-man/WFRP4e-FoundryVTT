@@ -41,12 +41,15 @@
     </fieldset>
         
         {{formGroup fields.magicMissile.fields.value value=source.system.magicMissile.value}}
-        {{> extraOvercast}}
+        {{#if (settings "editionSettings.use5e")}}
+            {{> extraOvercast5e}}
+        {{else}}
+            {{> extraOvercast}}
+        {{/if}}
 
     {{else}}
     {{formGroup fields.ritual.fields.xp value=source.system.ritual.xp}}
 
     {{/unless}}
 
-    
 </section>

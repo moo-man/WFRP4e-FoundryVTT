@@ -24,6 +24,9 @@
 
 @mixin styled-button()
 {
+    &:disabled {
+        opacity: 0.5;
+    }
     box-shadow: inset 0px 1px 0px 0px #a6827e;
     background: linear-gradient(to bottom, #21374afc 5%, #152833ab 100%);
     border-radius: 3px;

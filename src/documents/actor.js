@@ -1,23 +1,8 @@
 import WFRP_Utility from "../system/utility-wfrp4e.js";
 import WFRP_Audio from "../system/audio-wfrp4e.js";
-import CharacteristicDialog from "../apps/roll-dialog/characteristic-dialog.js";
-import SkillDialog from "../apps/roll-dialog/skill-dialog.js";
-import WeaponDialog from "../apps/roll-dialog/weapon-dialog.js";
-import CastDialog from "../apps/roll-dialog/cast-dialog.js";
-import ChannellingDialog from "../apps/roll-dialog/channelling-dialog.js";
-import TraitDialog from "../apps/roll-dialog/trait-dialog.js";
-import PrayerDialog from "../apps/roll-dialog/prayer-dialog.js";
 import ActiveEffectWFRP4e from "../system/effect-wfrp4e.js";
-import CharacteristicTest from "../system/rolls/characteristic-test.js";
-import SkillTest from "../system/rolls/skill-test.js";
-import WeaponTest from "../system/rolls/weapon-test.js";
-import TraitTest from "../system/rolls/trait-test.js";
-import PrayerTest from "../system/rolls/prayer-test.js";
-import ChannelTest from "../system/rolls/channel-test.js";
-import CastTest from "../system/rolls/cast-test.js";
-import WomCastTest from "../system/rolls/wom-cast-test.js";
 import ItemWFRP4e from "./item.js";
-
+import EditionManager from "../apps/edition-manager.js";
 /**
  * Provides the main Actor data computation and organization.
  *
@@ -90,7 +75,16 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     else if (options.deltaAdv < 0)
     {
-      TokenHelpers.displayScrollingText(options.deltaAdv, this, {fill: "0x6666FF", direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+      TokenHelpers.displayScrollingText(options.deltaAdv, this, {direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
+    }
+
+    if (options.momentum)
+    {
+      TokenHelpers.displayScrollingText("Momentum Gained", this, {direction : CONST.TEXT_ANCHOR_POINTS.TOP});
+    }
+    else if (options.momentum == false) // Check for false because undefined means it wasn't updated
+    {
+      TokenHelpers.displayScrollingText("Momentum Lost", this, {direction : CONST.TEXT_ANCHOR_POINTS.BOTTOM});
     }
   }
 
@@ -122,7 +116,7 @@ export default class ActorWFRP4e extends WarhammerActor
   //#region Rolling
 
   async setupCharacteristic(characteristic, context = {}, options) {
-    return this._setupTest(CharacteristicDialog, CharacteristicTest, characteristic, context, options, false)
+    return this._setupTest(EditionManager.getDialog("characteristic"), EditionManager.getTestClass("characteristic"), characteristic, context, options, false)
   }
 
   /**
@@ -149,7 +143,7 @@ export default class ActorWFRP4e extends WarhammerActor
         }
       }
     }
-    return this._setupTest(SkillDialog, SkillTest, skill, context, options, false)
+    return this._setupTest(EditionManager.getDialog("skill"), EditionManager.getTestClass("skill"), skill, context, options, false)
   }
 
   /**
@@ -161,7 +155,7 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupWeapon(weapon, context = {}, options) {
 
-    return this._setupTest(WeaponDialog, WeaponTest, weapon, context, options, false)
+    return this._setupTest(EditionManager.getDialog("weapon"), EditionManager.getTestClass("weapon"), weapon, context, options, false)
   }
 
 
@@ -174,7 +168,7 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupCast(spell, context = {}, options) {
 
-    return this._setupTest(CastDialog, game.settings.get("wfrp4e", "useWoMOvercast") ? WomCastTest : CastTest, spell, context, options, false)
+    return this._setupTest(EditionManager.getDialog("cast"), EditionManager.getTestClass("cast"), spell, context, options, false)
   }
 
   /**
@@ -187,7 +181,18 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupChannell(spell, context = {}, options) 
   {
-    return this._setupTest(ChannellingDialog, ChannelTest, spell, context, options, false)
+    return this._setupTest(EditionManager.getDialog("channelling"), EditionManager.getTestClass("channelling"), spell, context, options, false)
+  }
+
+  
+  /**
+   * Setup a Channelling Test.
+   *
+   *
+   */
+  async setupChannelling(wind, context = {}, options) 
+  {
+    return this._setupTest(EditionManager.getDialog("channelling"), EditionManager.getTestClass("channelling"), wind, context, options, false)
   }
 
   /**
@@ -199,7 +204,7 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupPrayer(prayer, context = {}, options) 
   {
-    return this._setupTest(PrayerDialog, PrayerTest, prayer, context, options, false)
+    return this._setupTest(EditionManager.getDialog("prayer"), EditionManager.getTestClass("prayer"), prayer, context, options, false)
   }
 
   /**
@@ -214,7 +219,21 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupTrait(trait, context = {}, options) 
   {
-    return this._setupTest(TraitDialog, TraitTest, trait, context, options, false)
+      if (trait.system.rollable.damage || !game.wfrp5e) // wfrp4e only uses TraitDialog/Test, wfrp5e only uses it for attack traits
+      {
+        return this._setupTest(EditionManager.getDialog("trait"), EditionManager.getTestClass("trait"), trait, context, options, false)
+      }
+      else if (trait.system.rollable.skill)
+      {
+        context.item = trait;
+        return this._setupTest(EditionManager.getDialog("skill"), EditionManager.getTestClass("skill"), trait.system.rollable.skill, context, options, false)
+      }
+      else if (trait.system.rollable.rollCharacteristic)
+      {
+        context.item = trait;
+        return this._setupTest(EditionManager.getDialog("characteristic"), EditionManager.getTestClass("characteristic"), trait.system.rollable.rollCharacteristic, context, options, false)
+      }
+    
   }
 
   async setupDispel(test)
@@ -328,6 +347,30 @@ export default class ActorWFRP4e extends WarhammerActor
   //#endregion
 
 
+    /**
+   * @override`
+   */
+    *allApplicableEffects(includeItemEffects = false) 
+    {
+      let effects = super.allApplicableEffects(includeItemEffects);
+      for(let effect of effects)
+      {
+        yield effect;
+      }
+      
+      if (this.system.status?.momentum && game.wfrp5e)
+      {
+        yield new ActiveEffect.implementation(game.wfrp4e.config.systemEffects.momentum, {parent: this})
+      }
+
+      let channelling = this.system.status?.channelling?.getEffect(this);
+      if (channelling)
+      {
+        yield channelling;
+      }
+    }
+
+
 
   /**
  * Adds all missing basic skills to the Actor.
@@ -345,6 +388,12 @@ export default class ActorWFRP4e extends WarhammerActor
 
     // Add those missing basic skills
     this.createEmbeddedDocuments("Item", skillsToAdd, {skipSpecialisationChoice : true});
+  }
+
+
+  async applyDamage5e(...args)
+  {
+    this.system.applyDamage(...args);
   }
 
   /**

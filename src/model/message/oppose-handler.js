@@ -45,7 +45,7 @@ export class OpposedHandlerMessage extends WarhammerMessageModel
         {
             await game.wfrp4e.oppose.setDefender(message);
             await game.wfrp4e.oppose.renderMessage() // Rerender opposed start with new message
-            await game.wfrp4e.oppose.computeOpposeResult();
+            await game.wfrp4e.oppose.computeOpposeResult("5e");
             delete game.wfrp4e.oppose;
         }
         // No opposition - click was attacker

@@ -1,0 +1,40 @@
+<fieldset data-path="system.overcastOptions">
+    <legend class="control">{{localize "Overcast Options"}}<button type="button" data-action="typedObjectCreate" class="icon fa-regular fa-square-plus inline-control"></button></legend>
+    {{#each system.overcastOptions}}
+        <div class="overcast-option flexcol gap" data-id="{{@key}}">
+            <div class="form-group">
+                <label>{{localize "Label"}}</label>
+                <div class="form-fields">
+                    <input type="text"  data-action="typedObjectEdit" data-ipath="label" value="{{this.label}}" />
+                    <button type="button" data-action="typedObjectDelete" class="icon fas fa-xmark"></button>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label>{{localize "Cost"}}</label>
+                <div class="form-fields">
+                    <input type="number"  data-action="typedObjectEdit" data-ipath="cost" value="{{this.cost}}" />
+                </div>
+                <label>{{localize "5e.OvercastProperty"}}</label>
+                <div class="form-fields">
+                    <input type="text"  data-action="typedObjectEdit" data-ipath="property" value="{{this.property}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "5e.InitialValue"}}</label>
+                <div class="form-fields">
+                    <input type="text"  data-action="typedObjectEdit" data-ipath="initial" value="{{this.initial}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "5e.OvercastValue"}}</label>
+                <div class="form-fields">
+                    <input type="text"  data-action="typedObjectEdit" data-ipath="value" value="{{this.value}}" />
+                </div>
+            </div>
+        <hr>
+    {{/each}}
+</fieldset>

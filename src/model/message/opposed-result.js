@@ -1,4 +1,4 @@
-import OpposedTest from "../../system/opposed-test";
+import EditionManager from "../../apps/edition-manager";
 
 let fields = foundry.data.fields;
 export class OpposedTestMessage extends WarhammerMessageModel 
@@ -13,7 +13,7 @@ export class OpposedTestMessage extends WarhammerMessageModel
 
     get opposedTest() 
     {
-        return OpposedTest.recreate(this.opposedTestData);
+        return EditionManager.getOpposedTest().recreate(this.opposedTestData);
     }
 
     static async create(opposedTest, options, handler)
@@ -26,6 +26,9 @@ export class OpposedTestMessage extends WarhammerMessageModel
         user: game.user.id,
         type : "opposed",
         content: html,
+        flags : {
+          "dice-so-nice" : { linkedTo : handler.data.defenderMessageId }
+        },
         system : {
           opposedTestData: opposeData,
           handlerId: handler.message.id,
@@ -60,7 +63,8 @@ export class OpposedTestMessage extends WarhammerMessageModel
         return foundry.utils.mergeObject(super.actions, {
             applyDamage : this.onApplyDamage,
             applyHack : this.onApplyHack,
-            rollDualWielder : this.onRollDualWielder
+            rollDualWielder : this.onRollDualWielder,
+            executeAction: this.onExecuteAction
         });
     }
 
@@ -69,9 +73,15 @@ export class OpposedTestMessage extends WarhammerMessageModel
       let opposedTest = this.opposedTest;
   
       if (!opposedTest.defenderTest.actor.isOwner)
-        return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"))
+        return ui.notifications.error(game.i18n.localize("ErrorDamagePermission"));
   
-      let damageMsg = await opposedTest.defenderTest.actor.applyDamage(null, {opposedTest, damageeType: game.wfrp4e.config.DAMAGE_TYPE.NORMAL})
+      // system.applyDamage is the 5e version
+      let damageFunction = 
+      !!game.wfrp5e 
+      ? opposedTest.defenderTest.actor.system.applyDamage.bind(opposedTest.defenderTest.actor.system) 
+      : opposedTest.defenderTest.actor.applyDamage.bind(opposedTest.defenderTest.actor);
+
+      let damageMsg = await damageFunction.bind(opposedTest.defenderTest.actor)(opposedTest.result.damage.value, {opposedTest});
       this.updateResultMessage(damageMsg);
     }
   
@@ -141,6 +151,12 @@ export class OpposedTestMessage extends WarhammerMessageModel
       }
   
       attackerTest.actor.setupWeapon(offhandWeapon, { appendTitle: ` (${game.i18n.localize("SHEET.Offhand")})`, dualWieldOffhand: true, offhandReverse: offHandData.roll, targets}).then(test => test.roll());
+    }
+
+    
+    static async onExecuteAction(ev, target)
+    {
+      this.opposedTest.executeAction(target.dataset)
     }
 
     // Update starting message with result

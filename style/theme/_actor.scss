@@ -197,6 +197,22 @@
         .armour-section,
         section.tab[data-tab=combat] {
 
+            .form-group.momentum {
+                input[type=checkbox]
+                {
+                    // Not sure how to remove the rounded corners from the checkbox but filling in with background color works
+                    &:checked
+                    {
+                        background: var(--color-warm);
+                    }
+                    --checkbox-checkmark-color: var(--color-cream);
+                    --checkbox-background-color: transparent;
+                    &:before {
+                        background: none;
+                    }
+                }
+            }
+
             .ap-source {
                 color: var(--color-grey1);
                 @include shadowed(#964803d6);
@@ -326,4 +342,59 @@
             }
         }
 
-    }
+                .channelling {
+        
+                    color: var(--color-grey1);
+                    --wind-color: #6b3a0f87;
+        
+                    .wind {
+                        @include shadowed(var(--wind-color));
+                        border: 1px solid var(--color-grey2);
+        
+                        &.current {
+                            &.aqshy {
+                                --wind-color: firebrick;
+                            }
+        
+                            &.azyr {
+                                --wind-color: skyblue;
+                            }
+        
+                            &.chamon {
+                                --wind-color: var(--color-warm-1);
+                            }
+        
+                            &.ulgu {
+                                --wind-color: grey;
+                            }
+        
+                            &.ghyran {
+                                --wind-color: green;
+                            }
+        
+                            &.ghur {
+                                --wind-color: brown;
+                            }
+        
+                            &.hysh {
+                                --wind-color: azure;
+                            }
+        
+                            &.shyish {
+                                --wind-color: purple;
+                            }
+        
+                            &.dhar {
+                                --wind-color: black;
+                            }
+        
+                            a {
+                                color: var(--color-grey1);
+                            }
+        
+                            .value {}
+                        }
+        
+                    }
+                }
+        }

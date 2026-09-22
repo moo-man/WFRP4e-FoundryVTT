@@ -229,7 +229,10 @@
 
         "HouseRules" : "House Rules",
         "HouseRulesLabel" : "Configure Homebrew",
-        "HouseRulesHint" : "Settings for common homebrew/house rules"
+        "HouseRulesHint" : "Settings for common homebrew/house rules",
+
+        "EditionManagerLabel" : "Edition Manager",
+        "EditionManagerHint" : "Configure Game Rules."
     },
 
     "MOO.Prone": "<br><br><b>Moo's House Rule</b>: You are considered one range band farther away when determining ranged attacks.",
@@ -641,9 +644,11 @@
     "Owner" : "Owner",
 
     "BREAKDOWN.Base" : "Base",
+    "BREAKDOWN.Attack": "Attack",
     "BREAKDOWN.AttackerBase": "Attacker Base",
     "BREAKDOWN.Dice" : "Dice",
     "BREAKDOWN.OpposedSL" : "Opposed SL",
+    "BREAKDOWN.DefenderSL" : "Defender SL",
     "BREAKDOWN.Multiplier" : "Multiplier",
     "BREAKDOWN.Ignored" : "Ignored",
     "BREAKDOWN.Minimum1" : "Minimum 1 Wound",
@@ -806,6 +811,7 @@
     "DIALOG.SuccessBonusTT" : "SL that is only applied on success (e.g. Talents)",
     "DIALOG.BonusTT" : "List of potential bonuses",
     "DIALOG.RollMode" : "Roll Mode",
+    "DIALOG.Damage" : "Damage",
     "DIALOG.Extensions" : "Extensions",
     "DIALOG.CastSkill" : "Cast Skill",
     "DIALOG.HitLocation" : "Include a roll on the hit location table",
@@ -852,7 +858,15 @@
     "DIALOG.ItemDialog" : "Item Dialog",
     "DIALOG.ChoosePassenger" : "Choose Passenger",
     "DIALOG.ChooseArmour" : "Choose Armour to damage",
+    "DIALOG.Advantage" : "Advantage",
+    "DIALOG.Disadvantage" : "Disadvantage",
+    "DIALOG.Normal" : "Normal",
+    "DIALOG.SurplusAdvantageTT" : "Surplus Advantage",
+    "DIALOG.SurplusDisadvantageTT" : "Surplus Disadvantage",
+    "DIALOG.SL" : "SL",
 
+    "CHAT.Advantage" : "Advantage",
+    "CHAT.Disadvantage" : "Disadvantage",
     "CHAT.Quickcasting" : "Quick Casting",
     "CHAT.CareerChoose" : "Choose Your Career",
     "CHAT.DamageError" : "Error calculating damage:",
@@ -907,6 +921,10 @@
     "CHAT.ChannelledSL" : "Channelled SL",
     "CHAT.VortexMove": "Random Vortex Movement",
     "CHAT.CausesFear" : "<b>{actor}</b> causes {fear} to {target}<br>",
+    "CHAT.CriticalDamageLabel" : "Critical Damage",
+    "CHAT.TotalPowerLabel" : "Total Power",
+    "CHAT.UnstoppableForceLabel" : "Unstoppable Force",
+    "CHAT.CriticalCasting" : "Critical Casting",
     "CHAT.Fear" : "Fear",
     "CHAT.FearReminder" : "These actors are currently subject to <b>Fear</b> and can perform a Test to overcome it.",
     "CHAT.InjuryFinish" : "{injury} duration complete.",
@@ -1169,6 +1187,7 @@
     "WFRP4E.EncumbrancePenalties.MaxEnc" : "You're not moving.",
 
     "WFRP4E.ConditionName.Ablaze" : "Ablaze",
+    "WFRP4E.ConditionName.Besmirched" : "Besmirched",
     "WFRP4E.ConditionName.Bleeding" : "Bleeding",
     "WFRP4E.ConditionName.Blinded" : "Blinded",
     "WFRP4E.ConditionName.Broken" : "Broken",
@@ -1472,6 +1491,7 @@
     "NAME.Lingering" : "Lingering",
     "NAME.Amphibious" : "Amphibious",
     "NAME.Flight" : "Flight",
+    "NAME.Momentum" : "Momentum",
 
     "SPEC.Any": "Any",
     "SPEC.Basic" : "Basic",
@@ -1607,11 +1627,13 @@
     "PROPERTY.Impact": "Impact",
     "PROPERTY.Impale": "Impale",
     "PROPERTY.Penetrating": "Penetrating",
+    "PROPERTY.Parry": "Parry",
     "PROPERTY.Pistol": "Pistol",
     "PROPERTY.Precise": "Precise",
     "PROPERTY.Pummel": "Pummel",
     "PROPERTY.Repeater": "Repeater",
     "PROPERTY.Shield": "Shield",
+    "PROPERTY.Inflict": "Inflict",
     "PROPERTY.TrapBlade": "Trap Blade",
     "PROPERTY.Unbreakable": "Unbreakable",
     "PROPERTY.Wrap": "Wrap",
@@ -1693,6 +1715,8 @@
     "CHATOPT.Reroll": "Reroll",
     "CHATOPT.TotalPower": "Total Power",
     "CHATOPT.EditTest": "Edit Test",
+    "CHATOPT.Unreverse": "Unreverse",
+    "CHATOPT.Reverse": "Reverse",
 
     "TRAVEL.TravelMessageBase": "From <b>{from}</b> to <b>{to}</b> : ",
     "TRAVEL.TravelMessageRoad": "<br><b>Road</b> : {road_distance} miles<br>&nbsp;&nbsp;By Coach : {road_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Heavy Horse : {road_horse_heavy_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;By Fast Horse : {road_horse_fast_days} days, danger is {road_danger_string}<br>&nbsp;&nbsp;On Foot : {road_feet_days} days, danger is {road_danger_feet_string}",
@@ -2012,6 +2036,61 @@
     "Import or update the content from the WFRP4e Core Module": "Import or update the content from the WFRP4e Core Module",
 
 
+    "5e": {
+        "DIFFICULTY.VEasy": "Very Easy (+6 SL)",
+        "DIFFICULTY.Easy": "Easy (+4 SL)",
+        "DIFFICULTY.Average": "Average (+2 SL)",
+        "DIFFICULTY.Challenging": "Challenging (+0 SL)",
+        "DIFFICULTY.Difficult": "Difficult (-1 SL)",
+        "DIFFICULTY.Hard": "Hard (-2 SL)",
+        "DIFFICULTY.VHard": "Very Hard (-3 SL)",
+        "DIFFICULTY.Futile": "Futile (-4 SL)",
+        "DIFFICULTY.Impossible": "Impossible (-50)",
+
+        "MagicWind" : {
+            "Aqshy" : "Aqshy",
+            "Azyr" : "Azyr",
+            "Chamon" : "Chamon",
+            "Dhar" : "Dhar",
+            "Ghur" : "Ghur",
+            "Ghyran" : "Ghyran",
+            "Hysh" : "Hysh",
+            "Magick" : "Magick",
+            "Qhaysh" : "Qhaysh",
+            "Shyish" : "Shyish",
+            "Skaven" : "Skaven",
+            "Ulgu" : "Ulgu",
+            "Waaagh!" : "Waaagh!"
+        },
+
+        "Dialog" : {
+            "Modifier" : {
+                "CalledShot" : "Called Shot",
+                "UsingOffhand" : "Using offhand",
+                "Charging" : "Charging",
+                "Moved" : "Moved before shooting",
+                "Extreme" : "Extreme Range",
+                "Long" : "Long Range",
+                "Short" : "Short Range",
+                "PointBlank" : "Point Blank Range",
+                "Shorter" : "Defending against shorter weapon",
+                "TargetTiny" : "Target is Tiny",
+                "TargetMonstrous" : "Target is Monstrous",
+                "TargetSmaller" : "Target is smaller",
+                "TargetLarger" : "Target is larger"
+            }
+        },
+
+        "OvercastValue" : "Overcast Value",
+        "InitialValue" : "Initial Value",
+        "OvercastProperty" : "Property",
+
+
+        "SETTINGS.Use5e" : "Use 5th Edition Rules"
+
+    },
+
+
     "WH" : {
         "TransferType" : {
           "Crew" : "Crew"
@@ -2029,6 +2108,11 @@
                         "hitLocationTable.value" : {
                             "label" : "Hit Location Table",
                             "hint" : "Defines a custom hit location table for when this Actor is attacked."
+                        }
+                    },
+                    "status": {
+                        "momentum": {
+                            "label": "Momentum"
                         }
                     },
                     "settings": {

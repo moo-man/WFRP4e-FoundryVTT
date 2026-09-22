@@ -12,7 +12,6 @@ import NameGenWfrp from "./apps/name-gen.js";
 import StatBlockParser from "./apps/stat-parser.js";
 import BrowserWfrp4e from "./apps/wfrp-browser.js";
 import WFRP_Audio from "./system/audio-wfrp4e.js";
-import WFRP4E from "./system/config-wfrp4e.js"
 import WFRP_Tables from "./system/tables-wfrp4e.js";
 import WFRP_Utility from "./system/utility-wfrp4e.js";
 import ActorSettings from "./apps/actor-settings.js";
@@ -106,6 +105,17 @@ import { PsychMessageModel } from "./model/message/psych.js";
 import {NODE_ENV} from 'process.env';
 import EndeavourJournalSheet from "./sheets/journal/endeavour.js";
 import { MagicUseMessageModel } from "./model/message/magic.js";
+import { WFRP5eTestMessageModel } from "./model/message/test5e.js";
+import CharacteristicTest5e from "./system/rolls/5e/characteristic-test5e.js";
+import TestWFRP5e from "./system/rolls/5e/test-wfrp5e.js";
+import SkillTest5e from "./system/rolls/5e/skill-test5e.js";
+import WeaponTest5e from "./system/rolls/5e/weapon-test5e.js";
+import CastTest5e from "./system/rolls/5e/cast-test5e.js";
+import ChannellingTest5e from "./system/rolls/5e/channelling-test5e.js";
+import PrayerTest5e from "./system/rolls/5e/prayer-test5e.js";
+import TraitTest5e from "./system/rolls/5e/trait-test5e.js";
+import { MagicUseMessageModel5e } from "./model/message/magic5e.js";
+import WFRP4E from "./system/config-wfrp4e.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -187,6 +197,7 @@ Hooks.once("init", function () {
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
+  CONFIG.ChatMessage.dataModels["test5e"] = WFRP5eTestMessageModel;
   CONFIG.ChatMessage.dataModels["handler"] = OpposedHandlerMessage;
   CONFIG.ChatMessage.dataModels["opposed"] = OpposedTestMessage;
   CONFIG.ChatMessage.dataModels["item"] = PostedItemMessageModel;
@@ -196,6 +207,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["corruption"] = CorruptionMessageModel;
   CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
   CONFIG.ChatMessage.dataModels["magic"] = MagicUseMessageModel;
+  CONFIG.ChatMessage.dataModels["magic5e"] = MagicUseMessageModel5e;
 
   game.wfrp4e = {
     apps: {
@@ -228,6 +240,16 @@ Hooks.once("init", function () {
       ChannelTest,
       PrayerTest,
       TraitTest
+    },
+    rolls5e : {
+      TestWFRP5e,
+      CharacteristicTest5e,
+      SkillTest5e,
+      WeaponTest5e,
+      CastTest5e,
+      ChannellingTest5e,
+      PrayerTest5e,
+      TraitTest5e
     },
     utility: WFRP_Utility,
     tables: WFRP_Tables,
