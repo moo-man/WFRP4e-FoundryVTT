@@ -35,7 +35,14 @@ export default class CastTest5e extends OvercastableTest5e {
     this.result.CN = this.spell.system.cn.value;
     this.result.criticalCastChoice = this.testData.criticalCastChoice;
     this.result.excessSL = this.result.SL - this.result.CN;
-    this.result.castSuccess = (this.result.SL >= this.spell.system.cn.value || this.testData.criticalCastChoice == "totalPower");
+    this.result.castSuccess = ((this.result.SL >= this.spell.system.cn.value && this.result.success) || this.testData.criticalCastChoice == "totalPower");
+    
+    // Petty cannot critical cast or miscast on criticals
+    if (this.item.system.lore.value.includes("petty"))
+    {
+      this.result.critical = false;
+    }
+    
     this.result.miscast = (this.result.critical || this.result.fumble) ? "minor" : null;
     if (this.result.castSuccess)
     {
