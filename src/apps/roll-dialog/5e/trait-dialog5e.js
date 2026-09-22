@@ -32,6 +32,12 @@ export default class TraitDialog5e extends AttackDialog5e
 
     static async setupData(trait, actor, context={}, options={})
     {
+
+      if (!trait.id) 
+      {
+        trait = new CONFIG.Item.documentClass(trait, { parent: actor })
+      }
+
       let skill
       let characteristic = trait.system.rollable.characteristic;
       if (!characteristic)

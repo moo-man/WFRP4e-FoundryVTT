@@ -65,7 +65,7 @@ export default class AttackDialog5e extends SkillDialog5e
 
     computeTargetNumber()
     {
-      if (this.skill)
+      if (this.skill && this.skill?.id != "unknown")
       {
         return this.skill.system.getTotalForCharacteristic(this.fields.characteristic, this.actor);
       }
