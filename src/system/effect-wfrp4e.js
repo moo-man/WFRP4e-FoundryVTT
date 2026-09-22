@@ -104,50 +104,31 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         if (duration) 
         {
 
-            if (game.release.generation == 14)
-            {
-                if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
-                    effect.duration.units = "seconds";
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
-                    effect.duration.units = "minutes";
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
-                    effect.duration.units = "hours";
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
-                    effect.duration.units = "days";
+            if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
+                effect.duration.units = "seconds";
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
+                effect.duration.units = "minutes";
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
+                effect.duration.units = "hours";
+    
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
+                effect.duration.units = "days";
 
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Months")))
-                    effect.duration.units = "months";
-                
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Years")))
-                    effect.duration.units = "years";
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Months")))
+                effect.duration.units = "months";
+            
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Years")))
+                effect.duration.units = "years";
 
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Round")))
-                    effect.duration.units = "rounds";
+            else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Round")))
+                effect.duration.units = "rounds";
 
-                effect.duration.value = duration;
+            effect.duration.value = duration;
 
-            }
-            else 
-            {
-                if (item.duration.value.toLowerCase().includes(game.i18n.localize("Seconds")))
-                effect.duration.seconds = duration;
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Minutes")))
-                effect.duration.seconds = duration * 60
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Hours")))
-                effect.duration.seconds = duration * 60 * 60
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Days")))
-                effect.duration.seconds = duration * 60 * 60 * 24
-        
-                else if (item.duration.value.toLowerCase().includes(game.i18n.localize("Round")))
-                effect.duration.rounds = duration;
-            }
         }
+        
 
         return effect;
     }
@@ -215,23 +196,7 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
 
     get radius()
     {
-        if (game.release.generation == 13)
-        {
-            let sizeMod = 0;
-            if (this.actor)
-            {
-                let size = game.wfrp4e.config.tokenSizes[this.actor.system.details.size.value]
-                if (size > 1)
-                {
-                    sizeMod = size;
-                }
-            }
-            return super.radius + sizeMod
-        }
-        else 
-        {
-            return super.radius;
-        }
+        return super.radius;
     }
 
     static _triggerMigrations(trigger)
