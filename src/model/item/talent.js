@@ -91,7 +91,7 @@ export class TalentModel extends BaseItemModel {
                 }
 
             default:
-                return this.parent.actor.characteristics[this.max.value].bonus;
+                return this.parent.actor.characteristics[this.max.value]?.bonus || "";
         }
     }
 
