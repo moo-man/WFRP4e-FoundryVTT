@@ -237,7 +237,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
      {
        this.result.critical = true;
      }
-     else if (this.result.roll % 11 == 0 && this.result.failure)
+     else if ((this.result.roll % 11 == 0 || this.result.roll == 100) && this.result.failure)
      {
         this.result.fumble = true;
       }
@@ -326,18 +326,18 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   computeOutcome()
   {
-    if (this.result.SL == 0)
+    if (this.result.SL == 0 && !this.result.automaticFailure && !this.result.automaticSuccess)
     {
       this.result.success = this.result.roll <= this.result.target;
       this.result.outcome = this.result.success ? "success" : "failure";
       this.result.failure = !this.result.success;
     }
-    else if (this.result.SL > 0) 
+    else if ((this.result.SL > 0 || this.result.automaticSuccess) && !this.result.automaticFailure) 
     {
       this.result.success = true;
       this.result.outcome = "success"
     }
-    else if (this.result.SL < 0)
+    else if ((this.result.SL < 0 || this.result.automaticFailure) && !this.result.automaticSuccess)
     {
       this.result.failure = true;
       this.result.outcome = "failure"
