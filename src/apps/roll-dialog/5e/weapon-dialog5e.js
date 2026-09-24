@@ -111,6 +111,65 @@ export default class WeaponDialog5e extends AttackDialog5e
       return dialogData;
     }
 
+    _computeTargets(target)
+    {
+      this.computeRangeModifiers(target);
+      super._computeTargets(target);
+    }
+
+
+    computeRangeModifiers(target) 
+    {
+      let weapon = this.weapon;
+  
+      let token = this.actor.getActiveTokens()[0];
+
+      if (!game.settings.get("wfrp4e", "rangeAutoCalculation") || !token || !weapon.range?.bands)
+        return 0
+
+      if (this.actor.getActiveTokens().length > 1)
+      {
+        ui.notifications.warn("DIALOG.MultipleActiveTokens", {localize: true})
+      }
+  
+      let distance = canvas.grid.measurePath([{x: token.center.x, y: token.center.y }, { x: target.center.x, y: target.center.y }]).distance;
+      this.context.distance = distance;
+      let currentBand
+  
+      for (let band in weapon.range.bands) 
+      {
+        if (distance >= weapon.range.bands[band].range[0] && distance <= weapon.range.bands[band].range[1]) 
+        {
+          currentBand = band;
+          this.fields.range = this.userEntry.range || band;
+          break;
+        }
+      }
+
+      super.computeRangeModifiers();
+  
+      // let engagedEffect = this.actor.statuses.has("engaged")
+      // if (engagedEffect) 
+      // {
+      //   let engagedMod = Math.min(0, weapon.range.bands[currentBand]?.modifier || 0);
+      //   if (engagedMod)
+      //   {
+      //     this.fields.modifier += engagedMod
+      //     this.tooltips.add("modifier", engagedMod, game.i18n.localize("EFFECT.ShooterEngaged"));
+      //   }
+      // }
+      // else 
+      // {
+      //   let rangeMod = weapon.range.bands[currentBand]?.modifier || 0;
+      //   if (rangeMod) 
+      //   {
+      //     this.addModifier({key: "range", value: rangeMod, field: "SL", label: game.i18n.localize("Range")});
+      //     this.fields.modifier += rangeMod
+      //     this.tooltips.add("modifier", rangeMod, `${game.i18n.localize("Range")} - ${currentBand}`);
+      //   }
+      // }
+    }
+
 
     async _prepareContext(options)
     {

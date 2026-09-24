@@ -413,30 +413,35 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
 
         let rangeBands = {}
 
-        rangeBands[`${game.i18n.localize("Point Blank")}`] = {
-            range: [0, Math.ceil(range / 10)],
-            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Point Blank"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Point Blank"]],
-            difficulty: game.wfrp4e.config.rangeModifiers["Point Blank"]
+        rangeBands.pb = {
+            range: game.wfrp5e ? [0, 4] : [0, Math.ceil(range / 10)],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers.pb : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers.pb],
+            difficulty: game.wfrp4e.config.pb,
+            label: game.i18n.localize("Point Blank"),
         }
-        rangeBands[`${game.i18n.localize("Short Range")}`] = {
-            range: [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
-            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Short Range"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Short Range"]],
-            difficulty: game.wfrp4e.config.rangeModifiers["Short Range"]
+        rangeBands.short = {
+            range: game.wfrp5e ? [5, Math.ceil(range / 2)] : [Math.ceil(range / 10) + 1, Math.ceil(range / 2)],
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers.short : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers.short],
+            difficulty: game.wfrp4e.config.rangeModifiers.short,
+            label: game.i18n.localize("Short Range"),
         }
-        rangeBands[`${game.i18n.localize("Normal")}`] = {
+        rangeBands.normal = {
             range: [Math.ceil(range / 2) + 1, range],
-            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Normal"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Normal"]],
-            difficulty: game.wfrp4e.config.rangeModifiers["Normal"]
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers.normal : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers.normal],
+            difficulty: game.wfrp4e.config.rangeModifiers.normal,
+            label: game.i18n.localize("Normal"),
         }
-        rangeBands[`${game.i18n.localize("Long Range")}`] = {
+        rangeBands.long = {
             range: [range + 1, range * 2],
-            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Long Range"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Long Range"]],
-            difficulty: game.wfrp4e.config.rangeModifiers["Long Range"]
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers.long : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers.long],
+            difficulty: game.wfrp4e.config.rangeModifiers.long,
+            label: game.i18n.localize("Long Range"),
         }
-        rangeBands[`${game.i18n.localize("Extreme")}`] = {
+        rangeBands.extreme = {
             range: [range * 2 + 1, range * 3],
-            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers["Extreme"] : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers["Extreme"]],
-            difficulty: game.wfrp4e.config.rangeModifiers["Extreme"]
+            modifier: game.wfrp5e ? game.wfrp4e.config.rangeModifiers.extreme : game.wfrp4e.config.difficultyModifiers[game.wfrp4e.config.rangeModifiers.extreme],
+            difficulty: game.wfrp4e.config.extreme,
+            label: game.i18n.localize("Extreme"),
         }
 
         //@HOUSE
@@ -445,36 +450,35 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             if (!this.parent.getFlag("wfrp4e", "optimalRange"))
                 warhammer.utility.log("Warning: No Optimal Range set for " + this.name)
 
-            rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = this.#optimalDifference(game.i18n.localize("Point Blank")) * -20 + 20
-            delete rangeBands[`${game.i18n.localize("Point Blank")}`].difficulty
-            rangeBands[`${game.i18n.localize("Short Range")}`].modifier = this.#optimalDifference(game.i18n.localize("Short Range")) * -20 + 20
-            delete rangeBands[`${game.i18n.localize("Short Range")}`].difficulty
-            rangeBands[`${game.i18n.localize("Normal")}`].modifier = this.#optimalDifference(game.i18n.localize("Normal")) * -20 + 20
-            delete rangeBands[`${game.i18n.localize("Normal")}`].difficulty
-            rangeBands[`${game.i18n.localize("Long Range")}`].modifier = this.#optimalDifference(game.i18n.localize("Long Range")) * -20 + 20
-            delete rangeBands[`${game.i18n.localize("Long Range")}`].difficulty
-            rangeBands[`${game.i18n.localize("Extreme")}`].modifier = this.#optimalDifference(game.i18n.localize("Extreme")) * -20 + 20
-            delete rangeBands[`${game.i18n.localize("Extreme")}`].difficulty
+            rangeBands.pb.modifier = this.#optimalDifference("pb") * -20 + 20
+            delete rangeBands.pb.difficulty
+            rangeBands.short.modifier = this.#optimalDifference("short") * -20 + 20
+            delete rangeBands.short.difficulty
+            rangeBands.normal.modifier = this.#optimalDifference("normal") * -20 + 20
+            delete rangeBands.normal.difficulty
+            rangeBands.long.modifier = this.#optimalDifference("long") * -20 + 20
+            delete rangeBands.long.difficulty
+            rangeBands.extreme.modifier = this.#optimalDifference("extreme") * -20 + 20
+            delete rangeBands.extreme.difficulty
         }
         //@/HOUSE
 
 
         // If entangling and has no ammunition (implying non-projectiles like a whip)
         if (this.weaponGroup.value == "entangling" && this.ammunitionGroup.value == "none") {
-            rangeBands[`${game.i18n.localize("Point Blank")}`].modifier = 0
-            rangeBands[`${game.i18n.localize("Short Range")}`].modifier = 0
-            rangeBands[`${game.i18n.localize("Normal")}`].modifier = 0
-            rangeBands[`${game.i18n.localize("Long Range")}`].modifier = 0
-            rangeBands[`${game.i18n.localize("Extreme")}`].modifier = 0
+            rangeBands.pb.modifier = 0
+            rangeBands.short.modifier = 0
+            rangeBands.normal.modifier = 0
+            rangeBands.long.modifier = 0
+            rangeBands.extreme.modifier = 0
         }
         return rangeBands;
     }
 
     //@HOUSE
-    #optimalDifference(range)
+    #optimalDifference(rangeKey)
     {
         let keys = Object.keys(game.wfrp4e.config.rangeBands)
-        let rangeKey = warhammer.utility.findKey(range, game.wfrp4e.config.rangeBands)
         let weaponRange = this.parent.getFlag("wfrp4e", "optimalRange")
         if (!weaponRange || !rangeKey)
             return 1

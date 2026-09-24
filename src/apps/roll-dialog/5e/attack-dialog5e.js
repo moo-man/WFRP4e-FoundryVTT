@@ -92,7 +92,11 @@ export default class AttackDialog5e extends SkillDialog5e
             this.addModifier({key: "charging", value: 1, field: "advantage", label: game.i18n.localize("5e.Dialog.Modifier.Charging")});
         }
 
-        
+        super.computeFields();
+    }
+
+    computeRangeModifiers()
+    {
         if (this.item.system.isRanged)
         {
             if (game.combat?.active)
@@ -106,22 +110,21 @@ export default class AttackDialog5e extends SkillDialog5e
 
             if (this.fields.range == "extreme")
             {
-                this.addModifier({key: "range", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Extreme")});
+                this.addModifier({key: "range", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Extreme") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
             }
             else if (this.fields.range == "long")
             {
-                this.addModifier({key: "range", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Long")});
+                this.addModifier({key: "range", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Long") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
             }
             else if (this.fields.range == "short")
             {
-                this.addModifier({key: "range", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Short")});
+                this.addModifier({key: "range", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Short") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
             }
             else if (this.fields.range == "pb")
             {
-                this.addModifier({key: "range", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.PointBlank")});
+                this.addModifier({key: "range", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.PointBlank") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
             }
         }
-        super.computeFields();
     }
 
     _computeDefending(attacker) 

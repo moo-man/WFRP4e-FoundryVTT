@@ -106,11 +106,11 @@ WFRP5E.systemEffects = {
 
 // Range Test Modifiers
 WFRP5E.rangeModifiers = {
-    "Point Blank": 2,
-    "Short Range": 1,
-    "Normal": 0,
-    "Long Range": -1,
-    "Extreme": -2,
+    pb: 2,
+    short: 1,
+    normal: 0,
+    long: -1,
+    extreme: -2,
 }
 
 

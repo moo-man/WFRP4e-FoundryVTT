@@ -19,4 +19,4 @@ for (let band in weapon.range.bands)
   }
 }
 
-return [game.i18n.localize("Long Range"), game.i18n.localize("Extreme")].includes(currentBand)
+return ["long", "extreme"].includes(currentBand)

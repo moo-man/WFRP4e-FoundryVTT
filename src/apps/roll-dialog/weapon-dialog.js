@@ -194,7 +194,7 @@ export default class WeaponDialog extends AttackDialog {
       if (rangeMod) 
       {
         this.fields.modifier += rangeMod
-        this.tooltips.add("modifier", rangeMod, `${game.i18n.localize("Range")} - ${currentBand}`);
+        this.tooltips.add("modifier", rangeMod, `${game.i18n.localize("Range")} - ${weapon.range.bands[currentBand]?.label}`);
       }
     }
   }
