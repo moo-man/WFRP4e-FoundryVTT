@@ -403,7 +403,7 @@ export class SkillsTalentsStage extends ChargenStage {
 
     for (let i = 0; i < number; i++) {
       let talent = await game.wfrp4e.tables.rollTable(table.key);
-      talent = await this.checkTalentReplacement(talent.text);
+      talent = await this.checkTalentReplacement(talent.name);
       table.talents.push(talent);
     }
 
