@@ -345,9 +345,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
             {
                 properties.unusedQualities = properties.qualities
                 properties.qualities = {}
+                if (ammo)
+                    properties.qualities = ammo.properties.qualities
             }
-            if (ammo)
-                properties.qualities = ammo.properties.qualities
         }
 
         if (this.parent.isOwned) {

@@ -100,8 +100,8 @@ export default class WeaponDialog5e extends AttackDialog5e
 
         if (weapon.loading && !weapon.loaded.value) 
         {
-        //   await actor.rollReloadTest(weapon)
-          ui.notifications.notify("ErrorNotLoaded", {localize: true})
+          ui.notifications.error("ErrorNotLoaded", {localize: true})
+          await actor.rollReloadTest(weapon)
           return ({ abort: true })
         }
       }
