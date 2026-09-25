@@ -136,6 +136,7 @@ export default class WFRP_Utility {
     {
       let skillData = skill.toObject();
       skillData.effects = [];
+      skillData.ownership = {default: 3}; // Make sure players can open the sheet
       return new Item.implementation(skillData);
     }
 
