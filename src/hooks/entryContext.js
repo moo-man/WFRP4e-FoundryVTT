@@ -67,7 +67,7 @@ export default function () {
       //Test must be failed
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
+      return test && !test.e5 && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed?.reroll
 
     };
     let canApplyFortuneAddSL = function (li) {
@@ -78,7 +78,7 @@ export default function () {
       //Once per roll (or at least, not on a reroll card)
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL
+      return test && !test.e5  && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed?.SL
     };
     let canApplyDarkDeals = function (li) {
       //Condition to have the darkdeak contextual options:
