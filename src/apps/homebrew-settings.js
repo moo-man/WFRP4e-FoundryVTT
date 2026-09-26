@@ -24,6 +24,7 @@ export default class HomebrewConfig extends WHFormApplication
     static #schema = new foundry.data.fields.SchemaField({
 
         channelingNegativeSLTests : new foundry.data.fields.BooleanField({label : "SETTINGS.ChannelingNegativeSL", hint : "SETTINGS.ChannelingNegativeSLHint"}),
+        spellcasterArmourPenalties : new foundry.data.fields.BooleanField({initial : true, label : "SETTINGS.SpellcasterArmourPenalties", hint : "SETTINGS.SpellcasterArmourPenaltiesHint"}),
         advantageBonus : new foundry.data.fields.NumberField({initial : 10, label : "SETTINGS.AdvantageBonus", hint : "SETTINGS.AdvantageBonusHint"}),
         uiaCritsMod : new foundry.data.fields.NumberField({initial: 10, label : "SETTINGS.UIACritsMod", hint : "SETTINGS.UIACritsModHint"}),
         partialChannelling : new foundry.data.fields.BooleanField({label : "SETTINGS.PartialChannelling", hint : "SETTINGS.PartialChannellingHint"}),
