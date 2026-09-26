@@ -106,6 +106,7 @@ export default class WFRP_Tables {
         name : rollResult?.name,
         object : rollResult?.toObject(),
         title : table.name,
+        text: rollResult?.toObject().description
       }
 
       // If table result text is a UUID link, add a text property with just the label

@@ -78,12 +78,12 @@ export class DetailsStage extends ChargenStage {
     return `${hFeet}'${hInches}`;
   }
   async rollEyes() {
-    return (await game.wfrp4e.tables.rollTable("eyes", {}, this.data.species)).result;
+    return (await game.wfrp4e.tables.rollTable("eyes", {}, this.data.species)).text;
   }
   async rollHair() {
-    return (await game.wfrp4e.tables.rollTable("hair", {}, this.data.species)).result;
+    return (await game.wfrp4e.tables.rollTable("hair", {}, this.data.species)).text;
   }
   async rollMotivation() {
-    return (await game.wfrp4e.tables.rollTable("motivation")).result;
+    return (await game.wfrp4e.tables.rollTable("motivation")).text;
   }
 }

@@ -823,7 +823,8 @@ export default class WFRP_Utility {
     let text
     try {
       // Extract text
-      text = Array.from(link.matchAll(/{(.+?)}/gm))[0][1]
+      text = Array.from(link.matchAll(/>\s*(.+?)\s*</gm))[0]?.[1] || link; // Extract inner html content
+      text = Array.from(text.matchAll(/{(.+?)}/gm))[0]?.[1] || text; // Extract link labels
       if (!text)
         text = link
     }
