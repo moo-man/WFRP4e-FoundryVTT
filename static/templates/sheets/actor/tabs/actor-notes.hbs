@@ -11,7 +11,25 @@
         {{editor enrichment.system.details.biography.value target="system.details.biography.value" engine="prosemirror" button=true editable=true}}
     </div>
 
-        <fieldset>
+
+        {{#if (settings "editionSettings.use5e")}}
+
+            <div class="form-group">
+                <label>{{localize "Personal Ambitions"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.long-term" type="text" value="{{system.details.personal-ambitions.long-term}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "Party Ambitions"}}</label>
+                <div class="form-fields">
+                   <input name="system.details.party-ambitions.long-term" type="text" value="{{system.details.party-ambitions.long-term}}" />
+                </div>
+            </div>
+
+        {{else}}
+                <fieldset>
             <legend>{{localize "Personal Ambitions"}}</legend>
             <div class="form-group">
                 <label>{{localize "Short Term"}}</label>
@@ -45,6 +63,7 @@
                 </div>
             </div>
         </fieldset>
+        {{/if}}
 
 
         <div class="form-group">

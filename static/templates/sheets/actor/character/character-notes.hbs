@@ -21,46 +21,58 @@
     </div>
     {{/unless}}
 
-    <fieldset>
+        {{#if (settings "editionSettings.use5e")}}
 
-        <legend>{{localize "Personal Ambitions"}}</legend>
-        <div class="form-group">
-            <label>{{localize "Short Term"}}</label>
-            <div class="form-fields">
-                <input name="system.details.personal-ambitions.short-term" type="text"
-                    value="{{system.details.personal-ambitions.short-term}}" />
+            <div class="form-group">
+                <label>{{localize "Personal Ambitions"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.long-term" type="text" value="{{system.details.personal-ambitions.long-term}}" />
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label>{{localize "Long Term"}}</label>
-            <div class="form-fields">
-                <input name="system.details.personal-ambitions.long-term" type="text"
-                    value="{{system.details.personal-ambitions.long-term}}" />
+            <div class="form-group">
+                <label>{{localize "Party Ambitions"}}</label>
+                <div class="form-fields">
+                   <input name="system.details.party-ambitions.long-term" type="text" value="{{system.details.party-ambitions.long-term}}" />
+                </div>
             </div>
-        </div>
-    </fieldset>
 
-    <fieldset>
-
-        <legend>{{localize "Party Ambitions"}}</legend>
-
-        <div class="form-group">
-            <label>{{localize "Short Term"}}</label>
-            <div class="form-fields">
-                <input name="system.details.party-ambitions.short-term" type="text"
-                    value="{{system.details.party-ambitions.short-term}}" />
+        {{else}}
+                <fieldset>
+            <legend>{{localize "Personal Ambitions"}}</legend>
+            <div class="form-group">
+                <label>{{localize "Short Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.short-term" type="text" value="{{system.details.personal-ambitions.short-term}}" />
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label>{{localize "Long Term"}}</label>
-            <div class="form-fields">
-                <input name="system.details.party-ambitions.long-term" type="text"
-                    value="{{system.details.party-ambitions.long-term}}" />
+            <div class="form-group">
+                <label>{{localize "Long Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.personal-ambitions.long-term" type="text" value="{{system.details.personal-ambitions.long-term}}" />
+                </div>
             </div>
-        </div>
-    </fieldset>
+        </fieldset>
+
+        <fieldset>
+            <legend>{{localize "Party Ambitions"}}</legend>
+
+            <div class="form-group">
+                <label>{{localize "Short Term"}}</label>
+                <div class="form-fields">
+                    <input name="system.details.party-ambitions.short-term" type="text" value="{{system.details.party-ambitions.short-term}}" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>{{localize "Long Term"}}</label>
+                <div class="form-fields">
+                   <input name="system.details.party-ambitions.long-term" type="text" value="{{system.details.party-ambitions.long-term}}" />
+                </div>
+            </div>
+        </fieldset>
+        {{/if}}
 
     <div class="experience-log">
 
