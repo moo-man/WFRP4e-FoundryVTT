@@ -48,6 +48,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         messageId: data.messageId,
         messageTemplate: data.context?.messageTemplate,
         opposedMessageIds : data.opposedMessageIds || [],
+        flags: data.context?.flags || {}
       }
     }
 
@@ -844,6 +845,10 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
   get targetTokens() {
     return this.context.targets.map(i => game.scenes.get(i.scene)?.tokens.get(i.token))
+  }
+
+  get options() {
+    return this.context.flags;
   }
 
 }
