@@ -114,4 +114,9 @@ export default class TraitDialog5e extends AttackDialog5e
     {
 
     }
+
+    _defaultDifficulty()
+    {
+        return this.item.system.rollable.defaultDifficulty || super._defaultDifficulty()
+    }
 }

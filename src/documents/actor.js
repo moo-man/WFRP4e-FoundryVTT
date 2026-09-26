@@ -219,6 +219,10 @@ export default class ActorWFRP4e extends WarhammerActor
    */
   async setupTrait(trait, context = {}, options) 
   {
+      if (trait.system.rollable.defaultDifficulty)
+      {
+        foundry.utils.setProperty(context, "fields.difficulty", trait.system.rollable.defaultDifficulty);
+      }
       if (trait.system.rollable.damage || !game.wfrp5e) // wfrp4e only uses TraitDialog/Test, wfrp5e only uses it for attack traits
       {
         return this._setupTest(EditionManager.getDialog("trait"), EditionManager.getTestClass("trait"), trait, context, options, false)
@@ -1324,7 +1328,7 @@ export default class ActorWFRP4e extends WarhammerActor
     }
     let heading = config.heading ? config.heading : `p style="text-align:center"`
     let noToc = config.noToc ? "no-toc" : ""
-    html += `<${heading} class="${noToc}">@UUID[${this.uuid}]{${config.label || this.name}}</${heading.split(" ")[0]}>`
+    html += `<${heading} class="${noToc}">@UUID[${this.uuid}]{${foundry.utils.escapeHTML(config.label || this.name)}}</${heading.split(" ")[0]}>`
     if (config.description)
     {
         if (game.user.isGM)
