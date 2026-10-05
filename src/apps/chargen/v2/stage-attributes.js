@@ -38,7 +38,7 @@ export class AttributesStage extends BaseCharacterCreationStage
         {
           this.data.characteristics[c] = {
             roll: null,
-            formula: `${speciesCharacteristics[c].dice}d10`,
+            formula: `${speciesCharacteristics[c].formula}`,
             base:  speciesCharacteristics[c].base,
             allocated: 0,
           }
@@ -207,6 +207,12 @@ export class AttributesStage extends BaseCharacterCreationStage
     {
       let swap1 = dropData.key;
       let swap2 = ev.target.dataset.key;
+
+      if (this.data.characteristics[swap1].formula != this.data.characteristics[swap2].formula)
+      {
+        return ui.notifications.error("Swapped characteristics must use the same roll formula!")
+      }
+
       let value1 = this.data.characteristics[swap1].roll;
       let value2 = this.data.characteristics[swap2].roll;
 

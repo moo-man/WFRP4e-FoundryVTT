@@ -29,9 +29,8 @@
                 {{#each system.characteristics}}
                 <td>
 
-                    <div class="species-characteristic-inputs dice">
-                        <input type="number" name="system.characteristics.{{@key}}.dice" value="{{this.dice}}" placeholder="{{lookup (lookup ../subspeciesOf.system.characteristics @key) "dice"}}">
-                        d10
+                    <div class="species-characteristic-inputs formula">
+                        <input type="text" name="system.characteristics.{{@key}}.formula" value="{{this.formula}}" placeholder="{{lookup (lookup ../subspeciesOf.system.characteristics @key) "formula"}}">
                     </div>
                 </td>
                 {{/each}}
@@ -63,4 +62,15 @@
     {{> documentReference label="Talents" document=system.tables.talents path="system.tables.talents"}}
     {{> documentReference label="Eye Colour" document=system.tables.eye path="system.tables.eye"}}
     {{> documentReference label="Hair Colour" document=system.tables.hair path="system.tables.hair"}}
+    {{formGroup fields.age value=source.system.age}}
+    <div class="form-group">
+        <label>{{localize "CharacterHeight"}}</label>
+        <div class="form-fields">
+            <input type="number" name="system.height.feet" value={{system.height.feet}} placeholder="Ft.">'
+            <input type="number" name="system.height.inches" value={{system.height.inches}} placeholder="In.">"
+            +
+            <input type="number" name="system.height.formula" value={{system.height.formula}} placeholder="In.">"
+        </div>
+    </div>
+
 </section>

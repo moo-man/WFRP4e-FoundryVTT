@@ -81,7 +81,7 @@ class SpeciesCharacteristic extends foundry.data.fields.SchemaField
   constructor() {
     super({
       base: new foundry.data.fields.NumberField({min: 0, initial: 20}),
-      dice: new foundry.data.fields.NumberField({min: 0, initial: 2})
+      formula: new foundry.data.fields.StringField({initial: "2d10"})
     })
   }
 
