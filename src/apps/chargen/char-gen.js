@@ -168,7 +168,7 @@ export default class CharGenWfrp4e extends FormApplication {
     let allChanges = allItems
     .filter(i => i)
     .reduce((prev, current) => prev.concat(Array.from(current.effects)), []) // reduce items to effects
-    .reduce((prev, current) => prev.concat(current.changes), [])      // reduce effects to changes
+    .reduce((prev, current) => prev.concat(current.system.changes), [])      // reduce effects to changes
     .filter(c => c.key.includes("characteristics"))                   // filter changes to characteristics
 
     let characteristics = foundry.utils.duplicate(this.data.characteristics)

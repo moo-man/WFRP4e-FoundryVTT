@@ -19,14 +19,17 @@ export class SpellModel extends OvercastItemModel {
         schema.range = new fields.SchemaField({
             value: new fields.StringField(),
             vortex: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.target = new fields.SchemaField({
             value: new fields.StringField(),
             aoe: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.duration = new fields.SchemaField({
             value: new fields.StringField(),
             extendable: new fields.BooleanField(),
+            maximum: new fields.BooleanField()
         });
         schema.damage = new fields.SchemaField({
             dice: new fields.StringField(),
@@ -251,6 +254,11 @@ export class SpellModel extends OvercastItemModel {
         }
     }
 
+    usesWind(wind)
+    {
+      return this.lore.value.map(i => game.wfrp4e.config.loreWind[i]).includes(wind);
+    }
+
 
     getSkillToUse(actor) 
     {
@@ -344,13 +352,14 @@ export class SpellModel extends OvercastItemModel {
 
 
     /** @inheritdoc */
-    static migrateData(source) 
+    static migrateData(data) 
     {
-      super.migrateData(source);
-      if (typeof source.lore.value == "string")
+      super.migrateData(data);
+      if (typeof data.lore.value == "string")
       {
-        source.lore.value = [source.lore.value];
+        data.lore.value = [data.lore.value];
       }
+      return data;
     }
 
 }

@@ -80,6 +80,14 @@
             <div class="label" style="grid-column: 5 / span 4"><label class="centered">{{localize "Walk"}}</label></div>
             <div class="label" style="grid-column: 9 / span 4"><label class="centered">{{localize "Run"}}</label></div>
         </div>
+        {{#if (settings "editionSettings.use5e")}}
+        <div class="attribute-box metacurrencies">
+            <div class="label" style="grid-column: 1 / span 8"><label>{{localize "Fortune"}}</label></div>
+            <div class="field interact" style="grid-column: 9 / span 4"><a data-action="stepProperty" data-path="system.status.fortune.value">{{system.status.fortune.value}}</a></div>
+            <div class="label" style="grid-column: 1 / span 8"><label>{{localize "Fate"}}</label></div>
+            <div class="field interact" style="grid-column: 9 / span 4"><a data-action="stepProperty" data-path="system.status.fate.value">{{system.status.fate.value}}</a></div>
+        </div>
+        {{else}}
         <div class="attribute-box metacurrencies">
             <div class="label" style="grid-column: 1 / span 4"><label>{{localize "Fortune"}}</label></div>
             <div class="field interact" style="grid-column: 5 / span 2"><a data-action="stepProperty" data-path="system.status.fortune.value">{{system.status.fortune.value}}</a></div>
@@ -90,6 +98,7 @@
             <div class="label" style="grid-column: 7 / span 4"><label>{{localize "Resilience"}}</label></div>
             <div class="field interact" style="grid-column: 11 / span 2"><a data-action="stepProperty" data-path="system.status.resilience.value">{{system.status.resilience.value}}</a></div>
         </div>
+        {{/if}}
         <div class="attribute-box top-label">
             <div class="label" style="grid-column: 1 / span 12"><label class="centered">{{localize "Wounds"}}</label> <a data-action="onRest" data-tooltip="{{localize 'RestRecover'}}"><i class="fas fa-bed"></i></a></div>
             <div class="field" style="grid-column: 1 / span 6"><input type="number" name="system.status.wounds.value" value="{{system.status.wounds.value}}"></div>

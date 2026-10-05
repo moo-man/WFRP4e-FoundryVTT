@@ -145,7 +145,7 @@ export class ChargenStage extends FormApplication {
     let name = $(ev.currentTarget).attr("data-name") || ev.currentTarget.text; // Use name attribute if available, otherwis, use text clicked.
     let item;
     if (name)
-      item = await WFRP_Utility.find(name, itemType);
+      item = await WFRP_Utility.find(name.trim(), itemType);
 
     if (item) {
       if (openMethod == "sheet")

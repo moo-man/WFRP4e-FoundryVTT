@@ -1,0 +1,19 @@
+<div class="state-fields">
+  <div>
+    <div data-action="clickState" data-type="advantage" class="state-field {{#if (eq fields.state "adv")}}active{{/if}}" {{#if tooltips.advantage}}data-tooltip-direction="LEFT" data-tooltip="{{tooltips.advantage}}" {{/if}}>
+      <div class="state-value">{{fields.advantage}}</div>
+      <label>{{localize "DIALOG.Advantage"}}</label>
+    </div>
+  </div>
+  <div>
+    <div data-action="clickState" data-type="normal" class="state-field {{#if (eq fields.state "normal")}}active{{/if}}">
+      <label>{{localize "DIALOG.Normal"}}</label>
+    </div>
+  </div>
+  <div>
+    <div data-action="clickState" data-type="disadvantage" class="state-field {{#if (eq fields.state "dis")}}active{{/if}}" {{#if tooltips.disadvantage}}data-tooltip-direction="LEFT" data-tooltip="{{tooltips.disadvantage}}" {{/if}}>
+      <div class="state-value">{{fields.disadvantage}}</div>
+      <label>{{localize "DIALOG.Disadvantage"}}</label>
+    </div>
+  </div>
+</div>

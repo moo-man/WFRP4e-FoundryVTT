@@ -224,7 +224,7 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
   
   static migrateData(data)
   {
-    super.migrateData(data);
+    data = super.migrateData(data);
     if (data.currentAP)
     {
         data.AP = data.maxAP;
@@ -243,6 +243,8 @@ export class ArmourModel extends PropertiesMixin(EquippableItemModel) {
     if (data.worn?.value) {
       foundry.utils.setProperty(data, "equipped.value", data.worn.value);
     }
+
+    return data;
   }
 
 }

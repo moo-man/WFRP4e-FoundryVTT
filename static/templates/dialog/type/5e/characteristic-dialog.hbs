@@ -1,0 +1,12 @@
+<div>
+  {{> dialogState}}
+  <div class="form-group">
+    <label>{{localize "Characteristic"}}</label>
+    <div class="form-fields">
+      <select name="characteristic">
+        {{selectOptions (config "characteristics") selected=fields.characteristic}}
+      </select>
+    </div>
+</div>
+  {{> baseDialog}}
+</div>

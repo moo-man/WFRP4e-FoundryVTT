@@ -1,0 +1,14 @@
+<div class="wfrp4e wfrp5e test-message">
+    {{> testResults}}
+
+    {{#if test.result.success}}
+    {{> systems/wfrp4e/templates/partials/overcasts5e.hbs}}
+    {{/if}}
+
+
+    {{#if test.result.success}}
+        <a class='chat-button' data-action="useMagic">{{localize "CHAT.InvokePrayer" prayer=test.prayer.name}}</a>
+    {{/if}}
+
+    {{> testButtons}}
+</div>

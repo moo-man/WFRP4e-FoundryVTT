@@ -99,10 +99,11 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
 
     static migrateData(data)
     {
-      super.migrateData(data);
+      data = super.migrateData(data);
 
       if (data.worn) {
         data.equipped = {value: data.worn};
       }
+      return data;
     }
 }

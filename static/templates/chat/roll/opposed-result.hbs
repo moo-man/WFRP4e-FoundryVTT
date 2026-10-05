@@ -19,14 +19,25 @@
         {{/each}}
         {{#if damage}}
             {{#unless confirmation}}
-            <button data-action="applyDamage">{{localize "CHATOPT.ApplyDamage"}}</button>
+            <button class='chat-button' data-action="applyDamage">{{localize "CHATOPT.ApplyDamage"}}</button>
             {{/unless}}
         {{/if}}
         {{#if confirmation}}
             {{{confirmation}}}
         {{/if}}
         {{#if showDualWielding}}
-            <p><a class='chat-button' data-action="rollDualWielder">Roll Dual Wielder Attack</a></p>
+            <p><button class='chat-button' data-action="rollDualWielder">Roll Dual Wielder Attack</button></p>
         {{/if}}
+            {{#each actions}}
+                <button class="chat-button" type="button"
+                data-action="executeAction"
+                data-effect-path="{{this.effectPath}}" 
+                data-effect-id="{{this.effectId}}" 
+                data-script-index="{{this.scriptIndex}}" 
+                data-action-index="{{@key}}" 
+                data-item-uuid="{{this.itemUuid}}">
+                {{this.label}}
+                </button>
+        {{/each}}
     </div>
 </div>

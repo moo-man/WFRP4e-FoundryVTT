@@ -67,7 +67,7 @@ export default function () {
       //Test must be failed
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed.reroll
+      return test && !test.e5 && test.actor.isOwner && test.actor.status.fortune?.value > 0 && test.failed && !test.fortuneUsed?.reroll
 
     };
     let canApplyFortuneAddSL = function (li) {
@@ -78,7 +78,7 @@ export default function () {
       //Once per roll (or at least, not on a reroll card)
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed.SL
+      return test && !test.e5  && test.actor.isOwner && test.actor.status.fortune?.value > 0 && !test.fortuneUsed?.SL
     };
     let canApplyDarkDeals = function (li) {
       //Condition to have the darkdeak contextual options:
@@ -114,6 +114,18 @@ export default function () {
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
       return game.user.isGM && test && test.opposedMessages.length >= 2
+    };
+
+    let canUnreverse = function (li) {
+      let message = game.messages.get(li.dataset.messageId);
+      let test = message.system?.test;
+      return test && test.e5 && test.actor.isOwner && test.result.canUnreverse && !test.testData.unreverse;
+    };
+
+    let canReverse = function (li) {
+      let message = game.messages.get(li.dataset.messageId);
+      let test = message.system?.test;
+      return test && test.e5 && test.actor.isOwner && test.testData.unreverse;
     };
 
     let canApplyAllDamage = function (li) {
@@ -325,6 +337,27 @@ export default function () {
           new EditTest(test).render(true);
         }
       },
+      {
+        name: game.i18n.localize("CHATOPT.Reverse"),
+        icon: '<i class="fa-solid fa-shuffle"></i>',
+        condition: canReverse,
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          let test = message.system.test;
+          test.reverse();
+        }
+      },
+      {
+        name: game.i18n.localize("CHATOPT.Unreverse"),
+        icon: '<i class="fa-solid fa-shuffle"></i>',
+        condition: canUnreverse,
+        callback: li => {
+          let message = game.messages.get(li.dataset.messageId);
+          let test = message.system.test;
+          test.unreverse();
+        }
+      },
+      
       {
         name: game.i18n.localize("CHATOPT.ApplyAllDamage"),
         icon: '<i class="fas fa-user-minus"></i>',

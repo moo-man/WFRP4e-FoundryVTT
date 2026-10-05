@@ -99,6 +99,12 @@ body:not(.no-theme):not(.theme-light) #chat-popout,
         .chat-button,
         button {
             @include styled-button;
+            margin-top: 0.5rem;
+        }
+
+        button.chat-button
+        {
+            --button-size: 1.5rem;
         }
     }
 }

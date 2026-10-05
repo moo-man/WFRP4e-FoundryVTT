@@ -1,0 +1,19 @@
+{{#if data.hitloc}}
+  <div class="form-group">
+    <label>{{localize "ROLL.HitLocation"}}</label>
+    <div class="form-fields">
+      <select name="hitLocation">
+        {{selectOptions data.hitLocationTable selected=fields.hitLocation}}
+      </select>
+    </div>
+  </div>
+{{/if}}
+
+<div class="form-group">
+  <label>{{localize "DIALOG.RollMode"}}</label>
+  <div class="form-fields">
+    <select name="rollMode">
+      {{selectOptions rollModes localize=true selected=fields.rollMode}}
+    </select>
+  </div>
+</div>

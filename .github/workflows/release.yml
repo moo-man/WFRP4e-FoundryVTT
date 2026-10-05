@@ -13,16 +13,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup NodeJS 17
+      - name: Setup NodeJS 20
         uses: actions/setup-node@v3
         with:
-          node-version: "17"
+          node-version: "20"
           
       - name: Install node modules
         run: npm install
-        
+
+      - name: Get tag    
+        id: tag
+        uses: dawidd6/action-get-tag@v1.1.0
+
       - name: Build Project
-        run: npm run release
+        run: npm run release -- --configLatest=${{steps.tag.outputs.tag}}
         
       - name: Get System ID
         id: systemID
@@ -30,23 +34,12 @@ jobs:
         with: 
           path: 'system.json'
           prop_path: 'id'
-          
-      - name: Get tag    
-        id: tag
-        uses: dawidd6/action-get-tag@v1.1.0
 
       - name: Create ZIP
         run: |
           cd build
           zip -r ../${{steps.systemID.outputs.prop}}.zip *
           
-      - name: Set Download Link
-        uses: jossef/action-set-json-field@v2
-        with:
-          file: './system.json'
-          field: 'download'
-          value: "https://github.com/${{github.repository}}/releases/download/${{steps.tag.outputs.tag}}/${{steps.systemID.outputs.prop}}.zip"
-
       - name: Get mininum
         id: minimum
         uses: notiz-dev/github-action-json-property@release
@@ -73,8 +66,9 @@ jobs:
         with:
           url: 'https://foundryvtt.com/_api/packages/release_version'
           method: 'POST'
+          preventFailureOnNoResponse: true
           customHeaders: '{"Content-Type": "application/json", "Authorization" : "${{ secrets.FOUNDRY_KEY }}"}'
-          data: '{"dry_run": false, "id" : "${{steps.systemID.outputs.prop}}", "release": {"version" :  "${{steps.tag.outputs.tag}}", "manifest": "https://raw.githubusercontent.com/${{github.repository}}/${{steps.tag.outputs.tag}}/system.json", "notes" : "https://github.com/${{github.repository}}/releases/tag/${{steps.tag.outputs.tag}}", "compatibility" : {"minimum": "${{steps.minimum.outputs.prop}}", "verified": "${{steps.verified.outputs.prop}}", "maximum": "${{steps.maximum.outputs.prop}}"} } }'
+          data: '{"dry_run": false, "id" : "${{steps.systemID.outputs.prop}}", "release": {"version" :  "${{steps.tag.outputs.tag}}", "manifest": "https://github.com/${{github.repository}}/releases/download/${{steps.tag.outputs.tag}}/system.json", "notes" : "https://github.com/${{github.repository}}/releases/tag/${{steps.tag.outputs.tag}}", "compatibility" : {"minimum": "${{steps.minimum.outputs.prop}}", "verified": "${{steps.verified.outputs.prop}}", "maximum": "${{steps.maximum.outputs.prop}}"} } }'
           
       # - name: Generate Changelog
       #   id: changelog
@@ -86,6 +80,6 @@ jobs:
         uses: ncipollo/release-action@v1.9.0
         with:
           token: ${{ secrets.PAT }}
-          artifacts: "./system.json, ./${{steps.systemID.outputs.prop}}.zip"
+          artifacts: "./build/system.json, ./${{steps.systemID.outputs.prop}}.zip"
           draft : true
           generateReleaseNotes : true
