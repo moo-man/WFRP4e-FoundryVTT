@@ -43,13 +43,18 @@ export class CareerModel extends BaseItemModel
         schema.skills = new fields.ArrayField(new fields.StringField());
         schema.addedSkills = new fields.ArrayField(new fields.StringField());
         schema.talents = new fields.ArrayField(new fields.StringField());
-        schema.trappings = new fields.ArrayField(new fields.StringField());
+        // schema.trappings = new fields.ArrayField(new fields.StringField());
         schema.incomeSkill = new fields.ArrayField(new fields.NumberField());
-        schema.requiredTrappings = new fields.ArrayField(new fields.NumberField());
-        schema.trappingsOwned = new fields.ArrayField(new fields.NumberField()); // Manual toggle for owning a trapping
-        schema.previousCareer = new fields.EmbeddedDataField(DocumentReferenceModel)
+        // schema.requiredTrappings = new fields.ArrayField(new fields.NumberField());
+        // schema.trappingsOwned = new fields.ArrayField(new fields.NumberField()); // Manual toggle for owning a trapping
+        schema.previousCareer = new fields.EmbeddedDataField(DocumentReferenceModel);
+
+        schema.trappings = new fields.EmbeddedDataField(ChoiceModel);
+        schema.requiredTrappings = new fields.ArrayField(new fields.StringField());
+        schema.trappingsOwned = new fields.ArrayField(new fields.StringField()); // Manual toggle for owning a trapping
         return schema;
     }
+
       /**
    * Used to identify an Item as one being a child or instance of CareerModel
    *
@@ -349,6 +354,40 @@ export class CareerModel extends BaseItemModel
                 fel : data.characteristics.includes("fel")
             }
         }
+
+        if (data.trappings instanceof Array)
+        {
+          if (data.requiredTrappings)
+          {
+            data.requiredTrappings = data.requiredTrappings.map(i => data.trappings[i]);
+          }
+          if (data.trappingsOwned)
+          {
+            data.trappingsOwned = data.trappingsOwned.map(i => data.trappings[i]);
+          }
+
+          let options = data.trappings.map(i => {
+            return {
+              id: foundry.utils.randomID(),
+              type: "placeholder",
+              name: i
+            }
+          })
+          data.trappings = {
+            structure: {
+              type: "and",
+              id: "root",
+              options: options.map(o => {
+                return {
+                  type: "option",
+                  id: o.id
+                }
+              })
+            },
+            options
+          }
+        }
+        return data;
 
         // if (data.skills instanceof Array)
         // {

@@ -1,0 +1,14 @@
+<div>
+    {{> choiceDisplay label="Trappings" path="trappings" display=system.trappings.textDisplay hideButtons=true}}
+    <button type="button" data-action="chooseTrappings">Choose Trappings</button>
+
+
+    {{#each trappings}}
+    <li>{{this.name}}</li>
+    {{/each}}
+
+    <button type="button" data-action="rollIncome">Roll Income</button>
+    {{#if income}}
+    {{income.item.system.quantity.value}} {{income.item.name}}
+    {{/if}}
+</div>

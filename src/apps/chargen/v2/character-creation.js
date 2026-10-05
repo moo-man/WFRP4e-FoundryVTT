@@ -2,6 +2,7 @@ import { AttributesStage } from "./stage-attributes";
 import { CareerStage } from "./stage-career";
 import { SkillsTalentsStage } from "./stage-skills-talents";
 import { SpeciesStage } from "./stage-species";
+import { TrappingsStage } from "./stage-trappings";
 
 export class WFRP4eCharacterCreation extends StagedCharacterCreation
 {
@@ -29,7 +30,7 @@ export class WFRP4eCharacterCreation extends StagedCharacterCreation
         this.addStage("career", CareerStage, {dependsOn: ["species"], title: "Career"});
         this.addStage("attributes", AttributesStage, {dependsOn: ["career"], title: "Attributes"});
         this.addStage("skills-talents", SkillsTalentsStage, {dependsOn: ["career", "species"], title: "Skills & Talents"});
-        this.addStage("trappings", "a", {dependsOn: ["career"], title: "Trappings"});
+        this.addStage("trappings", TrappingsStage, {dependsOn: ["career"], title: "Trappings"});
         this.addStage("details", "a", {dependsOn: ["species"], title: "Details"});
     }
 
@@ -51,6 +52,11 @@ export class WFRP4eCharacterCreation extends StagedCharacterCreation
         }
 
         if (stageId == "skills-talents")
+        {
+            return {species: this.stageResults.species.items[0], career: this.stageResults.career.items[0]}
+        }
+
+        if (stageId == "trappings")
         {
             return {species: this.stageResults.species.items[0], career: this.stageResults.career.items[0]}
         }
