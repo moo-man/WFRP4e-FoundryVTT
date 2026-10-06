@@ -70,8 +70,9 @@ export class AttributesStage extends BaseCharacterCreationStage
         }, {})
     }
 
-    async getStageResults() 
+    async getStageResults(formData) 
     {
+        await super.getStageResults(formData);
         let result = {
           system: {
             characteristics: {

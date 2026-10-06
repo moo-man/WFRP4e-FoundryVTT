@@ -1,0 +1,47 @@
+    <div>
+
+    <div class="detail-form">
+        <label>{{localize "Gender"}}</label>
+        <input name="gender" type="text">
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Name"}}</label>
+        <input name="name" type="text" value="{{data.details.name}}">
+        <a data-action="rollDetails" data-type="name"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Age"}}</label>
+        <input name="age" type="text" value="{{data.details.age}}">
+        <a data-action="rollDetails" data-type="age"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Height"}}</label>
+        <input name="height" type="text" value="{{data.details.height}}">
+        <a data-action="rollDetails" data-type="height"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Eye Colour"}}</label>
+        <input name="eyes" type="text" value="{{data.details.eyes}}">
+        <a data-action="rollDetails" data-type="eyes"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Hair Colour"}}</label>
+        <input name="hair" type="text" value="{{data.details.hair}}">
+        <a data-action="rollDetails" data-type="hair"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="detail-form">
+        <label>{{localize "Motivation"}}</label>
+        <input name="motivation" type="text" value="{{data.details.motivation}}">
+        <a data-action="rollDetails" data-type="motivation"><i class="fa-solid fa-dice"></i></a>
+    </div>
+    <div class="ambitions">
+        <div class="detail-form">
+            <label>{{localize "CHARGEN.Details.ShortTermAmbitions"}}</label>
+            <textarea name="short">{{data.details.short}}</textarea>
+        </div>
+        <div class="detail-form">
+            <label>{{localize "CHARGEN.Details.LongTermAmbitions"}}</label>
+            <textarea name="long" >{{data.details.long}}</textarea>
+        </div>
+    </div>
+    </div>

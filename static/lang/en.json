@@ -2697,6 +2697,12 @@
                         "random" : {
                             "label" : "Random Talents"
                         }
+                    },
+                    "age": {
+                        "label" : "Age"
+                    },
+                    "key" : {
+                        "label": "Species Key"
                     }
                 }
             }

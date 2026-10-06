@@ -34,9 +34,10 @@ export class TrappingsStage extends BaseCharacterCreationStage
         this.data.classTrappings  = Promise.all(classStrings.map(i => WFRP_Utility.find(i.trim(), game.wfrp4e.config.trappingItems)));
     }
 
-    async getStageResults() 
+    async getStageResults(formData) 
     {
         
+        await super.getStageResults(formData);
         let result = {
           items: this.data.trappings.concat()
         }

@@ -39,8 +39,15 @@ export class SpeciesModel extends BaseItemModel
 
         schema.subspeciesOf = new fields.EmbeddedDataField(DocumentReferenceModel);
 
+        schema.age = new fields.StringField({});
+        schema.height = new fields.SchemaField({
+          feet: new fields.NumberField(),
+          inches: new fields.NumberField(),
+          formula: new fields.StringField()
+        })
 
-        schema.keys = new fields.ArrayField(new fields.StringField());
+
+        schema.key = new fields.StringField();
 
         schema.tables = new fields.SchemaField({
           talents : new fields.EmbeddedDataField(DocumentReferenceModel),

@@ -1,4 +1,6 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.key value=source.system.key placeholder=system.key}}
+
     {{#if subspeciesOf}}
         {{> documentReference label="Subspecies Of" document=subspeciesOf classes="parent-species stacked" path="system.subspeciesOf" imgPath=subspeciesOf.img}}
     {{/if}}
@@ -69,7 +71,7 @@
             <input type="number" name="system.height.feet" value={{system.height.feet}} placeholder="Ft.">'
             <input type="number" name="system.height.inches" value={{system.height.inches}} placeholder="In.">"
             +
-            <input type="number" name="system.height.formula" value={{system.height.formula}} placeholder="In.">"
+            <input type="text" name="system.height.formula" value={{system.height.formula}} placeholder="In.">"
         </div>
     </div>
 

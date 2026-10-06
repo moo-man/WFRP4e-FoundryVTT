@@ -57,9 +57,10 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
 
     }
 
-    async getStageResults() 
+    async getStageResults(formData) 
     {
 
+        await super.getStageResults(formData);
         let skillAdvances = {};
 
         this.data.speciesSkills.three.forEach(s => {

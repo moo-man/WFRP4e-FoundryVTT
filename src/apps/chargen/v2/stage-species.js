@@ -100,8 +100,9 @@ export class SpeciesStage extends BaseCharacterCreationStage
         }
     }
     
-    async getStageResults() 
+    async getStageResults(formData) 
     {
+        await super.getStageResults(formData);
         return {
             items: [(await (await this.activeSpecies).system.compileSpecies()).toObject()],
             "system.details.experience.current" : this._computeXP()
