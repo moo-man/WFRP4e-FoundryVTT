@@ -103,9 +103,13 @@ export class SpeciesStage extends BaseCharacterCreationStage
     async getStageResults(formData) 
     {
         await super.getStageResults(formData);
+        let species = (await (await this.activeSpecies).system.compileSpecies()).toObject();
         return {
-            items: [(await (await this.activeSpecies).system.compileSpecies()).toObject()],
-            "system.details.experience.current" : this._computeXP()
+            items: [species],
+            "system.details.experience.total" : this._computeXP(),
+            "system.details.move.value" : species.system.move,
+            "system.status.fate.value" : species.system.fate,
+            "system.status.resilience.value" : species.system.resilience
 
         }
     }

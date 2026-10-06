@@ -96,8 +96,8 @@ export class AttributesStage extends BaseCharacterCreationStage
           }
         }
 
-        result.system.status.fate.value = this.data.meta.fate.total;
-        result.system.status.resilience.value = this.data.meta.resilience.total;
+        result.system.status.fate.value = this.data.meta.fate.allocated;
+        result.system.status.resilience.value = this.data.meta.resilience.allocated;
 
         return result;
     }

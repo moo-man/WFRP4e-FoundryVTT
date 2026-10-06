@@ -113,7 +113,7 @@ export default class VehicleCumulativeModifiersConfig extends HandlebarsApplicat
 
     static  async _onRoll(ev, target)
     {
-        const formData = new FormDataExtended(this.form).object;
+        const formData = new new foundry.applications.ux.FormDataExtended(this.form).object;
         if (!formData.weekLabel)
         {
             ui.notifications.error(game.i18n.localize("VEHICLE.LabelError"))

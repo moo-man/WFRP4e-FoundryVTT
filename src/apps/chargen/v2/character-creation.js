@@ -76,7 +76,35 @@ export class WFRP4eCharacterCreation extends StagedCharacterCreation
         return context;
     }
 
+    async getCharacterHTML()
+    {
+        let character = this.compileCharacter();
+        let data = this.compileResults();
+
+        let templateData = {
+            character, 
+            species: this.stageResults.species?.items[0], 
+            career: this.stageResults.career?.items[0],
+            skills: Object.keys(data.skillAdvances || {}).filter(i => data.skillAdvances[i]).map(i => `${i} ${data.skillAdvances[i]}`).join(", "),
+            talents: character.itemTypes.talent.map(i => i.name).join(", "),
+            trappings: character.itemTags.physical?.map(i => i.name).join(", ")
+        }
+
+        let html = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/apps/chargen/v2/character-data.hbs", templateData);
+        let el = document.createElement("div");
+        el.innerHTML = html;
+        return el;
+    }
+
+
+    getSystemData()
+    {
+        return {
+            type : "character"
+        }
+    }
 }
+
     Hooks.on("ready", () => {
         new WFRP4eCharacterCreation().render({force: true});
     });

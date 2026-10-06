@@ -1,0 +1,126 @@
+<div class="chargen-group">
+    <div class="chargen-details">
+        <label>{{localize "Name"}}</label>
+        <span>{{character.name}}</span>
+    </div>
+
+    <div class="chargen-details">
+        <label>{{localize "Species"}}</label>
+        <span>{{species.name}}</span>
+    </div>
+
+    <div class="chargen-details">
+        <label>{{localize "Career"}}</label>
+        <span>{{career.name}}</span>
+    </div>
+
+    <div class="chargen-details xp">
+        <label>{{localize "XP"}}</label>
+        <span>{{character.system.details.experience.total}}</span>
+    </div>
+</div>
+
+<div class="chargen-details">
+
+    <table>
+        <tbody>
+            <tr>
+                <td></td>
+                {{#each character.system.characteristics}}
+                    <th data-tooltip="{{configLookup "characteristics" @key}}">{{configLookup "characteristicsAbbrev" @key}}</th>
+                {{/each}}
+            </tr>
+            <tr>
+                <td>{{localize "Initial"}}</td>
+                {{#each character.system.characteristics}}
+                    <td>{{this.initial}}</td>
+                {{/each}}
+            </tr>
+            <tr>
+                <td>{{localize "Advances"}}</td>
+                {{#each character.system.characteristics}}
+                    <td>{{this.advances}}</td>
+                {{/each}}
+            </tr>
+            <tr>
+                <td>{{localize "Total"}}</td>
+                {{#each character.system.characteristics}}
+                    <td>{{this.value}}</td>
+                {{/each}}
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="chargen-group">
+    <div class="chargen-details wrap">
+        <label>{{localize "Skills"}}</label>
+        <span>{{skills}}</span>
+    </div>
+</div>
+
+<div class="chargen-group">
+
+    <div class="chargen-details wrap">
+        <label>{{localize "Talents"}}</label>
+        <span>{{talents}}</span>
+    </div>
+</div>
+
+<div class="chargen-group">
+    <div class="chargen-details wrap">
+        <label>{{localize "Trappings"}}</label>
+        <span>{{trappings}}</span>
+    </div>
+</div>
+
+
+<div class="chargen-group">
+    <div class="chargen-details">
+        <label>{{localize "Fate"}}</label>
+        <span>{{character.system.status.fate.value}}</span>
+    </div>
+    <div class="chargen-details">
+        <label>{{localize "Resilience"}}</label>
+        <span>{{character.system.status.resilience.value}}</span>
+    </div>
+
+
+    <div class="chargen-details">
+        <label>{{localize "Move"}}</label>
+        <span>{{character.system.details.move.value}}</span>
+    </div>
+
+    <div class="chargen-details">
+        <label>{{localize "Gender"}}</label>
+        <span>{{character.system.details.gender.value}}</span>
+    </div>
+
+
+    <div class="chargen-details">
+        <label>{{localize "Age"}}</label>
+        <span>{{character.system.details.age.value}}</span>
+    </div>
+
+    <div class="chargen-details">
+        <label>{{localize "Height"}}</label>
+        <span>{{character.system.details.height.value}}</span>
+    </div>
+
+
+    <div class="chargen-details">
+        <label>{{localize "CHARGEN.Details.Hair"}}</label>
+        <span>{{character.system.details.haircolour.value}}</span>
+    </div>
+
+
+
+    <div class="chargen-details">
+        <label>{{localize "CHARGEN.Details.Eyes"}}</label>
+        <span>{{character.system.details.eyecolour.value}}</span>
+    </div>
+</div>
+
+<div class="chargen-group extra">
+    {{{stageHTML}}}
+</div>

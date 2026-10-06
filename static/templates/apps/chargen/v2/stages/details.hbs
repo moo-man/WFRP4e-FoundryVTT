@@ -2,46 +2,46 @@
 
     <div class="detail-form">
         <label>{{localize "Gender"}}</label>
-        <input name="gender" type="text">
+        <input name="gender" value="{{details.gender}}" type="text">
     </div>
     <div class="detail-form">
         <label>{{localize "Name"}}</label>
-        <input name="name" type="text" value="{{data.details.name}}">
+        <input name="name" type="text" value="{{details.name}}">
         <a data-action="rollDetails" data-type="name"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="detail-form">
         <label>{{localize "Age"}}</label>
-        <input name="age" type="text" value="{{data.details.age}}">
+        <input name="age" type="text" value="{{details.age}}">
         <a data-action="rollDetails" data-type="age"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="detail-form">
         <label>{{localize "Height"}}</label>
-        <input name="height" type="text" value="{{data.details.height}}">
+        <input name="height" type="text" value="{{details.height}}">
         <a data-action="rollDetails" data-type="height"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="detail-form">
         <label>{{localize "Eye Colour"}}</label>
-        <input name="eyes" type="text" value="{{data.details.eyes}}">
+        <input name="eyes" type="text" value="{{details.eyes}}">
         <a data-action="rollDetails" data-type="eyes"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="detail-form">
         <label>{{localize "Hair Colour"}}</label>
-        <input name="hair" type="text" value="{{data.details.hair}}">
+        <input name="hair" type="text" value="{{details.hair}}">
         <a data-action="rollDetails" data-type="hair"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="detail-form">
         <label>{{localize "Motivation"}}</label>
-        <input name="motivation" type="text" value="{{data.details.motivation}}">
+        <input name="motivation" type="text" value="{{details.motivation}}">
         <a data-action="rollDetails" data-type="motivation"><i class="fa-solid fa-dice"></i></a>
     </div>
     <div class="ambitions">
         <div class="detail-form">
             <label>{{localize "CHARGEN.Details.ShortTermAmbitions"}}</label>
-            <textarea name="short">{{data.details.short}}</textarea>
+            <textarea name="short">{{details.short}}</textarea>
         </div>
         <div class="detail-form">
             <label>{{localize "CHARGEN.Details.LongTermAmbitions"}}</label>
-            <textarea name="long" >{{data.details.long}}</textarea>
+            <textarea name="long" >{{details.long}}</textarea>
         </div>
     </div>
     </div>

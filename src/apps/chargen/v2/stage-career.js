@@ -81,7 +81,7 @@ export class CareerStage extends BaseCharacterCreationStage
         await super.getStageResults(formData);
         return {
             items: [await warhammer.utility.findItemId(this.data.selected)].map(i => i.toObject()),
-            "system.details.experience.current" : this._computeXP()
+            "system.details.experience.total" : this._computeXP()
         }
     }
 

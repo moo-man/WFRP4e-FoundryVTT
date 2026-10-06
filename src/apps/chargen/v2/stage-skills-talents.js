@@ -75,7 +75,7 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
         })
 
         let result = {
-          items: this.data.speciesTalents.choices.concat(this.data.speciesTalents.random).concat(await fromUuid(this.data.selectedCareerTalent)),
+          items: this.data.speciesTalents.choices.concat(this.data.speciesTalents.random).concat((await fromUuid(this.data.selectedCareerTalent))?.toObject?.()).filter(i => i),
           skillAdvances,
         }
 
@@ -136,7 +136,7 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
       let talents = await this.data.species.system.talents.choices.promptDecision();
       if (talents.length)
       {
-        this.data.speciesTalents.choices = talents;
+        this.data.speciesTalents.choices = talents.map(i => i.toObject?.() || i);
       }
       this.render({force: true})
     }
@@ -156,7 +156,7 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
     {
       let table = await this.data.species.system.tables.talents.document;
       let result = await table.roll();
-      return await fromUuid(result.results[0].uuid)
+      return (await fromUuid(result.results[0].documentUuid)).toObject();
     }
 
     static async _onSelectTalent(ev)

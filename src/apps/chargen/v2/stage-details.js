@@ -34,21 +34,22 @@ export class DetailsStage extends BaseCharacterCreationStage
     {
         await super.getStageResults(formData);
         return {
-          "system.details.name" : formData.object.name,
-          "system.details.gender" : formData.object.gender,
-          "system.details.age" : formData.object.age,
-          "system.details.height" : formData.object.height,
-          "system.details.eyes" : formData.object.eyes,
-          "system.details.hair" : formData.object.hair,
-          "system.details.motivation" : formData.object.motivation,
-          "system.details.short" : formData.object.short,
-          "system.details.long" : formData.object.long
+          "name" : formData.object.name,
+          "system.details.gender.value" : formData.object.gender,
+          "system.details.age.value" : formData.object.age,
+          "system.details.height.value" : formData.object.height,
+          "system.details.eyecolour.value" : formData.object.eyes,
+          "system.details.haircolour.value" : formData.object.hair,
+          "system.details.motivation.value" : formData.object.motivation,
+          "system.details.personal-ambitions.short-term" : formData.object.short,
+          "system.details.personal-ambitions.long-term" : formData.object.long
         }
     }
 
     async _prepareContext(options)
     {
         let context = await super._prepareContext(options);
+        context.details = this.data.details;
         return context;
     }
 
@@ -78,6 +79,8 @@ export class DetailsStage extends BaseCharacterCreationStage
       }
 
       target.closest(".detail-form").querySelector("input").value = value;
+      // save form data to populate if closed
+      this.data.details = new foundry.applications.ux.FormDataExtended(this.element).object;
     }
 
     async rollName() {
@@ -117,7 +120,11 @@ export class DetailsStage extends BaseCharacterCreationStage
 
     _addEventListeners()
     {
-
+      this.element.querySelectorAll("input").forEach(el=> {
+          el.addEventListener("change", (ev) => {
+            this.data.details[ev.target.name] = ev.target.value;
+          })
+      });
     }
 
 }
