@@ -67,7 +67,7 @@ WFRP5E.systemEffects = {
                 },
                 {
                     label: "Failed Test Defending",
-                    trigger: "opposedAttacker",
+                    trigger: "opposedDefender",
                     script: `if (args.opposedTest.result.winner == "attacker" && args.defenderTest.item?.system.isMelee) this.actor.update({"system.status.momentum" : false});`
                 },
                 {
