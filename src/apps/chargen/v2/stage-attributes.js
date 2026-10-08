@@ -119,6 +119,28 @@ export class AttributesStage extends BaseCharacterCreationStage
       return context;
     }
 
+    
+    async validateSubmit()
+    {
+        await super.validateSubmit();
+        if (this.data.overallocated)
+        {
+            throw this.error("Overallocated");
+        }
+        if (Object.values(this.data.characteristics).some(c => c.invalid))
+        {
+            throw this.error("AllocationInvalid");
+        }
+        if (this.data.meta.available < 0)
+        {
+            throw this.error("MetaInvalid");
+        }
+        if (Object.values(this.data.advances).reduce((a, b) => a + b, 0) > 5)
+        {
+          throw this.error("AdvancesInvalid");
+        }
+    }
+
     _computeXP()
     {
       let xp;
@@ -167,10 +189,12 @@ export class AttributesStage extends BaseCharacterCreationStage
       if (this.data.rolled)
       {
         this.data.rerolled = true;
+        await this.updateMessage("RerolledCharacteristics")
       }
       else 
       {
         this.data.rolled = true;
+        await this.updateMessage("RolledCharacteristics")
       }
       for(let c in this.data.characteristics)
       {
@@ -180,6 +204,27 @@ export class AttributesStage extends BaseCharacterCreationStage
 
       this.data.allocating = false;
       this.data.swapping = false;
+
+      this.updateMessage(undefined, undefined, `
+      <div class="flexcol" style="text-align: center">
+        <div class="flexrow">
+          <div>
+            ${Object.keys(this.data.characteristics)
+              .map(i => game.wfrp4e.config.characteristicsAbbrev[i])
+              .join("</div><div>")
+            }
+          </div>
+        </div>
+        <div class="flexrow">
+          <div>
+          ${Object.values(this.data.characteristics)
+            .map(i => i.roll + i.base)
+            .join("</div><div>")
+          }
+          </div>
+        </div>
+      </div>
+      `)
 
       this.render({force: true})
     }
@@ -196,6 +241,7 @@ export class AttributesStage extends BaseCharacterCreationStage
     {
       this.data.allocating = true;
       this.data.swapping = false;
+      this.updateMessage("AllocateCharacteristics");
       this.render({force: true})
     }
 
@@ -211,7 +257,7 @@ export class AttributesStage extends BaseCharacterCreationStage
 
       if (this.data.characteristics[swap1].formula != this.data.characteristics[swap2].formula)
       {
-        return ui.notifications.error("Swapped characteristics must use the same roll formula!")
+        return this.showError("SwapFormula");
       }
 
       let value1 = this.data.characteristics[swap1].roll;
@@ -219,6 +265,9 @@ export class AttributesStage extends BaseCharacterCreationStage
 
       this.data.characteristics[swap2].roll = value1;
       this.data.characteristics[swap1].roll = value2;
+
+      this.updateMessage("SwappedCharacteristics", {ch1 : game.wfrp4e.config.characteristics[swap1], ch2: game.wfrp4e.config.characteristics[swap2]})
+
 
       this.render({force: true})
     }

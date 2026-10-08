@@ -82,6 +82,24 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
         return result;
     }
 
+    async validateSubmit()
+    {
+        await super.validateSubmit();
+        if (Object.values(this.data.careerSkills).some(adv => adv > 10))
+        {
+            throw this.error("SkillAdvanceAllocationLimit");
+        }
+        if (this.data.careerAdvances.left < 0)
+        {
+            throw this.error("SkillAdvanceOverAllocation");
+        }
+
+        if (!this.data.selectedCareerTalent)
+        {
+            throw this.error("NoCareerTalent");
+        }
+    }
+
     async _prepareContext(options)
     {
         let context = await super._prepareContext(options);
@@ -126,6 +144,11 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
       let target = ev.target.dataset.drop;
       let from = dropData.from;
 
+      if (this.data.speciesSkills[target].length >= 3)
+      {
+        throw this.showError("SpeciesSkills");
+      }
+      
       this.data.speciesSkills[from] = this.data.speciesSkills[from].filter(i => i != skill);      
       this.data.speciesSkills[target] = this.data.speciesSkills[target].concat(skill);
       this.render({force: true})
@@ -148,6 +171,7 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
       {
         rolled.push(await this._rollSpeciesTalent());
       }
+      this.updateMessage("Rolled", { rolled: rolled.map(i => i.name).join(", ") })
       this.data.speciesTalents.random = rolled;
       this.render({force: true})
     }
@@ -174,6 +198,7 @@ export class SkillsTalentsStage extends BaseCharacterCreationStage
         if (talents[i].uuid == uuid)
         {
           talents[i] = await this._rollSpeciesTalent();
+          this.updateMessage("RerolledDuplicateTalent", { rolled: talents[i].name })
           break;
         }
       }

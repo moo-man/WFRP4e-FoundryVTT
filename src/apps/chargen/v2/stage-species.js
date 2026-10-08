@@ -78,7 +78,6 @@ export class SpeciesStage extends BaseCharacterCreationStage
         {
             return 0
         }
-
     }
 
     // Chosen or rolled species, chosen preempts rolled
@@ -103,6 +102,8 @@ export class SpeciesStage extends BaseCharacterCreationStage
     async getStageResults(formData) 
     {
         await super.getStageResults(formData);
+
+
         let species = (await (await this.activeSpecies).system.compileSpecies()).toObject();
         return {
             items: [species],
@@ -111,6 +112,27 @@ export class SpeciesStage extends BaseCharacterCreationStage
             "system.status.fate.value" : species.system.fate,
             "system.status.resilience.value" : species.system.resilience
 
+        }
+    }
+
+    async _preResultSubmission()
+    {
+        if (!this.data.chosen || this.data.chosen == this.data.rolled)
+        {
+            this.updateMessage("Rolled", {rolled : (await this.activeSpecies).name})
+        }
+        else if (this.data.chosen)
+        {
+            this.updateMessage("Chose", {chosen : (await this.activeSpecies).name})
+        }
+    }
+
+    async validateSubmit()
+    {
+        await super.validateSubmit();
+        if (!(await this.activeSpecies))
+        {
+            throw this.error("NoSpecies")
         }
     }
 
@@ -138,11 +160,11 @@ export class SpeciesStage extends BaseCharacterCreationStage
         }
         else if (!document)
         {
-            throw new Error(game.i18n.localize("CHARGEN.ERROR."))
+            throw this.error("SpeciesDocument", {name: roll.results[0].name})
         }
         else 
         {
-            throw new Error(game.i18n.localize("CHARGEN.ERROR."))
+            throw this.error("SpeciesAlreadyRolled")
         }
     }
 

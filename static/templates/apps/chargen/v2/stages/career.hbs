@@ -1,6 +1,5 @@
 <div>
     <div class="career-table">
-        <button type="button" data-action="rollCareer">Roll Career</button>
         <div class="table-content">
 
             {{#each table.results}}
@@ -22,6 +21,10 @@
     </div>
     <div class="careers-rolled">
         <h3>Career</h3>
+        <button type="button" data-action="rollCareer">Roll Career</button>
+
+        {{localize "WH.CharacterCreation.Career.DragDrop"}}
+
         <div class="career-list">
             {{#each careerChoices}}
                 <div class="chargen-option {{#if (eq ../selectedCareer.id this._id)}}selected{{/if}}" data-action="selectCareer" data-id="{{this._id}}">
@@ -35,6 +38,11 @@
                 </div>
             {{/each}}
         </div>
+        {{#if (eq step 1)}}
+        {{localize "WH.CharacterCreation.Career.RollAgain"}}
+        {{else if (eq step 2)}}
+        {{localize "WH.CharacterCreation.Career.KeepRolling"}}
+        {{/if}}
     </div>
     <div class="career-details">
     </div>

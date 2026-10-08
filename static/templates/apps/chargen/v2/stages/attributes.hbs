@@ -31,21 +31,23 @@
         {{/if}}
 
         {{#if data.rolled}}
-            <div><p class="centered">Alternative Options</p>
+                <p class="centered">{{localize "WH.CharacterCreation.Attributes.NotHappy"}}</p>
         <div class="char-options">
-            <button data-action="swapCharacteristics">Rearrange</button>
-            <button data-action="rollCharacteristics">Reroll</button>
-            <button data-action="allocateCharacteristics">Allocate</button>
+            <button type="button" data-action="swapCharacteristics">Rearrange</button>
+            <button type="button" data-action="rollCharacteristics">Reroll</button>
+            <button type="button" data-action="allocateCharacteristics">Allocate</button>
         </div>
+                <p class="centered">{{localize "WH.CharacterCreation.Attributes.Instructions"}}</p>
+
         {{else}}
         <div class="char-options">
-            <button data-action="rollCharacteristics">Roll Characteristics</button>
+            <button type="button" data-action="rollCharacteristics">Roll Characteristics</button>
         </div>
         {{/if}}
     </div>
     <hr>
     <div class="meta">
-        <div>Allocate Extra Points ({{data.meta.available}} left)</div>
+        <h4 class="centered">Allocate Extra Points ({{data.meta.available}} left)</h4>
 
         <div class="meta-inputs">
             <div>
@@ -61,7 +63,7 @@
     </div>
     <hr>
     <div class="advances">
-        <div>Allocate 5 Advances to your Career's Characteristics</div>
+        <h4 class="centered">Allocate 5 Advances to your Career's Characteristics</h4>
         <div class="advance-inputs">
             {{#each data.advances}}
             <div>

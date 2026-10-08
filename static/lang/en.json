@@ -2098,6 +2098,57 @@
           "Crew" : "Crew"
         },
 
+        "CharacterCreation": {
+            "Message": {
+                "Rolled" : "<p>Rolled: <strong>{rolled}</strong>!</p>",
+                "Chose" : "<p>Chose: <strong>{chosen}</strong>!</p>",
+
+                "RolledCharacteristics" : "<p>Rolled Characterstics</p>",
+                "RerolledCharacteristics" : "<p>Rerolled Characterstics</p>",
+                "RerolledDuplicateTalent" : "<p>Rerolled Duplicate Talent: <strong>{rolled}</strong>!</p>",
+                "AllocateCharacteristics" : "<p>Started Allocating Characteristics</p>",
+                "SwappedCharacteristics" : "<p>Swapped {ch1} with {ch2}</p>"
+
+
+            },
+
+            "Error" : {
+                "NoSpecies": "No Species has been rolled or selected!",
+                "SpeciesDocument" : "No Species Item found for {name}",
+                "SpeciesAlreadyRolled" : "Species has already been rolled!",
+                "NoCareer": "No Career has been selected!",
+
+                "CareerItems": "{num} career Items could not be found (out of {careers})",
+
+                "Overallocated" : "Characteristic allocations exceed maximum",
+                "AllocationInvalid" : "One or more characteristic allocations are invalid (minimum: 4, maximum 18)",
+                "MetaInvalid" : "Metacurrency allocation exceeds maximum",
+                "AdvancesInvalid" : "Advances allocation exceeds maximum",
+                "SwapFormula" : "Swapped characteristics must use the same roll formula!",
+
+                "SpeciesSkills" : "3 Skills maximum",
+
+                "SkillAdvanceAllocationLimit" : "Cannot allocate more than 10 Advances to a skill",
+                "SkillAdvanceOverAllocation" : "Too many Skill Advances!",
+                "NoCareerTalent" : "Career Talent not selected!"
+            },
+
+            "Career" : {
+                "ChooseCareer" : "Choose {name}",
+                "ReplacementsAvailable" : "Replacements available",
+                "ReplacementsAvailableDescription" : "Based on the careers rolled, these alternate options are available",
+                "RollAgain" : "Roll again for two more choices for less XP",
+                "KeepRolling" : "Keep rolling (no extra experience)",
+                "DragDrop" : "Alternatively, drag and drop a career item to use that career instead (for no extra experience)",
+                "LoadingCareers" : "Loading Careers..."
+            },
+
+            "Attributes" : {
+                "NotHappy" : "Not happy with these numbers?",
+                "Instructions" : "Drag and drop the Roll values to rearrange the stats (but doing so provides less XP). Or you can reroll and receive no XP. Alternatively, allocate 100 points as you wish (for no XP, minimum 4, maximum 18)."
+            }
+        },
+
         "Models" : {
 
             "standard": {

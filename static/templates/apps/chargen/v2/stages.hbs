@@ -1,5 +1,8 @@
 <div class="stages">
-    <a class="close" data-action="close"><i class="fa-solid fa-xmark"></i></a>
+    <div class="controls">
+    <a data-tooltip="WH.CharacterCreation.Controls.BrowseTooltip" class="browser" data-action="browse"><i class="fa-solid fa-magnifying-glass"></i></a>
+    <a data-tooltip="WH.CharacterCreation.Controls.CloseTooltip" class="close" data-action="close"><i class="fa-solid fa-xmark"></i></a>
+    </div>
     {{#each stages}}
     <button type="button" data-action="startStage" data-stage="{{@key}}">{{this.title}}</button>
     {{/each}}

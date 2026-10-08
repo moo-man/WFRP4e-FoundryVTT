@@ -16,7 +16,8 @@ export class CareerStage extends BaseCharacterCreationStage
                 rollCareer: this._onRollCareer,
                 chooseCareer: this._onChooseCareer,
                 selectCareer: this._onSelectCareer
-            }
+            },
+            dragDrop: [{ dropSelector: "" }]
         };
 
     static PARTS = {
@@ -35,14 +36,31 @@ export class CareerStage extends BaseCharacterCreationStage
         this.data.careerChoices = [];
         this.data.selected = null;
         this.data.replacements = [];
+        this.data.manuallyAdded = [];
         this.data.xp = null;
         this.data.manuallyChosen = null;
+    }
+
+    async _preResultSubmission()
+    {
+      let career = await warhammer.utility.findItemId(this.data.selected);
+      this.updateMessage("Chose", {chosen : career.name})
+    }
+
+    async validateSubmit()
+    {
+        await super.validateSubmit();
+        if (!this.data.selected)
+        {
+            throw this.error("NoCareer")
+        }
     }
 
     async _prepareContext(options)
     {
         let context = await super._prepareContext(options);
         context.table = await this.data.table;
+        context.step = this.data.step;
         context.careerChoices = this.data.careerChoices;
         context.selectedCareer = await warhammer.utility.findItemId(this.data.selected ?? "");
         context.manuallyChosen = this.data.manuallyChosen;
@@ -147,13 +165,13 @@ export class CareerStage extends BaseCharacterCreationStage
         }
     
         if (careerNames.length != careersFound.length)
-          this.showError("CareerItems", {num : careerNames.length - careersFound.length, careers : careerNames.toString()})
+          throw this.error("CareerItems", {num : careerNames.length - careersFound.length, careers : careerNames.toString()})
         return careersFound;
     }
 
     _computeXP()
     {
-      if (!this.data.manuallyChosen || this.data.careerChoices.find(i => i._id == this.data.selected))
+      if (!this.data.manuallyAdded.includes(this.data.selected) && (!this.data.manuallyChosen || this.data.careerChoices.find(i => i._id == this.data.selected)))
       {
         return this.data.xp;
       }
@@ -221,6 +239,20 @@ export class CareerStage extends BaseCharacterCreationStage
         this.data.selected = target.dataset.id;
         this.data.manuallyChosen = null;
         this.render({force: true});
+    }
+
+
+    async _onDropItem(data, ev)
+    {
+        let item = await Item.implementation.fromDropData(data);
+        if (item?.type == "career")
+        {
+          let t1Career = (await this.findT1Careers(item.system.careergroup.value))[0];
+          this.data.careerChoices = this.data.careerChoices.concat(t1Career);
+          this.data.selected = t1Career._id;
+          this.data.manuallyAdded.push(t1Career._id);
+          this.render({force: true})
+        }
     }
 }
 
