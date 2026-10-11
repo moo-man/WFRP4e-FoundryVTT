@@ -116,6 +116,8 @@ import PrayerTest5e from "./system/rolls/5e/prayer-test5e.js";
 import TraitTest5e from "./system/rolls/5e/trait-test5e.js";
 import { MagicUseMessageModel5e } from "./model/message/magic5e.js";
 import WFRP4E from "./system/config-wfrp4e.js";
+import { CareerPathModel } from "./model/item/careerPath.js";
+import CareerPathSheet from "./sheets/item/career-path-sheet.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -142,6 +144,7 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", AmmunitionSheet, { types: ["ammunition"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", ArmourSheet, { types: ["armour"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", CareerSheet, { types: ["career"], makeDefault: true });
+  DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", CareerPathSheet, { types: ["careerPath"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", CargoSheet, { types: ["cargo"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", ContainerSheet, { types: ["container"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", CriticalSheet, { types: ["critical"], makeDefault: true });
@@ -162,38 +165,39 @@ Hooks.once("init", function () {
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", VehicleTestSheet, { types: ["vehicleTest"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", WeaponSheet, { types: ["weapon"], makeDefault: true });
   DocumentSheetConfig.registerSheet(itemClass, "wfrp4e", TemplateSheet, { types: ["template"], makeDefault: true });
-  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true})
+  DocumentSheetConfig.registerSheet(ActiveEffect, "wfrp4e", WFRP4eActiveEffectConfig, {makeDefault :true});
 
-  DocumentSheetConfig.registerSheet(CONFIG.JournalEntryPage.documentClass, "wfrp4e", EndeavourJournalSheet, {label : "Endeavour Journal Page"}) 
+  DocumentSheetConfig.registerSheet(CONFIG.JournalEntryPage.documentClass, "wfrp4e", EndeavourJournalSheet, {label : "Endeavour Journal Page"});
 
   CONFIG.Actor.dataModels["character"] = CharacterModel;
   CONFIG.Actor.dataModels["npc"] = NPCModel;
   CONFIG.Actor.dataModels["creature"] = CreatureModel;
   CONFIG.Actor.dataModels["vehicle"] = VehicleModel;
 
-  CONFIG.Item.dataModels["ammunition"] = AmmunitionModel
-  CONFIG.Item.dataModels["armour"] = ArmourModel
-  CONFIG.Item.dataModels["career"] = CareerModel
-  CONFIG.Item.dataModels["container"] = ContainerModel
-  CONFIG.Item.dataModels["critical"] = CriticalModel
-  CONFIG.Item.dataModels["disease"] = DiseaseModel
-  CONFIG.Item.dataModels["injury"] = InjuryModel
-  CONFIG.Item.dataModels["money"] = MoneyModel
-  CONFIG.Item.dataModels["mutation"] = MutationModel
-  CONFIG.Item.dataModels["prayer"] = PrayerModel
-  CONFIG.Item.dataModels["psychology"] = PsychologyModel
-  CONFIG.Item.dataModels["talent"] = TalentModel
-  CONFIG.Item.dataModels["trapping"] = TrappingModel
-  CONFIG.Item.dataModels["skill"] = SkillModel
-  CONFIG.Item.dataModels["spell"] = SpellModel
-  CONFIG.Item.dataModels["trait"] = TraitModel
-  CONFIG.Item.dataModels["weapon"] = WeaponModel
-  CONFIG.Item.dataModels["vehicleMod"] = VehicleModModel
-  CONFIG.Item.dataModels["vehicleTest"] = VehicleTestModel
-  CONFIG.Item.dataModels["vehicleRole"] = VehicleRoleModel
-  CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel
-  CONFIG.Item.dataModels["cargo"] = CargoModel
-  CONFIG.Item.dataModels["template"] = TemplateModel
+  CONFIG.Item.dataModels["ammunition"] = AmmunitionModel;
+  CONFIG.Item.dataModels["armour"] = ArmourModel;
+  CONFIG.Item.dataModels["career"] = CareerModel;
+  CONFIG.Item.dataModels["careerPath"] = CareerPathModel;
+  CONFIG.Item.dataModels["container"] = ContainerModel;
+  CONFIG.Item.dataModels["critical"] = CriticalModel;
+  CONFIG.Item.dataModels["disease"] = DiseaseModel;
+  CONFIG.Item.dataModels["injury"] = InjuryModel;
+  CONFIG.Item.dataModels["money"] = MoneyModel;
+  CONFIG.Item.dataModels["mutation"] = MutationModel;
+  CONFIG.Item.dataModels["prayer"] = PrayerModel;
+  CONFIG.Item.dataModels["psychology"] = PsychologyModel;
+  CONFIG.Item.dataModels["talent"] = TalentModel;
+  CONFIG.Item.dataModels["trapping"] = TrappingModel;
+  CONFIG.Item.dataModels["skill"] = SkillModel;
+  CONFIG.Item.dataModels["spell"] = SpellModel;
+  CONFIG.Item.dataModels["trait"] = TraitModel;
+  CONFIG.Item.dataModels["weapon"] = WeaponModel;
+  CONFIG.Item.dataModels["vehicleMod"] = VehicleModModel;
+  CONFIG.Item.dataModels["vehicleTest"] = VehicleTestModel;
+  CONFIG.Item.dataModels["vehicleRole"] = VehicleRoleModel;
+  CONFIG.Item.dataModels["extendedTest"] = ExtendedTestModel;
+  CONFIG.Item.dataModels["cargo"] = CargoModel;
+  CONFIG.Item.dataModels["template"] = TemplateModel;
 
   CONFIG.ActiveEffect.dataModels["base"] = WFRP4eActiveEffectModel
   CONFIG.ChatMessage.dataModels["test"] = WFRPTestMessageModel;
@@ -274,13 +278,13 @@ Hooks.once("init", function () {
 
   CONFIG.calendar = calendar();
 
-  CONFIG.cursors.default = "systems/wfrp4e/ui/cursors/normal.png"
-  CONFIG.cursors["default-down"] = "systems/wfrp4e/ui/cursors/normal.png"
-  CONFIG.cursors.pointer = "systems/wfrp4e/ui/cursors/active.png"
-  CONFIG.cursors["pointer-down"] = "systems/wfrp4e/ui/cursors/active.png"
+  CONFIG.cursors.default = "systems/wfrp4e/ui/cursors/normal.png";
+  CONFIG.cursors["default-down"] = "systems/wfrp4e/ui/cursors/normal.png";
+  CONFIG.cursors.pointer = "systems/wfrp4e/ui/cursors/active.png";
+  CONFIG.cursors["pointer-down"] = "systems/wfrp4e/ui/cursors/active.png";
 
-  warhammer.utility.registerPremiumModuleInitialization()
+  warhammer.utility.registerPremiumModuleInitialization();
 });
 
-registerHooks()
+registerHooks();
 loadScripts();

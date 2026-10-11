@@ -10,6 +10,7 @@
     "TYPES.Item.ammunition" : "Ammunition",
     "TYPES.Item.armour" : "Armour",
     "TYPES.Item.career" : "Career",
+    "TYPES.Item.careerPath" : "Career Path",
     "TYPES.Item.container" : "Container",
     "TYPES.Item.critical" : "Critical",
     "TYPES.Item.disease" : "Disease",
@@ -33,7 +34,7 @@
 
     "SHEETS.Item.ammunition" : "Ammunition Sheet",
     "SHEETS.Item.armour" : "Armour Sheet",
-    "SHEETS.Item.career" : "Career Sheet",
+    "SHEETS.Item.careerPath" : "Career Path Sheet",
     "SHEETS.Item.container" : "Container Sheet",
     "SHEETS.Item.critical" : "Critical Sheet",
     "SHEETS.Item.disease" : "Disease Sheet",
@@ -2245,6 +2246,23 @@
                         "standing" : {
                             "label" : "Standing "
                         }
+                    }
+                }
+            },
+            "careerPath" : {
+                "FIELDS" : {
+                    "class" : {
+                        "label" : "Class"
+                    }
+                }
+            },
+            "careerTier": {
+                "FIELDS" : {
+                    "name": {
+                        "label" : "Name"
+                    },
+                    "level": {
+                        "label": "Level"
                     }
                 }
             },
