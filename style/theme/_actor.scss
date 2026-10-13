@@ -397,4 +397,48 @@
         
                     }
                 }
+
+                .careers .career {
+                    --tier: 1;
+                    &.tier-1 {
+                        --tier: 1
+                    }
+                    &.tier-2 {
+                        --tier: 2
+                    }
+                    &.tier-3 {
+                        --tier: 3
+                    }
+                    &.tier-4 {
+                        --tier: 4
+                    }
+                    &.tier-5 {
+                        --tier: 5
+                    }
+                    &.tier-6 {
+                        --tier: 6
+                    }
+
+                    .list-name {
+                        position: relative;
+                        &::before { 
+                            --size: 15px;
+                            // Weird workaround to get a variable in the pseudo element content
+                            counter-reset: tier var(--tier);
+                            content: counter(tier);
+                            color: white;
+                            font-size: var(--size);
+                            line-height: var(--size);
+                            position: absolute;
+                            width: var(--size);
+                            height: var(--size);
+                            padding-left: 3px;
+                            padding-top: 1px;
+                            bottom: 0px;
+                            left: calc(2rem - var(--size));
+                            background-color: #b97509;
+                            border-radius: 50%;
+                        }
+                    }
+                }
         }

@@ -131,4 +131,114 @@ export class CareerPathModel extends BaseItemModel
 
         return properties;
       }
+
+
+    async fromTierItem(tier)
+    {
+      try 
+      {
+        let careers = await warhammer.utility.findAllItems("career", "Loading Careers", true, ["system.careergroup.value"]);
+
+        let tiers = careers.filter(c => c.system.careergroup.value == tier.system.careergroup.value);
+
+        if (tiers.length)
+        {
+          tiers = (await Promise.all(tiers.map(i => fromUuid(i.uuid)))).sort((a, b) => a.system.level.value > b.system.level.value ? 1 : -1);
+        }
+
+        if (tier.pack)
+        {
+          tiers = tiers.filter(i => i.pack == tier.pack);
+        }
+
+        let item = {
+          name: tier.system.careergroup.value,
+          img: tier.img,
+          type: "careerPath",
+          system: {
+            class: tier.system.class.value,
+            characteristics: {},
+            tiers: {}
+          }
+        };
+
+        let skillIndex = 0; // Remove previous tier skills
+        for(let t of tiers)
+        {
+          let skills = t.system.skills;
+          let tierSkills = t.system.skills.slice(skillIndex);
+          // only include income skill if this tier specifies that skill, otherwise leave blank
+          let tierIncome = t.system.incomeSkill.map(i => skills[i]).filter(i => tierSkills.includes(i));
+
+          item.system.tiers[t.id] = {
+            name: t.name,
+            level: t.system.level.value,
+            status: t.system.status,
+            skills: tierSkills,
+            talents: t.system.talents,
+            incomeSkill: tierIncome,
+            //trappings: t.system.trappings
+          };
+
+          for(let c in t.system.characteristics)
+          {
+            if (t.system.characteristics[c] && !item.system.characteristics[c])
+            {
+              item.system.characteristics[c] = t.system.level.value;
+            }
+          }
+
+          skillIndex = t.system.skills.length
+        }
+
+        return item;
+      }
+      catch(e)
+      {
+        throw e;
+      }
+    }
+
+    toTierItems()
+    {
+      let tiers = [];
+
+      let skills = [];
+      for(let tier of Object.values(this.tiers).sort((a, b) => a.level > b.level ? 1 : -1))
+      {
+        skills = skills.concat(tier.skills);
+
+        let characteristics = {};
+        for(let ch in this.characteristics)
+        {
+          characteristics[ch] = tier.level >= this.characteristics[ch];
+        }
+
+        let itemData = {
+          name: tier.name,
+          type: "career",
+          _id: tier.id,
+          img: this.parent.img,
+          system: {
+            class: {
+              value: this.class
+            },
+            careergroup: {
+              value: this.parent.name
+            },
+            level: {
+              value: tier.level
+            },
+            characteristics,
+            status: tier.status,
+            skills,
+            talents: tier.talents,
+            //trappings: tier.trappings,
+            incomeSkill: tier.incomeSkill.map(s => skills.findIndex(_s => _s == s))
+          }
+        }
+        tiers.push(itemData)
+      }
+      return tiers;
+    }
 }

@@ -199,7 +199,7 @@
             }
         }
 
-        .window-content button {
+        [data-application-part=details] button {
             @include styled-button;
             width: 50%;
             margin: 0px auto;
@@ -216,6 +216,24 @@
         .name-list.toggle-list {
             --color: var(--color-warm);
             --text-active: var(--color-cream);
+        }
+
+        .name-list {
+        
+            select,
+            input {
+                background: none;
+                color: var(--color-grey1);
+                border-color: var(--color-warm);
+                box-shadow: none;
+                &::placeholder {
+                    color: var(--color-grey1);
+                }
+                &.empty:not(:focus) {
+                    border-color: var(--color-faded);
+                }
+            }   
+        
         }
     }
 

@@ -12,18 +12,6 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
           standing: new fields.NumberField({min: 1}),
           tier: new fields.StringField({choices: game.wfrp4e.config.statusTiers})
         }),
-        characteristics: new fields.SchemaField({
-            ws: new fields.BooleanField(),
-            bs: new fields.BooleanField(),
-            s: new fields.BooleanField(),
-            t: new fields.BooleanField(),
-            i: new fields.BooleanField(),
-            ag: new fields.BooleanField(),
-            dex: new fields.BooleanField(),
-            int: new fields.BooleanField(),
-            wp: new fields.BooleanField(),
-            fel: new fields.BooleanField(),
-        }),
         skills: new fields.ArrayField(new fields.StringField()),
         talents: new fields.ArrayField(new fields.StringField()),
         trappings: new fields.EmbeddedDataField(ChoiceModel),
@@ -50,5 +38,4 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
         data.skills = skills.slice(0, skills.length - 1).concat(skills[skills.length - 1].split(",").map(i => i.trim()));
     }
   }
-
 }
