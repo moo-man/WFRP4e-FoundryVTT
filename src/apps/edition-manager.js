@@ -65,6 +65,7 @@ export default class EditionManager extends WHFormApplication
 
     static #schema = new foundry.data.fields.SchemaField({
         use5e : new foundry.data.fields.BooleanField({label : "5e.SETTINGS.Use5e"}),
+        careerAdvancement5e : new foundry.data.fields.BooleanField({label : "5e.SETTINGS.CareerAdvancement"})
     })
 
     static get schema()

@@ -47,7 +47,7 @@
                                 <a class="label" data-action="rollTest" data-type="skill">{{this.name}}</a>
                                 
                                 {{#if this.system.advances.indicator}}
-                                    <a class="advancement-indicator" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
+                                    <a class="advancement-indicator prevent-context" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
                                         {{#if this.system.advances.complete}}
                                         &#10003;
                                         {{else}}
@@ -93,7 +93,7 @@
                                 <a class="label" data-action="rollTest" data-type="skill">
                                     {{this.name}}
                                     {{#if this.system.advances.indicator}}
-                                        <a class="advancement-indicator" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
+                                        <a class="advancement-indicator prevent-context" data-action="advanceSkill" data-tooltip="{{this.system.cost}} XP" data-target="skill">
                                             {{#if this.system.advances.complete}}
                                             &#10003;
                                             {{else}}

@@ -2088,7 +2088,16 @@
         "OvercastProperty" : "Property",
 
 
-        "SETTINGS.Use5e" : "Use 5th Edition Rules"
+        "SETTINGS" : {
+            "Use5e": "Use 5th Edition Rules",
+            "CareerAdvancement": "5th Edition Career Advancement"
+        },
+
+        "Advancement": {
+            "Characteristic": "Advanced {characteristic} ({value})",
+            "Skill": "Advanced {skill} ({value})",
+            "Talent": "Gained {talent}"
+        }
 
     },
 

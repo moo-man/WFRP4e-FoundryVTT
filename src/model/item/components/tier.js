@@ -21,6 +21,40 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
       return schema;
   }
 
+  get img()
+  {
+    return this.parent.parent.img;
+  }
+
+  get availableCharacteristics()
+  {
+    return Object.keys(this.parent.characteristics).filter(ch => this.parent.characteristics[ch] <= this.level);
+  }
+
+  get availableSkills()
+  {
+    if (this.level > 1)
+    {
+      return this.skills.concat(this.parent.getTier(this.level - 1).availableSkills);
+    }
+    else if (this.level == 1)
+    {
+      return this.skills;
+    }
+  }
+
+  get availableTalents()
+  {
+    if (this.level > 1)
+    {
+      return this.talents.concat(this.parent.getTier(this.level - 1).availableTalents);
+    }
+    else if (this.level == 1)
+    {
+      return this.talents;
+    }
+  }
+
   async _preCreate(data, options, user)
   {
     if (!data.level)
@@ -38,4 +72,9 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
         data.skills = skills.slice(0, skills.length - 1).concat(skills[skills.length - 1].split(",").map(i => i.trim()));
     }
   }
+
+  async changeSkillName(newName, oldName, skipPrompt) {
+    this.parent.changeSkillName(newName, oldName, this.id, skipPrompt);
+  }
+
 }

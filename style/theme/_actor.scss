@@ -440,5 +440,47 @@
                             border-radius: 50%;
                         }
                     }
+
+
+                    .advancement {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        .pip
+                        {
+                            color: var(--color-warm);
+                            line-height: 0.75rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            &.filled {
+                                background-color: var(--color-warm);
+                                color: var(--color-cream);
+                                &:not(:first-of-type)
+                                {
+                                    border-left-color: var(--color-cream);
+                                }
+                            }
+                            cursor: pointer;
+                            height: 0.75rem;
+                            width: 1.5rem;
+                            border: 1px solid var(--color-warm);
+                            &:not(:last-of-type)
+                            {
+                                border-right: none;
+                            }
+                            &:first-of-type
+                            {
+                                border-top-left-radius: 30%;
+                                border-bottom-left-radius: 30%;
+                            }
+                            &:last-of-type
+                            {
+                                border-top-right-radius: 30%;
+                                border-bottom-right-radius: 30%;
+                            }
+                        }
+                    }
                 }
         }

@@ -44,6 +44,22 @@ export class TalentModel extends BaseItemModel {
         ]);
     }
 
+    async _onCreate(data, options, user)
+    {
+        await super._onCreate(data, options, user);
+
+        if (game.user.id != user)
+        {
+            return;
+        }
+        
+        // Record advancement if the talent is in the owner's career
+        if (this.parent.isOwned)
+        {
+            this.parent.actor.system.career.handleTalentAdvancement(this.parent);
+        }
+    }
+
     /**
      * Used to identify an Item as one being a child or instance of TalentModel
      *

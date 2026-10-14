@@ -30,8 +30,25 @@ export class CareerPathModel extends BaseItemModel
    * @final
    * @returns {boolean}
    */
-  get isCareer() {
+  get isCareerPath() {
     return true;
+  }
+
+  getTier(tier)
+  {
+    if (typeof tier == "number")
+    {
+      return Object.values(this.tiers).find(i => i.level == tier);
+    }
+    else if (typeof tier == "string")
+    {
+        return this.tiers[tier]
+    }
+    else if (typeof tier == "object")
+    {
+      return tier;
+    }
+    else return null;
   }
 
   static get compendiumBrowserFilters() {
@@ -77,15 +94,48 @@ export class CareerPathModel extends BaseItemModel
     }
   }
 
+  async _preCreate(data, options, user)
+  {
+      await super._preCreate(data, options, user);
+  }
+
+
 
     async _onCreate(data, options, user)
     {
         await super._onCreate(data, options, user);
         
-        if (this.parent.actor?.type == "creature") 
+        try 
         {
-            await this.parent.actor.system.advance(this.parent);
+
+          if (this.parent.actor?.type == "character") 
+          {
+            let tier = await ItemDialog.create(Object.values(this.tiers), 1, {text: "Select Active Tier", title: data.name});
+            if (tier[0])
+            {
+              this.parent.actor.update(this.parent.actor.system.career.set(this.parent, tier[0]));
+            }
+            else 
+            {
+              ui.notifications.error("Must select a tier");
+              this.parent.delete();
+            }
+          }
+          else if (this.parent.actor)
+          {
+            
+          }
+          else 
+          {
+            this.parent.delete();
+          }
         }
+        catch(e)
+        {
+          ui.notifications.error(e.message);
+          this.parent.delete();
+        }
+
     }
 
 
@@ -97,27 +147,50 @@ export class CareerPathModel extends BaseItemModel
       }
     }
 
-    async changeSkillName(newName, oldName, skipPrompt) {
-        let careerSkills = foundry.utils.duplicate(this.skills)
+    async changeSkillName(newName, oldName, tier, skipPrompt) {
+      let tiers = foundry.utils.deepClone(this.tiers);
 
-        // If career has the skill, change the name
-        if (careerSkills.includes(oldName)) 
+      if (tier)
+      {
+        tier = this.getTier(tier);
+      }
+
+      if (!tier || !tier.skills.includes(oldName))
+      {
+        let tiersWithSkill = Object.values(tiers).filter(i => i.skills.includes(oldName));
+        if (tiersWithSkill.length > 1)
         {
-            careerSkills[careerSkills.indexOf(oldName)] = newName
+          tier = (await ItemDialog.create(tiersWithSkill, 1, {title: "Choose Tier", text: "Select the Career tier to change"}))[0];
+        }
+        else 
+        {
+          tier = tiersWithSkill[0];
+        }
+      }
+
+      if (tier)
+      {
+        let tierSkills = foundry.utils.duplicate(tier.skills);
+        // If tier has the skill, change the name
+        if (tierSkills.includes(oldName)) 
+        {
+            tierSkills[tierSkills.indexOf(oldName)] = newName
         }
         else // if it doesn't, return
         {
             return;
         }
 
-        // Ask the user to confirm the change
         let changeCareer = skipPrompt || await foundry.applications.api.DialogV2.confirm({yes : {default: true}, window : {title: game.i18n.localize("SHEET.CareerSkill")}, content: `<p>${game.i18n.localize("SHEET.CareerSkillPrompt")}</p>`})
 
+        // Ask the user to confirm the change
         if (changeCareer)
-        {
-            ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
-            this.parent.update({ "system.skills": careerSkills })
-        }
+          {
+              ui.notifications.notify(`${game.i18n.format("SHEET.CareerSkillNotif", { oldName, newName, career: this.parent.name })}`)
+              this.parent.update({ [`system.tiers.${tier.id}.skills`]: tierSkills })
+          }
+      }
+
     }
 
     async expandData(htmlOptions) {
@@ -146,9 +219,9 @@ export class CareerPathModel extends BaseItemModel
           tiers = (await Promise.all(tiers.map(i => fromUuid(i.uuid)))).sort((a, b) => a.system.level.value > b.system.level.value ? 1 : -1);
         }
 
-        if (tier.pack)
+        if (tiers.length > 4)
         {
-          tiers = tiers.filter(i => i.pack == tier.pack);
+          tiers = await ItemDialog.create(tiers, "unlimited", {text: "Select all the tiers that should be included.", title: "Select Tiers"});
         }
 
         let item = {

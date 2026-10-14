@@ -82,7 +82,7 @@ export default class EndeavourJournalSheet extends foundry.applications.sheets.j
                 ui.notifications.warn("No Actor assigned, select from Owned Actors");
 
                 let ownedActors = game.actors.filter(a => a.isOwner);
-                actor = await ItemDialog(ownedActors, 1, {title: this.document.name, text: "Provide an Actor to perform the Endeavour"});
+                actor = await ItemDialog.create(ownedActors, 1, {title: this.document.name, text: "Provide an Actor to perform the Endeavour"});
             }
         }
 

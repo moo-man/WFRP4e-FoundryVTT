@@ -440,7 +440,7 @@ export class StandardActorModel extends BaseActorModel {
     }
 
     _handleMomentumUpdate(data, options) {
-        if (foundry.utils.hasProperty(data, "system.status.momentum")) 
+        if (foundry.utils.hasProperty(options.changed, "system.status.momentum")) 
         {
             options.momentum = data.system.status.momentum;
         }
