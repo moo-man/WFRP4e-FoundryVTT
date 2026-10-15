@@ -12,6 +12,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
           advanceSkill : {buttons: [0, 2], handler : this._onAdvanceSkill},
           advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
           clickAdvancement: this._onClickAdvancement,
+          advanceCareer: this._onAdvanceCareer,
           addUntrainedSkill : this._onAddUntrainedSkill,
           clickUntrainedTalent : {buttons: [0, 2], handler : this._onClickUntrainedTalent},
           rollIncome : this._onRollIncome,
@@ -183,6 +184,11 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       {
         this.actor.system.career.addTalent(talent)
       }
+    }
+
+    static async _onAdvanceCareer(ev)
+    {
+      this.actor.update(await this.actor.system.career.advanceCareer());
     }
 
     static _onChangeCareer(ev)

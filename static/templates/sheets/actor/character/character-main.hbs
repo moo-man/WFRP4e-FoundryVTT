@@ -151,8 +151,8 @@
                         <div class="pip {{#if this}}filled{{/if}}" data-action="clickAdvancement" data-index="{{@key}}" data-tooltip="{{this.label}}">
                         +
                         </div>
-                        {{!-- <a><i class="fa-regular fa-square"></i></a> --}}
                         {{/each}}
+                        <a data-action="advanceCareer" {{#unless (gte this.advancement.length this.advancementsNeeded)}}class="inactive"{{/unless}} data-tooltip="Advance to the next Tier"><i class="fa-solid fa-arrow-right-from-dotted-line"></i></a>
                     </div>
                     <div class="list-controls">
                         <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>

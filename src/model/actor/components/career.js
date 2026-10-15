@@ -146,6 +146,11 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         return this.path.document;
     }
 
+    get level()
+    {
+        return this.current.level;
+    }
+
     get current()
     {
         let career = this.path.document;
@@ -175,6 +180,37 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
 
 
     //#region Advancement
+
+
+    async advanceCareer()
+    {
+        let nextTier = this.document.system.getTier(this.level + 1);
+        let update = {};
+
+        if (this.current.advancementsNeeded > this.current.advancement.length)
+        {
+            if (!(await foundry.applications.api.Dialog.confirm({window: {title: "Incomplete Career"}, content: "Not enough Advancements to advance in this Career. Continue anyway?"})))
+            {
+                return {};
+            }
+        }
+
+
+        if (!nextTier)
+        {
+            ui.notifications.error(`Tier ${this.level + 1} not found on the Career Path!`);
+            return {};
+        }
+        else 
+        {
+            let xp = await ValueDialog.create({title: "Advance Career", text: "Enter XP Spent on Career Advancement"}, 100);
+            
+            foundry.utils.mergeObject(update, this.parent.spendExp(xp, `Advance Career: ${this.current.name} → ${nextTier.name}`));
+        }
+        foundry.utils.mergeObject(update, this.addToHistory());
+        return foundry.utils.mergeObject(update, this.set(this.document, nextTier));
+    }
+
     advanceCharacteristic(characteristic, {direction=1}={})
     {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
