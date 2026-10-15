@@ -55,6 +55,22 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
     }
   }
 
+  get advancementsNeeded()
+  {
+      return 8 + (2 * this.level || 1);
+  }
+
+  get advancement()
+  {
+    return this.parent.parent.actor.system.career.advancements[this.advancementPath]?.list || [];
+  }
+
+  get advancementPath()
+  {
+    return `${this.parent.id}-${this.id}`;
+  }
+
+
   async _preCreate(data, options, user)
   {
     if (!data.level)

@@ -247,6 +247,14 @@ export class CharacterModel extends StandardActorModel {
     {
         return this.parent.itemTags["career"].find(c => c.current.value)
     }
+
+    spendExp(amount, reason)
+    {
+      let experience = foundry.utils.duplicate(this.details.experience);
+      experience.spent += parseInt(amount);
+      experience.log = this.addToExpLog(amount, reason, experience.spent, undefined);
+      return {[`${this.schema.fields.details.fields.experience.fieldPath}`]: experience};
+    }
     
     awardExp(amount, reason, message=null, suppressChat=false) 
     {

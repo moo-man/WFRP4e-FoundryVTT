@@ -155,6 +155,26 @@ export class CareerModel extends BaseItemModel
     ]);
   }
 
+  async _preCreate(data, options, user)
+  {
+      await super._preCreate(data, options, user);
+      if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      {
+        ui.notifications.warn("5e.Warning.CareerCreated", {localize: true, permanent: true});
+      }
+  }
+
+
+  async allowCreation(data, options, user)
+  {
+      let allowed = super.allowCreation(data, options, user)
+      if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      {
+        allowed = false;
+      }
+      return allowed
+  }
+
   async _preUpdate(data, options, user)
   {
     await super._preUpdate(data, options, user);
@@ -172,7 +192,7 @@ export class CareerModel extends BaseItemModel
     {
         await super._onCreate(data, options, user);
         
-        if (this.parent.actor?.type == "creature") 
+        if (this.parent.actor?.type == "creature" && game.user.id == user) 
         {
             await this.parent.actor.system.advance(this.parent);
         }

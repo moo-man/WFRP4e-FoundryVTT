@@ -9,14 +9,15 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         schema.path = new fields.EmbeddedDataField(DocumentReferenceModel);
         schema.tier = new fields.StringField();
         schema.history = ListModel.createListModel(new fields.SchemaField({
-
+            path: new fields.EmbeddedDataField(DocumentReferenceModel),
+            tier: new fields.StringField(),
         }));
-        schema.advancement = ListModel.createListModel(new fields.SchemaField({
+        schema.advancements = new fields.TypedObjectField(ListModel.createListModel(new fields.SchemaField({
             type: new fields.StringField({choices: ["other", "trapping", "characteristic", "skill", "talent"]}),
             document: new fields.EmbeddedDataField(DocumentReferenceModel),
             characteristic: new fields.StringField(),
             label: new fields.StringField()
-        }));
+        })));
 
         return schema;
     }
@@ -31,6 +32,98 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         tier = path.system.getTier(tier).id;
 
         return foundry.utils.mergeObject(this.path.set(path), {[this.schema.fields.tier.fieldPath]: tier});
+    }
+
+
+    clean()
+    {
+        return foundry.utils.mergeObject(this.cleanAdvancements(), this.cleanHistory());
+    }
+    // Removes any advancement trackers that don't have associated paths or tiers
+    cleanAdvancements()
+    {
+        let fieldPath = this.schema.fields.advancements.fieldPath;
+        let update = {};
+        for(let key of Object.keys(this.advancements))
+        {
+            let [path, tier] = key.split("-");
+
+            // Remove any malformed keys
+            if (!path || !tier)
+            {
+                update[`${fieldPath}.${key}`] = _del;
+            }
+            // Remove any path or tier that doesn't exist
+            else if (!this.parent.parent.items.get(path)?.system?.tiers[tier])
+            {
+                update[`${fieldPath}.${key}`] = _del;
+            }
+        }
+        return update;
+    }
+
+    // Removes any career history entries that don't have an associated career path (e.g. path was deleted)
+    cleanHistory()
+    {
+        let fieldPath = this.schema.fields.history.fieldPath;
+
+        let toRemove = [];
+        for(let [i, history] of this.history.list.entries())
+        {
+            if (!history.path.document || !history.path.document.system.tiers[history.tier])
+            {
+                toRemove.push(i);
+            }
+        }
+        return {[fieldPath +".list"]: this.history.list.filter((_, i) => !toRemove.includes(i))};
+    }
+
+    async handleNewCareer(careerPath, tier)
+    {
+        let update = this.addToHistory();
+        if (this.document)
+        {
+            let inClass = careerPath.system.class == this.path.document?.system.class;
+            let xp = await ValueDialog.create({title: "Switch Career", text: "Enter XP Spent on Career change"}, inClass ? 100 : 200)
+
+            if (isNaN(xp))
+            {
+                throw "Invalid XP entered, aborting Career creation"
+            }
+            foundry.utils.mergeObject(update, this.parent.spendExp(xp, "Switch Career: " + (tier ? careerPath.system.tiers[tier].name : careerPath.name)))
+        }
+
+        await this.parent.parent.update(update);
+    }
+
+    addToHistory()
+    {
+        return foundry.utils.mergeObject(this.history.add({
+            path: this.path,
+            tier: this.tier
+        }), this.path.unset())
+    }
+
+    // Remove from history and set as current
+    async reenter(path, tier)
+    {
+        await this.handleNewCareer(path, tier)
+
+        let historyIndex = this.history.list.findIndex(i => i.tier == tier && i.path.id == path.id);
+
+        let historyUpdate = {};
+        if (historyIndex >= 0)
+        {
+            foundry.utils.mergeObject(historyUpdate, this.parent.parent.system.career.history.remove(historyIndex)); // Can't do `this.history` because it's not updated yet for some reason
+        }
+
+        // Put old career as current, remove from history
+        await this.parent.parent.update(foundry.utils.mergeObject(historyUpdate, this.set(path, tier)));
+    }
+
+    get advancement()
+    {
+        return this.advancements[`${this.document.id}-${this.tier}`] || {list: []};
     }
 
     get characteristics()
@@ -62,14 +155,22 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         }
     }
 
-
-
     handleTalentAdvancement(talent)
     {
         if (this.talents.includes(talent.name) && game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
         {
-            this.parent.parent.update(this.advancement.add({type: "talent", label: game.i18n.format("5e.Advancement.Talent", {talent: talent.name})}));
+            this.parent.parent.update(this.addAdvancement({type: "talent", label: game.i18n.format("5e.Advancement.Talent", {talent: talent.name})}));
         }
+    }
+
+    addAdvancement(data)
+    {
+        return {[this.schema.fields.advancements.fieldPath + `.${this.document.id}-${this.tier}.list`]: this.advancement.list.concat(data)};
+    }
+
+    removeAdvancement(index)
+    {
+        return {[this.schema.fields.advancements.fieldPath + `.${this.document.id}-${this.tier}.list`]: this.advancement.list.filter((_, i) => i != index)};
     }
 
 
@@ -95,11 +196,11 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             
             if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
             {
-                system.career.advancement.list = this.advancement.list.concat({
+                foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
                     type: "characteristic", 
                     characteristic,
                     label: game.i18n.format("5e.Advancement.Characteristic", {characteristic: game.wfrp4e.config.characteristics[characteristic], value: system.characteristics[characteristic].advances})
-                })
+                })).system);
             }
         }
         else if (direction == -1)
@@ -142,12 +243,13 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
 
             if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
             {
-                system.career.advancement.list = this.advancement.list.concat({
-                    type: "skill", 
-                    document: {id: skill.id, name: skill.name, uuid: skill.uuid},
-                    label: game.i18n.format("5e.Advancement.Skill", {skill: skill.name, value: skill.system.advances.value})
-                })
+                    foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
+                        type: "skill", 
+                        document: {id: skill.id, name: skill.name, uuid: skill.uuid},
+                        label: game.i18n.format("5e.Advancement.Skill", {skill: skill.name, value: skill.system.advances.value})
+                })).system);
             }
+            
 
             update.system = system;
         } 

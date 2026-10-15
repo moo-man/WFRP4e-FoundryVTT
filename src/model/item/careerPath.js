@@ -96,46 +96,73 @@ export class CareerPathModel extends BaseItemModel
 
   async _preCreate(data, options, user)
   {
+      if (!game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      {
+        ui.notifications.warn("5e.Warning.CareerPathCreated", {localize: true, permanent: true});
+      }
+
+      if (this.parent.actor?.type == "character") 
+      {
+        let tier = await this.promptTier();
+        if (tier)
+        {
+          options.tier = tier.id;
+          await this.parent.actor?.system.career.handleNewCareer(this.parent, tier.id);
+        }
+        else 
+        {
+          ui.notifications.error("Must select a tier");
+          options.abortItemCreation = true;
+        }
+      }
+
       await super._preCreate(data, options, user);
+
   }
 
+  async allowCreation(data, options, user)
+  {
+      let allowed = super.allowCreation(data, options, user)
+      if (!game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      {
+        allowed = false;
+      }
+      return allowed
+  }
 
 
     async _onCreate(data, options, user)
     {
         await super._onCreate(data, options, user);
-        
-        try 
-        {
+        if (game.user.id != user)
+          return
 
           if (this.parent.actor?.type == "character") 
           {
-            let tier = await ItemDialog.create(Object.values(this.tiers), 1, {text: "Select Active Tier", title: data.name});
-            if (tier[0])
+            // Can't use preCreate because ID doesn't exist (or will change). Prompt for tier in preCreate but set in onCreate (tier ID doesn't change)
+            if (options.tier)
             {
-              this.parent.actor.update(this.parent.actor.system.career.set(this.parent, tier[0]));
-            }
-            else 
-            {
-              ui.notifications.error("Must select a tier");
-              this.parent.delete();
+              this.parent.actor.update(this.parent.actor.system.career.set(this.parent, options.tier));
             }
           }
-          else if (this.parent.actor)
-          {
-            
-          }
-          else 
-          {
-            this.parent.delete();
-          }
-        }
-        catch(e)
-        {
-          ui.notifications.error(e.message);
-          this.parent.delete();
-        }
+    }
 
+    async _onDelete(options, user)
+    {
+      await super._onDelete(options, user);
+      if (game.user.id != user)
+        return
+
+      if (this.parent.isOwned && this.parent.actor.type == "character")
+      {
+        this.parent.actor.update(this.parent.actor.system.career.clean());
+      }
+    }
+
+    async promptTier()
+    {
+      let tier = await ItemDialog.create(Object.values(this.tiers), 1, {text: "Select CareerTier", title: this.parent.name, resolveClose: true});
+      return tier[0];
     }
 
 

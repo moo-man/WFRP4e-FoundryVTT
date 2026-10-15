@@ -2097,6 +2097,11 @@
             "Characteristic": "Advanced {characteristic} ({value})",
             "Skill": "Advanced {skill} ({value})",
             "Talent": "Gained {talent}"
+        },
+
+        "Warning": {
+            "CareerCreated": "Career Items cannot be used when <strong>5e Career Advancement</strong> rules are active (use <strong>Career Path</strong> Items instead).",
+            "CareerPathCreated": "Career Path Items cannot be used when <strong>5e Career Advancement</strong> rules are disabled (use <strong>Career</strong> Items instead)."
         }
 
     },

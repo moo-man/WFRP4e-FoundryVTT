@@ -45,16 +45,47 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         context.experienceLog = this._condenseXPLog()
         context.nonTrivialCriticals = context.items.critical.filter(c => Number.isNumeric(c.system.wounds.value))
         context.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
-        if (this.document.system.career.advancement.list.length > 10)
-        {
-          context.advancementTrack = this.document.system.career.advancement.list.slice(0, 10);
-          context.advancementTrackOverflow = this.document.system.career.advancement.list.slice(10);
-        }
-        else 
-        {
-          context.advancementTrack = this.document.system.career.advancement.list.concat(Array(10 - this.document.system.career.advancement.list.length).fill(null));
-        }
+        context.career = this._prepareCareerContext();
+
         return context;
+      }
+
+      _prepareCareerContext()
+      {
+        let careerContext = {};
+        const createAdvancementTrack = (tier, advancements) => 
+          {
+            let adv = {}
+            if (!tier || !advancements)
+            {
+              return adv;
+            }
+  
+            if (advancements.length > tier.advancementsNeeded)
+            {
+              adv.track = advancements.slice(0, tier.advancementsNeeded);
+              adv.overflow = advancements.slice(tier.advancementsNeeded);
+            }
+            else 
+            {
+              adv.track = advancements.concat(Array(tier.advancementsNeeded - advancements.length).fill(null));
+            }
+            return adv;
+          }
+  
+          careerContext.advancement = createAdvancementTrack(this.document.system.career.current, this.document.system.career.current?.advancement);
+          if (this.document.system.career.history.list.length)
+            {
+              careerContext.history = this.document.system.career.history.list.toReversed().filter(i => i.path.document).map(i => {
+              return {
+                career: i.path.document,
+                tier: i.path.document.system.tiers[i.tier],
+                advancement: createAdvancementTrack(i.path.document.system.tiers[i.tier], i.path.document.system.tiers[i.tier].advancement)
+              }
+            })
+          }
+
+          return careerContext;
       }
     
     _condenseXPLog() {
@@ -106,13 +137,13 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
           window: {title: "Remove Advancement"}
         }))
         {
-          this.document.update(this.document.system.career.advancement.remove(index));
+          this.document.update(this.document.system.career.removeAdvancement(index));
         }
       }
       else 
       {
         let label = await ValueDialog.create({text: "Enter Advancement Label", title: "Add Advancement"});
-        this.document.update(this.document.system.career.advancement.add({label : label || "(No Label)", type: "other"}))
+        this.document.update(this.document.system.career.addAdvancement({label : label || "(No Label)", type: "other"}))
       }
     }
 
