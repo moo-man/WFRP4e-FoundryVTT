@@ -72,7 +72,9 @@ export class SkillModel extends BaseItemModel {
     }
 
     get cost() {
-          return Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
+        return game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e 
+        ? Advancement.calculateAdvRangeCost(this.advances.value, this.advances.value + 5, "skill", this.advances.costModifier) 
+        : Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }
 
     get modified() {

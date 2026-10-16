@@ -853,6 +853,7 @@
     "DIALOG.MemorizeSpellContent" : "Memorizing this spell will cost {xp} XP.",
     "DIALOG.Advancement" : "Advancement Cost",
     "DIALOG.AdvancementContent" : "Confirm or edit the cost of this advancement",
+    "DIALOG.AdvancementNote" : "<strong>Note</strong>: Advancements done in this way will NOT be tracked for the Career.",
     "DIALOG.GainPrayer" : "Gain Miracle",
     "DIALOG.GainPrayerContent" : "Gaining this miracle will cost {xp} XP.",
     "DIALOG.ErrorMustSelectItem" : "Must select at least 1 Item",

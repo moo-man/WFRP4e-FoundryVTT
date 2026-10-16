@@ -263,7 +263,7 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         return foundry.utils.mergeObject(update, this.set(this.document, nextTier));
     }
 
-    advanceCharacteristic(characteristic, {direction=1}={})
+    advanceCharacteristic(characteristic, amount, {direction=1}={})
     {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
         let actor = this.parent.parent;
@@ -272,9 +272,9 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
 
         if (direction == 1)
         {
-            let cost = Advancement.calculateAdvCost(current.advances, "characteristic", current.costModifier);
+            let cost = Advancement.calculateAdvRangeCost(current.advances, current.advances + amount, "characteristic", current.costModifier);
             Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
-            system.characteristics[characteristic].advances++;
+            system.characteristics[characteristic].advances += amount;
             system.details.experience.spent = Number(system.details.experience.spent) + cost;
 
             let expLog = actor.system.addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], system.details.experience.spent);
@@ -287,7 +287,7 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
                 foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
                     type: "characteristic", 
                     characteristic,
-                    label: game.i18n.format("5e.Advancement.Characteristic", {characteristic: game.wfrp4e.config.characteristics[characteristic], value: system.characteristics[characteristic].advances})
+                    label: game.i18n.format("5e.Advancement.Characteristic", {characteristic: game.wfrp4e.config.characteristics[characteristic], value: `${current.advances} → ${system.characteristics[characteristic].advances}`})
                 })).system);
             }
         }
@@ -296,9 +296,9 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             // Calculate the advancement cost based on advances -1, add that amount back into exp
             if (current.advances == 0)
                 return;
-            let cost = Advancement.calculateAdvCost(current.advances - 1, "characteristic", current.costModifier);
+            let cost = -1 * Advancement.calculateAdvRangeCost(current.advances, Math.max(0, current.advances - 5), "characteristic", current.costModifier);
     
-            system.characteristics[characteristic].advances--;
+            system.characteristics[characteristic].advances -= amount;
             system.details.experience.spent = Number(system.details.experience.spent) - cost;
     
             let expLog = actor.system.addToExpLog(-1 * cost, game.wfrp4e.config.characteristics[characteristic], system.details.experience.spent);
@@ -306,10 +306,10 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             system.details.experience.log = expLog;
         }
 
-          actor.update({system}, {skipExperienceChecks : true});
+        actor.update({system}, {skipExperienceChecks : true});
     }
 
-    advanceSkill(skill, {direction=1}={})
+    advanceSkill(skill, amount, {direction=1}={})
     {
         let actor = this.parent.parent;
         let system = actor.system.toObject();
@@ -319,12 +319,12 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         
         if (direction == 1) {
         // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = Advancement.calculateAdvCost(skill.system.advances.value, "skill", skill.system.advances.costModifier)
+        let cost = Advancement.calculateAdvRangeCost(skill.system.advances.value, skill.system.advances.value + amount, "skill", skill.system.advances.costModifier)
         try 
         {
             Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), skill.name);
             system.details.experience.spent = Number(system.details.experience.spent) + cost;
-            update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value + 1})
+            update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value + amount})
 
             system.details.experience.log = actor.system.addToExpLog(cost, skill.name, system.details.experience.spent)
             ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: skill.name}))
@@ -334,10 +334,9 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
                     foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
                         type: "skill", 
                         document: {id: skill.id, name: skill.name, uuid: skill.uuid},
-                        label: game.i18n.format("5e.Advancement.Skill", {skill: skill.name, value: skill.system.advances.value})
+                        label: game.i18n.format("5e.Advancement.Skill", {skill: skill.name, value: `${skill.system.advances.value} → ${skill.system.advances.value + 5}`})
                 })).system);
             }
-            
 
             update.system = system;
         } 
@@ -350,9 +349,9 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
             if (skill.system.advances.value == 0)
                 return;
-            let cost = Advancement.calculateAdvCost(skill.system.advances.value - 1, "skill", skill.system.advances.costModifier)
+            let cost = -1 * Advancement.calculateAdvRangeCost(skill.system.advances.value, Math.max(0, skill.system.advances.value - amount), "skill", skill.system.advances.costModifier)
             system.details.experience.spent = Number(system.details.experience.spent) - cost;
-            update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value - 1})
+            update.items.push({_id : skill.id, "system.advances.value" : Math.max(0, skill.system.advances.value - amount)})
 
             system.details.experience.log = actor.system.addToExpLog(-1 * cost, skill.name, system.details.experience.spent)
             ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : skill.name}))

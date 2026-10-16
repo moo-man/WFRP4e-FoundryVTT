@@ -284,7 +284,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
 
       try 
       {
-        await this.actor.system.career.advanceCharacteristic(ev.target.dataset.characteristic, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
+        await this.actor.system.career.advanceCharacteristic(ev.target.dataset.characteristic, game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e ? 5 : 1, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
       } 
       catch(error) 
       {
@@ -310,7 +310,7 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       ev.target.style.pointerEvents = "none"
       try 
       {
-        await this.actor.system.career.advanceSkill(skill, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
+        await this.actor.system.career.advanceSkill(skill, game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e ? 5 : 1, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
       } 
       catch(error) 
       {
