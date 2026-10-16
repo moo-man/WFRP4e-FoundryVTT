@@ -11,8 +11,7 @@ export default class AttackDialog extends SkillDialog
     {
         super.computeFields();
         if (this.item.attackType == "ranged" && game.combat?.active) {
-            let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
-            if (combatant?.token?.movementHistory?.length > 0) {
+            if (game.wfrp4e.utility.hasMovedInCombat(this.actor)) {
                 this.fields.modifier -= 10;
                 this.tooltips.add("modifier", -10, game.i18n.localize("CHAT.TestModifiers.MovedThisRound"));
             }

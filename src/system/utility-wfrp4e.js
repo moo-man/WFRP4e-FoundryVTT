@@ -814,6 +814,21 @@ export default class WFRP_Utility {
     }
   }
   
+  /**
+   * Whether the actor's token has changed position according to its combat movement history
+   *
+   * Updates that don't change position (e.g. updating x/y to the same values) still record waypoints,
+   * so the history having entries isn't enough
+   *
+   * @param {Actor} actor Actor to check, synthetic (unlinked token) actors are matched by their token
+   * @returns {boolean} Whether the actor's token moved
+   */
+  static hasMovedInCombat(actor) {
+    let history = game.combat?.getCombatantsByActor(actor)[0]?.token?.movementHistory || [];
+    let start = history[0];
+    return history.some(w => w.x != start.x || w.y != start.y || w.elevation != start.elevation);
+  }
+
   static logHomebrew(message) {
     warhammer.utility.log("Applying Homebrew Rule: " + message, true)
   }

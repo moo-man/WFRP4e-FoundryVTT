@@ -101,8 +101,7 @@ export default class AttackDialog5e extends SkillDialog5e
         {
             if (game.combat?.active)
             {
-                let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
-                if (combatant?.token?.movementHistory?.length > 0) 
+                if (game.wfrp4e.utility.hasMovedInCombat(this.actor))
                 {
                 this.addModifier({key: "moved", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Moved")});
                 }
