@@ -92,39 +92,42 @@ export default class AttackDialog5e extends SkillDialog5e
             this.addModifier({key: "charging", value: 1, field: "advantage", label: game.i18n.localize("5e.Dialog.Modifier.Charging")});
         }
 
-        super.computeFields();
-    }
-
-    computeRangeModifiers()
-    {
         if (this.item.system.isRanged)
         {
             if (game.combat?.active)
             {
                 let combatant = game.combat.combatants.find(c => c.actor?.id == this.actor.id);
-                if (combatant?.token?.movementHistory?.length > 0) 
+                if (combatant?.token && combatant?.token.measureMovementPath(combatant.token.movementHistory).distance > 0) 
                 {
-                this.addModifier({key: "moved", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Moved")});
+                    this.addModifier({key: "moved", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Moved")});
                 }
             }
-
-            if (this.fields.range == "extreme")
-            {
-                this.addModifier({key: "range", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Extreme") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
-            }
-            else if (this.fields.range == "long")
-            {
-                this.addModifier({key: "range", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Long") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
-            }
-            else if (this.fields.range == "short")
-            {
-                this.addModifier({key: "range", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Short") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
-            }
-            else if (this.fields.range == "pb")
-            {
-                this.addModifier({key: "range", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.PointBlank") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
-            }
         }
+
+        super.computeFields();
+    }
+
+    computeModifiers()
+    {
+        
+        if (this.fields.range == "extreme")
+        {
+            this.addModifier({key: "range", value: -2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Extreme") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
+        }
+        else if (this.fields.range == "long")
+        {
+            this.addModifier({key: "range", value: -1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Long") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
+        }
+        else if (this.fields.range == "short")
+        {
+            this.addModifier({key: "range", value: 1, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.Short") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
+        }
+        else if (this.fields.range == "pb")
+        {
+            this.addModifier({key: "range", value: 2, field: "SL", label: game.i18n.localize("5e.Dialog.Modifier.PointBlank") + (this.context.distance ? ` (${this.context.distance} yds)` : "")});
+        }
+
+        super.computeModifiers();
     }
 
     _computeDefending(attacker) 
@@ -139,7 +142,7 @@ export default class AttackDialog5e extends SkillDialog5e
     _computeTargets(target)
     {
 
-      if (this.item.system.isRanged)
+      if (this.item.system.isRanged && target.actor)
       {
         if (target.actor.sizeNum == 0)
         {

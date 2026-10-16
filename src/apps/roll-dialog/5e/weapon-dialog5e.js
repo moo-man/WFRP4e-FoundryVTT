@@ -113,12 +113,12 @@ export default class WeaponDialog5e extends AttackDialog5e
 
     _computeTargets(target)
     {
-      this.computeRangeModifiers(target);
+      this.determineRangeBand(target);
       super._computeTargets(target);
     }
 
 
-    computeRangeModifiers(target) 
+    determineRangeBand(target) 
     {
       let weapon = this.weapon;
   
@@ -146,8 +146,6 @@ export default class WeaponDialog5e extends AttackDialog5e
         }
       }
 
-      super.computeRangeModifiers();
-  
       // let engagedEffect = this.actor.statuses.has("engaged")
       // if (engagedEffect) 
       // {
