@@ -1,5 +1,6 @@
 import WFRP_Audio from "./audio-wfrp4e.js";
 import WFRP_Utility from "./utility-wfrp4e.js";
+import EngagementTracker from "./engagement.js";
 
 export default class CombatHelpersWFRP {
 
@@ -7,7 +8,7 @@ export default class CombatHelpersWFRP {
     static registerHelpers() 
     {
         CombatHelpers.startCombat = [CombatHelpersWFRP.checkFearTerror];
-        CombatHelpers.endCombat = [CombatHelpersWFRP.clearCombatantAdvantage, CombatHelpersWFRP.checkCorruption, CombatHelpersWFRP.checkInfection, CombatHelpersWFRP.checkDiseases];
+        CombatHelpers.endCombat = [CombatHelpersWFRP.clearCombatantAdvantage, CombatHelpersWFRP.checkCorruption, CombatHelpersWFRP.checkInfection, CombatHelpersWFRP.checkDiseases, EngagementTracker.clearAll.bind(EngagementTracker)];
         CombatHelpers.startTurn = [CombatHelpersWFRP.checkStartTurnConditions];
         CombatHelpers.endTurn = [CombatHelpersWFRP.checkEndTurnConditions];
         CombatHelpers.endRound = [CombatHelpersWFRP.checkEndRoundConditions, CombatHelpersWFRP.fearReminders];
