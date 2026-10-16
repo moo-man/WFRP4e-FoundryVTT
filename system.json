@@ -113,8 +113,8 @@
       "reason" : "Foundational code all Warhammer systems are built upon.",
       "type": "module",
       "compatibility": {
-        "minimum" : "3.4.1",
-        "verified": "3.4.1"
+        "minimum" : "3.5.1",
+        "verified": "3.5.1"
       }
     }]
   },
