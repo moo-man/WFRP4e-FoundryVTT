@@ -41,6 +41,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
         speaker: data.speaker,
         title : data.context?.title,
         extended: data.context?.extended,
+        income: data.context?.income,
         targets: data.targets,
         unopposed : data.unopposed,
         defending : data.defending,
@@ -434,9 +435,9 @@ export default class TestWFRP5e extends WarhammerTestBase {
       await this.handleExtendedTest()
     }
 
-    // if (this.options.income) {
-    //   await this.handleIncomeTest()
-    // }
+    if (this.context.income) {
+      await this.handleIncomeTest()
+    }
 
     // if (this.options.crewTest)
     // {
@@ -468,6 +469,53 @@ export default class TestWFRP5e extends WarhammerTestBase {
     //   crewTest.updateRole(this.options.roleId, message)
     // }
   }
+
+  async handleIncomeTest() {
+    let { standing, tier } = this.context.income
+    let result = this.result;
+
+    let {earned} = await game.wfrp4e.market.rollIncome(null, {standing, tier})
+
+    if (result.success) 
+    {
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + earned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (earned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    else
+    {
+      earned /= 2;
+      result.incomeResult = game.i18n.localize("INCOME.YouEarn") + " " + earned;
+      switch (tier) {
+        case "b":
+          result.incomeResult += ` ${game.i18n.localize("NAME.BPPlural").toLowerCase()}.`
+          break;
+        case "s":
+          result.incomeResult += ` ${game.i18n.localize("NAME.SSPlural").toLowerCase()}.`
+          break;
+        case "g":
+          if (earned == 1)
+            result.incomeResult += ` ${game.i18n.localize("NAME.GC").toLowerCase()}.`
+          else
+            result.incomeResult += ` ${game.i18n.localize("NAME.GCPlural").toLowerCase()}.`
+          break;
+      }
+    }
+    result.earned = earned + tier;
+  }
+
 
   async handleExtendedTest() {
     let item = fromUuidSync(this.context.extended);

@@ -15,7 +15,7 @@ static LOCALIZATION_PREFIXES = ["WH.Models.careerTier"];
         skills: new fields.ArrayField(new fields.StringField()),
         talents: new fields.ArrayField(new fields.StringField()),
         trappings: new fields.EmbeddedDataField(ChoiceModel),
-        incomeSkill: new fields.ArrayField(new fields.StringField())
+        incomeSkill: new fields.ArrayField(new fields.NumberField())
       }
 
       return schema;

@@ -31,7 +31,7 @@
                 {{formInput this.schema.fields.status.fields.standing value=this.status.standing name=(concat "system.tiers." this.id ".status.standing")}}
             </div>
             {{> nameListInput label="Skills" list=this.skills path=(concat "system.tiers." this.id ".skills")}}
-            {{> nameListSelect label="Income Skills" list=this.incomeSkill path=(concat "system.tiers." this.id ".incomeSkill") options=(selectOptionsArray this.skills)}}
+            {{> nameListSelect label="Earning Skills" list=this.incomeSkill path=(concat "system.tiers." this.id ".incomeSkill") options=this.skills}}
             {{> nameListInput label="Talents" list=this.talents path=(concat "system.tiers." this.id ".talents")}}
             {{> choiceDisplay label="Trappings" list=this.trappings path=(concat "tiers." this.id ".trappings") display=this.trappings.textDisplay}}
             </div>

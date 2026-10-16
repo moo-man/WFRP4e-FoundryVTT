@@ -233,6 +233,13 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
     {
       let career = this._getDocument(ev)
 
+      if (career.type == "careerPath")
+      {
+        this.actor.system.career.rollIncome();
+        return;
+      }
+
+
       if (career.system.requiredTrappingStatus.length && career.system.requiredTrappingStatus.some(t => !t.owned))
       {
         ui.notifications.error("SHEET.RequiredTrappingsError", {localize: true})

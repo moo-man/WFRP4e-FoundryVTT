@@ -268,7 +268,7 @@ export class CareerPathModel extends BaseItemModel
           let skills = t.system.skills;
           let tierSkills = t.system.skills.slice(skillIndex);
           // only include income skill if this tier specifies that skill, otherwise leave blank
-          let tierIncome = t.system.incomeSkill.map(i => skills[i]).filter(i => tierSkills.includes(i));
+          let tierIncome = t.system.incomeSkill.filter(i => tierSkills.includes(skills[i]));
 
           item.system.tiers[t.id] = {
             name: t.name,

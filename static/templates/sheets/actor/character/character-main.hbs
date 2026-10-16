@@ -145,6 +145,7 @@
                         <div class="list-name">
                             <img src="{{this.img}}">
                             <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
+                            <a data-tooltip="{{localize "Sheet.RollIncome"}}" data-tooltip-direction="UP" data-action="rollIncome"><i class="fa-solid fa-coins"></i></a>
                         </div>
                     <div class="flex large advancement">
                         {{#each ../career.advancement.track}}
@@ -152,7 +153,7 @@
                         +
                         </div>
                         {{/each}}
-                        <a data-action="advanceCareer" {{#unless (gte this.advancement.length this.advancementsNeeded)}}class="inactive"{{/unless}} data-tooltip="Advance to the next Tier"><i class="fa-solid fa-arrow-right-from-dotted-line"></i></a>
+                        <a data-action="advanceCareer" {{#unless (gte this.advancement.length this.advancementsNeeded)}}class="inactive"{{/unless}} data-tooltip="Advance to the next Tier"><i class="fa-solid fa-triple-chevrons-right"></i></a>
                     </div>
                     <div class="list-controls">
                         <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>

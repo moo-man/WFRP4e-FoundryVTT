@@ -34,7 +34,6 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         return foundry.utils.mergeObject(this.path.set(path), {[this.schema.fields.tier.fieldPath]: tier});
     }
 
-
     clean()
     {
         return foundry.utils.mergeObject(this.cleanAdvancements(), this.cleanHistory());
@@ -160,6 +159,27 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
         }
     }
 
+    // Because I am stubborn and insistent on the ability to add different earning skills for different tiers, things are difficult
+    // If a tier specifies an earning skill, use that, if not, try the tier before it, keep going until tier 0 (returning empty array)
+    get earningSkills()
+    {
+        return this._getEarningSkillsForTier(this.current.level);
+    }
+
+    _getEarningSkillsForTier(level)
+    {
+        if (!level)
+        {
+            return [];
+        }
+        let tier = this.document.system.getTier(level)
+        if (tier.incomeSkill.length)
+        {
+            return tier.incomeSkill.map(i => tier.skills[i]);
+        }
+        else return this._getEarningSkillsForTier(level - 1);
+    }
+
     handleTalentAdvancement(talent)
     {
         if (this.talents.includes(talent.name) && game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
@@ -176,6 +196,38 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
     removeAdvancement(index)
     {
         return {[this.schema.fields.advancements.fieldPath + `.${this.document.id}-${this.tier}.list`]: this.advancement.list.filter((_, i) => i != index)};
+    }
+
+    async rollIncome()
+    {  
+        let skills = this.earningSkills.map(i => this.parent.parent.itemTypes.skill.find(sk => sk.name == i)).filter(i => i);
+        let skill;
+        if (skills.length == 0)
+        {
+          ui.notifications.error("SHEET.SkillMissingWarning", {localize: true});
+          return;
+        }
+  
+        if (skills.length == 1)
+        {
+          skill = skills[0];
+        }
+        else 
+        {
+          skill = (await ItemDialog.create(skills, 1, {title : "Income", text: "Choose Earning Skill to roll for Income"}))[0];
+        }
+  
+        if (!skill)
+        {
+          skill = skills[0];
+        }
+  
+        let context = {
+          appendTitle: ` - ${game.i18n.localize("Income")}`,
+          income: this.parent.details.status
+        };
+  
+        this.parent.parent.setupSkill(skill, context).then(test => test.roll())
     }
 
 
