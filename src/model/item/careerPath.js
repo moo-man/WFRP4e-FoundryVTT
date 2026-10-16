@@ -235,6 +235,41 @@ export class CareerPathModel extends BaseItemModel
 
     async fromTierItem(tier)
     {
+
+      const _createChoiceModel = async (strings) => {
+
+        let options = [];
+
+        for(let s of strings)
+        {
+          let item = await game.wfrp4e.utility.findItem(s);
+
+          if (item && item.system.isPhysical)
+          {
+            options.push({type: "item", id: foundry.utils.randomID(), name: s, documentId: item.uuid, idType: "uuid"})
+          }
+          else 
+          {
+            options.push({type: "placeholder", name: s, id: foundry.utils.randomID()})
+          }
+        }
+
+        return {
+          structure: {
+            type: "and",
+            id: "root",
+            options: options.map(i => {
+              return {
+                id: i.id,
+                type: "option"
+              }
+            })
+          },
+          options
+        }
+      }
+
+
       try 
       {
         let careers = await warhammer.utility.findAllItems("career", "Loading Careers", true, ["system.careergroup.value"]);
@@ -277,7 +312,7 @@ export class CareerPathModel extends BaseItemModel
             skills: tierSkills,
             talents: t.system.talents,
             incomeSkill: tierIncome,
-            //trappings: t.system.trappings
+            trappings: await _createChoiceModel(t.system.trappings)
           };
 
           for(let c in t.system.characteristics)
@@ -304,9 +339,16 @@ export class CareerPathModel extends BaseItemModel
       let tiers = [];
 
       let skills = [];
+      let income;
       for(let tier of Object.values(this.tiers).sort((a, b) => a.level > b.level ? 1 : -1))
       {
         skills = skills.concat(tier.skills);
+        let newIncome = tier.incomeSkill.map(i => tier.skills[i]).map(s => skills.findIndex(_s => _s == s));
+
+        if (newIncome.length)
+        {
+          income = newIncome;
+        }
 
         let characteristics = {};
         for(let ch in this.characteristics)
@@ -333,8 +375,8 @@ export class CareerPathModel extends BaseItemModel
             status: tier.status,
             skills,
             talents: tier.talents,
-            //trappings: tier.trappings,
-            incomeSkill: tier.incomeSkill.map(s => skills.findIndex(_s => _s == s))
+            trappings: tier.trappings.options.map(i => i.name),
+            incomeSkill: income
           }
         }
         tiers.push(itemData)
