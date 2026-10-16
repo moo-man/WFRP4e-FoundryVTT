@@ -4,6 +4,9 @@ title: Careers
 parent: The Basics
 nav_order: 0
 ---
+{: .important}
+**This article is for 4th Edition Rules. For 5th Edition, see [Career Paths](./careerPaths.md)**
+
 
 Careers are an integral part of the WFRP4e rules, so it's important to know how to use them correctly in Foundry. 
 

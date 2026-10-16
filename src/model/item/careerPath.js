@@ -99,9 +99,10 @@ export class CareerPathModel extends BaseItemModel
       if (!game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
       {
         ui.notifications.warn("5e.Warning.CareerPathCreated", {localize: true, permanent: true});
+        options.abortItemCreation = true;
       }
 
-      if (this.parent.actor?.type == "character") 
+      else if (this.parent.actor?.type == "character") 
       {
         let tier = await this.promptTier();
         if (tier)
