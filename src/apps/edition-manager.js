@@ -93,7 +93,9 @@ export default class EditionManager extends WHFormApplication
         // Todo: add settings
         if (game.settings.get("wfrp4e", "editionSettings")?.use5e)
         {
-            return foundry.utils.mergeObject(e4, e5);
+            let config = foundry.utils.mergeObject(e4, e5);
+            config.magicWind = e5.magicWind;
+            return config;
         }
         else 
         {

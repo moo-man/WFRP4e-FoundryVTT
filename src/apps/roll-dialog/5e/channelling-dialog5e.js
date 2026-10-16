@@ -38,12 +38,13 @@ export default class ChannellingDialog5e extends SkillDialog5e
 
     static async setupData(wind, actor, context={}, options={})
     {
-      let skill = context.skill || actor.itemTags["skill"].find(i => i.specifier?.toLowerCase() == wind.toLowerCase());
+      let channellingSpecifier = game.wfrp4e.config.magicWind[wind];
+      let skill = context.skill || actor.itemTags["skill"].find(i => i.specifier?.toLowerCase() == channellingSpecifier.toLowerCase());
       
       if (!skill)
       {
           skill = {
-              name : `${game.i18n.localize("NAME.Channelling")} (${game.wfrp4e.config.magicWind[wind]})`,
+              name : `${game.i18n.localize("NAME.Channelling")} (${channellingSpecifier})`,
               id : "unknown",
               system : {
                   characteristic : {
@@ -53,7 +54,7 @@ export default class ChannellingDialog5e extends SkillDialog5e
           }
       }
 
-      context.title = context.title || game.i18n.localize("ChannellingTest") + " - " + game.wfrp4e.config.magicWind[wind];
+      context.title = context.title || game.i18n.localize("ChannellingTest") + " - " + channellingSpecifier
       context.title += context.appendTitle || "";
       context.wind = wind;
       let dialogData = await super.setupData(skill, actor, context, options);

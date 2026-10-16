@@ -256,7 +256,17 @@ export class SpellModel extends OvercastItemModel {
 
     usesWind(wind)
     {
-      return this.lore.value.map(i => game.wfrp4e.config.loreWind[i]).includes(wind);
+      return this.lore.value.map(i => {
+        if (game.wfrp4e.config.loreWind[i])
+        {
+          return game.wfrp4e.config.loreWind[i];
+        }
+        else // If no wind associated with lore, jsut match lore
+        {
+          return i;
+        }
+        
+      }).includes(wind);
     }
 
 

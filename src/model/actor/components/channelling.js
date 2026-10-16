@@ -51,12 +51,12 @@ export class ChannellingModel extends foundry.abstract.DataModel
         let winds = {};
         for(let spell of spells)
         {
-            for (let wind of spell.system.lore.value.map(i => game.wfrp4e.config.loreWind[i]))
+            for (let wind of spell.system.lore.value.map(i => game.wfrp4e.config.loreWind[i] || i))
             {
                 if (!winds[wind] && wind != "petty")
                 {
                     winds[wind] = {
-                        label : game.wfrp4e.config.magicWind[wind],
+                        label : game.wfrp4e.config.magicWind[wind] || game.wfrp4e.config.magicLores[wind], // Fallback to lore name if no wind is found
                         img: game.wfrp4e.config.windIcons[wind]
                     }
                 }
