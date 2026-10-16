@@ -3,6 +3,7 @@ import { CharacterStatusModel } from "./components/status";
 import { CharacterDetailsModel } from "./components/details";
 import { StandardActorModel } from "./standard";
 import Advancement from "../../system/advancement";
+import { CharacterCareerModel } from "./components/career";
 let fields = foundry.data.fields;
 
 export class CharacterModel extends StandardActorModel {
@@ -14,6 +15,7 @@ export class CharacterModel extends StandardActorModel {
         schema.characteristics = new fields.EmbeddedDataField(CharacteristicsModel);
         schema.status = new fields.EmbeddedDataField(CharacterStatusModel);
         schema.details = new fields.EmbeddedDataField(CharacterDetailsModel);
+        schema.career = new fields.EmbeddedDataField(CharacterCareerModel);
 
         return schema;
     }
@@ -87,7 +89,14 @@ export class CharacterModel extends StandardActorModel {
         super.computeDerived();
 
         this.computeCorruption()
-        this.computeCareer()
+        if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+        {
+          this.computeCareer5e()
+        }
+        else 
+        {
+          this.computeCareer()
+        }
 
         this.details.experience.current = this.details.experience.total - this.details.experience.spent;
     }
@@ -163,14 +172,88 @@ export class CharacterModel extends StandardActorModel {
         {
           this.details.status.value = ""
         }
-    
     }
 
+    computeCareer5e()
+    {
+        if (this.career.current) 
+        {
+          // backwards compatibility for actor sheet display
+          this.details.career = {
+            name: this.career.current.name,
+            class: {value: this.career.document.system.class},
+            careergroup: {value: this.career.document.name}
+          }
+
+          let { standing, tier } = this._applyStatusModifier(this.career.current.status);
+          this.details.status.standing = standing
+          this.details.status.tier = tier
+          this.details.status.value = game.wfrp4e.config.statusTiers[this.details.status.tier] + " " + this.details.status.standing
+
+          this.career.untrainedSkills = [];
+          this.career.untrainedTalents = [];
+          
+          for (let char in this.characteristics) 
+          {
+              this.characteristics[char].career = this.career.characteristics.includes(char);
+          }
+                  
+          // Find skills that have been trained or haven't, add advancement indicators or greyed out options (untrainedSkills)
+          for (let sk of this.career.skills) 
+          {
+            let trainedSkill = this.parent.itemTypes.skill.find(s => s.name.toLowerCase() == sk.toLowerCase());
+            if (trainedSkill) 
+            {
+              trainedSkill.system.advances.indicator = true;
+            }
+            else 
+            {
+              this.career.untrainedSkills.push(sk);
+            }
+          }
+
+          // Find talents that have been trained or haven't, add advancement button or greyed out options (untrainedTalents)
+          for (let talent of this.career.talents) 
+          {
+              let trainedTalent = this.parent.itemTypes.talent.filter(t => t.name == talent)
+              if (trainedTalent.length)
+              {
+                for(let t of trainedTalent)
+                {
+                  t.system.advances.indicator = true;
+                }
+              }
+              else 
+              {
+                this.career.untrainedTalents.push(talent);
+              }
+          }
+        }
+        else
+        {
+          this.details.status.value = ""
+        }
+
+        // More backwards compatibility
+        this.details.career.system = {
+          untrainedSkills: this.career.untrainedSkills,
+          untrainedTalents: this.career.untrainedTalents,
+        }
+    
+    }
     
 
     get currentCareer() 
     {
         return this.parent.itemTags["career"].find(c => c.current.value)
+    }
+
+    spendExp(amount, reason)
+    {
+      let experience = foundry.utils.duplicate(this.details.experience);
+      experience.spent += parseInt(amount);
+      experience.log = this.addToExpLog(amount, reason, experience.spent, undefined);
+      return {[`${this.schema.fields.details.fields.experience.fieldPath}`]: experience};
     }
     
     awardExp(amount, reason, message=null, suppressChat=false) 

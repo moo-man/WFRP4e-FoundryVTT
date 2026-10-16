@@ -82,7 +82,8 @@
       "vehicleRole" : {"htmlFields": ["description.value", "gmdescription.value"]},
       "vehicleTest" : {"htmlFields": ["description.value", "gmdescription.value"]},
       "weapon" : {"htmlFields": ["description.value", "gmdescription.value"]},
-      "template" : {"htmlFields": ["description.value", "gmdescription.value"]}
+      "template" : {"htmlFields": ["description.value", "gmdescription.value"]},
+      "careerPath": {"htmlFields": ["description.value", "gmdescription.value"]}
     },
     "ChatMessage": {
       "test" : {},

@@ -144,47 +144,47 @@
         }
     }
 
-    &.template {
-        table {
-            margin: 0px;
-            table-layout: fixed;
-            border-radius: 0px;
-            border: none;
-            margin: 1rem 0px;
+    table.characteristic-table {
+        margin: 0px;
+        table-layout: fixed;
+        border-radius: 0px;
+        border: none;
+        margin: 1rem 0px;
 
-            tbody {}
+        tbody {}
 
-            td {
-                &:first-of-type {
-                    border-left: none;
-                }
-
-                &:last-of-type {
-                    border-right: none;
-                }
-
-                text-align: center;
-                padding: 0px;
-                height: 2rem;
-                width: 1rem;
-                line-height: 2rem;
-                border-right: 1px solid var(--attribute-border);
-
-                input {
-                    padding: 0px;
-                    border: none;
-                    background: var(--attribute-input);
-                }
+        td {
+            &:first-of-type {
+                border-left: none;
             }
 
-            tr {
-                &:first-of-type {
-                    background: var(--attribute-label);
-                    border-bottom: 1px solid var(--attribute-border);
-                }
+            &:last-of-type {
+                border-right: none;
+            }
+
+            text-align: center;
+            padding: 0px;
+            height: 2rem;
+            width: 1rem;
+            line-height: 2rem;
+            border-right: 1px solid var(--attribute-border);
+
+            input {
+                padding: 0px;
+                border: none;
+                background: var(--attribute-input);
             }
         }
 
+        tr {
+            &:first-of-type {
+                background: var(--attribute-label);
+                border-bottom: 1px solid var(--attribute-border);
+            }
+        }
+    }
+
+    &.template {
             .sheet-list {
                 margin: 1rem 0px;
 
@@ -197,4 +197,43 @@
                 }
             }
         }
+
+    &.careerPath {
+
+        .name-list {
+            --label-height: 1.5rem;
+        }
+        .tier {
+            .form-group {
+                --input-height: 1.5rem;
+            }
+        }
+
+        .tier-title {
+            font-size: var(--font-size-20);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            height: 1.6rem;
+            margin-bottom: 0.5rem;
+            > * {
+                height: 1.6rem;
+                padding: 0px;
+            }
+
+            > input[type=number] {
+                flex: 0 0 2rem;
+            }
+            > input[type=text] {
+                flex: 1;
+            }
+            > a {
+                font-size: var(--font-size-14);
+                flex: 0 0 1rem;
+                line-height: 1.5rem;
+            }
+        }
+
+
+    }   
 }

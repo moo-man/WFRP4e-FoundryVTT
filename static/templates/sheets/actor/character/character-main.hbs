@@ -128,6 +128,93 @@
         </div>
     </div>
 
+    {{#if (settings "editionSettings.careerAdvancement5e")}}
+            
+    <div class="sheet-list careers">
+        <div class="list-header row-content">
+            <div class="list-name">{{localize "Career"}}</div>
+            <div class="flex large">Advancement</div>
+            <div class="list-controls">
+            </div>
+        </div>
+        <div class="list-content">
+            {{#if system.career.current}}
+            {{#with system.career.current}}
+                <div class="list-row career tier-{{this.level}}" data-uuid="{{../system.career.document.uuid}}" data-tier="{{this.id}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
+                            <a data-tooltip="{{localize "Sheet.RollIncome"}}" data-tooltip-direction="UP" data-action="rollIncome"><i class="fa-solid fa-coins"></i></a>
+                        </div>
+                    <div class="flex large advancement">
+                        {{#each ../career.advancement.track}}
+                        <div class="pip {{#if this}}filled{{/if}}" data-action="clickAdvancement" data-index="{{@key}}" data-tooltip="{{this.label}}">
+                        +
+                        </div>
+                        {{/each}}
+                        <a data-action="advanceCareer" {{#unless (gte this.advancement.length this.advancementsNeeded)}}class="inactive"{{/unless}} data-tooltip="Advance to the next Tier"><i class="fa-solid fa-triple-chevrons-right"></i></a>
+                    </div>
+                    <div class="list-controls">
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                    </div>
+                    </div>
+                    {{> sheetButtons document=../system.career.path.document}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/with}}
+            {{else}}
+                {{#unless system.career.history.list.length}}
+                    <p class="notification info" style="display: block; margin: 0.5rem;">Add a <strong>Career Path</strong> Item.</p>
+                {{/unless}}
+            {{/if}}
+
+        </div>
+    </div>
+    {{#if career.history.length}}
+    <div class="sheet-list careers">
+        <div class="list-header row-content">
+            <div class="list-name">Previous Careers</div>
+            <div class="flex large">Advancement</div>
+            <div class="list-controls">
+            </div>
+        </div>
+        <div class="list-content">
+            {{#each career.history}}
+            {{#with this.tier}}
+                <div class="list-row career tier-{{this.level}}" data-uuid="{{../career.uuid}}" data-tier="{{this.id}}">
+                    <div class="row-content">
+                        <div class="list-name">
+                            <img src="{{this.img}}">
+                            <a class="label collapsed" data-action="toggleSummary">{{this.name}}</a>
+                        </div>
+                    <div class="flex large advancement">
+                        {{#each ../advancement.track}}
+                        <div class="pip {{#if this}}filled{{/if}}" data-index="{{@key}}" data-tooltip="{{this.label}}">
+                        +
+                        </div>
+                        {{!-- <a><i class="fa-regular fa-square"></i></a> --}}
+                        {{/each}}
+                    </div>
+                    <div class="list-controls">
+                        <a class="list-control context-menu"><i class="fa-regular fa-ellipsis-vertical"></i></a>
+                    </div>
+                    </div>
+                    {{> sheetButtons document=../system.career.path.document}}
+                    <div class="dropdown-content collapsed">
+
+                    </div>
+                </div>
+            {{/with}}
+            {{/each}}
+
+        </div>
+    </div>
+    {{/if}}
+
+    {{else}}
     <div class="sheet-list careers">
         <div class="list-header row-content">
             <div class="list-name">{{localize "Careers"}}</div>
@@ -140,6 +227,7 @@
             </div>
         </div>
         <div class="list-content">
+
             {{#each items.career}}
                 <div class="list-row" data-uuid="{{this.uuid}}">
                     <div class="row-content">
@@ -188,6 +276,9 @@
                     </div>
                 </div>
             {{/each}}
+
         </div>
     </div>
+    {{/if}}
+
 </section>

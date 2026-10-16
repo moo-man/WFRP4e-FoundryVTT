@@ -11,6 +11,8 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
           advanceCharacteristic : {buttons: [0, 2], handler : this._onAdvanceCharacteristic},
           advanceSkill : {buttons: [0, 2], handler : this._onAdvanceSkill},
           advanceTalent : {buttons: [0, 2], handler : this._onAdvanceTalent},
+          clickAdvancement: this._onClickAdvancement,
+          advanceCareer: this._onAdvanceCareer,
           addUntrainedSkill : this._onAddUntrainedSkill,
           clickUntrainedTalent : {buttons: [0, 2], handler : this._onClickUntrainedTalent},
           rollIncome : this._onRollIncome,
@@ -44,8 +46,47 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
         context.experienceLog = this._condenseXPLog()
         context.nonTrivialCriticals = context.items.critical.filter(c => Number.isNumeric(c.system.wounds.value))
         context.canEditExperience = game.user.isGM || game.settings.get("wfrp4e", "playerExperienceEditing")
-  
+        context.career = this._prepareCareerContext();
+
         return context;
+      }
+
+      _prepareCareerContext()
+      {
+        let careerContext = {};
+        const createAdvancementTrack = (tier, advancements) => 
+          {
+            let adv = {}
+            if (!tier || !advancements)
+            {
+              return adv;
+            }
+  
+            if (advancements.length > tier.advancementsNeeded)
+            {
+              adv.track = advancements.slice(0, tier.advancementsNeeded);
+              adv.overflow = advancements.slice(tier.advancementsNeeded);
+            }
+            else 
+            {
+              adv.track = advancements.concat(Array(tier.advancementsNeeded - advancements.length).fill(null));
+            }
+            return adv;
+          }
+  
+          careerContext.advancement = createAdvancementTrack(this.document.system.career.current, this.document.system.career.current?.advancement);
+          if (this.document.system.career.history.list.length)
+            {
+              careerContext.history = this.document.system.career.history.list.toReversed().filter(i => i.path.document).map(i => {
+              return {
+                career: i.path.document,
+                tier: i.path.document.system.tiers[i.tier],
+                advancement: createAdvancementTrack(i.path.document.system.tiers[i.tier], i.path.document.system.tiers[i.tier].advancement)
+              }
+            })
+          }
+
+          return careerContext;
       }
     
     _condenseXPLog() {
@@ -86,6 +127,27 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       return condensed.reverse()
     }
 
+    static async _onClickAdvancement(ev, target)
+    {
+      let index = this._getIndex(ev, target);
+      let advancement = this.document.system.career.advancement.list[index]
+      if (advancement)
+      {
+        if (await foundry.applications.api.Dialog.confirm({
+          content: `<p>Remove Advancement: "${advancement.label}"?</p><p> <strong>Note</strong>: This will not undo the advancement itself, only its association with the career.`, 
+          window: {title: "Remove Advancement"}
+        }))
+        {
+          this.document.update(this.document.system.career.removeAdvancement(index));
+        }
+      }
+      else 
+      {
+        let label = await ValueDialog.create({text: "Enter Advancement Label", title: "Add Advancement"});
+        this.document.update(this.document.system.career.addAdvancement({label : label || "(No Label)", type: "other"}))
+      }
+    }
+
     static async _onAddUntrainedSkill(ev)
     {
       let skill = await WFRP_Utility.findSkill(ev.target.text);
@@ -118,55 +180,15 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
       {
         talent.sheet.render(true);
       }
-  
-      else {
-        try {
-          new foundry.applications.api.DialogV2(
-            {
-              window : {title: game.i18n.localize("SHEET.AddTalentTitle")},
-              content: `<p>${game.i18n.localize("SHEET.AddTalentPrompt")}</p>`,
-              buttons:
-              [
-                {
-                  action: "yes",
-                  label: game.i18n.localize("Yes"),
-                  default: true,
-                  callback: dlg => {
-                    try {
-                      Advancement.checkValidAdvancement(this.actor.details.experience.total, this.actor.details.experience.spent + 100, game.i18n.localize("ACTOR.ErrorAdd"), talent.name);
-                      this.actor.createEmbeddedDocuments("Item", [talent.toObject()]);
-                      let expLog = foundry.utils.duplicate(this.actor.details.experience.log || []) 
-                      expLog.push({amount : 100, reason : talent.name, spent : this.actor.details.experience.spent + 100, total : this.actor.details.experience.total, type : "spent"})
-                      ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : 100, reason : talent.name}))
-                      this.actor.update( // Subtract experience if added
-                        {
-                          "system.details.experience.spent": this.actor.details.experience.spent + 100,
-                          "system.details.experience.log": expLog
-                        })
-                    } catch(error) {
-                      ui.notifications.error(error);
-                    }
-                  }
-                },
-                {
-                  action: "yesNoExp",
-                  label: game.i18n.localize("Free"),
-                  callback: dlg => { this.actor.createEmbeddedDocuments("Item", [talent.toObject()]); }
-                },
-                {
-                  action: "cancel",
-                  label: game.i18n.localize("Cancel"),
-                  callback: dlg => { return }
-                },
-              ],
-            }).render(true);
-        }
-        catch
-        {
-          console.error(error)
-          ui.notifications(error)
-        }
+      else 
+      {
+        this.actor.system.career.addTalent(talent)
       }
+    }
+
+    static async _onAdvanceCareer(ev)
+    {
+      this.actor.update(await this.actor.system.career.advanceCareer());
     }
 
     static _onChangeCareer(ev)
@@ -211,6 +233,13 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
     {
       let career = this._getDocument(ev)
 
+      if (career.type == "careerPath")
+      {
+        this.actor.system.career.rollIncome();
+        return;
+      }
+
+
       if (career.system.requiredTrappingStatus.length && career.system.requiredTrappingStatus.some(t => !t.owned))
       {
         ui.notifications.error("SHEET.RequiredTrappingsError", {localize: true})
@@ -250,94 +279,48 @@ export default class ActorSheetWFRP4eCharacter extends StandardWFRP4eActorSheet
 
     static async _onAdvanceCharacteristic(ev)
     {
-      // Prevent clicking until update (which refreshes the sheet)
+      // Prevent clicking until update (which refreshes the sheet) or error (rerender handled manually)
       ev.target.style.pointerEvents = "none"
-      let characteristic = ev.target.dataset.characteristic;
-      let current = this.actor.system.characteristics[characteristic];
-      let system = this.actor.system.toObject()
 
-      if (ev.button == 0) 
+      try 
       {
-        // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = Advancement.calculateAdvCost(current.advances, "characteristic", current.costModifier);
-        try 
-        {
-          Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), game.wfrp4e.config.characteristics[characteristic]);
-          system.characteristics[characteristic].advances++;
-          system.details.experience.spent = Number(system.details.experience.spent) + cost;
-
-          let expLog = this.actor.system.addToExpLog(cost, game.wfrp4e.config.characteristics[characteristic], system.details.experience.spent)
-          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
-          system.details.experience.log = expLog
-        } 
-        catch(error) 
-        {
+        await this.actor.system.career.advanceCharacteristic(ev.target.dataset.characteristic, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
+      } 
+      catch(error) 
+      {
           ui.notifications.error(error);
-          this.render(true); // Refresh sheet to allow clicking again
-        }
+          this.render({force: true});
       }
-      else if (ev.button == 2) 
+      finally
       {
-        // Calculate the advancement cost based on advances -1, add that amount back into exp
-        if (current.advances == 0)
-          return this.render(true); // Rerender to allow clicking again
-        let cost = Advancement.calculateAdvCost(current.advances - 1, "characteristic", current.costModifier);
-
-        system.characteristics[characteristic].advances--;
-        system.details.experience.spent = Number(system.details.experience.spent) - cost;
-
-        let expLog = this.actor.system.addToExpLog(-1 * cost, game.wfrp4e.config.characteristics[characteristic], system.details.experience.spent)
-        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : game.wfrp4e.config.characteristics[characteristic]}))
-        system.details.experience.log = expLog
+        this.render({force: true});
       }
-      
-      this.actor.update({system}, {skipExperienceChecks : true});
     }
 
-    static _onAdvanceSkill(ev)
+    static async _onAdvanceSkill(ev)
     {
       ev.stopPropagation();
       let skill = this._getDocument(ev);
-      let system = this.actor.system.toObject()
-      let update = {items : []}
       if(!skill)
       {
         return;
       }
+
+      // Prevent clicking until update (which refreshes the sheet) or error (rerender handled manually)
       ev.target.style.pointerEvents = "none"
-
-      if (ev.button == 0) {
-        // Calculate the advancement cost based on the current number of advances, subtract that amount, advance by 1
-        let cost = Advancement.calculateAdvCost(skill.system.advances.value, "skill", skill.system.advances.costModifier)
-        try 
-        {
-          Advancement.checkValidAdvancement(system.details.experience.total, system.details.experience.spent + cost, game.i18n.localize("ACTOR.ErrorImprove"), skill.name);
-          system.details.experience.spent = Number(system.details.experience.spent) + cost;
-          update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value + 1})
-
-          system.details.experience.log = this.actor.system.addToExpLog(cost, skill.name, system.details.experience.spent)
-          ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: skill.name}))
-          update.system = system;
-        } 
-        catch(error) 
-        {
+      try 
+      {
+        await this.actor.system.career.advanceSkill(skill, {direction: -1 * (ev.button - 1)}); // button == 0 turns into 1, button == 2 turns into -1
+      } 
+      catch(error) 
+      {
           ui.notifications.error(error);
-        }
+          this.render({force: true});
       }
-      else if (ev.button == 2) {
-        // Do the reverse, calculate the advancement cost (after subtracting 1 advancement), add that exp back
-        if (skill.system.advances.value == 0)
-            return this.render(true); // Rerender to allow clicking again
-        let cost = Advancement.calculateAdvCost(skill.system.advances.value - 1, "skill", skill.system.advances.costModifier)
-        system.details.experience.spent = Number(system.details.experience.spent) - cost;
-        update.items.push({_id : skill.id, "system.advances.value" : skill.system.advances.value - 1})
-
-        system.details.experience.log = this.actor.system.addToExpLog(-1 * cost, skill.name, system.details.experience.spent)
-        ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : -1 * cost, reason : skill.name}))
-        update.system = system;
+      finally
+      {
+        this.render({force: true});
       }
-
-      this.actor.update(update, {skipExperienceChecks : true});
     }
 
 

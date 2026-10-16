@@ -143,7 +143,7 @@ export class SkillModel extends BaseItemModel {
         if (!career)
           return
           
-        this.advances.career = this;
+        this.advances.career = career;
         if (this.advances.value >= career.level.value * 5)
         {
             this.advances.complete = true;
@@ -189,14 +189,15 @@ export class SkillModel extends BaseItemModel {
 
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName, oldName, skipPrompt=false) {
-        let currentCareer = this.parent.actor?.currentCareer;
+        
+        let currentCareer = game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e ? this.parent.actor?.system.career.current : this.parent.actor?.currentCareer.system;
         if (!currentCareer) 
         {
             return
         }
         else 
         {
-            currentCareer.system.changeSkillName(newName, oldName, skipPrompt)
+            currentCareer.changeSkillName(newName, oldName, skipPrompt)
         }
     }
     

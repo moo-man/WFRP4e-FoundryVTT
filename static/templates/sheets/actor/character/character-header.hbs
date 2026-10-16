@@ -17,7 +17,7 @@
         <img data-action="editImage" data-edit="img" src="{{actor.img}}">
         <div class="detail-rows">
 
-            <div class="detail-row" data-tooltip="{{localize 'SHEET.CareerToolTip'}}">
+            <div class="detail-row" {{#unless (settings "editionSettings.careerAdvancement5e")}} data-tooltip="{{localize 'SHEET.CareerToolTip'}}"{{/unless}}>
                 <div class="detail-group">
                     <input type="text" readonly value="{{system.details.career.class.value}}">
                     <label>{{localize "Class"}}</label>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="detail-row">
-                <div class="detail-group" class="{{system.details.status.modified}}" data-tooltip="{{localize 'SHEET.CareerToolTip'}}"> 
+                <div class="detail-group" class="{{system.details.status.modified}}" {{#unless (settings "editionSettings.careerAdvancement5e")}} data-tooltip="{{localize 'SHEET.CareerToolTip'}}"{{/unless}}> 
                     <input class="{{system.details.status.modified}}" type="text" readonly value="{{system.details.status.value}}">
                     <label><a data-action="stepProperty" data-path="system.details.status.modifier">{{localize "Status"}}</a></label>
                 </div>

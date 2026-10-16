@@ -51,6 +51,11 @@
 </div>
 {{/if}}
 
+<!-- TODO: probably replace this with a button -->
+{{#if test.result.incomeResult}}
+<b><a class = "money-drag" data-amt = "{{test.result.earned}}">{{test.result.incomeResult}}</a></b>
+{{/if}}
+
 {{#each test.result.other}}
     {{#if this.label}}
     <strong>{{{this.label}}}</strong>:

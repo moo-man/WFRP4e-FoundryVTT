@@ -397,4 +397,107 @@
         
                     }
                 }
+
+                .careers 
+                {
+                .list-header {
+                    div.flex {
+
+                        flex: 3;
+                        text-align: left;
+                    }
+                }
+
+                .career {
+                    --tier: 1;
+                    &.tier-1 {
+                        --tier: 1
+                    }
+                    &.tier-2 {
+                        --tier: 2
+                    }
+                    &.tier-3 {
+                        --tier: 3
+                    }
+                    &.tier-4 {
+                        --tier: 4
+                    }
+                    &.tier-5 {
+                        --tier: 5
+                    }
+                    &.tier-6 {
+                        --tier: 6
+                    }
+
+                    .list-name {
+                        position: relative;
+                        &::before { 
+                            --size: 15px;
+                            // Weird workaround to get a variable in the pseudo element content
+                            counter-reset: tier var(--tier);
+                            content: counter(tier);
+                            color: white;
+                            font-size: var(--size);
+                            line-height: var(--size);
+                            position: absolute;
+                            width: var(--size);
+                            height: var(--size);
+                            padding-left: 3px;
+                            padding-top: 1px;
+                            bottom: 0px;
+                            left: calc(2rem - var(--size));
+                            background-color: #b97509;
+                            border-radius: 50%;
+                        }
+                    }
+
+
+                    .advancement {
+                        display: flex;
+                        align-items: center;
+                        flex: 3;
+                        a {
+                            line-height: 0.75rem;
+                            color: var(--color-warm);
+                            margin: 0px 0.5rem;
+                        }
+                        .pip
+                        {
+                            color: var(--color-warm);
+                            line-height: 0.75rem;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            &.filled {
+                                background-color: var(--color-warm);
+                                color: var(--color-cream);
+                                &:not(:first-of-type)
+                                {
+                                    border-left-color: var(--color-cream);
+                                }
+                            }
+                            cursor: pointer;
+                            height: 0.75rem;
+                            width: 1rem;
+                            flex: 0 0 1rem;
+                            border: 1px solid var(--color-warm);
+                            &:not(:last-of-type)
+                            {
+                                border-right: none;
+                            }
+                            &:first-of-type
+                            {
+                                border-top-left-radius: 30%;
+                                border-bottom-left-radius: 30%;
+                            }
+                            &:last-of-type
+                            {
+                                border-top-right-radius: 30%;
+                                border-bottom-right-radius: 30%;
+                            }
+                        }
+                    }
+                }
+            }
         }

@@ -1,5 +1,6 @@
 @use "./sheet" as *;
 @use "./mixins" as *;
+@use "../mixins/index" as *;
 
 .wfrp4e.item.sheet.application:not(.no-theme) 
 {
@@ -93,6 +94,21 @@
         }
     }
 
+    .choice-group {
+        border: 1px solid var(--color-faded);
+        label {
+            @include shadowed();
+            height: 2rem;
+            line-height: 2rem;
+            width: 100%;
+            font-size: var(--font-size-14);
+            border-bottom: 1px solid var(--color-faded);
+        }
+        .choice-text {
+            border: none;
+        }
+    }
+
     .name-list {
         border-color: var(--color-faded);
         --name-bg: none;
@@ -102,6 +118,7 @@
         }
         .list-content {
             border-color: var(--color-faded);
+            select,
             input {
                 @include shadowed();
                 border-color: var(--color-faded);
@@ -166,6 +183,57 @@
                 outline: none;
                 box-shadow: none;
             }
+        }
+    }
+
+
+    &.careerPath {
+        .tier-title {
+            @include shadowed();
+            input
+            {
+                color: var(--color-grey1);
+                background: none;
+                border: none;
+                outline: none;
+            }
+        }
+
+        [data-application-part=details] button {
+            @include styled-button;
+            width: 50%;
+            margin: 0px auto;
+            --button-size: 1.5rem;
+        }
+
+        .choice-group {
+            label { 
+                height: 1.5rem;
+                line-height: 1.5rem;
+            }
+        }
+
+        .name-list.toggle-list {
+            --color: var(--color-warm);
+            --text-active: var(--color-cream);
+        }
+
+        .name-list {
+        
+            select,
+            input {
+                background: none;
+                color: var(--color-grey1);
+                border-color: var(--color-warm);
+                box-shadow: none;
+                &::placeholder {
+                    color: var(--color-grey1);
+                }
+                &.empty:not(:focus) {
+                    border-color: var(--color-faded);
+                }
+            }   
+        
         }
     }
 

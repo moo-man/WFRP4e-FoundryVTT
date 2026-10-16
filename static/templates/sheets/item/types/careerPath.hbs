@@ -1,0 +1,41 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+    {{formGroup fields.class value=source.system.class}}
+
+    <table class="characteristic-table">
+        <tbody>
+            <tr>
+                {{#each (config "characteristicsAbbrev")}}
+                    <td>{{this}}</td>
+                {{/each}}
+            </tr>
+            <tr>
+                {{#each system.characteristics}}
+                <td data-action="stepProperty" data-path="system.characteristics.{{@key}}">
+                    <a >{{this}}</a>
+                </td>
+                {{/each}}
+            </tr>
+        </tbody>
+    </table>
+    
+    {{#each tiers}}
+        <div class="tier" data-id="{{this.id}}" data-path="system.tiers">
+            <div class="tier-title form-group">
+                <input type="number" value={{this.level}} name="system.tiers.{{this.id}}.level">
+                <input type="text" value="{{this.name}}" name="system.tiers.{{this.id}}.name">
+                <a data-action="typedObjectDelete"><i class="fa-solid fa-xmark"></i></a>
+            </div>
+            <div class="form-group">
+                <label>{{localize "Status"}}</label>
+                {{formInput this.schema.fields.status.fields.tier value=this.status.tier name=(concat "system.tiers." this.id ".status.tier")}}
+                {{formInput this.schema.fields.status.fields.standing value=this.status.standing name=(concat "system.tiers." this.id ".status.standing")}}
+            </div>
+            {{> nameListInput label="Skills" list=this.skills path=(concat "system.tiers." this.id ".skills")}}
+            {{> nameListSelect label="Earning Skills" list=this.incomeSkill path=(concat "system.tiers." this.id ".incomeSkill") options=this.skills}}
+            {{> nameListInput label="Talents" list=this.talents path=(concat "system.tiers." this.id ".talents")}}
+            {{> choiceDisplay label="Trappings" list=this.trappings path=(concat "tiers." this.id ".trappings") display=this.trappings.textDisplay}}
+            </div>
+    {{/each}}
+    <button type="button" data-action="typedObjectCreate" data-path="system.tiers"><i class="fa-solid fa-plus"></i> Add Tier</button>
+
+</section>
