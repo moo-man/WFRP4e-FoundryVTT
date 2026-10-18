@@ -24,7 +24,16 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
 
     _addModelProperties()
     {
-        this.path.relative = this.parent.actor.items;
+        this.path.relative = this.parent.parent.items;
+        Object.values(this.advancements).forEach(adv => {
+            adv.list.forEach(i => {
+                i.document.relative = this.parent.parent.items;
+            })
+        })
+
+        this.history.list.forEach(h => {
+            h.path.relative = this.parent.parent.items;
+        })
     }
 
     set(path, tier)

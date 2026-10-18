@@ -78,6 +78,7 @@ export class CharacterModel extends StandardActorModel {
     }
 
     computeBase() {
+        this.career._addModelProperties();
         if (this.autoCalc.corruption) 
         {
           this.status.corruption.max = 0;
