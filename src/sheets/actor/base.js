@@ -664,6 +664,8 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
                 this.actor.setupCharacteristic(action.test.value, {appendTitle : ` - ${action.name}`}).then(test => test.roll())
               }
             }
+
+            Hooks.call("wfrp4e:useGroupAdvantageAction", this.actor, action)
           }
       }
       else 
