@@ -4,8 +4,11 @@ if (!table)
 	return ui.notifications.error("Mutation table not found, please ensure a table with the `mutatephys` key is imported in the world.")
 }
 let result = (await table.roll()).results[0];
-let uuid = `Compendium.${result.documentCollection}.${result.documentId}`
-let item = await fromUuid(uuid);
+if (!result.documentUuid)
+{
+    return this.script.message(result.description)
+}
+let item = await fromUuid(result.documentUuid);
 
 if (item)
 {
@@ -14,5 +17,5 @@ if (item)
 }
 else 
 {
-    ui.notifications.error("Item could not be found: " + uuid)
+    ui.notifications.error("Item could not be found: " + result.documentUuid)
 }
