@@ -28,10 +28,6 @@ export default class CharacteristicDialog5e extends RollDialog5e {
     {
         let dialogData = this._baseDialogData(actor, context, options);
 
-        if (context.item && !context.appendTitle)
-        {
-            context.appendTitle = ` - ${context.item.name}`;
-        }
 
         context.title = context.title || game.i18n.format("CharTest", {char: game.wfrp4e.config.characteristics[characteristic]});
         context.title += context.appendTitle || "";

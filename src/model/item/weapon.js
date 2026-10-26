@@ -586,7 +586,7 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         let skills = actor?.itemTags["skill"] || []
         let skill = skills.find(x => x.name.toLowerCase() == this.skill.value.toLowerCase())
         if (!skill) {
-            skill = skills.find(x => x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
+            skill = skills.find(x => x.system.characteristic.value == (this.attackType == "melee" ? "ws" : "bs") && x.name.toLowerCase().includes(`(${this.WeaponGroup.toLowerCase()})`))
         }
         return skill
     }

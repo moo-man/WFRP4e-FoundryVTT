@@ -118,6 +118,7 @@ import { MagicUseMessageModel5e } from "./model/message/magic5e.js";
 import WFRP4E from "./system/config-wfrp4e.js";
 import { CareerPathModel } from "./model/item/careerPath.js";
 import CareerPathSheet from "./sheets/item/career-path-sheet.js";
+import { ItemUseModel5e } from "./model/message/item-use.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -212,6 +213,7 @@ Hooks.once("init", function () {
   CONFIG.ChatMessage.dataModels["psych"] = PsychMessageModel;
   CONFIG.ChatMessage.dataModels["magic"] = MagicUseMessageModel;
   CONFIG.ChatMessage.dataModels["magic5e"] = MagicUseMessageModel5e;
+  CONFIG.ChatMessage.dataModels["item-use"] = ItemUseModel5e;
 
   game.wfrp4e = {
     apps: {

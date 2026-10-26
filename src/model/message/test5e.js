@@ -17,8 +17,10 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
           overcastReset : this.onOvercastReset,
           dispel: this.onDispel,
           executeAction: this.onExecuteAction,
-          chooseCriticalCast: this.onChooseCriticalCast
-        }); 
+          chooseCriticalCast: this.onChooseCriticalCast,
+          expandItem: this._onExpandItem,
+          rollTest: this._onRollTest
+    }); 
     }
 
     get canEdit()
@@ -70,6 +72,20 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
     {
       MagicUseMessageModel5e.create({test: this.test});
     }
+
+
+    static _onExpandItem(ev, target) {
+      target.parentElement.querySelector(".item-description").classList.toggle("expanded");
+    }
+
+    
+  static _onRollTest(ev, target) {
+    let actors = selectedWithFallback();
+
+    actors.forEach(a => {
+      this.test.item.system.getTestModel().setup(a, this.test.item, {}, "target");
+    })
+  }
 
           // Respond to overcast button clicks
   static onOvercastClick(event, target) {

@@ -1,0 +1,15 @@
+<div>
+    <fieldset>
+        <legend>Test (Self)</legend>
+    {{formGroup fields.self.fields.characteristic value=source.self.characteristic choices= (config "characteristics") }}
+    {{formGroup fields.self.fields.skill value=source.self.skill}}
+    {{formGroup fields.self.fields.difficulty value=source.self.difficulty  choices=(config "difficultyLabels") }}
+    </fieldset>
+
+    <fieldset>
+    <legend>Test (Target)</legend>
+    {{formGroup fields.target.fields.characteristic value=source.target.characteristic choices= (config "characteristics") }}
+    {{formGroup fields.target.fields.skill value=source.target.skill}}
+    {{formGroup fields.target.fields.difficulty value=source.target.difficulty  choices=(config "difficultyLabels") }}
+    </fieldset>
+</div>

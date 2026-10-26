@@ -1,5 +1,6 @@
 import PropertiesMixin from "./components/properties";
 import { BaseItemModel } from "./components/base";
+import TestDataModel from "./components/test";
 let fields = foundry.data.fields;
 
 export class TraitModel extends PropertiesMixin(BaseItemModel)
@@ -8,6 +9,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     static defineSchema() 
     {
         let schema = super.defineSchema();
+        schema.test = new fields.EmbeddedDataField(TestDataModel);
 
         schema.category = new fields.StringField({initial : "standard", choices : {standard : game.i18n.localize("ITEM.Standard"), vehicle : game.i18n.localize("SPEC.Vehicle")}});
 

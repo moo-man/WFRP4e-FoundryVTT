@@ -1,4 +1,6 @@
 import { BaseItemModel } from "./components/base";
+import SpendModel from "./components/spend";
+import TestDataModel from "./components/test";
 let fields = foundry.data.fields;
 
 
@@ -6,14 +8,16 @@ export class TalentModel extends BaseItemModel {
     static LOCALIZATION_PREFIXES = ["WH.Models.talent"];
     static defineSchema() {
         let schema = super.defineSchema();
+        schema.spend = new fields.EmbeddedDataField(SpendModel);
+        schema.test = new fields.EmbeddedDataField(TestDataModel);
         schema.max = new fields.SchemaField({
-            value: new fields.StringField({choices : game.wfrp4e.config.talentMax}),
+            value: new fields.StringField({choices : game.wfrp4e.config.talentMax, initial: "", blank: true}),
             formula : new fields.StringField()
         });
         schema.advances = new fields.SchemaField({
             value: new fields.NumberField({initial : 1, min: 1}),
             force: new fields.BooleanField()
-        })
+        });
         schema.career = new fields.SchemaField({
             value: new fields.StringField()
         });

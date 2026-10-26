@@ -1,0 +1,5 @@
+{{#if (settings "editionSettings.use5e")}}
+{{formGroup fields.momentum value=source.momentum}}
+{{else}}
+{{formGroup fields.advantage value=source.advantage}}
+{{/if}}

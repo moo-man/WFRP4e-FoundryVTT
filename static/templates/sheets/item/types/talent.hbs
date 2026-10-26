@@ -1,12 +1,27 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
-    {{formGroup fields.tests.fields.value value=source.system.tests.value}}
-    {{formGroup fields.max.fields.value value=source.system.max.value}}
+    {{> spend fields=fields.spend.fields source=source.system.spend}}
+    {{> testData fields=fields.test.fields source=system.test}}
 
-    {{#if (eq source.system.max.value "custom")}}
-        {{formGroup fields.max.fields.formula value=source.system.max.formula}}
+    {{#if (settings "editionSettings.use5e")}}
+        <details>
+            <summary>Legacy</summary>
+                    <fieldset>
+                        <legend>Legacy</legend>
     {{/if}}
 
-    {{#if item.isOwned}}
-        {{formGroup fields.advances.fields.force value=source.system.advances.force}}
+        {{formGroup fields.tests.fields.value value=source.system.tests.value}}
+        {{formGroup fields.max.fields.value value=source.system.max.value}}
+        {{#if (eq source.system.max.value "custom")}}
+            {{formGroup fields.max.fields.formula value=source.system.max.formula}}
+        {{/if}}
+
+        {{#if item.isOwned}}
+            {{formGroup fields.advances.fields.force value=source.system.advances.force}}
+        {{/if}}
+
+    {{#if (settings "editionSettings.use5e")}}
+                        </fieldset>
+        </details>
     {{/if}}
+
 </section>

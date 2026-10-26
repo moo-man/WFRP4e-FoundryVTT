@@ -501,6 +501,8 @@ export default function() {
       sheetButtons: "systems/wfrp4e/templates/sheets/partials/sheet-effect-buttons.hbs",
       aspects: "systems/wfrp4e/templates/partials/aspect-list.hbs",
       aspectsV2: "systems/wfrp4e/templates/sheets/partials/aspect-list.hbs",
+      spend: "systems/wfrp4e/templates/sheets/partials/spend.hbs",
+      testData: "systems/wfrp4e/templates/sheets/partials/item-test.hbs",
       meleeWeapons: "systems/wfrp4e/templates/sheets/partials/melee-weapons.hbs",
       rangedWeapons: "systems/wfrp4e/templates/sheets/partials/ranged-weapons.hbs",
       armourLocation: "systems/wfrp4e/templates/sheets/partials/armour-location.hbs",

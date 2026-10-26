@@ -61,8 +61,6 @@ export default class TraitDialog5e extends AttackDialog5e
           }
       }
       
-      context.appendTitle = ` - ${trait.name}`;
-
       let dialogData
 
       if (skill)

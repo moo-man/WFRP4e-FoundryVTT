@@ -1,8 +1,3 @@
-import TestWFRP from "../../system/rolls/test-wfrp4e.js";
-import WFRP_Utility from "../../system/utility-wfrp4e.js";
-import ItemWFRP4e from "../../documents/item.js";
-import { MagicUseMessageModel } from "./magic.js";
-
 const WFRPEffectMessageMixin = (cls) => class extends cls 
 {
     static get actions() 

@@ -47,10 +47,6 @@ export default class SkillDialog5e extends CharacteristicDialog5e {
         }
 
         context.title = context.title || game.i18n.format("SkillTest", {skill: skill.name});
-        if (context.item && !context.appendTitle)
-        {
-            context.appendTitle = ` - ${context.item.name}`;
-        }
         let dialogData = await super.setupData(characteristic, actor, context, options);
 
         

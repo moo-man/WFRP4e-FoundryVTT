@@ -1,4 +1,5 @@
 import ItemProperties     from "../../apps/item-properties";
+import TestConfiguration from "../../apps/test-config.js";
 import GenericActions     from "../../system/actions.js";
 import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 
@@ -28,6 +29,7 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
     actions : {
       postToChat : function() {this.item.postItem()},
       configureProperties : this._onConfigureProperties,
+      configureTest: this._onConfigureTest,
       clickCondition : {buttons : [0, 2], handler : this._onClickCondition}
     }
   }
@@ -173,10 +175,10 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 
   async _handleEnrichment() {
     let enrichment = {}
-    enrichment["system.description.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
-    enrichment["system.gmdescription.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
+    enrichment["system.description.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item });
+    enrichment["system.gmdescription.value"] = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item });
 
-    return foundry.utils.expandObject(enrichment)
+    return foundry.utils.expandObject(enrichment);
   }
 
 
@@ -184,20 +186,25 @@ export default class BaseWFRP4eItemSheet extends WarhammerItemSheetV2
 
   static _onConfigureProperties()
   {
-    new ItemProperties(this.document).render(true)
+    new ItemProperties(this.document).render({force: true});
+  }
+
+  static _onConfigureTest()
+  {
+    new TestConfiguration(this.document).render({force: true});
   }
 
   
   static _onClickCondition(ev) {
-    let conditionKey = this._getParent(ev.target, ".condition")?.dataset.key
-    let existing = this.item.hasCondition(conditionKey)
+    let conditionKey = this._getParent(ev.target, ".condition")?.dataset.key;
+    let existing = this.item.hasCondition(conditionKey);
     
     if (!existing?.isNumberedCondition && ev.button == 0)
     {
       this.item.removeCondition(conditionKey);
     }
     
-    ev.button == 0 ? this.item.addCondition(conditionKey) : this.item.removeCondition(conditionKey) 
+    ev.button == 0 ? this.item.addCondition(conditionKey) : this.item.removeCondition(conditionKey) ;
   }
 
     //#endregion

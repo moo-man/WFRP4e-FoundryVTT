@@ -1,5 +1,6 @@
 import PropertiesMixin from "./components/properties";
 import {EquippableItemModel} from "./components/equippable.js";
+import TestDataModel from "./components/test.js";
 let fields = foundry.data.fields;
 
 /**
@@ -19,6 +20,8 @@ export class TrappingModel extends PropertiesMixin(EquippableItemModel)
         schema.spellIngredient = new fields.SchemaField({
             value: new fields.StringField()
         })
+
+        schema.test = new fields.EmbeddedDataField(TestDataModel);
         return schema;
     }
 

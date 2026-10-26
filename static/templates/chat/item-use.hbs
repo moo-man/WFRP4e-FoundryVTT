@@ -1,0 +1,37 @@
+
+<div class="item-use">
+    <div class="item-dropdown">
+        <div class="item-header" data-action="expandItem">
+            {{#unless noImage}}
+                <img src="{{item.img}}">
+            {{/unless}}
+            <p>{{item.name}}</p>
+        </div>
+        <div class="item-description expanded">
+            <div class="description-expander">
+                <div class="public">
+                    {{{description.public}}}
+                </div>
+                <div class="gm-only">
+                    {{{description.gm}}}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div class="targets">
+    {{#each targets}}
+        <div class="target" data-uuid="{{this.uuid}}" data-id="{{this.id}}" data-tooltip="{{this.name}}" data-tooltip-direction="LEFT">
+            <i class="fa-solid fa-crosshairs"></i>
+            <img src="{{this.texture.src}}">
+        </div>
+    {{/each}}
+</div>
+
+</div>
+
+{{#if testLabel}}
+<a data-action="rollTest" class="chat-button">{{testLabel}}</a>
+{{/if}}
+
+{{> effectButtons this}}

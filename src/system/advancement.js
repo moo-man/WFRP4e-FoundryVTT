@@ -136,7 +136,7 @@ export default class Advancement
 
                     let newSpent = actor.details.experience.spent + xp
                     this.checkValidAdvancement(actor.details.experience.total, newSpent, game.i18n.localize("ACTOR.ErrorImprove"), name);
-                    let log = actor.system.addToExpLog(xp, `${name} (${end-start})`, newSpent)
+                    let log = actor.system.addToExpLog(xp, `${name} (${start} → ${end})`, newSpent)
                     actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
                     resolve(true)
                   }
@@ -153,7 +153,7 @@ export default class Advancement
               label: game.i18n.localize("Free"),
               callback: () => {
                   let newSpent = actor.details.experience.spent
-                  let log = actor.system.addToExpLog(0, `${name} (${end-start})`, newSpent)
+                  let log = actor.system.addToExpLog(0, `${name} (${start} → ${end})`, newSpent)
                   actor.update({ "system.details.experience.spent": newSpent, "system.details.experience.log": log })
                   resolve(true) 
                 }

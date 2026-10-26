@@ -19,6 +19,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
     },
     actions : {
       rollTest : this._onRollTest,
+      useItem: this._onUseItem,
       toggleSummary : this._toggleSummary,
       toggleSummaryAlt : {buttons: [2], handler : this._toggleSummary}, // TODO secondary actions
       toggleExtendedTests : this._toggleExtendedTests,
@@ -778,6 +779,15 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
       }
 
       test?.roll();
+    }
+
+    static async _onUseItem(ev, target)
+    {
+      let document = await this._getDocumentAsync(ev);
+      if (document)
+      {
+        document.system.use(this.actor);
+      }
     }
 
     castOrChannelPrompt(spell, options = {}) {

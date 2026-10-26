@@ -111,8 +111,8 @@
                     {{#each this.items}}
                         <div class="list-row" data-uuid="{{this.uuid}}">
                             <div class="row-content">
-                                <div class="list-name">
-                                    <img src="{{this.img}}">
+                                <div class="list-name rollable">
+                                    <img src="{{this.img}}" data-action="useItem">
                                     <a class="label" data-action="toggleSummary">{{this.name}}</a>
                                 </div>
                                 {{#if (eq @../key "ingredient")}}
@@ -174,7 +174,7 @@
                     <div class="list-row container-drop" data-uuid="{{this.uuid}}">
                         <div class="row-content">
                             <div class="list-name">
-                                <img src="{{this.img}}">
+                                <img src="{{this.img}}" data-action="useItem">
                                 <a class="label">{{this.name}}</a>
                                 ({{this.system.carries.current}} / {{this.system.carries.value}})
                             </div>

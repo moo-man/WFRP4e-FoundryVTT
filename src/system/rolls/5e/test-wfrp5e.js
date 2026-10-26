@@ -700,7 +700,8 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     let templateData = {
       test: this,
-      title: this.context.targets.length ? `${this.context.title} - ${game.i18n.localize("Opposed")}` : this.context.title
+      title: this.context.targets.length ? `${this.context.title} - ${game.i18n.localize("Opposed")}` : this.context.title,
+      itemUse: await this.getItemUseData()
     }
 
     ChatMessage.applyRollMode(messageData, this.context.rollMode)
@@ -845,6 +846,37 @@ export default class TestWFRP5e extends WarhammerTestBase {
     else
       return this.actor.items.get(this.context.item);
   }
+
+  async getItemUseData()
+  {
+    if (["talent", "trait", "weapon"].includes(this.item?.type))
+    {
+      return {
+        name: this.item.name,
+        noImage: this.item.img.includes("blank.png") || this.item.img.includes("item-bag.svg"),
+        img: this.item.img,
+        testLabel: this.getTestLabel(),
+        description: {
+          public: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.description.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item }),
+          gm: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.item.system.gmdescription.value, { async: true, secrets: this.item.isOwner, relativeTo: this.item })
+        }
+      }
+    }
+  }
+
+  getTestLabel()
+  {
+    let effects = this.targetEffects.concat(this.areaEffects);
+    if (effects.some(e => e.system.transferData.avoidTest.value == "item"))
+    {
+      return false // Don't show separate test button if one of the effects already has the label for its avoid test;
+    }
+    else
+    {
+      return this.item.system.getTestModel()?.targetLabel;
+    }
+  }
+
 
   get message() {
     return game.messages.get(this.context.messageId)

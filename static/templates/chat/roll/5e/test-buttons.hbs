@@ -10,4 +10,8 @@
         </button>
 {{/each}}
 
+{{#if itemUse.testLabel}}
+<a data-action="rollTest" class="chat-button">{{itemUse.testLabel}}</a>
+{{/if}}
+
 {{> effectButtons test}}

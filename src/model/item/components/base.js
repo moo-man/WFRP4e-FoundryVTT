@@ -1,3 +1,5 @@
+import { ItemUseModel5e } from "../../message/item-use";
+
 let fields = foundry.data.fields;
 
  export class BaseItemModel extends BaseWarhammerItemModel 
@@ -58,6 +60,53 @@ let fields = foundry.data.fields;
 
     get isMagical() {
         return false;
+    }
+
+    async use(actor, {context={}, options={}}={})
+    {
+      if (this.spend?.momentum && game.settings.get("wfrp4e", "editionSettings")?.use5e)
+      {
+        if (await actor.spend("system.status.momentum"))
+        {
+          ui.notifications.notify(`<strong>${this.parent.name}</strong>: Spent Momentum!`)
+        }
+        else 
+        {
+          return ui.notifications.error("No Momentum!");
+        }
+      }
+      else if (this.spend?.advantage && !game.settings.get("wfrp4e", "editionSettings")?.use5e)
+      {
+        if (await actor.spend("system.status.advantage.value", this.spend.advantage))
+        {
+          ui.notifications.notify(`<strong>${this.parent.name}</strong>: Spent ${this.spend.advantage} Advantage!`)
+        }
+        else 
+        {
+          return ui.notifications.error("Not enough Advantage!");
+        }
+
+      }
+      if (this.test?.hasSelf)
+      {
+        return this.test.setup(actor, this.parent, {context, options});
+      }
+      else
+      {
+        ItemUseModel5e.create({item: this.parent, actor: actor || this.parent.actor});
+      }
+    }
+
+    /** @override */
+    getAvoidTestData()
+    {
+        return this.getTestModel().target;
+    }
+
+    // Some models may not use a root level test property, so should be able to be overridden 
+    getTestModel()
+    {
+      return this.test;
     }
 
   /**

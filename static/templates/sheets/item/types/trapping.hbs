@@ -1,4 +1,5 @@
 <section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
     {{formGroup fields.trappingType.fields.value value=source.system.trappingType.value}}
     {{> itemProperties}}
+    {{> testData fields=fields.test.fields source=system.test}}
 </section>

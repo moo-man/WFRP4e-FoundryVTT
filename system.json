@@ -97,7 +97,8 @@
       "corruption" : {},
       "psych" : {},
       "magic" : {},
-      "magic5e" : {}
+      "magic5e" : {},
+      "item-use": {}
     }
   },
   "primaryTokenAttribute": "status.wounds",

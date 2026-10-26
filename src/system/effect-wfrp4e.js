@@ -148,6 +148,20 @@ export default class ActiveEffectWFRP4e extends WarhammerActiveEffect
         }
     }
 
+    get testDisplay() 
+    {
+        let avoidTest = this.system.transferData.avoidTest;
+        if (avoidTest.value == "custom" && (avoidTest.skill || avoidTest.characteristic))
+        {
+            return `${game.wfrp4e.config.difficultyLabels[avoidTest.difficulty] || ""} ${avoidTest.skill || game.wfrp4e.config.characteristics[avoidTest.characteristic] } Test`
+        }
+        else if (avoidTest.value == "item" && this.item?.system.getTestModel()?.hasTarget)
+        {
+            return this.item.system.getTestModel().targetLabel;
+        }
+    }
+
+
     get show() {
         if (game.user.isGM || !this.getFlag("wfrp4e", "hide"))
           return true

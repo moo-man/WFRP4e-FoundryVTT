@@ -2721,6 +2721,30 @@
                         "label" : "Location"
                     }
                 }
+            },
+            "Spend" : {
+                "FIELDS" : {
+                    "momentum" : {
+                        "label" : "Momentum Spend"
+                    },
+                    "advantage" : {
+                        "label" : "Advantage Spend"
+                    }
+                }
+            },
+            "Test" : {
+                "FIELDS" : {
+                    "self" : {
+                        "characteristic.label": "Characteristic",
+                        "skill.label": "Skill",
+                        "difficulty.label": "Difficulty"
+                    },
+                    "target" : {
+                        "characteristic.label": "Characteristic",
+                        "skill.label": "Skill",
+                        "difficulty.label": "Difficulty"
+                    }
+                }
             }
         }
       }

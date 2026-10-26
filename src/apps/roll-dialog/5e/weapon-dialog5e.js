@@ -44,8 +44,6 @@ export default class WeaponDialog5e extends AttackDialog5e
       let skill = weapon.system.getSkillToUse(actor);
       let characteristic = skill?.system.characteristic.key || (weapon.attackType == "ranged" ? "bs" : "ws");
       
-      context.title = context.title || game.i18n.localize("WeaponTest") + " - " + weapon.name;
-      context.title += context.appendTitle || "";
       context.hitloc = true; // Weapons should always have a hit location
       
       let dialogData;

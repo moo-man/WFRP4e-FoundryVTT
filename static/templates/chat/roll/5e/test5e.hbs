@@ -2,6 +2,29 @@
     {{title}}
 </div>
 
+{{#if itemUse}}
+<div class="item-use">
+    <div class="item-dropdown">
+        <div class="item-header" data-action="expandItem">
+            {{#unless itemUse.noImage}}
+                <img src="{{itemUse.img}}">
+            {{/unless}}
+            <p>{{itemUse.name}}</p>
+        </div>
+        <div class="item-description">
+            <div class="description-expander">
+                <div class="public">
+                    {{{itemUse.description.public}}}
+                </div>
+                <div class="gm-only">
+                    {{{itemUse.description.gm}}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
 <div class="hide-option comparison">
     <span class="{{#if test.isCritical}}critical{{/if}} {{#if test.isFumble}}fumble{{/if}}">
         {{#if test.result.reversed}}
