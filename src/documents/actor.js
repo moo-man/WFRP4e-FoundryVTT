@@ -489,17 +489,17 @@ export default class ActorWFRP4e extends WarhammerActor
 
     // if weapon has pummel - only used for audio
     let pummel = false
-
-    let args = { actor, attacker, opposedTest, sourceTest, sourceItem, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort}
+    let critModifier = 0;
+    let args = { actor, attacker, opposedTest, sourceTest, sourceItem, damageType, weaponProperties, applyAP, applyTB, loc, totalWoundLoss, AP, modifiers, extraMessages, ward, wardRoll, abort, critModifier}
     await Promise.all(actor.runScripts("preTakeDamage", args))
     await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
     await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
-    damageType = args.damageType
-    applyAP = args.applyAP 
-    applyTB = args.applyTB
-    ward = args.ward
-    abort = args.abort
-    totalWoundLoss = args.totalWoundLoss
+    damageType = args.damageType;
+    applyAP = args.applyAP ;
+    applyTB = args.applyTB;
+    ward = args.ward;
+    abort = args.abort;
+    totalWoundLoss = args.totalWoundLoss;
 
     if (abort)
     {
@@ -721,14 +721,17 @@ export default class ActorWFRP4e extends WarhammerActor
       }
     }
     catch (e) { warhammer.utility.log("Sound Context Error: " + e, true) } // Ignore sound errors
-    let scriptArgs = { actor, attacker, opposedTest, sourceTest, sourceItem, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort }
+
+    critModifier = args.critModifier;
+    let scriptArgs = { actor, attacker, opposedTest, sourceTest, sourceItem, totalWoundLoss, AP, applyAP, applyTB, damageType, loc, updateMsg, modifiers, ward, wardRoll, extraMessages, abort, critModifier }
     await Promise.all(actor.runScripts("takeDamage", scriptArgs))
     await Promise.all(attacker?.runScripts("applyDamage", scriptArgs) || [])
     await Promise.all(sourceItem?.runScripts("applyDamage", scriptArgs) || [])
     Hooks.call("wfrp4e:applyDamage", scriptArgs)
-    ward = scriptArgs.ward
-    abort = scriptArgs.abort
-    totalWoundLoss = scriptArgs.totalWoundLoss
+    ward = scriptArgs.ward;
+    abort = scriptArgs.abort;
+    totalWoundLoss = scriptArgs.totalWoundLoss;
+    critModifier = scriptArgs.critModifier;
 
     if (abort)
     {
@@ -801,7 +804,7 @@ export default class ActorWFRP4e extends WarhammerActor
       //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
       let critAmnt = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
       if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
-        let critModifier = (Math.abs(newWounds)) * critAmnt;
+        critModifier += (Math.abs(newWounds)) * critAmnt;
         updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
       }
       //@HOUSE

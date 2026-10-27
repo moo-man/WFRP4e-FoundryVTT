@@ -595,8 +595,8 @@ export class StandardActorModel extends BaseActorModel {
 
       let ward = actor.system.status.ward.value;
       let wardRoll = Math.ceil(CONFIG.Dice.randomUniform() * 10);
-  
-      let args = { damage, actor, attacker, opposedTest, sourceTest, sourceItem, applyAP, applyTB, armour, weaponProperties, loc, AP, modifiers, extraMessages, abort, ward, wardRoll}
+      let critModifier = 0;
+      let args = { damage, actor, attacker, opposedTest, sourceTest, sourceItem, applyAP, applyTB, armour, weaponProperties, loc, AP, modifiers, extraMessages, abort, ward, wardRoll, critModifier}
       await Promise.all(actor.runScripts("preTakeDamage", args))
       await Promise.all(attacker?.runScripts("preApplyDamage", args) || [])
       await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
@@ -607,6 +607,7 @@ export class StandardActorModel extends BaseActorModel {
       applyTB = args.applyTB;
       abort = args.abort;
       damage = args.damage;
+      critModifier = args.critModifier;
   
         for(let id in armour)
         {
@@ -641,6 +642,7 @@ export class StandardActorModel extends BaseActorModel {
         await Promise.all(attacker?.runScripts("computeApplyDamageModifiers", args) || [])
         await Promise.all(sourceItem?.runScripts("computeApplyDamageModifiers", args) || [])
         await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("computeTakeDamageModifiers", args)), []));
+        critModifier = args.critModifier;
 
         
         if (applyTB)
@@ -688,14 +690,19 @@ export class StandardActorModel extends BaseActorModel {
         await Promise.all(attacker?.runScripts("applyDamage", args) || []);
         await Promise.all(sourceItem?.runScripts("applyDamage", args) || []);
         await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("takeDamage", args)), []));
-      Hooks.call("wfrp4e:applyDamage", args);
+        Hooks.call("wfrp4e:applyDamage", args);
         totalWoundLoss = args.totalWoundLoss
+        critModifier = args.critModifier;
         
         let newWounds = this.status.wounds.value - totalWoundLoss;
-
         let tooltip =  this._createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort});
         let tooltipHTML = `<a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
-        let tableHTML = this._createTableLinks({newWounds, loc})
+
+        if (newWounds < 0)
+        {
+            critModifier += newWounds < 0 ? Math.abs(newWounds) * 10 : 0;
+        }
+        let tableHTML = this._createTableLinks({newWounds, loc, critModifier})
 
         let updateMsg = `
         <strong>${game.i18n.localize("CHAT.DamageApplied")}</strong> ${totalWoundLoss} 
@@ -791,19 +798,18 @@ export class StandardActorModel extends BaseActorModel {
         return tooltip;
     }
 
-    _createTableLinks({newWounds, loc})
+    _createTableLinks({newWounds, loc, critModifier=0}={})
     {
         let html = ""
         // If damage taken reduces wounds to 0, show Critical
         if (newWounds < 0) 
         {
-            let critModifier = (Math.abs(newWounds)) * 10;
             html += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
-        }
         // if (hack)
         // {
         //     html += `<br><button data-action="applyHack">${game.i18n.localize('CHAT.ApplyHack')}</button>`
         // }
+        }
         return html;
     }
 

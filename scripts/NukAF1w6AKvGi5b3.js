@@ -1,0 +1,1 @@
+args.critModifier += 20;
