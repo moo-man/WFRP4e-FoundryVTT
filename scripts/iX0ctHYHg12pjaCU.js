@@ -1,8 +1,8 @@
 let result = await game.wfrp4e.tables.rollTable("gift-of-slaanesh")
 
-if (result.object.documentId && result.object.documentCollection)
+if (result.object.documentUuid)
 {
-    let item = await fromUuid(`Compendium.${result.object.documentCollection}.${result.object.documentId}`);
+    let item = await fromUuid(result.object.documentUuid);
     if (item)
     {  
         let data = item.toObject();
