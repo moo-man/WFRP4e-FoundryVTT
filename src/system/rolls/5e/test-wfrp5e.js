@@ -58,7 +58,7 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     if (this.context.speaker && this.actor.isOpposing && this.context.targets.length)
     {
-      ui.notifications.notify("TargetingCancelled", {localize: true});
+      ui.notifications.info("TargetingCancelled", {localize: true});
       this.context.targets = [];
     }
 

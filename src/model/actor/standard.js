@@ -549,6 +549,7 @@ export class StandardActorModel extends BaseActorModel {
           ignored : 0,
           metal : 0,
           nonmetal : 0,
+          nonmagical : 0,
           magical : 0,
           shield : 0,
           details : []
@@ -573,6 +574,7 @@ export class StandardActorModel extends BaseActorModel {
         armour[layer.source.id] = {
             name: layer.source.name,
             metal: layer.metal,
+            magical: layer.magical,
             ignored: false,
             properties: layer.source.system.properties,
             value: layer.value,
@@ -627,6 +629,15 @@ export class StandardActorModel extends BaseActorModel {
                 {
                     modifiers.ap.nonmetal += armour[id].value;
                 }
+
+                if (armour[id].magical)
+                {
+                    modifiers.ap.magical += armour[id].value;
+                }
+                else 
+                {
+                    modifiers.ap.nonmagical += armour[id].value;
+                }
             }
         }
         
@@ -647,15 +658,15 @@ export class StandardActorModel extends BaseActorModel {
         
         if (applyTB)
         {
-            modifiers.total += modifiers.tb;
+            modifiers.total -= modifiers.tb;
         }
         if (applyAP)
         {
-            modifiers.total += modifiers.ap.value;
+            modifiers.total -= modifiers.ap.value;
         }
 
         modifiers.total += modifiers.other.reduce((acc, current) => acc + current.value, 0)
-        let totalWoundLoss = damage - modifiers.total;
+        let totalWoundLoss = damage + modifiers.total;
         if (totalWoundLoss <= 0 && modifiers.minimumOne)
         {
             totalWoundLoss = 1;

@@ -828,7 +828,7 @@ WFRP5E.PrepareSystemItems = function() {
                     label : "Ignore AP",
                     trigger : "preTakeDamage",
                     script : `
-                        if (args.armour[this.item.id] && args.weaponProperties.qualities.impale && args.sourceTest.result.critical)
+                        if (args.armour[this.item.id] && args.weaponProperties.qualities?.impale && args.sourceTest.result.critical)
                         {
                             args.armour[this.item.id].ignored = true;
                             args.armour[this.item.id].tooltip = this.effect.name;
