@@ -17,7 +17,7 @@ weapon = await fromUuid("Compendium.wfrp4e-core.items.Item.AtpAudHA4ybXVlWM");
 weapon = weapon.toObject();
 weapon.name = "Fists of Gork";
 weapon.img = this.effect.img;
-weapon.system.rollable.skill = "Melee (Brawling)";
+weapon.system.test.self.skill = "Melee (Brawling)";
 weapon.system.specification.value = 9 - base;
 await this.actor.createEmbeddedDocuments("Item", [weapon], {fromEffect : this.effect.id});
 

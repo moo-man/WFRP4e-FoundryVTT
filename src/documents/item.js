@@ -268,9 +268,9 @@ export default class ItemWFRP4e extends WarhammerItem
       char = this.actor.characteristics[this.system.characteristic.value]
       char.key = this.system.characteristic.value
     }
-    if (this.type == "trait" && this.rollable.value) {
-      char = this.actor.characteristics[this.system.rollable.rollCharacteristic]
-      char.key = this.system.rollable.rollCharacteristic
+    if (this.type == "trait" && this.system.test.self.characteristic) {
+      char = this.actor.characteristics[this.system.test.self.characteristic];
+      char.key = this.system.test.self.characteristic;
     }
     return char
   }
@@ -402,7 +402,6 @@ export default class ItemWFRP4e extends WarhammerItem
   get quantity()           { return this.system.quantity }
   get range()              { return this.system.range }
   get reach()              { return this.system.reach }
-  get rollable()           { return this.system.rollable }
   get skill()              { return this.system.skill }
   get skills()             { return this.system.skills }
   get SL()                 { return this.system.SL }

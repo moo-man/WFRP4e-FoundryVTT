@@ -27,11 +27,11 @@
             {{#each items.trait}}
             <div class="list-row {{#if this.system.disabled}}inactive{{/if}}" data-uuid="{{this.uuid}}">
                 <div class="row-content">
-                    <div class="list-name {{#if this.system.rollable.value}}rollable{{/if}}">
-                        <img src="{{this.img}}" {{#if this.system.rollable.value}}data-action="rollTest"
+                    <div class="list-name {{#if this.system.isRollable}}rollable{{/if}}">
+                        <img src="{{this.img}}" {{#if this.system.isRollable}}data-action="rollTest"
                             data-type="trait" {{/if}}>
                         <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if
-                            this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
+                            this.system.isRollable}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
                     </div>
                     <div class="list-controls">
                         {{#if this.system.disabled}}

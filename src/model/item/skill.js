@@ -18,12 +18,12 @@ export class SkillModel extends BaseItemModel {
             value: new fields.StringField({ initial: "ws", choices : game.wfrp4e.config.characteristics }),
         });
         schema.advances = new fields.SchemaField({
-            value: new fields.NumberField(),
-            costModifier: new fields.NumberField(),
+            value: new fields.NumberField({initial: 0}),
+            costModifier: new fields.NumberField({initial: 0}),
             force: new fields.BooleanField(),
         });
         schema.modifier = new fields.SchemaField({
-            value: new fields.NumberField(),
+            value: new fields.NumberField({initial: 0}),
         });
         schema.total = new fields.SchemaField({
             value: new fields.NumberField(),

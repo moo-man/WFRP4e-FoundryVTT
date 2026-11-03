@@ -2574,33 +2574,23 @@
                     "category" : {
                         "label" : "Category"
                     },
-                    "rollable" : {
-                        "value" : {
-                            "label" : "Rollable"
+                    "attack" : {
+                        "type" : {
+                            "label" : "Attack"
                         },
                         "damage" : {
-                            "label" : "Does Damage"
-                        },
-                        "skill" : {
-                            "label" : "Skill"
-                        },
-                        "rollCharacteristic" : {
-                            "label" : "Roll Characteristic"
-                        },
-                        "bonusCharacteristic" : {
-                            "label" : "Bonus Characteristic"
-                        },
-                        "dice" : {
-                            "label" : "Dice Roll"
-                        },
-                        "defaultDifficulty" : {
-                            "label" : "Difficulty"
-                        },
-                        "SL" : {
-                            "label" : "Add SL"
-                        },
-                        "attackType" : {
-                            "label" : "Attack Type"
+                            "value": {
+                                "label": "Damage"
+                            },
+                            "characteristic": {
+                                "label": "+Characteristic"
+                            },
+                            "SL": {
+                                "label": "+SL"
+                            },
+                            "dice": {
+                                "label": "+Dice Formula"
+                            }
                         }
                     },
                     "specification.value" : {

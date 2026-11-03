@@ -14,7 +14,7 @@
                     <div class="row-content">
                         <div class="list-name rollable">
                             <img src="{{this.img}}" data-action="useItem">
-                            <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.rollable.value}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
+                            <a class="label" data-action="toggleSummary">{{this.system.DisplayName}} {{#if this.system.isRollable}}<i class="fas fa-dice" style="opacity: 0.7"></i>{{/if}}</a>
                         </div>
                         <div class="list-controls">
                             {{#if this.system.disabled}}

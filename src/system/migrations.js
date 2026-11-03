@@ -445,6 +445,57 @@ export default class Migration {
       return updateData;
     };
 
+    
+    static migrateTraitData(item) {
+      let updateData = {};
+
+      if (item.system.rollable?.value)
+      {
+        updateData["system.rollable.value"] = false;
+
+        updateData["system.test"] = {
+          self: {
+            characteristic:  item.system.rollable.rollCharacteristic,
+            skill: item.system.rollable.skill,
+            difficulty: item.system.rollable.defaultDifficulty
+        },
+          target: {}
+        }
+
+        if (item.system.rollable.damage)
+        {
+          updateData["system.rollable.damage"] = false;
+
+          let attack = {damage: {}};
+          attack.type = item.system.rollable.attackType;
+          if (isNaN(item.system.specification.value))
+          {
+            attack.damage.value = null;
+            if (item.system.specification.value == "#")
+            {
+              item.system.specification.value = "";
+            }
+          }
+          else 
+          {
+            attack.damage.value = item.system.specification.value;
+            item.system.specification.value = "";
+          }
+          if (item.system.rollable.SL)
+            attack.damage.SL = true;
+          if (item.system.rollable.bonusCharacteristic)
+            attack.damage.characteristic = item.system.rollable.bonusCharacteristic;
+          if (item.system.rollable.dice)
+            attack.damage.dice = item.system.rollable.dice;
+
+          updateData["system.attack"] = attack;
+        }
+      }
+
+      return updateData;
+    };
+
+
     static migrateProperties(item)
     {
       let updateData = {};
@@ -484,6 +535,11 @@ export default class Migration {
     if (item.type == "ammunition")
     {
       updateData = Migration.migrateAmmoData(item)
+    }
+
+    if (item.type == "trait")
+    {
+      updateData = Migration.migrateTraitData(item);
     }
     
     if (item.type == "spell")

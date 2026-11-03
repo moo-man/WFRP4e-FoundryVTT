@@ -1,6 +1,7 @@
 import PropertiesMixin from "./components/properties";
 import { BaseItemModel } from "./components/base";
 import TestDataModel from "./components/test";
+import SpendModel from "./components/spend";
 let fields = foundry.data.fields;
 
 export class TraitModel extends PropertiesMixin(BaseItemModel)
@@ -9,22 +10,23 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     static defineSchema() 
     {
         let schema = super.defineSchema();
-        schema.test = new fields.EmbeddedDataField(TestDataModel);
 
         schema.category = new fields.StringField({initial : "standard", choices : {standard : game.i18n.localize("ITEM.Standard"), vehicle : game.i18n.localize("SPEC.Vehicle")}});
 
-        schema.rollable = new fields.SchemaField({
-            value : new fields.BooleanField({}),
-            damage : new fields.BooleanField({}),
-            skill : new fields.StringField({}),
-            rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
-            bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
-            dice : new fields.StringField({}),
-            defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
-            SL : new fields.BooleanField({}),
-            attackType : new fields.StringField({initial: "melee", choices : {melee : game.i18n.localize("Melee"), ranged : game.i18n.localize("Ranged")}})
-        });
+        schema.spend = new fields.EmbeddedDataField(SpendModel);
+        schema.test = new fields.EmbeddedDataField(TestDataModel);
+        schema.attack = new fields.SchemaField({
+          type : new fields.StringField({initial: "", choices : {melee : game.i18n.localize("Melee"), ranged : game.i18n.localize("Ranged")}, blank: true}),
+          damage: new fields.SchemaField({
+            value: new fields.NumberField({nullable: true}),
+            characteristic: new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
+            dice : new fields.StringField(),
+            SL : new fields.BooleanField({initial: true}),
+          })
+        })
 
+
+        
         schema.specification = new fields.SchemaField({
             value : new fields.StringField(),
         });
@@ -38,7 +40,22 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
         });
 
         schema.disabled = new fields.BooleanField({initial : false});
-    
+
+
+
+
+        schema.rollable = new fields.SchemaField({
+          value : new fields.BooleanField({}),
+          damage : new fields.BooleanField({}),
+          skill : new fields.StringField({}),
+          rollCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics}),
+          bonusCharacteristic : new fields.StringField({choices : game.wfrp4e.config.characteristics,  blank: true}),
+          dice : new fields.StringField({}),
+          defaultDifficulty : new fields.StringField({initial : "challenging", choices : game.wfrp4e.config.difficultyLabels}),
+          SL : new fields.BooleanField({}),
+          attackType : new fields.StringField({initial: "melee", choices : {melee : game.i18n.localize("Melee"), ranged : game.i18n.localize("Ranged")}})
+      });
+
         return schema;
     }
 
@@ -89,62 +106,48 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
       return true;
   }
 
+    get isAttack()
+    {
+      return !!this.attack.type;
+    }
+
     get enabled() {
       return !this.disabled;
     }
     
     get isMelee()
     {
-        return this.attackType == "melee";
+        return this.attack.type == "melee";
     }
 
     get isRanged()
     {
-        return this.attackType == "ranged";
+        return this.attack.type == "ranged";
     }
 
     get attackType() {
-        if (this.rollable.damage)
-          return this.rollable.attackType
-      }
+        return this.attack.type
+    }
 
-      get DisplayName() {
-        return this.specification.value ? this.parent.name + " (" + this.Specification + ")" : this.parent.name;
-      }
+    get DisplayName() {
+      return this.Specification ? this.parent.name + " (" + this.Specification + ")" : this.parent.name;
+    }
 
+    get isRollable()
+    {
+      return this.test.hasSelf;
+    }
 
     get Damage() {
-        let damage
-        let actor = this.parent.actor
-        if (this.rollable.damage)
-            damage = this.Specification
-    
-    
-        //@HOUSE
-        if (game.settings.get("wfrp4e", "homebrew").mooSizeDamage && actor.sizeNum > 3) 
-        {
-          if (this.rollable.bonusCharacteristic == "s") 
-          {
-            game.wfrp4e.utility.logHomebrew("mooSizeDamage")
-            let SBsToAdd = actor.sizeNum - 3
-            damage += (actor.characteristics.s.bonus * SBsToAdd)
-          }
-    
-        }
-        //@/HOUSE
-    
-        return parseInt(damage || 0)
-      }
+      return this.Specification
+    }
 
       get DamageString() {
         let string = ""
-        string += this.Damage
+        string += this.attack.Damage
     
-        if (this.damage.dice)
-          string += `+ ${this.damage.dice}`
-    
-        if (this.ammo && this.ammo.damage.dice)
-          string += `+ ${this.ammo.damage.dice}`
+        if (this.attack.damage.dice)
+          string += ` + ${this.attack.damage.dice}`
     
         return string
       }
@@ -157,16 +160,16 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
 
         if (this.attackType != "melee" || !actor.isMounted || !actor.mount)
         {
-            return this.Damage
+            return this.attack.Damage
         }
     
-        if (this.rollable.bonusCharacteristic == "s") 
+        if (this.attack.damage.characteristic == "s") 
         {
-          return this.Damage + (actor.mount.characteristics[this.rollable.bonusCharacteristic].bonus - actor.characteristics[this.rollable.bonusCharacteristic].bonus)
+          return this.attack.Damage + (actor.mount.characteristics[this.attack.damage.characteristic].bonus - actor.characteristics[this.attack.bonusCharacteristic].bonus)
         }
         else
         {
-            return this.Damage
+            return this.attack.Damage
         }
       }
 
@@ -174,30 +177,21 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
 
         let actor = this.parent.actor
 
-        let specification
-        if (this.specification.value) {
-          if (this.rollable.bonusCharacteristic && this.rollable.damage)  // Bonus characteristic adds to the specification (Weapon +X includes SB for example)
+        if (this.attack.type)
+        {
+          if (isNaN(this.attack.damage.value) || this.attack.damage.value == null)
           {
-            specification = parseInt(this.specification.value) || 0
-            if (actor)
-            {
-              specification += actor.characteristics[this.rollable.bonusCharacteristic].bonus;
-            }
-            if (this.attackType && actor)
-            {
-              specification += (actor.flags[`${this.attackType}DamageIncrease`] || 0)
-            }
+            return "#";
           }
-          else
-            specification = this.specification.value
+          else 
+          {
+            return this.attack.damage.value + actor.system.characteristics[this.attack.damage.characteristic]?.bonus || 0;
+          }
         }
-        return specification
+
+        else return this.specification.value;
       }
     
-      get SpecificationBonus() {
-        return this.parent.actor?.characteristics[this.rollable.bonusCharacteristic].bonus
-      }
-
     computeBase() 
     {
         super.computeBase();
@@ -206,7 +200,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     getSkillToUse(actor) {
         actor = actor || this.parent.actor;
         let skills = actor?.itemTags["skill"] || []
-        let skill = skills.find(i => i.name == this.rollable.skill)
+        let skill = skills.find(i => i.name == this.attack.skill)
         return skill;
     }
 
@@ -222,5 +216,4 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     shouldTransferEffect(effect) {
         return this.enabled;
     }
-
 }

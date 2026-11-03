@@ -36,7 +36,7 @@ export default class TraitDialog extends AttackDialog {
 
     static async setupData(trait, actor, context={}, options={})
     {
-      if (!trait.system.rollable.value)
+      if (!trait.system.test.hasSelf)
       {
         return ui.notifications.notify("Non-rollable trait");
       }
@@ -47,20 +47,20 @@ export default class TraitDialog extends AttackDialog {
       }
 
       // TODO account for skill 
-      context.title = context.title || game.wfrp4e.config.characteristics[trait.system.rollable.rollCharacteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
+      context.title = context.title || game.wfrp4e.config.characteristics[trait.system.test.self.characteristic] + ` ${game.i18n.localize("Test")} - ` + trait.name;
       context.title += context.appendTitle || "";
       delete context.appendTitle;
       
       let dialogData;
 
       let skill
-      if (trait.system.rollable.skill)
+      if (trait.system.test.self.skill)
       {
-        skill = actor.itemTags["skill"].find(sk => sk.name == trait.system.rollable.skill)
+        skill = actor.itemTags["skill"].find(sk => sk.name == trait.system.test.self.skill)
         if (!skill)
           {
             skill = {
-              name : trait.system.rollable.skill,
+              name : trait.system.test.self.skill,
               id : "unknown",
               system : {
                 characteristic : {
@@ -73,18 +73,18 @@ export default class TraitDialog extends AttackDialog {
           dialogData = await super.setupData(skill, actor, context, options)
 
       }
-      else if (trait.system.rollable.rollCharacteristic)
+      else if (trait.system.test.self.characteristic)
       {
-        dialogData = await CharacteristicDialog.setupData(trait.system.rollable.rollCharacteristic, actor, context, options)
+        dialogData = await CharacteristicDialog.setupData(trait.system.test.self.characteristic, actor, context, options)
       }
 
       let data = dialogData.data
       data.trait = trait;
       data.skill = skill;
-      data.characteristic = trait.system.rollable.rollCharacteristic;
-      dialogData.fields.characteristic = trait.system.rollable.rollCharacteristic;
+      data.characteristic = trait.system.test.self.characteristic;
+      dialogData.fields.characteristic = trait.system.test.self.characteristic;
 
-      if (trait.attackType == "melee")
+      if (trait.system.attack.type == "melee")
       {
         data.chargingOption = true;
       }
@@ -108,7 +108,7 @@ export default class TraitDialog extends AttackDialog {
 
     _defaultDifficulty()
     {
-        return this.item.system.rollable.defaultDifficulty || super._defaultDifficulty()
+        return this.item.system.test.self.difficulty || super._defaultDifficulty()
     }
 
     // Backwards compatibility for effects

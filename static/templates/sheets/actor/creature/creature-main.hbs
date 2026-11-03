@@ -49,7 +49,7 @@
                         <label class="list-label">{{localize "Traits"}}:</label>
                         {{#each includedTraits}}
                             <a data-action="overviewDropdown" class="context-menu-alt" data-uuid="{{this.uuid}}">{{this.system.DisplayName}}</a>
-                            {{#if this.system.rollable.value}}
+                            {{#if this.system.isRollable}}
                             <a data-action="rollTest" data-type="trait" data-uuid="{{this.uuid}}"><i class="fa-regular fa-dice-d10"></i></a>
                             {{else}},
                             {{/if}}

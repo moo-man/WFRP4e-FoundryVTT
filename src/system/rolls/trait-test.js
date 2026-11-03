@@ -21,10 +21,10 @@ export default class TraitTest extends AttackTest {
 
     try {
       // Use skill total if characteristics match, otherwise add the total up manually
-      if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.rollable.rollCharacteristic)
+      if (this.preData.options.characteristicToUse && this.preData.options.characteristicToUse != this.item.system.test.self.characteristic)
         this.result.target = this.actor.characteristics[this.preData.options.characteristicToUse].value
       else
-        this.result.target = this.actor.characteristics[this.item.rollable.rollCharacteristic].value
+        this.result.target = this.actor.characteristics[this.item.system.test.self.characteristic].value
 
       let skill = this.item.system.getSkillToUse(this.actor);
 
@@ -55,15 +55,15 @@ export default class TraitTest extends AttackTest {
   async calculateDamage() {
     try {
       // If the specification of a trait is a number, it's probably damage. (Animosity (Elves) - not a number specification: no damage)
-      if (this.item.rollable.damage) {
+      if (this.item.system.isAttack) {
         let damageBreakdown = this.result.breakdown.damage;
         this.result.additionalDamage = this.preData.additionalDamage || 0
 
-        await super.calculateDamage(this.item.rollable.SL ? Number(this.result.SL) : 0)
-        damageBreakdown.item = `+${this.item.Damage} (${[this.item.system.specification.value, game.wfrp4e.config.characteristicsAbbrev[this.item.system.rollable.bonusCharacteristic]].filter(i => i).join(" + ")})`;
+        await super.calculateDamage(this.item.system.attack.damage.SL ? Number(this.result.SL) : 0)
+        damageBreakdown.item = `+${this.item.Damage} (${[this.item.system.specification.value, game.wfrp4e.config.characteristicsAbbrev[this.item.system.attack.damage.characteristic]].filter(i => i).join(" + ")})`;
 
-        if (this.item.rollable.dice && !this.result.additionalDamage) {
-          let roll = await new Roll(this.item.rollable.dice).roll({allowInteractive : false})
+        if (this.item.attack.damage.dice && !this.result.additionalDamage) {
+          let roll = await new Roll(this.item.attack.damage.dice).roll({allowInteractive : false})
           this.result.diceDamage = { value: roll.total, formula: roll.formula };
           this.preData.diceDamage = this.result.diceDamage
           damageBreakdown.other.push({label : game.i18n.localize("BREAKDOWN.Dice"), value : roll.total});

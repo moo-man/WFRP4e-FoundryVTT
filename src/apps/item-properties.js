@@ -46,7 +46,7 @@ export default class ItemProperties extends  HandlebarsApplicationMixin(Applicat
             case 'ammunition':
                 return true;
             case 'trait':
-                return object.system.rollable.value;
+                return object.system.attack.type;
             default:
                 return object.system.isWeapon;
         }
@@ -57,7 +57,7 @@ export default class ItemProperties extends  HandlebarsApplicationMixin(Applicat
             case 'armour':
                 return true;
             case 'trait':
-                return !object.system.rollable.value;
+                return !object.system.attack.type;
             default:
                 return object.system.isArmour;
         }

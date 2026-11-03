@@ -39,18 +39,18 @@ export default class TraitDialog5e extends AttackDialog5e
       }
 
       let skill
-      let characteristic = trait.system.rollable.characteristic;
+      let characteristic = trait.system.test.self.characteristic;
       if (!characteristic)
       {
-        characteristic = trait.system.rollable.attackType == "melee" ? "ws" : "bs";
+        characteristic = trait.system.test.self.type == "melee" ? "ws" : "bs";
       }
-      if (trait.system.rollable.skill)
+      if (trait.system.test.self.skill)
       {
-        skill = actor.itemTags["skill"].find(sk => sk.name == trait.system.rollable.skill)
+        skill = actor.itemTags["skill"].find(sk => sk.name == trait.system.test.self.skill)
         if (!skill)
           {
             skill = {
-              name : trait.system.rollable.skill,
+              name : trait.system.test.self.skill,
               id : "unknown",
               system : {
                 characteristic : {
@@ -81,7 +81,7 @@ export default class TraitDialog5e extends AttackDialog5e
       dialogData.fields.damage = trait.system.Damage;
 
 
-      if (trait.system.rollable.attackType == "ranged") 
+      if (trait.system.test.self.type == "ranged") 
       {
         dialogData.fields.range = "normal"; // TODO
       }
@@ -115,6 +115,6 @@ export default class TraitDialog5e extends AttackDialog5e
 
     _defaultDifficulty()
     {
-        return this.item.system.rollable.defaultDifficulty || super._defaultDifficulty()
+        return this.item.system.test.self.difficulty || super._defaultDifficulty()
     }
 }
