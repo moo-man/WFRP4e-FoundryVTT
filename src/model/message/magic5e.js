@@ -94,7 +94,8 @@ export class MagicUseMessageModel5e extends WFRPEffectMessageMixin(WarhammerMess
   static get actions() {
     return foundry.utils.mergeObject(super.actions, {
       expandItem: this._onExpandItem,
-      applyDamage : this.onApplyDamage
+      applyDamage : this.onApplyDamage,
+      rollTest: this._onRollTest
     });
   }
 
@@ -169,13 +170,34 @@ export class MagicUseMessageModel5e extends WFRPEffectMessageMixin(WarhammerMess
     target.parentElement.querySelector(".item-description").classList.toggle("expanded");
   }
 
+  static _onRollTest(ev, target) {
+    let actors = selectedWithFallback();
+
+    actors.forEach(a => {
+      this.item.system.getTestModel().setup(a, this.item, {}, "target");
+    })
+  }
+
   static async _renderHTMLContent({item, testData, targetSpeakers, damageApplied}={})
   {
     let targets = targetSpeakers.map(i => WFRP_Utility.getToken(i));
-    return await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/magic5e.hbs", {item, targetEffects: item.targetEffects, damageApplied, areaEffects: item.areaEffects, testData, targets, description : {
+    return await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/chat/magic5e.hbs", {item, testLabel: this.getTestLabel(item), targetEffects: item.targetEffects, damageApplied, areaEffects: item.areaEffects, testData, targets, description : {
       public: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description.value, {relativeTo: item}),
       gm: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.gmdescription.value, {relativeTo: item})
     }})
+  }
+
+  static getTestLabel(item)
+  {
+    let effects = item.targetEffects.concat(item.areaEffects);
+    if (effects.some(e => e.system.transferData.avoidTest.value == "item"))
+    {
+      return false // Don't show separate test button if one of the effects already has the label for its avoid test;
+    }
+    else
+    {
+      return item.system.getTestModel()?.targetLabel;
+    }
   }
 
   /**

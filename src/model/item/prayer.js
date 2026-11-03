@@ -1,6 +1,7 @@
 import Advancement from "../../system/advancement";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
+import TestDataModel from "./components/test";
 let fields = foundry.data.fields;
 
 export class PrayerModel extends OvercastItemModel
@@ -34,6 +35,7 @@ export class PrayerModel extends OvercastItemModel
             value : new fields.StringField(),
             addSL : new fields.BooleanField(),
         });
+        schema.test = new fields.EmbeddedDataField(TestDataModel, {noSelf: true});
         return schema;
     }
 

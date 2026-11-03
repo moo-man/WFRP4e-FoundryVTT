@@ -10,12 +10,14 @@
     {{else}}
         {{formGroup fields.target.fields.value value=source.system.target.value}}
     {{/if}}
+
     <fieldset>
         <legend>{{localize "Damage"}}</legend>
         {{formGroup fields.damage.fields.value value=source.system.damage.value}}
         {{formGroup fields.damage.fields.dice value=source.system.damage.dice}}
         {{formGroup fields.damage.fields.addSL value=source.system.damage.addSL}}
     </fieldset>
+    {{> testData fields=fields.test.fields source=system.test}}
 
             {{#if (settings "editionSettings.use5e")}}
             {{> extraOvercast5e}}

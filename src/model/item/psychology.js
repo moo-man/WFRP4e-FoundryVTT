@@ -1,4 +1,5 @@
 import { BaseItemModel } from "./components/base";
+import TestDataModel from "./components/test";
 let fields = foundry.data.fields;
 
 export class PsychologyModel extends BaseItemModel
@@ -6,6 +7,7 @@ export class PsychologyModel extends BaseItemModel
     static defineSchema() 
     {
         let schema = super.defineSchema();
+        schema.test = new fields.EmbeddedDataField(TestDataModel, {noTarget: true});
 
         return schema;
     }

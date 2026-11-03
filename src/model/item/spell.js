@@ -3,6 +3,7 @@ import WFRP_Audio from "../../system/audio-wfrp4e";
 import ActiveEffectWFRP4e from "../../system/effect-wfrp4e";
 import WFRP_Utility from "../../system/utility-wfrp4e";
 import { OvercastItemModel } from "./components/overcast";
+import TestDataModel from "./components/test";
 let fields = foundry.data.fields;
 
 export class SpellModel extends OvercastItemModel {
@@ -60,6 +61,8 @@ export class SpellModel extends OvercastItemModel {
         schema.wind = new fields.SchemaField({
             value: new fields.StringField(),
         });
+        schema.test = new fields.EmbeddedDataField(TestDataModel, {noSelf: true});
+
         return schema;
     }
 

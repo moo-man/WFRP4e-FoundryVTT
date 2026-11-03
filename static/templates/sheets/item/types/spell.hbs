@@ -39,6 +39,7 @@
         {{formGroup fields.damage.fields.value value=source.system.damage.value}}
         {{formGroup fields.damage.fields.dice value=source.system.damage.dice}}
     </fieldset>
+    {{> testData fields=fields.test.fields source=system.test}}
         
         {{formGroup fields.magicMissile.fields.value value=source.system.magicMissile.value}}
         {{#if (settings "editionSettings.use5e")}}

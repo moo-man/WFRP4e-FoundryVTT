@@ -2,6 +2,7 @@ import { PhysicalItemModel } from "./components/physical";
 import PropertiesMixin from "./components/properties";
 import {StandardActorModel} from "../actor/standard";
 import {EquippableItemModel} from "./components/equippable.js";
+import TestDataModel from "./components/test.js";
 
 let fields = foundry.data.fields;
 
@@ -56,6 +57,9 @@ export class WeaponModel extends PropertiesMixin(EquippableItemModel) {
         schema.offhand = new fields.SchemaField({
             value: new fields.BooleanField({ initial: false })
         });
+
+        schema.test = new fields.EmbeddedDataField(TestDataModel, {noSelf: true});
+
 
         return schema;
     }

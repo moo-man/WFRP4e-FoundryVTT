@@ -65,5 +65,8 @@
     <button data-action="applyDamage">{{localize "CHATOPT.ApplyDamage"}}</button>
 {{/if}}
 
+{{#if testLabel}}
+<a data-action="rollTest" class="chat-button">{{testLabel}}</a>
+{{/if}}
 
 {{> effectButtons this}}

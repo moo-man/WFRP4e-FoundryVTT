@@ -1,13 +1,16 @@
+{{#unless fields.self.parent.options.noSelf}}
 <div class="form-group">
     <label>Test (Self) <a data-action="configureTest"><i class="fa-solid fa-gear"></i></a></label>
     <div class="form-fields">
         <input type="text" disabled value="{{source.selfLabel}}">
     </div>
 </div>
-
+{{/unless}}
+{{#unless fields.target.parent.options.noTarget}}
 <div class="form-group">
     <label>Test (Target) <a data-action="configureTest" data-path="system.test"><i class="fa-solid fa-gear"></i></a></label>
     <div class="form-fields">
         <input type="text" disabled value="{{source.targetLabel}}">
     </div>
 </div>
+{{/unless}}
