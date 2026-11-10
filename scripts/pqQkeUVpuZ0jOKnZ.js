@@ -19,7 +19,7 @@ const key = await ValueDialog.create({}, null, values);
 const table = tables[key];
 
 const results = (await table.drawMany(2)).results;
-const uuids = results.map(result => `Compendium.${result.documentCollection}.${result.documentId}`);
+const uuids = results.map(result => result.documentUuid).filter(Boolean);
 
 await this.actor.addEffectItems(uuids, this.effect);
 this.script.notification("Rolled and applied mutations");

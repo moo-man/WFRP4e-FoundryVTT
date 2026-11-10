@@ -11,16 +11,8 @@ let crits = [];
 
 for (let i = 0; i < roll.total; i++) {
   let result = await WFRP_Tables.rollTable('crithull');
-  let collection = game.packs.get(result.object.documentCollection)
-
-  if (collection)
-    await collection.getDocuments()
-
-  if (!collection)
-    collection = game.items;
-
-    let item = collection.get(result.object.documentId)
-    if (item)
+  let item = await fromUuid(result.object.documentUuid);
+  if (item)
       crits.push(item);
 }
 
