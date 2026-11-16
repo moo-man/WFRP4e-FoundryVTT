@@ -375,4 +375,28 @@ export class SpellModel extends OvercastItemModel {
       return data;
     }
 
+    async toEmbed(config, options={})
+    {
+        let content = `<h4 ${config.noToc ? "data-no-toc='true'" : ""}>@UUID[${this.parent.uuid}]{${this.parent.name}}</h4>`
+        let target = this.target.value;
+        if (this.target.aoe)
+        {
+          target = `AoE (${target})`;
+        }
+        content += `<div style="display:flex; margin: 0px;">
+                      <div style="width: 10rem; margin: 0px;"><strong>CN:</strong> ${this.cn.value}</div>
+                      <div style="margin: 0px;"><strong>Range:</strong> ${this.range.value}</div>
+                    </div>`;
+        content += `<div style="display:flex; margin: 0px;">
+                      <div style="width: 10rem; margin: 0px;"><strong>Target:</strong> ${target}</div>
+                      <div style="margin: 0px;"><strong>Duration:</strong> ${this.duration.value}</div>
+                    </div>`;
+        content += this._source.description.value; // Don't want to include the added lore text
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+    }  
+
 }

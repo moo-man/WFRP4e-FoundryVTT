@@ -236,5 +236,18 @@ export class SkillModel extends BaseItemModel {
         properties.push(this.advanced == "adv" ? `<b>${game.i18n.localize("Advanced")}</b>` : `<b>${game.i18n.localize("Basic")}</b>`)
         return properties;
     }
+
+    async toEmbed(config, options={})
+    {
+
+        let content = `<h4>@UUID[${this.parent.uuid}]{${this.parent.baseName}} (${game.wfrp4e.config.characteristicsAbbrev[this.characteristic.value]}) <span style="font-weight: normal; font-style: italic">${this.isBasic ? "basic" : "advanced"} ${this.isGrouped ? ", grouped" : ""}</span></h4>`
+        content += this.description.value;
+        // TODO specialisations?
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+      }  
     
 }

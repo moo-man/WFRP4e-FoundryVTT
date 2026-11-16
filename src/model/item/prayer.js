@@ -185,5 +185,25 @@ export class PrayerModel extends OvercastItemModel
           properties.push(`<b>${game.i18n.localize("Damage")}</b>: ${this.damage.value}`);
         return properties;
       }
+
+      
+    async toEmbed(config, options={})
+    {
+        let content = `<h4 ${config.noToc ? "data-no-toc='true'" : ""}>@UUID[${this.parent.uuid}]{${this.parent.name}}</h4>`
+        let target = this.target.value;
+        if (this.target.aoe)
+        {
+          target = `AoE (${target})`;
+        }
+        content += `<p><strong>Range:</strong> ${this.range.value}</p>`;
+        content += `<p><strong>Target:</strong> ${target}</p>`;
+        content += `<p><strong>Duration:</strong> ${this.duration.value}</p>`;
+        content += this.description.value;
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+    }  
     
 }

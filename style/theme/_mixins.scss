@@ -263,6 +263,12 @@
         @include h6;
     }
 
+    p.quote {
+        font-family: CaslonAntique;
+        font-size: 1.2em;
+        font-style: italic;
+    }
+
 
     .content-embed {
         .embed-caption {
@@ -370,6 +376,36 @@
         border: none;
     }
 
+    section.box-text {
+        border: 1px solid black;
+        font-family: CaslonAntique;
+        font-size: 1.2em;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+        .box-header {
+            margin: 0 0 0.5rem;
+            border: none;
+            background: none;
+            text-align: center;
+            font-family: CaslonAntique;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.7em;
+            color: black
+        }
+
+        &+section.box-text {
+            margin-top: 0.5rem;
+        }
+
+        &+h1,
+        &+h2,
+        &+h3,
+        &+h4 {
+            margin-top: 0.5rem;
+        }
+    }
+
     section.hook 
     {
         background: url(./ui/backgrounds/hook-background.webp);
@@ -424,6 +460,7 @@
 
 
     .wfrp4e-embed {
+        &.careerPath,
         &.career {
             table {
                 margin-bottom: 1rem;
@@ -447,9 +484,7 @@
                    &.tier1 {
                     background: none;
                    } 
-                   &.tier2 {
-                    background: #c38358;
-                   }
+
                    &.tier3 {
                     background: #c7c8ca;
                    }
@@ -459,6 +494,46 @@
                    &.tier5 {
                     background: #00aeef;
                    }
+                }
+            }
+        }
+        
+        &.careerPath {
+            thead {
+                th {
+                    font-family: CaslonAntique;
+                    font-weight: bold;
+                    font-size: var(--font-size-18);
+                    padding: 0px;
+                    width: 10%;
+                }
+            }
+
+            .advance-header {
+                text-align:center; 
+                text-transform:uppercase;
+            }
+
+            td {
+                &.tier2 {
+                    background: #65873e;
+                }
+            }
+
+            .content-link:not(.broken) {
+                background: none;
+                border: none;
+                box-shadow: none;
+                i {
+                    display: none;
+                }
+                padding: 0px;
+            }
+
+            .tier-header {
+                &:not(:first-of-type)
+                {
+                    margin-top: 1rem;
                 }
             }
         }

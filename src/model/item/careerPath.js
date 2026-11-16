@@ -384,4 +384,93 @@ export class CareerPathModel extends BaseItemModel
       }
       return tiers;
     }
+
+
+    async toEmbed(config, options={})
+    {
+        let tiers = Object.values(this.tiers).sort((a, b) => a.level.value - b.level.value);
+
+
+        // Replace characteristic true/false with career level, otherwise leave it as it was (possibly set by previous tier)
+
+        let tierIcons = {
+          "1" : "✠",
+          "2" : "♟",
+          "3" : "♜",
+          "4" : "♛",
+          "5" : "♚"
+        }
+
+        let tierHTML = [];
+
+        let skillLookup = await warhammer.utility.findAllItems("skill", null, true)
+        skillLookup.forEach(i => {
+          if (!(i instanceof Item))
+          {
+            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+          }
+        })
+
+        let talentLookup = await warhammer.utility.findAllItems("talent", null, true)
+        talentLookup.forEach(i => {
+          if (!(i instanceof Item))
+          {
+            i.baseName = i.name.split("(")[0].trim(); // Base skill name for any specialisations
+          }
+        })
+
+
+
+        for(let tier of tiers)
+        {
+          let income = tier.incomeSkill.map(i => tier.skills[i]).filter(i => i).join(", ");
+
+          let skillLinks = tier.skills.map(name => {
+            let baseName = name.split("(")[0].trim();
+            let found = skillLookup.find(i => i.name == name);
+            if (!found)
+            {
+              found = skillLookup.find(i => i.baseName == baseName)
+            }
+            let link = `@UUID[${found?.uuid || "unknown"}]{${name}}`;
+            if (income.includes(name))
+            {
+              return `<em><strong>${link}</strong></em>`;
+            }
+            else 
+            {
+              return link;
+            }
+          })
+
+          let skillText = skillLinks.join(", ")
+
+          let talentLinks = tier.talents.map(name => {
+            let baseName = name.split("(")[0].trim();
+            let found = talentLookup.find(i => i.name == name);
+            if (!found)
+            {
+              found = talentLookup.find(i => i.baseName == baseName)
+            }
+            return `@UUID[${found?.uuid || "unknown"}]{${name}}`;
+          })
+
+          let talentText = talentLinks.join(", ")
+
+          let html = `<h4 class="tier-header">${tierIcons[tier.level]} ${tier.name} — ${game.wfrp4e.config.statusTiers[tier.status.tier]} ${tier.status.standing}</h4>
+          <p><strong>Skills</strong>: ${skillText}</p>
+          <p><strong>Talents</strong>: ${talentText}</p>
+          <p><strong>Trappings</strong>: ${tier.trappings.options.map(i => i.name).join(", ")}</p>
+          `
+
+          tierHTML.push(html);
+        }
+
+        let content = await foundry.applications.handlebars.renderTemplate("systems/wfrp4e/templates/embeds/careerPath.hbs", {item: this.parent, tierHTML, characteristics: this.characteristics, species : config.species})
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+      }  
 }

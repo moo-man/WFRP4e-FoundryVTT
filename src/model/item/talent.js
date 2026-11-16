@@ -148,4 +148,15 @@ export class TalentModel extends BaseItemModel {
             properties.push(`<b>${game.i18n.localize("Tests")}: </b> ${this.tests.value}`);
         return properties;
     }
+
+    async toEmbed(config, options={})
+    {
+        let content = `<h4>@UUID[${this.parent.uuid}]{${this.parent.name}}</h4>`
+        content += this.description.value;
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+    }  
 }
