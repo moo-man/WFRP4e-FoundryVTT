@@ -26,17 +26,17 @@ export class MagicUseMessageModel extends WFRPEffectMessageMixin(WarhammerMessag
       schema.testData = new fields.SchemaField({
         damage : new fields.NumberField(),
         range: new fields.SchemaField({
-          value: new fields.NumberField({}),
+          value: new fields.StringField({}),
           unit: new fields.StringField({}),
           text: new fields.StringField({})
         }),
         duration: new fields.SchemaField({
-          value: new fields.NumberField({}),
+          value: new fields.StringField({}),
           unit: new fields.StringField({}),
           text: new fields.StringField({})
         }),
         target: new fields.SchemaField({
-          value: new fields.NumberField({}),
+          value: new fields.StringField({}),
           unit: new fields.StringField({}),
           text: new fields.StringField({}),
           AoE: new fields.BooleanField({}),

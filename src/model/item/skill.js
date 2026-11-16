@@ -192,7 +192,7 @@ export class SkillModel extends BaseItemModel {
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName, oldName, skipPrompt=false) {
         
-        let currentCareer = game.wfrp5e.careerAdvancement ? this.parent.actor?.system.career.current : this.parent.actor?.currentCareer.system;
+        let currentCareer = game.wfrp5e.careerAdvancement ? this.parent.actor?.system.career?.current : this.parent.actor?.currentCareer?.system;
         if (!currentCareer) 
         {
             return
