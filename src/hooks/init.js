@@ -17,6 +17,19 @@ export default function() {
    */
   Hooks.once("init", () => {
 
+    Handlebars.registerHelper("5e", function (key, value) 
+    {
+        if (typeof game.wfrp5e[key] == "boolean")
+        {
+          return game.wfrp5e[key]
+        }
+        else 
+        {
+          return game.wfrp5e[key] == value
+        }
+    });
+
+
     TravelDistanceWFRP4e.loadTravelData();
 
     game.settings.register("wfrp4e", "systemMigrationVersion", {
@@ -475,10 +488,20 @@ export default function() {
       requiresReload: true
     });
 
+    let settings = game.settings.get("wfrp4e", "editionSettings");
+    game.wfrp5e = {
+      tests: settings.tests == "5e",
+      careerAdvancement: settings.careerAdvancement == "5e",
+      advancementCosts: settings.advancementCosts == "5e",
+      armourCriticals: settings.armourCriticals,
+      darkDeals: settings.darkDeals,
+      resilienceResolve: settings.darkDeals,
+      ambitions: settings.ambitions == "5e"
+    }
+
     game.wfrp4e.config = EditionManager.getConfig();
-    if (game.settings.get("wfrp4e", "editionSettings").use5e)
+    if (game.wfrp5e.tests)
     {
-      game.wfrp5e = game.wfrp4e;
       document.querySelector("body")?.classList.add("wfrp5e");
     }
 

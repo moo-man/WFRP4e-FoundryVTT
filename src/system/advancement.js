@@ -84,7 +84,7 @@ export default class Advancement
 
       if (item instanceof Item)
       {
-        if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+        if (game.wfrp5e.careerAdvancement)
         {
           if (actor.system.career.current?.availableSkills.includes(name))
           {
@@ -120,7 +120,7 @@ export default class Advancement
           window : { title: game.i18n.localize("DIALOG.Advancement")},
           content: 
           `
-          <p>${game.i18n.localize("DIALOG.AdvancementContent")}</p>${game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e ? `<span>${game.i18n.localize("DIALOG.AdvancementNote")}</span>` : ""}
+          <p>${game.i18n.localize("DIALOG.AdvancementContent")}</p>${game.wfrp5e.careerAdvancement ? `<span>${game.i18n.localize("DIALOG.AdvancementNote")}</span>` : ""}
           <div class="form-group">
           <input type="number" name="xp" value=${xp}>
           </div>

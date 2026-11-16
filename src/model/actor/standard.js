@@ -159,7 +159,7 @@ export class StandardActorModel extends BaseActorModel {
             }
         }
         this.status.encumbrance.current = this.status.encumbrance.current.toFixed(2);
-        if (game.wfrp5e)
+        if (game.wfrp5e.tests)
         {
             this.status.channelling.winds = this.status.channelling.getWinds(this.parent.itemTypes.spell);
         }

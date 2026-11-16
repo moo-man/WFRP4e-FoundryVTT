@@ -194,7 +194,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     {
         return this._configureLimitedParts(options);
     }
-    else if (game.wfrp5e)
+    else if (game.wfrp5e.tests)
     {
         const parts = foundry.utils.deepClone(this.constructor.PARTS);
         parts.magic.template = "systems/wfrp4e/templates/sheets/actor/tabs/actor-magic5e.hbs";

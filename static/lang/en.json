@@ -2090,8 +2090,13 @@
 
 
         "SETTINGS" : {
-            "Use5e": "Use 5th Edition Rules",
-            "CareerAdvancement": "5th Edition Career Advancement"
+            "Tests" : "Tests",
+            "CareerAdvancement": "Career Advancement",
+            "AdvancementCosts": "Career Advancement",
+            "ArmourCriticals" : "Armour & Criticals",
+            "DarkDeals" : "Dark Deals",
+            "ResilienceResolve" : "Resilience & Resolve",
+            "Ambitions" : "Ambitions"
         },
 
         "Advancement": {

@@ -280,6 +280,34 @@
         }
     }   
 
+    &.edition-manager {
+        .rule-option
+        {
+            margin-bottom: 1rem;
+            .title {
+                text-align: center;
+                font-size: var(--font-size-20);
+                font-weight: bold;
+                margin-bottom: 0.5rem;
+            }
+        }
+        .split {
+            display: flex;
+            > * {
+                flex: 1;
+                text-align: right;
+                .form-fields
+                {
+                    flex: 0 0 5rem;
+                }
+            }
+            .separator {
+                flex: 0 0 1rem;
+                border-left: 1px solid red
+            }
+        }
+    }
+
 
 }
 

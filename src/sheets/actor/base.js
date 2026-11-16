@@ -901,7 +901,7 @@ export default class BaseWFRP4eActorSheet extends WarhammerActorSheetV2
           description = item.system.properties.specialAmmo;
           break;
         case "range":
-          if (game.wfrp5e) 
+          if (game.wfrp5e.tests) 
           {
 
             description = Object.keys(item.system.range.bands).map(key => {

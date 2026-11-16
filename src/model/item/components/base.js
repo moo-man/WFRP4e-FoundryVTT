@@ -64,7 +64,7 @@ let fields = foundry.data.fields;
 
     async use(actor, {context={}, options={}}={})
     {
-      if (this.spend?.momentum && game.settings.get("wfrp4e", "editionSettings")?.use5e)
+      if (this.spend?.momentum && game.wfrp5e.tests)
       {
         if (await actor.spend("system.status.momentum"))
         {
@@ -75,7 +75,7 @@ let fields = foundry.data.fields;
           return ui.notifications.error("No Momentum!");
         }
       }
-      else if (this.spend?.advantage && !game.settings.get("wfrp4e", "editionSettings")?.use5e)
+      else if (this.spend?.advantage && !game.wfrp5e.tests)
       {
         if (await actor.spend("system.status.advantage.value", this.spend.advantage))
         {

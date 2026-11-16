@@ -484,7 +484,7 @@
                 padding: 0px 0.5rem;
             }
             .form-fields {
-                input:not([type="checkbox"]),
+                input:not([type="radio"]):not([type="checkbox"])
                 select {
                     border-left: none;
                 }
@@ -507,7 +507,7 @@
 }
 
 @mixin wfrp-form-input {
-        input:not([type="checkbox"]),
+        input:not([type="checkbox"]):not([type="radio"]),
         select {
             height: 2rem;
             line-height: 2rem;

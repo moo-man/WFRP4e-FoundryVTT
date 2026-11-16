@@ -191,7 +191,7 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
 
     handleTalentAdvancement(talent)
     {
-        if (this.talents.includes(talent.name) && game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+        if (this.talents.includes(talent.name) && game.wfrp5e.careerAdvancement)
         {
             this.parent.parent.update(this.addAdvancement({type: "talent", label: game.i18n.format("5e.Advancement.Talent", {talent: talent.name})}));
         }
@@ -291,7 +291,7 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             system.details.experience.log = expLog;
 
             
-            if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+            if (game.wfrp5e.careerAdvancement)
             {
                 foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
                     type: "characteristic", 
@@ -338,7 +338,7 @@ export class CharacterCareerModel extends foundry.abstract.DataModel {
             system.details.experience.log = actor.system.addToExpLog(cost, skill.name + ` (${skill.system.advances.value} → ${skill.system.advances.value + amount})`, system.details.experience.spent)
             ui.notifications.notify(game.i18n.format("ACTOR.SpentExp", {amount : cost, reason: skill.name}))
 
-            if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+            if (game.wfrp5e.careerAdvancement)
             {
                     foundry.utils.mergeObject(system, foundry.utils.expandObject(this.addAdvancement({
                         type: "skill", 

@@ -64,8 +64,14 @@ export default class EditionManager extends WHFormApplication
     };
 
     static #schema = new foundry.data.fields.SchemaField({
-        use5e : new foundry.data.fields.BooleanField({label : "5e.SETTINGS.Use5e"}),
-        careerAdvancement5e : new foundry.data.fields.BooleanField({label : "5e.SETTINGS.CareerAdvancement"})
+        tests : new foundry.data.fields.StringField({label : "5e.SETTINGS.Tests", initial: "4e"}),
+        careerAdvancement : new foundry.data.fields.StringField({label : "5e.SETTINGS.CareerAdvancement", initial: "4e"}),
+        advancementCosts : new foundry.data.fields.StringField({label : "5e.SETTINGS.AdvancementCosts", initial: "4e"}),
+        armourCriticals: new foundry.data.fields.StringField({label: "5e.SETTINGS.ArmourCriticals", initial: "4e"}),
+        darkDeals: new foundry.data.fields.BooleanField({label: "5e.SETTINGS.DarkDeals", initial: true}),
+        resilienceResolve: new foundry.data.fields.BooleanField({label: "5e.SETTINGS.ResilienceResolve", initial: true}),
+        ambitions: new foundry.data.fields.StringField({label: "5e.SETTINGS.Ambitions", initial: true, initial: "4e",})
+
     })
 
     static get schema()
@@ -77,6 +83,12 @@ export default class EditionManager extends WHFormApplication
         let context = await super._prepareContext(options);
         context.source = game.settings.get("wfrp4e", "editionSettings");
         context.schema = this.constructor.schema;
+        
+        context.armourCriticals = {
+            "4e": "4th Edition (Critical Deflection)",
+            "5e": "5th Edition (None)",
+            "mitigation": "🏠 Critical Mitigation"
+        }
         return context
     }
 
@@ -84,14 +96,12 @@ export default class EditionManager extends WHFormApplication
         return game.settings.set("wfrp4e", "editionSettings", formData.object)
     }
 
-
     static getConfig()
     {
         let e4 = WFRP4E;
         let e5 = WFRP5E;
 
-        // Todo: add settings
-        if (game.settings.get("wfrp4e", "editionSettings")?.use5e)
+        if (game.wfrp5e.tests)
         {
             let config = foundry.utils.mergeObject(e4, e5);
             config.magicWind = e5.magicWind;
@@ -105,7 +115,7 @@ export default class EditionManager extends WHFormApplication
 
     static getDialog(type)
     {
-        let e5 = game.settings.get("wfrp4e", "editionSettings")?.use5e;
+        let e5 = game.wfrp5e.tests;
         switch(type)
         {
             case "characteristic": 
@@ -127,7 +137,7 @@ export default class EditionManager extends WHFormApplication
 
     static getTestClass(type)
     {
-        let e5 = game.settings.get("wfrp4e", "editionSettings")?.use5e;
+        let e5 = game.wfrp5e.tests;
         switch(type)
         {
             case "characteristic": 
@@ -149,7 +159,7 @@ export default class EditionManager extends WHFormApplication
 
     static getOpposedTest()
     {
-        return game.settings.get("wfrp4e", "editionSettings")?.use5e ? OpposedTest5e : OpposedTest;
+        return game.wfrp5e.tests ? OpposedTest5e : OpposedTest;
     }
   
 

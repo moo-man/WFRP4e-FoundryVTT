@@ -158,7 +158,7 @@ export class CareerModel extends BaseItemModel
   async _preCreate(data, options, user)
   {
       await super._preCreate(data, options, user);
-      if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      if (game.wfrp5e.careerAdvancement)
       {
         ui.notifications.warn("5e.Warning.CareerCreated", {localize: true, permanent: true});
       }
@@ -168,7 +168,7 @@ export class CareerModel extends BaseItemModel
   async allowCreation(data, options, user)
   {
       let allowed = super.allowCreation(data, options, user)
-      if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+      if (game.wfrp5e.careerAdvancement)
       {
         allowed = false;
       }

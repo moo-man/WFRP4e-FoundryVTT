@@ -90,7 +90,7 @@ export class CharacterModel extends StandardActorModel {
         super.computeDerived();
 
         this.computeCorruption()
-        if (game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e)
+        if (game.wfrp5e.careerAdvancement)
         {
           this.computeCareer5e()
         }

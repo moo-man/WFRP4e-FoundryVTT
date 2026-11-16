@@ -175,7 +175,7 @@
 
             input {
                 color: var(--color-grey1);
-                &:not([type=checkbox])
+                &:not([type=checkbox]):not([type=radio])
                 {
                     background: rgba(0, 0, 0, 0.05)
                 }
@@ -211,6 +211,7 @@
             }
         }
 
+        input[type="radio"],
         input[type="checkbox"]
         {
             --checkbox-checked-color: var(--color-warm);

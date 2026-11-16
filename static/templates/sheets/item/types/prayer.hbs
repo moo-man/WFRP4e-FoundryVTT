@@ -19,7 +19,7 @@
     </fieldset>
     {{> testData fields=fields.test.fields source=system.test}}
 
-            {{#if (settings "editionSettings.use5e")}}
+        {{#if (5e "tests")}}
             {{> extraOvercast5e}}
         {{else}}
             {{> extraOvercast}}

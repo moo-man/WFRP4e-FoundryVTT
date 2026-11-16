@@ -72,7 +72,7 @@ export class SkillModel extends BaseItemModel {
     }
 
     get cost() {
-        return game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e 
+        return game.wfrp5e.careerAdvancement 
         ? Advancement.calculateAdvRangeCost(this.advances.value, this.advances.value + 5, "skill", this.advances.costModifier) 
         : Advancement.calculateAdvCost(this.advances.value, "skill", this.advances.costModifier)
     }
@@ -192,7 +192,7 @@ export class SkillModel extends BaseItemModel {
     // If an owned (grouped) skill's name is changing, change the career data to match
     _handleSkillNameChange(newName, oldName, skipPrompt=false) {
         
-        let currentCareer = game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e ? this.parent.actor?.system.career.current : this.parent.actor?.currentCareer.system;
+        let currentCareer = game.wfrp5e.careerAdvancement ? this.parent.actor?.system.career.current : this.parent.actor?.currentCareer.system;
         if (!currentCareer) 
         {
             return

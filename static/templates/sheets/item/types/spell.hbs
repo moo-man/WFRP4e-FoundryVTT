@@ -42,7 +42,7 @@
     {{> testData fields=fields.test.fields source=system.test}}
         
         {{formGroup fields.magicMissile.fields.value value=source.system.magicMissile.value}}
-        {{#if (settings "editionSettings.use5e")}}
+        {{#if (5e "tests")}}
             {{> extraOvercast5e}}
         {{else}}
             {{> extraOvercast}}

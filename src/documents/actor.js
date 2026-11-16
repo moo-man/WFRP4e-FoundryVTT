@@ -224,7 +224,7 @@ export default class ActorWFRP4e extends WarhammerActor
       {
         foundry.utils.setProperty(context, "fields.difficulty", testData.difficulty);
       }
-      if (trait.system.isAttack || !game.wfrp5e) // wfrp4e only uses TraitDialog/Test, wfrp5e only uses it for attack traits
+      if (trait.system.isAttack || !game.wfrp5e.tests) // wfrp4e only uses TraitDialog/Test, wfrp5e only uses it for attack traits
       {
         return this._setupTest(EditionManager.getDialog("trait"), EditionManager.getTestClass("trait"), trait, context, options, false)
       }
@@ -363,7 +363,7 @@ export default class ActorWFRP4e extends WarhammerActor
         yield effect;
       }
       
-      if (this.system.status?.momentum && game.wfrp5e)
+      if (this.system.status?.momentum && game.wfrp5e.tests)
       {
         yield new ActiveEffect.implementation(game.wfrp4e.config.systemEffects.momentum, {parent: this})
       }

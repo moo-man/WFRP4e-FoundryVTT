@@ -59,7 +59,7 @@ export class CharacteristicModel extends foundry.abstract.DataModel
 
     computeCost()
     {
-        this.cost = game.settings.get("wfrp4e", "editionSettings").careerAdvancement5e 
+        this.cost = game.wfrp5e.careerAdvancement 
         ? Advancement.calculateAdvRangeCost(this.advances, this.advances + 5, "characteristic", this.costModifier) 
         : Advancement.calculateAdvCost(this.advances, "characteristic", this.costModifier)
     }

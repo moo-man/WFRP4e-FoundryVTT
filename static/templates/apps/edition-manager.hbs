@@ -1,7 +1,95 @@
 <div>
-    {{formGroup schema.fields.use5e value=source.use5e name="use5e" localize=true rootId=rootId}}
-    {{formGroup schema.fields.careerAdvancement5e value=source.careerAdvancement5e name="careerAdvancement5e" localize=true rootId=rootId}}
+
+    <div class="rule-option">
+        <div class="title">
+            Tests
+        </div>
+        <div class="split">
+            <div class="form-group">
+                <label for="4e">4th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="tests" value="4e" id="4e" {{checked (eq source.tests "4e")}}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="5e">5th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="tests" value="5e" id="5e" {{checked (eq source.tests "5e")}}>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="rule-option">
+        <div class="title">
+            Career Advancement
+        </div>
+        <div class="split">
+            <div class="form-group">
+                <label for="4e">4th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="careerAdvancement" value="4e" id="4e" {{checked (eq source.careerAdvancement "4e")}}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="5e">5th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="careerAdvancement" value="5e" id="5e" {{checked (eq source.careerAdvancement "5e")}}>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rule-option">
+        <div class="title">
+            Advancement Costs
+        </div>
+        <div class="split">
+            <div class="form-group">
+                <label for="4e">4th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="advancementCosts" value="4e" id="4e" {{checked (eq source.advancementCosts "4e")}}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="5e">5th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="advancementCosts" value="5e" id="5e" {{checked (eq source.advancementCosts "5e")}}>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{formGroup schema.fields.armourCriticals value=source.armourCriticals choices=armourCriticals localize=true rootId=rootId}}
+
+    {{formGroup schema.fields.darkDeals value=source.darkDeals localize=true rootId=rootId}}
+    {{formGroup schema.fields.resilienceResolve value=source.darkDeals localize=true rootId=rootId}}
+
+    <div class="rule-option">
+        <div class="title">
+            Ambitions
+        </div>
+        <div class="split">
+            <div class="form-group">
+                <label for="4e">4th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="ambitions" value="4e" id="4e" {{checked (eq source.ambitions "4e")}}>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="5e">5th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="ambitions" value="5e" id="5e" {{checked (eq source.ambitions "5e")}}>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <p class="notification warning" style="display: block">5th Edition rules are a <strong>Work in Progress!</strong> Some features may not be implemented yet.</p>
-    <p class="notification info" style="display: block">In the future, this window will include various options to toggle. If you wish to request an option, join the Discord!</p>
+    <p class="notification info" style="display: block">If you wish to request an option, join the Discord!</p>
 </div>

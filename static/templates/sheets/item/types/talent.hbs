@@ -2,7 +2,7 @@
     {{> spend fields=fields.spend.fields source=source.system.spend}}
     {{> testData fields=fields.test.fields source=system.test}}
 
-    {{#if (settings "editionSettings.use5e")}}
+    {{#if (5e "tests")}}
         <details>
             <summary>Legacy</summary>
                     <fieldset>
@@ -19,7 +19,7 @@
             {{formGroup fields.advances.fields.force value=source.system.advances.force}}
         {{/if}}
 
-    {{#if (settings "editionSettings.use5e")}}
+    {{#if (5e "tests")}}
                         </fieldset>
         </details>
     {{/if}}
