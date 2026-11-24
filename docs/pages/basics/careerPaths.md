@@ -33,7 +33,9 @@ As defined by the rules, Trappings from the next tier also count for Advancement
 
 ## Converting Career Paths
 
-If you wish to convert existing Career Items to use as Career Paths, or vice versa, you can do so easily. This is done via the Career Path sheet's context menu.
+If you wish to convert existing Career Items to use as Career Paths, or vice versa, you can do so easily. 
+
+The first step is to create a new item. When you create the item, you select it to be of type "Career Path". This will open an essentially blank item of this type. You can now use a Career Item as basis for you Career Path by using the Career Path sheet's context menu.
 
 <img src="../../assets/basics/career-path4.png" width="80%"/>
 
