@@ -111,19 +111,43 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
 
   static async onApplyHealing(ev, target) 
   {
-    let actor = Array.from(game.user.targets)[0]?.actor || this.test?.actor;
+    let test = this.test;
 
-    if (this.test.options.rest)
+    if (test.context.healingApplied)
     {
-      actor = this.test?.actor;
+      ui.notifications.warn(game.i18n.format("ErrorHealingAlreadyApplied", {actor: test.context.healingApplied.name}));
+      return;
     }
 
-    let amount = target.dataset.amount;
+    let actor = Array.from(game.user.targets)[0]?.actor || test.actor;
 
-    if (actor && actor.isOwner && amount)
+    if (test.options.rest)
     {
-        await actor.modifyWounds(parseInt(amount));
-        ChatMessage.implementation.create({content: `<p>${game.i18n.format("RestRecoverHealed", {actor: actor.name, amount: amount} )}</p>`, flavor: this.test.options.rest ? game.i18n.localize("RestRecover") : game.i18n.localize("Healing")});
+      actor = test.actor;
+    }
+
+    let amount = parseInt(target.dataset.amount);
+
+    if (!actor || !amount)
+    {
+      return;
+    }
+
+    if (!actor.isOwner)
+    {
+      ui.notifications.error(game.i18n.format("ErrorHealingPermission", {actor: actor.name}));
+      return;
+    }
+
+    // Mark before awaiting so a quick second click can't heal twice
+    test.context.healingApplied = {name: actor.name, uuid: actor.uuid, amount};
+
+    await actor.modifyWounds(amount);
+    ChatMessage.implementation.create({content: `<p>${game.i18n.format("RestRecoverHealed", {actor: actor.name, amount: amount} )}</p>`, flavor: test.options.rest ? game.i18n.localize("RestRecover") : game.i18n.localize("Healing")});
+
+    if (game.user.isGM || game.users.activeGM)
+    {
+      await test.renderRollCard();
     }
   }
 
