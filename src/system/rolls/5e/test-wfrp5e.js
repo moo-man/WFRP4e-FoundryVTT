@@ -675,6 +675,20 @@ export default class TestWFRP5e extends WarhammerTestBase {
 
     return this.roll()
   }
+
+  useDarkDeal() {
+    let html = `<h3 class="center"><strong>${game.i18n.localize("DARKDEAL.Use")}</strong></h3>`;
+    html += `${game.i18n.format("DARKDEAL.UsageText", { character: '<strong>' + this.actor.name + '</strong>' })}<br>`;
+    
+    let corruption = Math.trunc(this.actor.system.status.corruption.value) + 1;
+    html += `<strong>${game.i18n.localize("Corruption")}: </strong>${corruption}/${this.actor.system.status.corruption.max}`;
+
+    ChatMessage.create(WFRP_Utility.chatDataSetup(html, "gmroll"));
+    this.actor.update({ "system.status.corruption.value": corruption });
+
+    this.reroll()
+  }
+
   /**
    * Start a dice roll
    * Used by the rollTest method and its overrides

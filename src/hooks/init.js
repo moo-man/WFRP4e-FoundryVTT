@@ -495,7 +495,7 @@ export default function() {
       advancementCosts: settings.advancementCosts == "5e",
       armourCriticals: settings.armourCriticals,
       darkDeals: settings.darkDeals,
-      resilienceResolve: settings.darkDeals,
+      resilienceResolve: settings.resilienceResolve,
       ambitions: settings.ambitions == "5e"
     }
 

@@ -6,16 +6,16 @@
         </div>
         <div class="split">
             <div class="form-group">
-                <label for="4e">4th Edition</label>
+                <label for="4e-tests">4th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="tests" value="4e" id="4e" {{checked (eq source.tests "4e")}}>
+                    <input type="radio" name="tests" value="4e" id="4e-tests" {{checked (eq source.tests "4e")}}>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="5e">5th Edition</label>
+                <label for="5e-tests">5th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="tests" value="5e" id="5e" {{checked (eq source.tests "5e")}}>
+                    <input type="radio" name="tests" value="5e" id="5e-tests" {{checked (eq source.tests "5e")}}>
                 </div>
             </div>
         </div>
@@ -28,16 +28,16 @@
         </div>
         <div class="split">
             <div class="form-group">
-                <label for="4e">4th Edition</label>
+                <label for="4e-career">4th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="careerAdvancement" value="4e" id="4e" {{checked (eq source.careerAdvancement "4e")}}>
+                    <input type="radio" name="careerAdvancement" value="4e" id="4e-career" {{checked (eq source.careerAdvancement "4e")}}>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="5e">5th Edition</label>
+                <label for="5e-career">5th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="careerAdvancement" value="5e" id="5e" {{checked (eq source.careerAdvancement "5e")}}>
+                    <input type="radio" name="careerAdvancement" value="5e" id="5e-career" {{checked (eq source.careerAdvancement "5e")}}>
                 </div>
             </div>
         </div>
@@ -49,25 +49,26 @@
         </div>
         <div class="split">
             <div class="form-group">
-                <label for="4e">4th Edition</label>
+                <label for="4e-adv">4th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="advancementCosts" value="4e" id="4e" {{checked (eq source.advancementCosts "4e")}}>
+                    <input type="radio" name="advancementCosts" value="4e" id="4e-adv" {{checked (eq source.advancementCosts "4e")}}>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="5e">5th Edition</label>
+                <label for="5e-adv">5th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="advancementCosts" value="5e" id="5e" {{checked (eq source.advancementCosts "5e")}}>
+                    <input type="radio" name="advancementCosts" value="5e" id="5e-adv" {{checked (eq source.advancementCosts "5e")}}>
                 </div>
             </div>
         </div>
     </div>
 
-    {{formGroup schema.fields.armourCriticals value=source.armourCriticals choices=armourCriticals localize=true rootId=rootId}}
+    {{formGroup schema.fields.armourCriticals name="armourCriticals" value=source.armourCriticals choices=armourCriticals localize=true rootId=rootId}}
 
-    {{formGroup schema.fields.darkDeals value=source.darkDeals localize=true rootId=rootId}}
-    {{formGroup schema.fields.resilienceResolve value=source.darkDeals localize=true rootId=rootId}}
+{{log source}}
+    {{formGroup schema.fields.darkDeals name="darkDeals" value=source.darkDeals localize=true rootId=rootId}}
+    {{formGroup schema.fields.resilienceResolve name="resilienceResolve" value=source.resilienceResolve localize=true rootId=rootId}}
 
     <div class="rule-option">
         <div class="title">
@@ -75,16 +76,16 @@
         </div>
         <div class="split">
             <div class="form-group">
-                <label for="4e">4th Edition</label>
+                <label for="4e-ambitions">4th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="ambitions" value="4e" id="4e" {{checked (eq source.ambitions "4e")}}>
+                    <input type="radio" name="ambitions" value="4e" id="4e-ambitions" {{checked (eq source.ambitions "4e")}}>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="5e">5th Edition</label>
+                <label for="5e-ambitions">5th Edition</label>
                 <div class="form-fields">
-                    <input type="radio" name="ambitions" value="5e" id="5e" {{checked (eq source.ambitions "5e")}}>
+                    <input type="radio" name="ambitions" value="5e" id="5e-ambitions" {{checked (eq source.ambitions "5e")}}>
                 </div>
             </div>
         </div>

@@ -70,7 +70,7 @@ export default class EditionManager extends WHFormApplication
         armourCriticals: new foundry.data.fields.StringField({label: "5e.SETTINGS.ArmourCriticals", initial: "4e"}),
         darkDeals: new foundry.data.fields.BooleanField({label: "5e.SETTINGS.DarkDeals", initial: true}),
         resilienceResolve: new foundry.data.fields.BooleanField({label: "5e.SETTINGS.ResilienceResolve", initial: true}),
-        ambitions: new foundry.data.fields.StringField({label: "5e.SETTINGS.Ambitions", initial: true, initial: "4e",})
+        ambitions: new foundry.data.fields.StringField({label: "5e.SETTINGS.Ambitions",  initial: "4e",})
 
     })
 

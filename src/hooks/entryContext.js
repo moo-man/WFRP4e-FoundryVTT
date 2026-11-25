@@ -86,7 +86,7 @@ export default function () {
       //Own the roll
       let message = game.messages.get(li.dataset.messageId);
       let test = message.system?.test;
-      return test && test.actor.isOwner && test.actor.type == "character"
+      return test && test.actor.isOwner && test.actor.type == "character" && game.wfrp5e.darkDeals
     };
 
     let canGMReroll = function (li) {
