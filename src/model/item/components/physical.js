@@ -107,6 +107,35 @@ export class PhysicalItemModel extends BaseItemModel
             return super.tags.add("physical");
         }
     
+        get priceString()
+        {
+            let str = "";
+
+            // If gold value, always have X GC
+            if (this.price.gc)
+            {
+                str = `${this.price.gc} GC `;
+            }
+            // If any silver, use ss/bp notation
+            if (this.price.ss) 
+            {
+                str += `${this.price.ss}/${this.price.bp || "–"}`;
+            }
+            // If no silver but pennies, use ss/bp notation if gold exists, otherwise use `d` notation
+            else if (this.price.bp)
+            {
+                if (this.str)
+                {
+                    str += `—/${this.price.bp}`;
+                }
+                else 
+                {
+                    str = `${this.price.bp}d`;
+                }
+            }
+            return str.trim();
+        }
+
 
     async _preCreate(data, options, user)
     {

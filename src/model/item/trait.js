@@ -185,7 +185,7 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
           }
           else 
           {
-            return this.attack.damage.value + actor.system.characteristics[this.attack.damage.characteristic]?.bonus || 0;
+            return this.attack.damage.value + actor?.system.characteristics[this.attack.damage.characteristic]?.bonus || 0;
           }
         }
 
@@ -216,4 +216,15 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     shouldTransferEffect(effect) {
         return this.enabled;
     }
+
+    async toEmbed(config, options={})
+    {
+        let content = `<h4>@UUID[${this.parent.uuid}]{${config.label || this.parent.name}}</h4>`
+        content += this.description.value;
+        
+        let div = document.createElement("div");
+        div.style = config.style;
+        div.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(content, {relativeTo : this.parent, async: true, secrets : options.secrets});
+        return div;
+    }  
 }

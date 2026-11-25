@@ -345,22 +345,34 @@
                 width: 15%;
                 text-align: center;
             }
+            th:last-of-type,
             td:last-of-type {
                 border-right: 0px;
             }
             &:not(:last-of-type)
             {
+                th,
                 td {
                     border-bottom: 1px solid black;
                 }
             }
+            th,
             td {
                 border-right: 1px solid black;
             }
         }
 
-        tr:last-of-type {
+        &.generated {
+            .separator {
+                text-align: left;
+                font-weight: bold;
+            }
 
+            .content-link {
+                background: none;
+                box-shadow: none;
+                border: none;
+            }
         }
     }
 
@@ -376,10 +388,124 @@
         border: none;
     }
 
+    .table-container {
+
+        --lpadding: 3px;
+        padding-bottom: 0px;
+        padding-top: 0px;
+
+        .title h4,
+        .title h3,
+        .title h2,
+        .title {
+            margin: 0 0 0.5rem;
+            border: none;
+            background: none;
+            text-align: center;
+            font-family: var(--header-font);
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: black;
+            .content-link {
+                background: none;
+                border: none;
+                box-shadow: none;
+            }
+
+            th {
+                border-right: 0px;
+                border-left: 0px;
+            }
+        }
+
+        th,
+        td {
+            padding: var(--lpadding);
+        }
+
+
+        thead,
+        tbody {
+            text-align: center;
+            
+            &.no-center {
+                .title {
+                    td:not(.onlyleft),
+                    td {
+                        text-align: center; // title should always be centered
+                    }
+                }
+                &:not(.onlyleft)
+                {
+                    tr th, 
+                    tr td {
+                        text-align: left;
+                        // padding-left: var(--lpadding);
+                    }
+                }
+
+
+                &.notleft { // exclude left side from no-center
+                    tr td:first-of-type,
+                    tr th:first-of-type
+                    {
+                        text-align: center;
+                        // padding-left: 0px;
+                    }
+
+                    .title {
+                        td:first-of-type {
+                            text-align: center; // title should always be centered
+                        }
+                    }
+                    
+                }
+
+                &.onlyleft { 
+                    tr td:first-of-type,
+                    tr th:first-of-type
+                    {
+                        text-align: left;
+                        // padding-left: var(--lpadding);
+                    }
+
+                    .title {
+                        td:first-of-type {
+                            text-align: center; // title should always be centered
+                        }
+                    }
+                }
+            }
+        }
+
+        .title {
+            * {
+                margin: 0px;
+            }
+        }
+    }
+
+    .table-container,
     section.box-text {
         border: 1px solid black;
-        font-family: CaslonAntique;
+        font-family: var(--header-font);
         font-size: 1.2em;
+
+        table {
+            font-family: var(--primary-font);
+            font-size: var(--font-size-14);
+        }
+
+        tr:nth-of-type(even) {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .subheader {
+            background-color: rgba(0, 0, 0, 0.1);
+
+        }
+        
         background-color: rgba(0, 0, 0, 0.1);
         padding: 0.5rem;
         .box-header {
@@ -387,10 +513,10 @@
             border: none;
             background: none;
             text-align: center;
-            font-family: CaslonAntique;
+            font-family: var(--header-font);
             text-transform: uppercase;
             font-weight: bold;
-            font-size: 1.7em;
+            font-size: 1.3rem;
             color: black
         }
 
