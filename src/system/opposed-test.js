@@ -92,7 +92,7 @@ export default class OpposedTest {
       let attackerReach = this.attackerTest.item.reachNum;
       let defenderReach = this.defenderTest.item.reachNum;
       if (defenderReach > attackerReach && !this.attackerTest.result.infighter) {
-        modifiers.message.push(game.i18n.format(game.i18n.localize('CHAT.TestModifiers.WeaponLength'), { defender: this.defenderTest.actor.prototypeToken.name, attacker: this.attackerTest.actor.prototypeToken.name }))
+        modifiers.message.push(game.i18n.format('CHAT.TestModifiers.WeaponLength', { defender: this.defenderTest.actor.prototypeToken.name, attacker: this.attackerTest.actor.prototypeToken.name }))
         modifiers.attacker.target += -10;
       }
     }
