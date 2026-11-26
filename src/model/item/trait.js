@@ -231,10 +231,8 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
     static migrateData(data)
     {
       data = super.migrateData(data);
-      if (data.rollable?.value)
+      if (data.rollable?.value && !data.test)
         {
-          data.rollable.value = false;
-  
           data.test = {
             self: {
               characteristic:  data.rollable.rollCharacteristic,
@@ -244,24 +242,17 @@ export class TraitModel extends PropertiesMixin(BaseItemModel)
             target: {}
           }
   
-          if (data.rollable.damage)
+          if (data.rollable.damage && !data.attack)
           {
-            data.rollable.damage = false;
-  
             let attack = {damage: {}};
             attack.type = data.rollable.attackType;
             if (isNaN(data.specification.value))
             {
               attack.damage.value = null;
-              if (data.specification.value == "#")
-              {
-                data.specification.value = "";
-              }
             }
             else 
             {
               attack.damage.value = data.specification.value;
-              data.specification.value = "";
             }
             if (data.rollable.SL)
               attack.damage.SL = true;

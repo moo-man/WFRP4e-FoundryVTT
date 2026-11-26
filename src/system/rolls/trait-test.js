@@ -62,8 +62,8 @@ export default class TraitTest extends AttackTest {
         await super.calculateDamage(this.item.system.attack.damage.SL ? Number(this.result.SL) : 0)
         damageBreakdown.item = `+${this.item.Damage} (${[this.item.system.specification.value, game.wfrp4e.config.characteristicsAbbrev[this.item.system.attack.damage.characteristic]].filter(i => i).join(" + ")})`;
 
-        if (this.item.attack.damage.dice && !this.result.additionalDamage) {
-          let roll = await new Roll(this.item.attack.damage.dice).roll({allowInteractive : false})
+        if (this.item.system.attack.damage.dice && !this.result.additionalDamage) {
+          let roll = await new Roll(this.item.attack.system.damage.dice).roll({allowInteractive : false})
           this.result.diceDamage = { value: roll.total, formula: roll.formula };
           this.preData.diceDamage = this.result.diceDamage
           damageBreakdown.other.push({label : game.i18n.localize("BREAKDOWN.Dice"), value : roll.total});
