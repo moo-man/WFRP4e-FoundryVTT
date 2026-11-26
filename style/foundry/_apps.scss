@@ -281,6 +281,17 @@
     }   
 
     &.edition-manager {
+
+        
+        div[data-application-part]
+        {
+            height: calc(100% - (1.25 * 3rem)) // Roughly button size
+        }
+        .rule-options {
+            overflow: auto;
+            height: 100%;
+        }
+
         .rule-option
         {
             margin-bottom: 1rem;
@@ -293,6 +304,7 @@
         }
         .split {
             display: flex;
+            align-items: start;
             > * {
                 flex: 1;
                 text-align: right;
@@ -304,6 +316,9 @@
             .separator {
                 flex: 0 0 1rem;
                 border-left: 1px solid red
+            }
+            .hint {
+                text-align: center;
             }
         }
     }

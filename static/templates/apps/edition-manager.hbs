@@ -1,5 +1,5 @@
 <div>
-
+    <div class="rule-options standard-form">
     <div class="rule-option">
         <div class="title">
             Tests
@@ -10,6 +10,7 @@
                 <div class="form-fields">
                     <input type="radio" name="tests" value="4e" id="4e-tests" {{checked (eq source.tests "4e")}}>
                 </div>
+                <p class="hint">Computes Test outcome by the relation of roll and target, uses target modifiers, SL modifiers, and SL Bonus</p>
             </div>
 
             <div class="form-group">
@@ -17,6 +18,7 @@
                 <div class="form-fields">
                     <input type="radio" name="tests" value="5e" id="5e-tests" {{checked (eq source.tests "5e")}}>
                 </div>
+                <p class="hint">Computes Test outcome using final SL value, does not use target modifiers, only SL modifiers.</p>
             </div>
         </div>
     </div>
@@ -31,7 +33,9 @@
                 <label for="4e-career">4th Edition</label>
                 <div class="form-fields">
                     <input type="radio" name="careerAdvancement" value="4e" id="4e-career" {{checked (eq source.careerAdvancement "4e")}}>
-                </div>
+                </div>          
+                 <p class="hint">Tracks total Advances (regardless of when it was gained) to determine completion (Uses Careers)</p>     
+
             </div>
 
             <div class="form-group">
@@ -39,6 +43,7 @@
                 <div class="form-fields">
                     <input type="radio" name="careerAdvancement" value="5e" id="5e-career" {{checked (eq source.careerAdvancement "5e")}}>
                 </div>
+                <p class="hint">Tracks Advances (grouped by 5) during each career to determine completion (Uses Career Paths)</p>
             </div>
         </div>
     </div>
@@ -60,15 +65,36 @@
                 <div class="form-fields">
                     <input type="radio" name="advancementCosts" value="5e" id="5e-adv" {{checked (eq source.advancementCosts "5e")}}>
                 </div>
+                <p class="hint">Advancement in 5e is more expensive</p>
             </div>
         </div>
     </div>
 
-    {{formGroup schema.fields.armourCriticals name="armourCriticals" value=source.armourCriticals choices=armourCriticals localize=true rootId=rootId}}
+    <div class="rule-option">
+        <div class="title">
+            {{localize "5e.SETTINGS.ArmourCriticals"}}
+        </div>
+        <div class="split">
+            <div class="form-group">
+                <label for="4e-crit">4th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="armourCriticals" value="4e" id="4e-crit" {{checked (eq source.armourCriticals "4e")}}>
+                </div>
+                <p class="hint">Critical Deflection: Damage AP to ignore Critical Wounds</p>
+            </div>
 
-{{log source}}
+            <div class="form-group">
+                <label for="5e-crit">5th Edition</label>
+                <div class="form-fields">
+                    <input type="radio" name="armourCriticals" value="5e" id="5e-crit" {{checked (eq source.armourCriticals "5e")}}>
+                </div>
+                <p class="hint">Adds +10 to the table roll for each Wound past 0</p>
+            </div>
+        </div>
+    </div>
+
     {{formGroup schema.fields.darkDeals name="darkDeals" value=source.darkDeals localize=true rootId=rootId}}
-    {{formGroup schema.fields.resilienceResolve name="resilienceResolve" value=source.resilienceResolve localize=true rootId=rootId}}
+    {{formGroup schema.fields.resilienceResolve name="resilienceResolve" value=source.resilienceResolve localize=true rootId=rootId hint="Also removes Motivation if unchecked"}}
 
     <div class="rule-option">
         <div class="title">
@@ -87,10 +113,12 @@
                 <div class="form-fields">
                     <input type="radio" name="ambitions" value="5e" id="5e-ambitions" {{checked (eq source.ambitions "5e")}}>
                 </div>
+                <p class="hint">Removes the distinction of Long/Short Term ambitions.</p>
             </div>
         </div>
     </div>
 
+    </div>
     <p class="notification warning" style="display: block">5th Edition rules are a <strong>Work in Progress!</strong> Some features may not be implemented yet.</p>
     <p class="notification info" style="display: block">If you wish to request an option, join the Discord!</p>
 </div>

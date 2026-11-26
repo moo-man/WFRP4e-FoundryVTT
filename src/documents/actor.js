@@ -802,26 +802,8 @@ export default class ActorWFRP4e extends WarhammerActor
 
     // If damage taken reduces wounds to 0, show Critical
     if (newWounds <= 0) {
-      //WFRP_Audio.PlayContextAudio(opposedTest.attackerTest.weapon, {"type": "hit", "equip": "crit"})
-      let critAmnt = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
-      if (game.settings.get("wfrp4e", "uiaCrits") && critAmnt && (Math.abs(newWounds)) > 0) {
-        critModifier += (Math.abs(newWounds)) * critAmnt;
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
-      }
-      //@HOUSE
-      else if (game.settings.get("wfrp4e", "homebrew").mooCritModifiers) {
-        game.wfrp4e.utility.logHomebrew("mooCritModifiers")
-        let critModifier = (Math.abs(newWounds) - actor.characteristics.t.bonus) * critAmnt;
-        if (critModifier)
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critModifier > 0 ? "+" + critModifier : critModifier}</a>`
-        else
-          updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
-      }
-      //@/HOUSE
-      else if (Math.abs(newWounds) < actor.characteristics.t.bonus && !game.settings.get("wfrp4e", "uiaCrits"))
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier="-20" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} (-20)</a>`
-      else
-        updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")}</a>`
+      let critData = this.system.computeCriticalAt(loc, {modifier: critModifier, excessWounds: newWounds < 0 ? Math.abs(newWounds) : 0});
+      updateMsg += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critData.modifier} data-table="${critData.table}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critData.modifier < 0 ? "" : "+"}${critData.modifier}</a>`;
     }
     if (hack)
     {

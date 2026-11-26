@@ -47,6 +47,19 @@ export default class AttackTest5e extends SkillTest5e {
       console.error(`Error generating formatted breakdown: ${e}`, this);
     }
   }
+
+  get canUseCriticalDeflection() {
+    let result = false;
+    const hitLoc = this.data.result.hitloc?.result;
+    if (hitLoc) {
+      this.targets.forEach(target => {
+        if (this.isCritical && !(game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation) && game.wfrp5e.armourCriticals == "4e" && target.physicalNonDamagedArmourAtLocation(hitLoc).length > 0) {
+          result = true;
+        }
+      })
+    }
+    return result;
+  }
   
   static fromData(...args)
   {

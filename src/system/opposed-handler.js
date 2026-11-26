@@ -52,7 +52,7 @@ export default class OpposedHandler {
   get defenderTest() {
     if (this.unopposed) {
 
-      let test = !!game.wfrp5e 
+      let test = game.wfrp5e.tests
       ? new game.wfrp4e.rolls5e.TestWFRP5e({
           definedSL: 0,
           unopposed: true,

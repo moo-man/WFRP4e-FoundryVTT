@@ -206,6 +206,7 @@ export default class StandardWFRP4eActorSheet extends BaseWFRP4eActorSheet
     }
   }
 
+  // need to figure out how to style based on resilience/resolve
 
 
   _addEventListeners()

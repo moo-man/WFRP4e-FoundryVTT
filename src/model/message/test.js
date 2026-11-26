@@ -131,7 +131,7 @@ export class WFRPTestMessageModel extends WFRPEffectMessageMixin(WarhammerTestMe
     {
         const targetTokens = game.user.targets.length > 0 ? game.user.targets.map(t => t.actor) : this.test.targets;
         const targetIntersection = targetTokens.filter(t => this.test.targets.includes(t));
-        const hitLoc = this.test.hitloc.result;
+        const hitLoc = this.test.result.hitloc.result;
         const type = ev.target.innerText;
 
         for (const target of targetIntersection) {

@@ -54,6 +54,10 @@
                 {{#if this.modifier}}({{numberFormat this.modifier sign=true}}){{/if}}</a>
         {{/each}}
 
+        {{#if test.canUseCriticalDeflection}}
+            - <a class="action-link" data-action="applyCriticalDeflection">{{localize "CHAT.CriticalDeflection"}}</a>
+        {{/if}}
+
         {{#if test.result.misfire}}
             - <a class="table-click  action-link fumble" data-action="clickTable" data-damage="{{test.result.misfireDamage}}" data-table="misfire"><i class="fas fa-list"></i> {{test.result.misfire}}</a>
         {{/if}}

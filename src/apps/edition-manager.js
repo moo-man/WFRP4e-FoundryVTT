@@ -42,7 +42,8 @@ export default class EditionManager extends WHFormApplication
             resizable : true,
         },
         position : {
-            width: 400
+            width: 500,
+            height: 600
         },
         form: {
             submitOnChange: false,
@@ -84,11 +85,6 @@ export default class EditionManager extends WHFormApplication
         context.source = game.settings.get("wfrp4e", "editionSettings");
         context.schema = this.constructor.schema;
         
-        context.armourCriticals = {
-            "4e": "4th Edition (Critical Deflection)",
-            "5e": "5th Edition (None)",
-            "mitigation": "🏠 Critical Mitigation"
-        }
         return context
     }
 

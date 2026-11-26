@@ -18,6 +18,7 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
           dispel: this.onDispel,
           executeAction: this.onExecuteAction,
           chooseCriticalCast: this.onChooseCriticalCast,
+          applyCriticalDeflection : this.onApplyCriticalDeflection,
           expandItem: this._onExpandItem,
           rollTest: this._onRollTest
     }); 
@@ -144,6 +145,33 @@ export class WFRP5eTestMessageModel extends WFRPEffectMessageMixin(WarhammerTest
 
     test.testData.criticalCastChoice = target.dataset.choice;
     test.roll();
+  }
+
+  static async onApplyCriticalDeflection(ev)
+  {
+      const targetTokens = game.user.targets.length > 0 ? game.user.targets.map(t => t.actor) : this.test.targets;
+      const targetIntersection = targetTokens.filter(t => this.test.targets.includes(t));
+      const hitLoc = this.test.result.hitloc.result;
+      const type = ev.target.innerText;
+
+      for (const target of targetIntersection) {
+          if (target.isOwner) {
+              let armour = target.physicalNonDamagedArmourAtLocation(hitLoc)
+              if (armour.length)
+              {
+                  let chosen = await ItemDialog.create(armour, 1, {text : game.i18n.localize("DIALOG.ChooseArmour"), title : `${type} - ${target.name}`});
+                  if (chosen[0])
+                  {
+                      chosen[0].system.damageItem(1, [hitLoc]);
+                      ChatMessage.create({content: `<p>${game.i18n.format("CHAT.DamageToArmour",  {item: `@UUID[${chosen[0].uuid}]{${chosen[0].name}}`, type: type} )}</p>`, speaker : ChatMessage.getSpeaker({actor : target})})
+                  }
+              }
+              else
+              {
+                  ui.notifications.error("ErrorNoArmourToDamage", {localize: true});
+              }
+          }
+      }
   }
 
 

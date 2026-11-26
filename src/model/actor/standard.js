@@ -709,10 +709,6 @@ export class StandardActorModel extends BaseActorModel {
         let tooltip =  this._createModifierTooltip({damage, modifiers, totalWoundLoss, applyTB, applyAP, abort});
         let tooltipHTML = `<a data-tooltip="${tooltip}" style="opacity: 0.5" data-tooltip-direction="LEFT"><i class="fa-solid fa-circle-info"></i></a>`
 
-        if (newWounds < 0)
-        {
-            critModifier += newWounds < 0 ? Math.abs(newWounds) * 10 : 0;
-        }
         let tableHTML = this._createTableLinks({newWounds, loc, critModifier})
 
         let updateMsg = `
@@ -811,17 +807,52 @@ export class StandardActorModel extends BaseActorModel {
 
     _createTableLinks({newWounds, loc, critModifier=0}={})
     {
-        let html = ""
-        // If damage taken reduces wounds to 0, show Critical
-        if (newWounds < 0) 
+        if (newWounds < 0)
         {
-            html += `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critModifier} data-table = "crit${loc}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} +${critModifier}</a>`
-        // if (hack)
-        // {
-        //     html += `<br><button data-action="applyHack">${game.i18n.localize('CHAT.ApplyHack')}</button>`
-        // }
+            let critData = this.computeCriticalAt(loc, {modifier: critModifier, excessWounds: newWounds < 0 ? Math.abs(newWounds) : 0})
+            return `<br><a data-action="clickTable" class="action-link critical-roll" data-modifier=${critData.modifier} data-table="${critData.table}" ><i class='fas fa-list'></i> ${game.i18n.localize("Critical")} ${critData.modifier < 0 ? "" : "+"}${critData.modifier}</a>`
         }
-        return html;
+        else return "";
+    }
+
+    computeCriticalAt(loc, {modifier=0, excessWounds=0}={})
+    {
+        let table = `crit${loc}`;
+        let uiaCritModifier = game.settings.get("wfrp4e", "homebrew").uiaCritsMod
+        let mitigation = game.settings.get("wfrp4e", "homebrew").mooCriticalMitigation
+
+        if (mitigation) 
+        {
+            modifier += -(this.status.armour[loc].value * 10);
+        }
+
+        if (game.wfrp5e.armourCriticals == "4e")
+        {
+            if (game.settings.get("wfrp4e", "uiaCrits"))
+            {
+                modifier += (excessWounds) * (uiaCritModifier || 10);
+            }
+            else if (excessWounds < this.characteristics.t.bonus && !mitigation)
+            {
+                modifier = -20;
+            }
+        }
+        else if (game.wfrp5e.armourCriticals == "5e")
+        {
+            if (game.settings.get("wfrp4e", "uiaCrits"))
+            {
+                modifier += (excessWounds) * (uiaCritModifier || 10);
+            }
+            else 
+            {
+                modifier += (excessWounds) * 10;
+            }
+        }
+
+        return {
+            table,
+            modifier
+        }
     }
 
     
