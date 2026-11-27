@@ -4,7 +4,7 @@ if (column)
 {
     let result = await game.wfrp4e.tables.rollTable("beasthead", {}, column);
     this.script.message(`<strong>${result.title}</strong><br>${result.result}`);
-    let uuid = `Compendium.${result.object.documentCollection}.${result.object.documentId}`;
+    let uuid = result.object.documentUuid;
     let item = await fromUuid(uuid);
     if (item)
     {
