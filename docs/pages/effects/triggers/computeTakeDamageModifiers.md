@@ -32,6 +32,8 @@ This trigger is the best place to add some static damage modifier. This script i
 
 `args.AP` - The data of the location taking damage. See [Armour Calculation](./APCalc.md) to see the object structure.
 
+`args.critModifier` - Modify the critical hit (if any) roll 
+
 `args.modifiers` - Modifiers for armour, toughness, and damage.
 
 `args.modifiers.tb` - TB used for damage reduction
@@ -53,6 +55,12 @@ This trigger is the best place to add some static damage modifier. This script i
 `args.wardRoll` - The Ward roll is determined at the beginning of damage application, but only checked if needed.
 
 `args.abort` - Set this to a string value to abort the process (with the string being the message shown in chat)
+
+`args.armour` - (5e only) Object containing all armour at the location being hit, each ID maps to a layer and its properties. 
+
+## Special Features
+
+(5e only) Any scripts from effects set as Item type on armour on the location struck will execute this script as well.
 
 ## Examples
 

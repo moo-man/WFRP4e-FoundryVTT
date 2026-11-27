@@ -604,7 +604,6 @@ export class StandardActorModel extends BaseActorModel {
       await Promise.all(sourceItem?.runScripts("preApplyDamage", args) || [])
       await Promise.all(armourItems.reduce((promises, item) => promises.concat(item.runScripts("preTakeDamage", args)), []));
 
-      damageType = args.damageType;
       applyAP = args.applyAP;
       applyTB = args.applyTB;
       abort = args.abort;

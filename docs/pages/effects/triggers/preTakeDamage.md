@@ -21,7 +21,9 @@ This trigger runs when another Actor applies damage (via opposed test) to this A
 
 `args.opposedTest` - The Opposed Test that was used to calculate damage
 
-`args.damageType` - Whether to ignore AP, TB, or both. This argument is obsolete and has already been derived into `applyAP` and `applyTB`
+`args.sourceTest` - Attacker's test
+
+`args.sourceItem` - Item used in the attacking test (sourceTest)
 
 `args.weaponProperties` - What properties (qualities and flaws) the weapon has. This can be modified to add properties to the calculation. (e.g. `args.weaponProperties.qualities.damaging` or `args.weaponProperties.flaws.unbalanced`)
 
@@ -35,6 +37,8 @@ This trigger runs when another Actor applies damage (via opposed test) to this A
 
 `args.modifiers` - Modifiers for armour, toughness, and damage. See [Compute Apply Damage Modifiers](./computeApplyDamageModifiers.md) to see the object structure (modifiers generally should be changed in that trigger, not this one).
 
+`args.critModifier` - Modify the critical hit (if any) roll 
+
 `args.extraMessages` - Array of strings that can be added to for displaying in chat.
 
 `args.ward` - Ward value of the Actor (If ward is some number, a roll is made and if that roll is greater or eual to the ward value, the damage is ignored)
@@ -42,6 +46,13 @@ This trigger runs when another Actor applies damage (via opposed test) to this A
 `args.wardRoll` - The Ward roll is determined at the beginning of damage application, but only checked if needed.
 
 `args.abort` - Set this to a string value to abort the process (with the string being the message shown in chat)
+
+`args.armour` - (5e only) Object containing all armour at the location being hit, each ID maps to a layer and its properties. 
+
+
+## Special Features
+
+(5e only) Any scripts from effects set as Item type on armour on the location struck will execute this script as well. See below for an example.
 
 
 ## Examples
@@ -56,3 +67,17 @@ if (!args.opposedTest.attackerTest.item?.system?.isMagical)
 	args.abort = `<strong>${this.effect.name}</strong>: Ignored`
 }
 ```
+
+### Double Armour against a spell (5e only)
+
+**Usage**: A special helmet that protects against spells, serves as an example for an Item armour script
+
+```js
+if (args.sourceItem?.type == "spell")
+{
+	args.armour[this.item.id].value *= 2;
+	args.armour[this.item.id].tooltip = this.effect.name;
+}
+```
+
+**Notes**: This script only works if the armour effect is set to **Item** document type. If it was an **Actor** type, you would need to check whether `args.armour[this.item.id]` exists.

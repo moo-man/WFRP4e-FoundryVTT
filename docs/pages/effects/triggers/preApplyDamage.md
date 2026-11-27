@@ -34,6 +34,8 @@ This trigger runs when an Actor applies damage (via opposed test) to another Act
 
 `args.modifiers` - Modifiers for armour, toughness, and damage. See [Compute Apply Damage Modifiers](./computeApplyDamageModifiers.md) to see the object structure (modifiers generally should be changed in that trigger, not this one).
 
+`args.critModifier` - Modify the critical hit (if any) roll 
+
 `args.extraMessages` - Array of strings that can be added to for displaying in chat.
 
 `args.ward` - Ward value of the Actor (If ward is some number, a roll is made and if that roll is greater or eual to the ward value, the damage is ignored)
@@ -42,7 +44,11 @@ This trigger runs when an Actor applies damage (via opposed test) to another Act
 
 `args.abort` - Set this to a string value to abort the process (with the string being the message shown in chat)
 
+`args.armour` - (5e only) Object containing all armour at the location being hit, each ID maps to a layer and its properties. 
 
+## Special Features
+
+(5e only) Any scripts from effects set as Item type on armour on the location struck will execute this script as well.
 
 ## Examples
 

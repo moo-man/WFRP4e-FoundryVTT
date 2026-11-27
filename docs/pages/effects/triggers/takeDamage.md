@@ -9,7 +9,6 @@ This trigger runs when an Actor applies damage (via opposed test) to another Act
 
 This is very similar to [Apply Damage](./applyDamage.md), but this trigger runs on the Actor receiving damage.
 
-
 ## Key
 
 `takeDamage`
@@ -45,6 +44,12 @@ This is very similar to [Apply Damage](./applyDamage.md), but this trigger runs 
 `args.wardRoll` - The Ward roll is determined, but only checked if ward isn't null. This occurs after this trigger runs. 
 
 `args.abort` - Set this to a string value to abort the process (with the string being the message shown in chat)
+
+`args.armour` - (5e only) Object containing all armour at the location being hit, each ID maps to a layer and its properties. 
+
+## Special Features
+
+(5e only) Any scripts from effects set as Item type on armour on the location struck will execute this script as well.
 
 ## Examples
 
