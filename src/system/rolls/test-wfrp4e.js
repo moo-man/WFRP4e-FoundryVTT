@@ -902,9 +902,11 @@ export default class TestWFRP extends WarhammerTestBase {
     if (this.result.rollObject)
       messageData.rolls = [this.result.rollObject];
 
+    // A re-rendered card keeps the visibility of its author, not of the user who re-renders it
+    let author = (newMessage || !this.message) ? null : this.message.author
     let templateData = {
       test: this,
-      hideData: game.user.isGM,
+      hideData: author ? author.isGM : game.user.isGM,
     }
 
 

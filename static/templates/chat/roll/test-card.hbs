@@ -61,7 +61,11 @@
         {{/if}}
 
         {{#if test.result.woundsHealed}}
+        {{#if test.context.healingApplied}}
+        <p>{{localize "CHAT.HealingApplied" actor=test.context.healingApplied.name}}</p>
+        {{else}}
         <a class="chat-button" data-action="applyHealing" data-amount="{{test.result.woundsHealed}}">{{localize "CHAT.ApplyHealing"}}</a>
+        {{/if}}
         {{/if}}
 
 
