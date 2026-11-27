@@ -23,7 +23,7 @@ for(let i = 0; i < roll.total; i++)
     {
         result = await game.wfrp4e.tables.rollTable("mutatephys", {hideDSN: true}, "Tzeentch")
     }
-    uuid = `Compendium.${result.object.documentCollection}.${result.object.documentId}`;
+    uuid = result.object.documentUuid;
     item = await fromUuid(uuid);
     if (item)
     {
