@@ -3,7 +3,7 @@ import foundryPath from "./foundry-path.mjs";
 import copy from 'rollup-plugin-copy-watch';
 import postcss from "rollup-plugin-postcss"
 import bakedEnv from 'rollup-plugin-baked-env';
-import simpleGit from 'simple-git';
+import {simpleGit} from 'simple-git';
 import yargs from 'yargs';
 
 let args = yargs(process.argv.slice(2)).parse();
